@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "523036940422",
+    "firebase_url": "https://ysfnl-57801.firebaseio.com",
+    "project_id": "ysfnl-57801",
+    "storage_bucket": "ysfnl-57801.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523036940422:android:33c37073148c3fbd2e1907",
+        "android_client_info": {
+          "package_name": "com.mallup.ysfnl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "523036940422-oo68crq9hen229jv2kasmrs0v14k6ark.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDN2on3PuXqHpvquR-m7uInEZQH0E9DoeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "523036940422-oo68crq9hen229jv2kasmrs0v14k6ark.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

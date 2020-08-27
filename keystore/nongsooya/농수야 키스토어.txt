@@ -1,0 +1,6 @@
+alias pass:nongsuya
+
+alias: nongsuya
+
+pass:nongsuya!@
+
