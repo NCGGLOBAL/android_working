@@ -5,6 +5,7 @@
     <domain-config cleartextTrafficPermitted="true">
 
         <domain includeSubdomains="true">ysfnlmall.co.kr</domain>
+        <domain includeSubdomains="true">kspay.ksnet.to</domain>
 
     </domain-config>
 
