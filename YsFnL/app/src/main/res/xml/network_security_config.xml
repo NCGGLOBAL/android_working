@@ -8,7 +8,8 @@
         <domain includeSubdomains="true">kspay.ksnet.to</domain>
         <domain includeSubdomains="true">postcode.map.daum.net</domain>
         <domain includeSubdomains="true">dmaps.daum.net</domain>
-        <domain includeSubdomains="true">pf.kakao.com/_RRLQxb/chat</domain>
+        <domain includeSubdomains="true">pf.kakao.com</domain>
+        <domain includeSubdomains="true">t1.daumcdn.net</domain>
 
     </domain-config>
 
