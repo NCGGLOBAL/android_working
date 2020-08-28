@@ -407,7 +407,7 @@ public class WebViewActivity extends Activity {
                     int permissionResult = checkSelfPermission(Manifest.permission.CALL_PHONE);
 
                     if (permissionResult == PackageManager.PERMISSION_DENIED) {
-                        if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
+//                        if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
                             AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
                             dialog.setTitle("권한이 필요합니다.")
                                     .setMessage("이 기능을 사용하기 위해서는 단말기의 \"전화걸기\" 권한이 필요합니다. 계속 하시겠습니까?")
@@ -426,7 +426,7 @@ public class WebViewActivity extends Activity {
                                             Toast.makeText(mContext, "기능을 취소했습니다", Toast.LENGTH_SHORT).show();
                                         }
                                     }).create().show();
-                        }
+//                        }
                     } else {
                         intent = new Intent(Intent.ACTION_CALL, Uri.parse(url));
                         startActivity(intent);

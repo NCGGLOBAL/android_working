@@ -6,6 +6,9 @@
 
         <domain includeSubdomains="true">ysfnlmall.co.kr</domain>
         <domain includeSubdomains="true">kspay.ksnet.to</domain>
+        <domain includeSubdomains="true">postcode.map.daum.net</domain>
+        <domain includeSubdomains="true">dmaps.daum.net</domain>
+        <domain includeSubdomains="true">pf.kakao.com/_RRLQxb/chat</domain>
 
     </domain-config>
 
