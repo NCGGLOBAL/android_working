@@ -23,15 +23,16 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-<!--                <data-->
-<!--                    android:scheme="zhangbayo" />-->
-<!--            </intent-filter>-->
+                <data
+                    android:host="main"
+                    android:scheme="zhangbayo" />
+            </intent-filter>
         </activity>
 
         <!-- ilikelux://pay? -->
@@ -52,7 +53,20 @@
         </activity>
 
         <activity android:name="com.nechingu.zhangbayo.WebViewActivity"
-            android:configChanges="orientation|screenSize"/>
+            android:launchMode="singleTop"
+            android:configChanges="orientation|screenSize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="webview"
+                    android:scheme="zhangbayo" />
+            </intent-filter>
+        </activity>
 
         <activity android:name="com.nechingu.zhangbayo.AlbumSelectActivity" />
         <activity
