@@ -240,6 +240,8 @@ public class WebViewActivity extends Activity {
         mWebView.getSettings().setAppCacheEnabled(true);
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         mWebView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
+        mWebView.getSettings().setUserAgentString(mWebView.getSettings().getUserAgentString() + "webview-type=sub");
+
         mWebView.addJavascriptInterface(new WebAppInterface(this, mWebView), "android");
 
         mWebView.setDrawingCacheEnabled(true);
