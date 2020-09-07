@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1098368899587",
+    "firebase_url": "https://sinsangchinaseller.firebaseio.com",
+    "project_id": "sinsangchinaseller",
+    "storage_bucket": "sinsangchinaseller.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1098368899587:android:bea19be5dc980c93e9cc36",
+        "android_client_info": {
+          "package_name": "com.nechingu.sinsangchinaseller"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1098368899587-sfuremv0bii2v5r4o7fc6lafcpdldmua.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3-hJyZt370LyJcckOZsKMNOcp64orFZM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1098368899587-sfuremv0bii2v5r4o7fc6lafcpdldmua.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1098368899587-u373bed5dmehe6v3u858iqlcpj8e2651.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nechingu.sinsangseller"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

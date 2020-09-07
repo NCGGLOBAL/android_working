@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">hahakoreashop</string>
+
+    <string name="confirm">确认</string>
+    <string name="cancel">取消</string>
+    <string name="alert_title">提醒</string>
+
+    <string name="exit">"\'返回\'再次按按钮即可结束"</string>
+</resources>

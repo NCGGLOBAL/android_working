@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "555192172278",
+    "firebase_url": "https://sinsangchina.firebaseio.com",
+    "project_id": "sinsangchina",
+    "storage_bucket": "sinsangchina.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555192172278:android:587b343c27c66ad6",
+        "android_client_info": {
+          "package_name": "com.nechingu.sinsangchina"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555192172278-h9860blcb0se4tlllochnqfc365f0p37.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtlvJxoVBPCBUYt9GxI7n0cBtxtL51J1w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555192172278-h9860blcb0se4tlllochnqfc365f0p37.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
