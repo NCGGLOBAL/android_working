@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         this.wv.getSettings().setSupportMultipleWindows(true);
         this.wv.getSettings().setAppCacheEnabled(true);
         this.wv.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
-        this.wv.addJavascriptInterface(new AndroidBridge(), "appConnector");
+        this.wv.addJavascriptInterface(new AndroidBridge(), "android");
         this.wv.loadUrl(HNApplication.URL);
     }
 

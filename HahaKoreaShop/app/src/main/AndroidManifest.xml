@@ -27,7 +27,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
+
         <activity android:name="com.ncggloval.hahakoreashop.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,6 +37,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".WebViewActivity"
+            android:screenOrientation="portrait"/>
         <!-- For Wechat -->
         <activity
             android:name="com.ncggloval.hahakoreashop.wxapi.WXEntryActivity"

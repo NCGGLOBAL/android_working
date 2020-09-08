@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.CookieManager;
@@ -48,12 +49,10 @@ import java.net.URISyntaxException;
 public class WebViewActivity extends AppCompatActivity {
     private WebView wv;
     private HNCommTran mHNCommTran;
-
+    String mWebViewUrl = "";
     private String mCallback;
 
     //    private ProgressUtil mProgressUtil;
-    private BackPressCloseHandler mBackPressCloseHandler;
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     private Context mApplicationContext;
     private boolean mStartedBaidu = false;
@@ -65,39 +64,9 @@ public class WebViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            setContentView(R.layout.activity_main);
+            setContentView(R.layout.activity_webview);
 
-            if (HNSharedPreference.getSharedPreference(this, "deviceId").equals("")) {
-                HNApplication.mDeviceId = EtcUtil.getRandomKey(16);
-
-                HNSharedPreference.putSharedPreference(this, "deviceId", HNApplication.mDeviceId);
-            } else {
-                HNApplication.mDeviceId = HNSharedPreference.getSharedPreference(this, "uuid");
-            }
-
-            // Back Handler
-            mBackPressCloseHandler = new BackPressCloseHandler(this);
-            HNApplication.mIsFirstLoading = true;
-            mLlloading = (LinearLayout)findViewById(R.id.ll_loading);
-
-            // Progress Dialog
-//            mProgressUtil = new ProgressUtil(MainActivity.this);
-//            mProgressUtil.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-//            mProgressUtil.show();
-
-            // Baidu push
-//            mApplicationContext = this.getApplicationContext();
-//            mBaiduApiKey = readChinaPushApiKey();
-//            LogUtil.e("BaiduApiKey : " + mBaiduApiKey);
-//            if (!mStartedBaidu && mBaiduApiKey != null) {
-//                LogUtil.e("PushManager.startWork : ");
-//                PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, mBaiduApiKey);
-//                mStartedBaidu = true;
-//            }
-
-            // Wechat
-            HNApplication.mWechatApi = WXAPIFactory.createWXAPI(this, HNApplication.APP_ID, true);
-            HNApplication.mWechatApi.registerApp(HNApplication.APP_ID);
+            mWebViewUrl = getIntent().getStringExtra("webviewUrl");
 
             // WebView 초기화
             initWebView();
@@ -179,9 +148,11 @@ public class WebViewActivity extends AppCompatActivity {
         this.wv.getSettings().setSupportMultipleWindows(true);
         this.wv.getSettings().setAppCacheEnabled(true);
         this.wv.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
-        this.wv.addJavascriptInterface(new AndroidBridge(), "appConnector");
+        this.wv.addJavascriptInterface(new AndroidBridge(), "android");
         this.wv.getSettings().setUserAgentString(this.wv.getSettings().getUserAgentString() + "webview-type=sub");
-        this.wv.loadUrl(HNApplication.URL);
+        if (!TextUtils.isEmpty(mWebViewUrl)) {
+            this.wv.loadUrl(mWebViewUrl);
+        }
     }
 
     @Override
@@ -488,8 +459,7 @@ public class WebViewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // super.onBackPressed();
-        mBackPressCloseHandler.onBackPressed();
+         super.onBackPressed();
     }
 
     @Override
