@@ -195,14 +195,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     notificationBuilder = new Notification.Builder(ctx, MyNotificationManager.Channel.MESSAGE)  // round Image
                             .setSmallIcon(R.drawable.ic_launcher)
                             .setLargeIcon(BitmapFactory.decodeResource(ctx.getResources(), R.mipmap.ic_launcher))
-                            .setStyle(new Notification.BigPictureStyle()
-                                    .bigPicture(result)
-                                    .setBigContentTitle(title)
-                                    .setSummaryText(message))
                             .setContentTitle(title)
                             .setContentText(message)
                             .setAutoCancel(true)
                             .setContentIntent(pendingIntent);
+                    if (result != null) {
+                        Notification.BigPictureStyle bigPictureStyle = new Notification.BigPictureStyle()
+                                .bigPicture(result)
+                                .setBigContentTitle(title)
+                                .setSummaryText(message);
+                        notificationBuilder.
+                                setStyle(bigPictureStyle);
+                    } else  {
+                        notificationBuilder.
+                                setStyle(new Notification.BigTextStyle().bigText(message));
+                    }
                 } else {
                     LogUtil.d(TAG, "Message Notification 5");
                     notificationBuilder = new Notification.Builder(ctx)
