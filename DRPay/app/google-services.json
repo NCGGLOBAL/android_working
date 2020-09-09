@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "110971291566",
+    "firebase_url": "https://drpay-75906.firebaseio.com",
+    "project_id": "drpay-75906",
+    "storage_bucket": "drpay-75906.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110971291566:android:908be6c2f73698e5992a3f",
+        "android_client_info": {
+          "package_name": "com.mallup.drpay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110971291566-2so2dli6351fb40eqn65btsctj90r7t4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0bbpGnbQzI6zbpSTjO1Jmn9-iqgpZX0E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110971291566-2so2dli6351fb40eqn65btsctj90r7t4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
