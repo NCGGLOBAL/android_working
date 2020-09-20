@@ -89,6 +89,8 @@
             android:name="com.creator.unnitv.ImageEditActivity"
             android:configChanges="orientation|screenSize" />
 
+        <activity android:name=".CameraActivity"/>
+
         <service android:name="com.creator.unnitv.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -158,9 +160,6 @@
 
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <!-- 硬件特性 -->
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <!--
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />

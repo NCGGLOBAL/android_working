@@ -479,6 +479,11 @@ public class MainActivity extends AppCompatActivity {
 
             Intent intent = null;
 
+            if (uri.getScheme().equals("ncglive")) {
+                startActivity(new Intent(MainActivity.this, CameraActivity.class));
+                return true;
+            }
+
             if (url.startsWith("sms:") || url.startsWith("smsto:")) {
                 Intent i = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
                 startActivity(i);
