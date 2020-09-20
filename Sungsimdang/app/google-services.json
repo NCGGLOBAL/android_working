@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "254353469821",
+    "firebase_url": "https://sungsimdang-d7924.firebaseio.com",
+    "project_id": "sungsimdang-d7924",
+    "storage_bucket": "sungsimdang-d7924.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254353469821:android:f280ae371436db57185c14",
+        "android_client_info": {
+          "package_name": "com.mallup.sungsimdang"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254353469821-opd1vh5je6egoqmud15qjnt07eq12u0g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDW5awpGISFqBk1TiCTa8JFIOup30Ddp8U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254353469821-opd1vh5je6egoqmud15qjnt07eq12u0g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
