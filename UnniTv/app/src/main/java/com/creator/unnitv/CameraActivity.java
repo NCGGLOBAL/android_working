@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.creator.unnitv.R;
 import com.ksyun.media.streamer.capture.CameraCapture;
@@ -60,6 +61,13 @@ public class CameraActivity extends Activity {
 // 设置美颜滤镜，关于美颜滤镜的具体说明请参见专题说明
         mStreamer.getImgTexFilterMgt().setFilter(mStreamer.getGLRender(),
                 ImgTexFilterMgt.KSY_FILTER_BEAUTY_DENOISE);
+
+        findViewById(R.id.btn_switch_camera).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mStreamer.switchCamera();
+            }
+        });
     }
 
     @Override
@@ -103,7 +111,7 @@ public class CameraActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // 清理相关资源
-        mStreamer.release();
+//        // 清理相关资源
+//        mStreamer.release();
     }
 }
