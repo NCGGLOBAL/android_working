@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "63187791458",
+    "firebase_url": "https://tagb-b64e8.firebaseio.com",
+    "project_id": "tagb-b64e8",
+    "storage_bucket": "tagb-b64e8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63187791458:android:31c7cef614c1f85ad52b3b",
+        "android_client_info": {
+          "package_name": "com.nechingu.tagb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "63187791458-8v9smtoig23o78v39qbfn35gvvhd6rel.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDr1rin7pnSwRVVow8D9my9nfqKm4e-M8Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "63187791458-8v9smtoig23o78v39qbfn35gvvhd6rel.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

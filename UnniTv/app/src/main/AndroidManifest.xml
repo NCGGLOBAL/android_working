@@ -89,7 +89,8 @@
             android:name="com.creator.unnitv.ImageEditActivity"
             android:configChanges="orientation|screenSize" />
 
-        <activity android:name=".CameraActivity"/>
+        <activity android:name=".CameraActivity"
+            android:theme="@style/Theme.Transparent"/>
 
         <service android:name="com.creator.unnitv.MyFirebaseMessagingService">
             <intent-filter>
