@@ -37,7 +37,7 @@
         <activity
             android:name="com.creator.unnitv.MainActivity"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="fullSensor">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -55,12 +55,15 @@
         </activity>
 
         <activity android:name="com.creator.unnitv.WebViewActivity"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"/>
 
-        <activity android:name="com.creator.unnitv.AlbumSelectActivity" />
+        <activity android:name="com.creator.unnitv.AlbumSelectActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.creator.unnitv.SelectImageMethodActivity"
             android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
             android:label="@string/app_name"
             android:theme="@style/MultipleImageSelectTheme">
             <intent-filter>
@@ -71,6 +74,7 @@
             android:name="com.creator.unnitv.ImageSelectActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/MultipleImageSelectTheme">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -80,6 +84,7 @@
             android:name="com.creator.unnitv.ImageEditChangeOrder"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/MultipleImageSelectTheme">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -90,7 +95,8 @@
             android:configChanges="orientation|screenSize" />
 
         <activity android:name=".CameraActivity"
-            android:theme="@style/Theme.Transparent"/>
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
 
         <service android:name="com.creator.unnitv.MyFirebaseMessagingService">
             <intent-filter>
@@ -139,6 +145,11 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
     </application>
 
 
