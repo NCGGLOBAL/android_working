@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CameraActivity extends Activity {
+    private String TAG = "CameraActivity";
     private WebView mWebView;
     private String mCallback;
     private CookieManager mCookieManager;
@@ -107,12 +108,12 @@ public class CameraActivity extends Activity {
         mStreamer.startStream();
 
         // 切换前后摄像头
-        mStreamer.switchCamera();
+//        mStreamer.switchCamera();
 // 开关闪光灯
         mStreamer.toggleTorch(true);
 // 设置美颜滤镜，关于美颜滤镜的具体说明请参见专题说明
-        mStreamer.getImgTexFilterMgt().setFilter(mStreamer.getGLRender(),
-                ImgTexFilterMgt.KSY_FILTER_BEAUTY_DISABLE);
+//        mStreamer.getImgTexFilterMgt().setFilter(mStreamer.getGLRender(),
+//                ImgTexFilterMgt.KSY_FILTER_BEAUTY_DISABLE);
     }
 
     private void initWebView() {
@@ -188,7 +189,7 @@ public class CameraActivity extends Activity {
             mStreamer.setOnErrorListener(new KSYStreamer.OnErrorListener() {
                 @Override
                 public void onError(int what, int msg1, int msg2) {
-                    // ...
+                    Log.e(TAG, "onError : " + msg1);
                 }
             });
         }
