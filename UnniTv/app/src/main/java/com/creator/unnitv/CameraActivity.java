@@ -105,12 +105,14 @@ public class CameraActivity extends Activity {
 // 设置开始预览使用前置还是后置摄像头
         mStreamer.setCameraFacing(CameraCapture.FACING_FRONT);
 
+        mStreamer.toggleTorch(true);
+
         mStreamer.startStream();
 
         // 切换前后摄像头
 //        mStreamer.switchCamera();
 // 开关闪光灯
-        mStreamer.toggleTorch(true);
+
 // 设置美颜滤镜，关于美颜滤镜的具体说明请参见专题说明
 //        mStreamer.getImgTexFilterMgt().setFilter(mStreamer.getGLRender(),
 //                ImgTexFilterMgt.KSY_FILTER_BEAUTY_DISABLE);
