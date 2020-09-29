@@ -87,7 +87,7 @@ public class CameraActivity extends Activity {
 // 设置开始预览使用前置还是后置摄像头
         mStreamer.setCameraFacing(CameraCapture.FACING_FRONT);
 
-        mStreamer.toggleTorch(true);
+        mStreamer.toggleTorch(false);
 
         mStreamer.startStream();
 
@@ -373,6 +373,9 @@ public class CameraActivity extends Activity {
                     jsonObject.put("resultcd", resultcd);      //1: 성공, 0: 실패
 
                     executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
+                } else if ("ACT1031".equals(actionCode)) {
+                    // 종료
+                    finish();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
