@@ -1,24 +1,15 @@
 package com.creator.unnitv;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
+import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
@@ -26,18 +17,10 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
-import com.creator.unnitv.R;
 import com.creator.unnitv.common.HNApplication;
-import com.creator.unnitv.delegator.HNSharedPreference;
-import com.creator.unnitv.helpers.Constants;
 import com.creator.unnitv.util.EtcUtil;
 import com.creator.unnitv.util.LogUtil;
-import com.creator.unnitv.util.NicePayUtility;
-import com.facebook.AccessToken;
-import com.kakao.auth.AuthType;
-import com.kakao.auth.Session;
 import com.ksyun.media.streamer.capture.CameraCapture;
 import com.ksyun.media.streamer.filter.imgtex.ImgTexFilterMgt;
 import com.ksyun.media.streamer.kit.KSYStreamer;
@@ -45,12 +28,6 @@ import com.ksyun.media.streamer.kit.StreamerConstants;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
-import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CameraActivity extends Activity {
     private String TAG = "CameraActivity";
@@ -63,6 +40,8 @@ public class CameraActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Activity가 실행 될 때 항상 화면을 켜짐으로 유지한다.
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_camera);
 
         initWebView();
@@ -81,9 +60,9 @@ public class CameraActivity extends Activity {
 // 设置推流url（需要向相关人员申请，测试地址并不稳定！）
         mStreamer.setUrl(streamUrl);
 // 设置预览分辨率, 当一边为0时，SDK会根据另一边及实际预览View的尺寸进行计算
-        mStreamer.setPreviewResolution(480, 0);
+        mStreamer.setPreviewResolution(720, 1280);
 // 设置推流分辨率，可以不同于预览分辨率（不应大于预览分辨率，否则推流会有画质损失）
-        mStreamer.setTargetResolution(480, 0);
+        mStreamer.setTargetResolution(720, 1280);
 // 设置预览帧率
         mStreamer.setPreviewFps(15);
 // 设置推流帧率，当预览帧率大于推流帧率时，编码模块会自动丢帧以适应设定的推流帧率
@@ -99,6 +78,9 @@ public class CameraActivity extends Activity {
  * StreamerConstants.ENCODE_METHOD_SOFTWARE
  * StreamerConstants.ENCODE_METHOD_HARDWARE
  */
+        mStreamer.setEnableRepeatLastFrame(false); // disable repeat last frame in background
+        mStreamer.setEnableAutoRestart(true, 500);
+
         mStreamer.setEncodeMethod(StreamerConstants.ENCODE_METHOD_SOFTWARE);
 // 设置屏幕的旋转角度，支持 0, 90, 180, 270
         mStreamer.setRotateDegrees(0);
