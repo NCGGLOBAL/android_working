@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
 //            Manifest.permission.CALL_PHONE
+            Manifest.permission.RECORD_AUDIO,
             Manifest.permission.GET_ACCOUNTS
     };
 
@@ -1283,6 +1284,7 @@ public class MainActivity extends AppCompatActivity {
 //                + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
                 + ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
                 + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -1291,6 +1293,7 @@ public class MainActivity extends AppCompatActivity {
 //                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.GET_ACCOUNTS)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
 
                 Snackbar.make(this.findViewById(android.R.id.content),
@@ -1308,6 +1311,7 @@ public class MainActivity extends AppCompatActivity {
 //                                                    Manifest.permission.CALL_PHONE,
                                                     Manifest.permission.GET_ACCOUNTS,
                                                     Manifest.permission.ACCESS_FINE_LOCATION,
+                                                    Manifest.permission.RECORD_AUDIO,
                                                     Manifest.permission.ACCESS_COARSE_LOCATION
                                             },
                                             Constants.PERMISSIONS_MULTIPLE_REQUEST);
@@ -1324,6 +1328,7 @@ public class MainActivity extends AppCompatActivity {
 //                                    Manifest.permission.CALL_PHONE,
                                     Manifest.permission.GET_ACCOUNTS,
                                     Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.RECORD_AUDIO,
                                     Manifest.permission.ACCESS_COARSE_LOCATION
                             },
                             Constants.PERMISSIONS_MULTIPLE_REQUEST);
@@ -1356,6 +1361,7 @@ public class MainActivity extends AppCompatActivity {
                                             Manifest.permission.CALL_PHONE,
                                             Manifest.permission.GET_ACCOUNTS,
                                             Manifest.permission.ACCESS_FINE_LOCATION,
+                                            Manifest.permission.RECORD_AUDIO,
                                             Manifest.permission.ACCESS_COARSE_LOCATION
                                     },
                                     Constants.PERMISSIONS_MULTIPLE_REQUEST);
@@ -1376,6 +1382,7 @@ public class MainActivity extends AppCompatActivity {
 //                                                            Manifest.permission.CALL_PHONE,
                                                             Manifest.permission.GET_ACCOUNTS,
                                                             Manifest.permission.ACCESS_FINE_LOCATION,
+                                                            Manifest.permission.RECORD_AUDIO,
                                                             Manifest.permission.ACCESS_COARSE_LOCATION
                                                     },
                                                     Constants.PERMISSIONS_MULTIPLE_REQUEST);
