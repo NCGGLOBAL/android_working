@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "420665487638",
+    "firebase_url": "https://martnara-3f3ec.firebaseio.com",
+    "project_id": "martnara-3f3ec",
+    "storage_bucket": "martnara-3f3ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420665487638:android:3a27785b800cae44f92037",
+        "android_client_info": {
+          "package_name": "com.mallup.martnara"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "420665487638-78nsldnv1528s88uhcr51ompjm1g3shv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLdfnDprm4Rxd-ZMFWn-AYlMJW2JYpC2A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "420665487638-78nsldnv1528s88uhcr51ompjm1g3shv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
