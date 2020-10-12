@@ -484,7 +484,13 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = null;
 
             if (uri.getScheme().equals("ncglive")) {
-                startActivity(new Intent(MainActivity.this, CameraActivity.class));
+                if (!hasPermissions(mContext, PERMISSIONS)) {
+                    mCameraType = 5;
+                    ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, Constants.PERMISSIONS_MULTIPLE_REQUEST);
+                } else {
+                    startActivity(new Intent(MainActivity.this, CameraActivity.class));
+                }
+
                 return true;
             }
 
@@ -1339,6 +1345,9 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             // write your logic code if permission already granted
+            if (mCameraType == 5) {
+                startActivity(new Intent(MainActivity.this, CameraActivity.class));
+            }
         }
     }
 
@@ -1350,9 +1359,14 @@ public class MainActivity extends AppCompatActivity {
                     boolean cameraPermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
                     boolean writeExternalFile = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     boolean readExternalFile = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean audioPermission = grantResults[5] == PackageManager.PERMISSION_GRANTED;
 
-                    if (cameraPermission && writeExternalFile && readExternalFile) {
-                        // write your logic here
+                    if (cameraPermission && audioPermission) {
+                        if (mCameraType == 5) {
+                            startActivity(new Intent(MainActivity.this, CameraActivity.class));
+                        }
+                    } else if (cameraPermission && writeExternalFile && readExternalFile) {
+                        if (mLlPermission == null) return;
                         mLlPermission.setVisibility(View.GONE);
                     } else {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
