@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.nechingu.tagb"
         minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 7
-        versionName "1.0.6"
+        targetSdkVersion 29
+        versionCode 9
+        versionName "1.0.8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true

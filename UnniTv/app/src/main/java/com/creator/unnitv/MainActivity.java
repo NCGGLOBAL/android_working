@@ -247,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
                     ll_permission_agree.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            mLlPermission.setVisibility(View.GONE);
                             checkPermission();
                         }
                     });
