@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "760461832946",
-    "firebase_url": "https://allflower.firebaseio.com",
-    "project_id": "allflower",
-    "storage_bucket": "allflower.appspot.com"
+    "project_number": "924041491881",
+    "firebase_url": "https://allfloweradmin.firebaseio.com",
+    "project_id": "allfloweradmin",
+    "storage_bucket": "allfloweradmin.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:760461832946:android:9aeb47fdf7a0090ae4166b",
+        "mobilesdk_app_id": "1:924041491881:android:11ac21f9e1de760ed440b8",
         "android_client_info": {
-          "package_name": "com.mallup.allflower"
+          "package_name": "com.admin.allflower"
         }
       },
       "oauth_client": [
         {
-          "client_id": "760461832946-t765qe0bar4aee6p1s9cb4i2la6ge9fm.apps.googleusercontent.com",
+          "client_id": "924041491881-q1qadn02hb2m9j8sptco84ljbmr7pvmb.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB2NlntCYN1Eda2vMfVzXj3QRykktFr3d0"
+          "current_key": "AIzaSyAv83nlsaBHzeEZc343NkPaLDSXr4FcXyQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "760461832946-t765qe0bar4aee6p1s9cb4i2la6ge9fm.apps.googleusercontent.com",
+              "client_id": "924041491881-q1qadn02hb2m9j8sptco84ljbmr7pvmb.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
