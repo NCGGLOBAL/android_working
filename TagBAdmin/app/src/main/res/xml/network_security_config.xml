@@ -5,6 +5,7 @@
     <domain-config cleartextTrafficPermitted="true">
 
         <domain includeSubdomains="true">tagb.co.kr</domain>
+        <domain includeSubdomains="true">tagb.co.kr/m/member</domain>
 
     </domain-config>
 
