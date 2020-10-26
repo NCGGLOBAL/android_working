@@ -6,6 +6,7 @@
 
         <domain includeSubdomains="true">tagb.co.kr</domain>
         <domain includeSubdomains="true">tagb.co.kr/m/member</domain>
+        <domain includeSubdomains="true">postcode.map.daum.net</domain>
 
     </domain-config>
 
