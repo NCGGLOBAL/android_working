@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "594025307574",
+    "firebase_url": "https://mamchall.firebaseio.com",
+    "project_id": "mamchall",
+    "storage_bucket": "mamchall.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:594025307574:android:c470973ef6acfb6c",
+        "android_client_info": {
+          "package_name": "com.nechingu.momchall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "594025307574-4u21uglhil6llo07dablcsjacvo30kc6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE9qd-CSuJvGKeoRw2uCLCpyqGC0DUXVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "594025307574-4u21uglhil6llo07dablcsjacvo30kc6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "594025307574-a4s3ld2dsodtj5mhmuhcq1qjh3jlg9g6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.Momchall.ncgglobal"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

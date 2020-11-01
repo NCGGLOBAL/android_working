@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.CookieManager;
@@ -72,9 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
                 HNSharedPreference.putSharedPreference(this, "deviceId", HNApplication.mDeviceId);
             } else {
-                HNApplication.mDeviceId = HNSharedPreference.getSharedPreference(this, "uuid");
+                HNApplication.mDeviceId = HNSharedPreference.getSharedPreference(this, "deviceId");
             }
-
             // Back Handler
             mBackPressCloseHandler = new BackPressCloseHandler(this);
             HNApplication.mIsFirstLoading = true;

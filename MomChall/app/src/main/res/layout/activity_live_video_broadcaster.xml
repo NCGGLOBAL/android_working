@@ -1,0 +1,173 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".youtube.antmedia.liveVideoBroadcaster.LiveVideoBroadcasterActivity"
+    android:id="@+id/root_layout">
+
+    <!--
+    <com.google.android.exoplayer.AspectRatioFrameLayout
+        android:id="@+id/cameraPreview_afl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        >
+        -->
+    <android.opengl.GLSurfaceView
+        android:id="@+id/cameraPreview_surfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_gravity="center" />
+    <!--
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/transparent_cover"
+        android:background="#77000000"/>
+
+   </com.google.android.exoplayer.AspectRatioFrameLayout>
+    -->
+
+    <WebView
+        android:id="@+id/wv_chat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:padding="4dp"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        android:layout_alignParentStart="true">
+
+        <ImageButton
+            android:id="@+id/settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:onClick="showSetResolutionDialog"
+            android:src="@drawable/ic_settings_white_24dp"
+            style="?borderlessButtonStyle" />
+
+        <LinearLayout
+            android:layout_width="46dp"
+            android:layout_height="43dp"
+            android:gravity="center">
+            <ImageButton
+                android:id="@+id/changeCameraButton"
+                style="?attr/borderlessButtonStyle"
+                android:layout_width="26dp"
+                android:layout_height="23dp"
+                android:layout_marginTop="2dp"
+                android:adjustViewBounds="true"
+                android:onClick="changeCamera"
+                android:background="@drawable/icon_camerachange" />
+        </LinearLayout>
+        <android.support.v4.widget.Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/stream_live_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_live"
+            android:padding="5dp"
+            android:text="@string/live_indicator"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <!--
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:visibility="visible"
+        >
+        <EditText
+            android:id="@+id/stream_name_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/stream_name"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ready"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#ff0000"/>
+        <Button
+            android:id="@+id/toggle_broadcasting"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_margin="10dp"
+            android:onClick="toggleBroadcasting"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:background="@drawable/icon_play"
+            />
+    </LinearLayout>
+    -->
+    <FrameLayout
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="40dp">
+        <EditText
+            android:id="@+id/stream_name_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/stream_name"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ready"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#ff0000"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/toggle_broadcasting"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="toggleBroadcasting"
+            android:background="@drawable/ic_play_arrow_red_60dp"/>
+
+        <at.grabner.circleprogress.CircleProgressView
+            android:id="@+id/pb_circle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            app:cpv_barColor="#fa2829"
+            app:cpv_barWidth="7.2dp"
+            app:cpv_rimColor="#ffffff"
+            app:cpv_rimWidth="7.2dp"
+            app:cpv_textColor="#fa2829"
+            app:cpv_textSize="24dp"
+            app:cpv_unit="%"
+            app:cpv_unitPosition="right_top"
+            app:cpv_unitSize="18dp"
+            app:cpv_unitColor="#fa2829"/>
+    </FrameLayout>
+</android.support.design.widget.CoordinatorLayout>
