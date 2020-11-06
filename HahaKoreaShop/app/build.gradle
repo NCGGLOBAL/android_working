@@ -39,5 +39,11 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.3'
     implementation files('libs/libammsdk.jar')                         // wechat
-    implementation files('libs/pushservice-5.0.0.66.jar')       // baidu
+//    implementation files('libs/pushservice-5.0.0.66.jar')       // baidu
+    // VIVO厂商最新推送sdk
+    implementation files('libs/vivo_pushsdk-v2.9.0.0.aar')
+    // 魅族厂商最新推送sdk
+    implementation files('libs/push-internal-3.9.0.aar')
+    // OPPO厂商最新推送sdk
+    implementation files('libs/com.heytap.msp-push-2.1.0.aar')
 }

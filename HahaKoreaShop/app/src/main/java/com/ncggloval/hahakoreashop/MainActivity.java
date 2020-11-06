@@ -62,23 +62,36 @@ public class MainActivity extends AppCompatActivity {
     private String mGetUserinfo = "";
     private LinearLayout mLlloading;
 
+    // baidu push
+    /** 魅族代理需要的魅族appid和appkey，请到魅族推送官网申请 **/
+    private static final String mzAppId = "";
+    private static final String mzAppKey = "";
+
+    /** 小米代理需要的小米appid和appkey，请到小米推送官网申请 **/
+    private static final String xmAppId = "";
+    private static final String xmAppKey = "";
+
+    /** OPPO代理需要的OPPO appkey和appsecret，请到OPPO推送官网申请 **/
+    private static final String opAppKey = "";
+    private static final String opAppSecret = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
             setContentView(R.layout.activity_main);
 
-            if (HNSharedPreference.getSharedPreference(this, "deviceId").equals("")) {
-                HNApplication.mDeviceId = EtcUtil.getRandomKey(16);
-
-                HNSharedPreference.putSharedPreference(this, "deviceId", HNApplication.mDeviceId);
-            } else {
-                HNApplication.mDeviceId = HNSharedPreference.getSharedPreference(this, "deviceId");
-            }
-            // Back Handler
-            mBackPressCloseHandler = new BackPressCloseHandler(this);
-            HNApplication.mIsFirstLoading = true;
-            mLlloading = (LinearLayout)findViewById(R.id.ll_loading);
+//            if (HNSharedPreference.getSharedPreference(this, "deviceId").equals("")) {
+//                HNApplication.mDeviceId = EtcUtil.getRandomKey(16);
+//
+//                HNSharedPreference.putSharedPreference(this, "deviceId", HNApplication.mDeviceId);
+//            } else {
+//                HNApplication.mDeviceId = HNSharedPreference.getSharedPreference(this, "deviceId");
+//            }
+//            // Back Handler
+//            mBackPressCloseHandler = new BackPressCloseHandler(this);
+//            HNApplication.mIsFirstLoading = true;
+//            mLlloading = (LinearLayout)findViewById(R.id.ll_loading);
 
             // Progress Dialog
 //            mProgressUtil = new ProgressUtil(MainActivity.this);
@@ -89,21 +102,51 @@ public class MainActivity extends AppCompatActivity {
 //            mApplicationContext = this.getApplicationContext();
 //            mBaiduApiKey = readChinaPushApiKey();
 //            LogUtil.e("BaiduApiKey : " + mBaiduApiKey);
-//            if (!mStartedBaidu && mBaiduApiKey != null) {
-//                LogUtil.e("PushManager.startWork : ");
-//                PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, mBaiduApiKey);
-//                mStartedBaidu = true;
-//            }
+            if (!mStartedBaidu && mBaiduApiKey != null) {
+                LogUtil.e("PushManager.startWork : ");
+                PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY, mBaiduApiKey);
+                mStartedBaidu = true;
+            }
+
+//            initWithApiKey();
 
             // Wechat
-            HNApplication.mWechatApi = WXAPIFactory.createWXAPI(this, HNApplication.APP_ID, true);
-            HNApplication.mWechatApi.registerApp(HNApplication.APP_ID);
+//            HNApplication.mWechatApi = WXAPIFactory.createWXAPI(this, HNApplication.APP_ID, true);
+//            HNApplication.mWechatApi.registerApp(HNApplication.APP_ID);
 
             // WebView 초기화
-            initWebView();
+//            initWebView();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // api_key 绑定
+    private void initWithApiKey() {
+        // 开启华为代理，如需开启，请参考华为代理接入文档
+        //！！应用需要已经在华为推送官网注册
+        PushManager.enableHuaweiProxy(this, true);
+        // 开启魅族代理，如需开启，请参考魅族代理接入文档
+        //！！需要将mzAppId和mzAppKey修改为自己应用在魅族推送官网申请的APPID和APPKEY
+        PushManager.enableMeizuProxy(this, true, mzAppId, mzAppKey);
+        // 开启OPPO代理，如需开启，请参考OPPO代理接入文档
+        //！！需要将opAppKey和opAppSecret修改为自己应用在OPPO推送官网申请的APPKEY和APPSECRET
+        PushManager.enableOppoProxy(this, true, opAppKey, opAppSecret);
+        // 开启小米代理，如需开启，请参考小米代理接入文档
+        //！！需要将xmAppId和xmAppKey修改为自己应用在小米推送官网申请的APPID和APPKEY
+        PushManager.enableXiaomiProxy(this, true, xmAppId, xmAppKey);
+        // 开启VIVO代理，如需开启，请参考VIVO代理接入文档
+        //！！需要将AndroidManifest.xml中com.vivo.push.api_key和com.vivo.push.app_id修改为自己应用在VIVO推送官网申请的APPKEY和APPID
+        PushManager.enableVivoProxy(this, true);
+        // Push: 以apikey的方式登录，一般放在主Activity的onCreate中。
+        // 这里把apikey存放于manifest文件中，只是一种存放方式，
+        // 您可以用自定义常量等其它方式实现，来替换参数中的Utils.getMetaValue(PushDemoActivity.this,
+        // "api_key")
+//        ！！请将AndroidManifest.xml api_key 字段值修改为自己的 api_key 方可使用 ！！
+        //！！ATTENTION：You need to modify the value of api_key to your own in AndroidManifest.xml to use this Demo !!
+        PushManager.startWork(getApplicationContext(),
+                PushConstants.LOGIN_TYPE_API_KEY,
+                PushUtils.getMetaValue(this, "api_key"));
     }
 
     @Override
@@ -134,11 +177,11 @@ public class MainActivity extends AppCompatActivity {
         String action = intent.getAction();
 
         if (PushUtils.ACTION_LOGIN.equals(action)) {
-            String accessToken = intent.getStringExtra(PushUtils.EXTRA_ACCESS_TOKEN);
-            PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_ACCESS_TOKEN, accessToken);
+//            String accessToken = intent.getStringExtra(PushUtils.EXTRA_ACCESS_TOKEN);
+//            PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_ACCESS_TOKEN, accessToken);
 
             // TODO ACCESSTOKEN 추가
-            Toast.makeText(this, "Baidu accessToken : " + accessToken, Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, "Baidu accessToken : " + accessToken, Toast.LENGTH_LONG).show();
         }
     }
 

@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
     String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-//            Manifest.permission.CAMERA,
+            Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
 //            Manifest.permission.CALL_PHONE
@@ -1233,7 +1233,7 @@ public class MainActivity extends AppCompatActivity {
     private void checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 + ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                + ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
 //                + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
                 + ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
                 + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -1241,7 +1241,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
 //                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.GET_ACCOUNTS)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -1258,7 +1258,7 @@ public class MainActivity extends AppCompatActivity {
                                             new String[]{
                                                     Manifest.permission.READ_EXTERNAL_STORAGE,
                                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                                                    Manifest.permission.CAMERA,
+                                                    Manifest.permission.CAMERA,
 //                                                    Manifest.permission.CALL_PHONE,
                                                     Manifest.permission.GET_ACCOUNTS,
                                                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -1274,7 +1274,7 @@ public class MainActivity extends AppCompatActivity {
                             new String[]{
                                     Manifest.permission.READ_EXTERNAL_STORAGE,
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                                    Manifest.permission.CAMERA,
+                                    Manifest.permission.CAMERA,
 //                                    Manifest.permission.CALL_PHONE,
                                     Manifest.permission.GET_ACCOUNTS,
                                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -1306,7 +1306,7 @@ public class MainActivity extends AppCompatActivity {
                                     new String[]{
                                             Manifest.permission.READ_EXTERNAL_STORAGE,
                                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                                            Manifest.permission.CAMERA,
+                                            Manifest.permission.CAMERA,
                                             Manifest.permission.CALL_PHONE,
                                             Manifest.permission.GET_ACCOUNTS,
                                             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -1326,7 +1326,7 @@ public class MainActivity extends AppCompatActivity {
                                                     new String[]{
                                                             Manifest.permission.READ_EXTERNAL_STORAGE,
                                                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                                                            Manifest.permission.CAMERA,
+                                                            Manifest.permission.CAMERA,
 //                                                            Manifest.permission.CALL_PHONE,
                                                             Manifest.permission.GET_ACCOUNTS,
                                                             Manifest.permission.ACCESS_FINE_LOCATION,

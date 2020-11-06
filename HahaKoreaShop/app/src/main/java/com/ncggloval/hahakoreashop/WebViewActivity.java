@@ -103,11 +103,11 @@ public class WebViewActivity extends AppCompatActivity {
         String action = intent.getAction();
 
         if (PushUtils.ACTION_LOGIN.equals(action)) {
-            String accessToken = intent.getStringExtra(PushUtils.EXTRA_ACCESS_TOKEN);
-            PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_ACCESS_TOKEN, accessToken);
-
-            // TODO ACCESSTOKEN 추가
-            Toast.makeText(this, "Baidu accessToken : " + accessToken, Toast.LENGTH_LONG).show();
+//            String accessToken = intent.getStringExtra(PushUtils.EXTRA_ACCESS_TOKEN);
+//            PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_ACCESS_TOKEN, accessToken);
+//
+//            // TODO ACCESSTOKEN 추가
+//            Toast.makeText(this, "Baidu accessToken : " + accessToken, Toast.LENGTH_LONG).show();
         }
     }
 
