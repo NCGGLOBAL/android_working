@@ -9,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.opengl.GLSurfaceView;
@@ -19,6 +21,8 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
@@ -34,9 +38,14 @@ import android.widget.Toast;
 
 import com.creator.unnitv.common.HNApplication;
 import com.creator.unnitv.helpers.Constants;
+import com.creator.unnitv.models.Image;
+import com.creator.unnitv.util.AlertUtil;
+import com.creator.unnitv.util.BitmapUtil;
 import com.creator.unnitv.util.EtcUtil;
 import com.creator.unnitv.util.LogUtil;
 import com.creator.unnitv.util.NicePayUtility;
+import com.creator.unnitv.util.RealPathUtil;
+import com.kakao.auth.Session;
 import com.ksyun.media.streamer.capture.CameraCapture;
 import com.ksyun.media.streamer.filter.imgtex.ImgTexFilterMgt;
 import com.ksyun.media.streamer.kit.KSYStreamer;
@@ -45,12 +54,14 @@ import com.ksyun.media.streamer.kit.StreamerConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class CameraActivity extends Activity {
@@ -65,6 +76,8 @@ public class CameraActivity extends Activity {
     private String mCameraPhotoPath;
     private String mCurrentPhotoPath;       // 촬영된 이미지 경로
 
+    private JSONArray mImgArr = null;
+
     KSYStreamer mStreamer;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,6 +88,116 @@ public class CameraActivity extends Activity {
 
         initWebView();
         initCamera();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("SeongKwon", "============================================");
+        Log.d("SeongKwon", "requestCode = " + requestCode);
+        Log.d("SeongKwon", "resultCode = " + resultCode);
+        Log.d("SeongKwon", "============================================");
+        if(Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+            return;
+        } else if ((requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) && resultCode == RESULT_OK) {
+            String result = "";
+            try {
+                JSONObject jObj = new JSONObject();
+                JSONArray jArray = new JSONArray();
+                jObj.put("resultcd", "0");              // 0:성공. 1:실패
+
+                ArrayList<Image> selectedImages = (ArrayList<Image>) data.getExtras().get(Constants.INTENT_EXTRA_IMAGES);
+                for (int i = 0; i < selectedImages.size(); i++) {
+                    JSONObject jObjItem = new JSONObject();
+
+                    // 회전
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(BitmapUtil.GetExifOrientation(selectedImages.get(i).path));
+
+                    int dstWidth = 200;
+                    int dstHeight = 200;
+
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize = 4;
+                    Bitmap src = BitmapFactory.decodeFile(selectedImages.get(i).path, options);
+//                        Bitmap resized = Bitmap.createScaledBitmap(src, dstWidth, dstHeight, true);
+
+                    int width = src.getWidth();
+                    int height = src.getHeight();
+//                        Bitmap resized = Bitmap.createBitmap(src, width / 2, height / 4, width / 2, height / 2, matrix, true);
+                    Bitmap resized = Bitmap.createBitmap(src, width / 2, height / 4, dstWidth, dstHeight, matrix, true);
+
+                    jObjItem.put("image", getBase64String(src));
+                    jObjItem.put("thumbnail", getBase64String(resized));
+
+                    jArray.put(jObjItem);
+                }
+
+                result = jObj.toString();
+                Log.d("SeongKwon", result);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            executeJavascript(mCallback + "(" + result + ")");
+        } else if (requestCode == Constants.REQUEST_ADD_IMAGE && resultCode == RESULT_OK) {
+            Log.d("SeongKwon", "!!!!!!!!!!!!!!!!!!! = Constants.REQUEST_ADD_IMAGE = " + Constants.REQUEST_ADD_IMAGE);
+            try {
+                JSONObject jObj = new JSONObject();
+                jObj.put("resultcd", "0");              // 변경사항 있을경우 : 1, 없을경우 : 0 // 이전[0:성공. 1:실패]
+                if (data.hasExtra("isChanged")) {
+                    if (data.getBooleanExtra("isChanged", false)) {
+                        jObj.put("resultcd", "1");
+                    }
+                }
+                if (data.hasExtra("imgArr")) {
+                    mImgArr = new JSONArray(data.getStringExtra("imgArr"));
+                }
+                jObj.put("imgArr", mImgArr);
+                jObj.put("token", data.getStringExtra("token"));
+                jObj.put("pageGbn", data.getStringExtra("pageGbn"));
+                jObj.put("cnt", data.getStringExtra("cnt"));
+                executeJavascript(mCallback + "(" + jObj.toString() + ")");
+
+                // TODO 신규등록을 위한 임시저장
+                HNApplication.mImgArrForReg = mImgArr.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == Constants.REQUEST_EDIT_IMAGE && resultCode == RESULT_OK) {
+            try {
+                if (data.hasExtra("imgArr")) {
+                    mImgArr = new JSONArray(data.getStringExtra("imgArr"));
+                }
+                JSONObject jObj = new JSONObject();
+                jObj.put("imgArr", mImgArr);
+                jObj.put("token", data.getStringExtra("token"));
+                jObj.put("pageGbn", data.getStringExtra("pageGbn"));
+                jObj.put("cnt", data.getStringExtra("cnt"));
+                executeJavascript(mCallback + "(" + jObj.toString() + ")");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == Constants.FILECHOOSER_NORMAL_REQ_CODE) {
+            if (mUploadMessage == null) {
+                super.onActivityResult(requestCode, resultCode, data);
+                return;
+            }
+            Uri result = getResultUri(data);
+
+            Log.d(getClass().getName(), "openFileChooser : "+result);
+            mUploadMessage.onReceiveValue(result);
+            mUploadMessage = null;
+        } else if (requestCode == Constants.FILECHOOSER_LOLLIPOP_REQ_CODE) {
+            if (mFilePathCallback == null) {
+                super.onActivityResult(requestCode, resultCode, data);
+                return;
+            }
+            Log.e("SeongKwon", getResultUri(data).toString());
+            Uri[] results = new Uri[]{getResultUri(data)};
+
+            mFilePathCallback.onReceiveValue(results);
+            mFilePathCallback = null;
+        }
     }
 
     private void initCamera() {
@@ -583,6 +706,38 @@ public class CameraActivity extends Activity {
 //        Toast.makeText(this, mCurrentPhotoPath, Toast.LENGTH_LONG).show();
 
         return image;
+    }
+
+    private String getBase64String(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+        byte[] imageBytes = baos.toByteArray();
+
+        String base64String = Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+
+        return base64String;
+    }
+
+    private Uri getResultUri(Intent data) {
+        Uri result = null;
+        if(data == null || TextUtils.isEmpty(data.getDataString())) {
+            // If there is not data, then we may have taken a photo
+            if(mCameraPhotoPath != null) {
+                result = Uri.parse(mCameraPhotoPath);
+            }
+        } else {
+            String filePath = "";
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                filePath = data.getDataString();
+            } else {
+                filePath = "file:" + RealPathUtil.getRealPath(this, data.getData());
+            }
+            result = Uri.parse(filePath);
+        }
+
+        return result;
     }
 
 }
