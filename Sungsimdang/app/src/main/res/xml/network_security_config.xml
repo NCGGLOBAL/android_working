@@ -4,7 +4,7 @@
 
     <domain-config cleartextTrafficPermitted="true">
 
-        <domain includeSubdomains="true">sungsimdang.mallup.co.kr</domain>
+        <domain includeSubdomains="true">sungsimdangmall.co.kr</domain>
 
     </domain-config>
 
