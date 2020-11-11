@@ -1,7 +1,6 @@
 package com.ncggloval.hahakoreashop;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,18 +27,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
-import com.baidu.android.pushservice.PushConstants;
-import com.baidu.android.pushservice.PushManager;
-import com.ncggloval.hahakoreashop.baidu.PushUtils;
-import com.ncggloval.hahakoreashop.common.BackPressCloseHandler;
 import com.ncggloval.hahakoreashop.common.HNApplication;
 import com.ncggloval.hahakoreashop.delegator.HNCommTran;
 import com.ncggloval.hahakoreashop.delegator.HNSharedPreference;
 import com.ncggloval.hahakoreashop.util.EtcUtil;
 import com.ncggloval.hahakoreashop.util.LogUtil;
-import com.tencent.mm.sdk.openapi.SendAuth;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -93,21 +85,6 @@ public class WebViewActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        String action = intent.getAction();
-
-        if (PushUtils.ACTION_LOGIN.equals(action)) {
-//            String accessToken = intent.getStringExtra(PushUtils.EXTRA_ACCESS_TOKEN);
-//            PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_ACCESS_TOKEN, accessToken);
-//
-//            // TODO ACCESSTOKEN 추가
-//            Toast.makeText(this, "Baidu accessToken : " + accessToken, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -403,26 +380,6 @@ public class WebViewActivity extends AppCompatActivity {
         @JavascriptInterface
         public void setMemberKey(String paramString) {
             HNSharedPreference.putSharedPreference(getApplicationContext(), "memberKey", paramString);
-        }
-
-        @JavascriptInterface
-        public void getUserInfo(String type) {
-            LogUtil.line();
-            LogUtil.e("getUserInfo : " + type);
-            LogUtil.line();
-            try {
-                if (!type.equals("00")) {    // 위쳇로그인
-                    return;
-                }
-                mGetUserinfo = type;
-                SendAuth.Req req = new SendAuth.Req();
-                req.scope = "snsapi_userinfo";                                  // Authorization scope requested by applications
-                req.state = String.valueOf(System.currentTimeMillis());       // Used to indentify applications; returned by WeChat after authentication. none
-                boolean requestDone = HNApplication.mWechatApi.sendReq(req);
-                LogUtil.e("SendAuth.Req done: " + requestDone);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 

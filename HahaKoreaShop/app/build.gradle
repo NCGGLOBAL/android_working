@@ -1,16 +1,17 @@
 apply plugin: 'com.android.application'
+// 华为代理配置
+apply plugin: 'com.huawei.agconnect'
 
 android {
     compileSdkVersion 29
+    buildToolsVersion "28.0.3"
     defaultConfig {
         applicationId "com.ncggloval.hahakoreashop"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 4
-        versionName "1.0.3"
+        versionCode 5
+        versionName "1.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -18,32 +19,40 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
-        // Lint throws a class not found error for the com.baidu.android.pushservice.PushService
-        // class declared in AndroidManifest.xml.
-        abortOnError false
+
+    // 华为代理签名配置
+    signingConfigs {
+        config {
+            keyAlias '请输入自己应用的keyAlias'
+            keyPassword '请输入自己应用的keyPassword'
+            storeFile file('请输入自己应用的签名文件地址')
+            storePassword '请输入自己应用的签名文件密码'
+        }
     }
 
-    dexOptions {
-        javaMaxHeapSize "4g"
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
-    implementation 'com.android.support:multidex:1.0.3'
-    implementation files('libs/libammsdk.jar')                         // wechat
-//    implementation files('libs/pushservice-5.0.0.66.jar')       // baidu
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:28.0.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
     // VIVO厂商最新推送sdk
-    implementation files('libs/vivo_pushsdk-v2.9.0.0.aar')
+    implementation(name: 'vivo_pushsdk-v2.9.0.0', ext: 'aar')
     // 魅族厂商最新推送sdk
-    implementation files('libs/push-internal-3.9.0.aar')
+    implementation(name: 'push-internal-3.9.0', ext: 'aar')
     // OPPO厂商最新推送sdk
-    implementation files('libs/com.heytap.msp-push-2.1.0.aar')
+    implementation(name: 'com.heytap.msp-push-2.1.0', ext: 'aar')
+
+    implementation files('libs/libammsdk.jar')                         // wechat
 }
+
+

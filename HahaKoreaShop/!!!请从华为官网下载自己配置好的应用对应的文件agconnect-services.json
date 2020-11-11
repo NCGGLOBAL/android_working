@@ -1,0 +1,27 @@
+{
+	"agcgw":{
+		"backurl":"xxxxxxxxxxxxxxxxxxxxxxxx",
+		"url":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	},
+	"client":{
+		"cp_id":"xxxxxxxxxxxxxxxx",
+		"product_id":"xxxxxxxxxxxxxxxx",
+		"client_id":"xxxxxxxxxxxxxxxx",
+		"client_secret":"xxxxxxxxxxxxxxxx",
+		"app_id":"xxxxxxxxxxxxxxxx",
+		"package_name":"xxxxxxxxxxxxxxxx",
+		"api_key":"xxxxxxxxxxxxxxxx"
+	},
+	"service":{
+		"analytics":{
+			"collector_url":"xxxxxxxxxxxxxxxx",
+			"resource_id":"p1",
+			"channel_id":""
+		},
+		"ml":{
+			"mlservice_url":"xxxxxxxxxxxxxxxx"
+		}
+	},
+	"region":"CN",
+	"configuration_version":"1.0"
+}

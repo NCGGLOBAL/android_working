@@ -38,34 +38,40 @@
     <!-- VIVO代理运行需要的权限 END -->
 
     <application
-        android:allowBackup="true"
+        android:name=".Application"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:largeHeap="true"
-        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name="com.ncggloval.hahakoreashop.MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WebViewActivity"
-            android:screenOrientation="portrait"/>
+
+        <activity android:name="com.baidu.ufosdk.ui.FeedbackFacePageActivity"/>
+
+        <activity android:name="com.baidu.ufosdk.ui.FeedbackListActivity"/>
+
+        <activity android:name="com.baidu.ufosdk.ui.FeedbackInputActivity"/>
+
+        <activity android:name="com.baidu.ufosdk.ui.FeedbackHotActivity"/>
+
         <!-- For Wechat -->
         <activity
-            android:name="com.ncggloval.hahakoreashop.wxapi.WXEntryActivity"
+            android:name=".wxapi.WXEntryActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoDisplay">
         </activity>
 
-        <!-- For Baidu -->
         <!-- push必须的组件声明  START -->
-        <receiver android:name=".baidu.MyPushMessageReceiver">
+        <receiver android:name=".MyPushMessageReceiver">
             <intent-filter>
                 <action android:name="com.baidu.android.pushservice.action.MESSAGE" />
                 <action android:name="com.baidu.android.pushservice.action.RECEIVE" />
@@ -115,7 +121,7 @@
 
         <provider
             android:name="com.baidu.android.pushservice.PushInfoProvider"
-            android:authorities=".bdpush"
+            android:authorities="com.ncggloval.hahakoreashop.bdpush"
             android:exported="true"
             android:process=":bdservice_v1"
             android:protectionLevel="signature"
@@ -127,7 +133,141 @@
             android:process=":bdservice_v1" />
         <!-- push必须的组件声明  END -->
 
-        <meta-data android:name="api_key" android:value="hVU1Mgwu9gGHCsAnRspPzPOu" />
+        <!-- 华为代理推送必需组件 -->
+        <activity
+            android:name="com.baidu.android.pushservice.hwproxy.HwNotifyActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="bdpush"
+                    android:path="/hwnotify"
+                    android:scheme="baidupush" />
+            </intent-filter>
+        </activity>
+
+        <!-- 华为HMS接入声明service start -->
+        <service
+            android:name="com.baidu.android.pushservice.HmsPushPatchMessageService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.huawei.push.action.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- 华为代理推送必需组件 END -->
+
+        <!-- 小米代理推送必需组件 -->
+        <service
+            android:name="com.xiaomi.push.service.XMPushService"
+            android:enabled="true"
+            android:process=":pushservice" />
+
+        <!--注：此service必须在3.0.1版本以后（包括3.0.1版本）加入-->
+        <service
+            android:name="com.xiaomi.push.service.XMJobService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:process=":pushservice" />
+
+        <service
+            android:name="com.xiaomi.mipush.sdk.PushMessageHandler"
+            android:enabled="true"
+            android:exported="true" />
+
+        <!--注：此service必须在2.2.5版本以后（包括2.2.5版本）加入-->
+        <service
+            android:name="com.xiaomi.mipush.sdk.MessageHandleService"
+            android:enabled="true" />
+        <receiver
+            android:name="com.xiaomi.push.service.receivers.NetworkStatusReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.xiaomi.push.service.receivers.PingReceiver"
+            android:exported="false"
+            android:process=":pushservice">
+            <intent-filter>
+                <action android:name="com.xiaomi.push.PING_TIMER" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.baidu.android.pushservice.PushPatchMessageReceiver">
+            <intent-filter>
+                <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />
+                <action android:name="com.xiaomi.mipush.MESSAGE_ARRIVED" />
+                <action android:name="com.xiaomi.mipush.ERROR" />
+            </intent-filter>
+        </receiver>
+        <!-- 小米代理推送必需组件 END -->
+
+
+        <!-- 魅族代理推送必需组件 -->
+        <activity
+            android:name="com.baidu.android.pushservice.mzproxy.MzNotifyActivity"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.NoDisplay" />
+
+        <receiver android:name="com.baidu.android.pushservice.MzPushPatchMessageReceiver">
+            <intent-filter>
+                <action android:name="com.meizu.flyme.push.intent.MESSAGE" />
+                <action android:name="com.meizu.flyme.push.intent.REGISTER.FEEDBACK" />
+                <action android:name="com.meizu.flyme.push.intent.UNREGISTER.FEEDBACK" />
+            </intent-filter>
+        </receiver>
+        <!-- 魅族代理推送必需组件 END -->
+
+
+        <!-- OPPO代理推送必需组件, 注意将com.baidu.push.example替换成自己的应用包名 -->
+        <activity
+            android:name="com.baidu.android.pushservice.opproxy.OpNotifyActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name=".action.RECEIVE_MCS_MESSAGE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <!-- OPPO代理推送必需组件 END -->
+
+
+        <!-- VIVO代理推送必需组件 -->
+        <service
+            android:name="com.vivo.push.sdk.service.CommandClientService"
+            android:exported="true" />
+
+        <receiver android:name="com.baidu.android.pushservice.viproxy.ViPushMessageReceiver">
+            <intent-filter>
+                <action android:name="com.vivo.pushclient.action.RECEIVE" />
+            </intent-filter>
+        </receiver>
+
+        <meta-data
+            android:name="com.vivo.push.api_key"
+            android:value="INSERT YOUR OWN VIVO APIKEY HERE" />
+        <meta-data
+            android:name="com.vivo.push.app_id"
+            android:value="INSERT YOUR OWN VIVO APPID HERE" />
+        <!-- VIVO代理推送必需组件 END -->
+
+
+        <!-- 在百度开发者中心查询应用的API Key -->
+        <meta-data
+            android:name="api_key"
+            android:value="hVU1Mgwu9gGHCsAnRspPzPOu" />
     </application>
 
 </manifest>

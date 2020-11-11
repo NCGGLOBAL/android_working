@@ -1,5 +1,7 @@
 package com.ncggloval.hahakoreashop.common;
 
+//import com.tencent.mm.sdk.openapi.IWXAPI;
+
 import com.tencent.mm.sdk.openapi.IWXAPI;
 
 import java.net.CookieManager;

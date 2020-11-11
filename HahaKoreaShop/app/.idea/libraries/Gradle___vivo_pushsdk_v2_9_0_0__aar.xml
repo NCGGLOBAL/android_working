@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: :vivo_pushsdk-v2.9.0.0:@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/vivo_pushsdk-v2.9.0.0.aar/bef803e2d10cb2a8c285d99d1ef9d437/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/vivo_pushsdk-v2.9.0.0.aar/bef803e2d10cb2a8c285d99d1ef9d437/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
