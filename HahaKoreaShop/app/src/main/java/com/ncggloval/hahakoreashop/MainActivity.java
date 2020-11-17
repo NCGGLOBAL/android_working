@@ -486,8 +486,12 @@ public class MainActivity extends Activity implements
             this.wv.getSettings().setMixedContentMode(0);
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
+
         this.wv.getSettings().setSupportZoom(true);
-        this.wv.getSettings().setDisplayZoomControls(true);
+        this.wv.getSettings().setDisplayZoomControls(false);
         this.wv.getSettings().setBuiltInZoomControls(true);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //            this.wv.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
