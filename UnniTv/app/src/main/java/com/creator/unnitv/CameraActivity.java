@@ -200,6 +200,15 @@ public class CameraActivity extends Activity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mWebView != null && mWebView.canGoBack()) {
+            mWebView.goBack();
+            return;
+        }
+        super.onBackPressed();
+    }
+
     private void initCamera() {
         GLSurfaceView mCameraPreview = (GLSurfaceView)findViewById(R.id.camera_preview);
         // 创建KSYStreamer实例
@@ -535,6 +544,17 @@ public class CameraActivity extends Activity {
                 } else if ("ACT1031".equals(actionCode)) {
                     // 종료
                     finish();
+
+                } else if ("ACT1015".equals(actionCode)) {
+                    LogUtil.d("ACT1015 - 웹뷰 새창");
+
+                    if (actionParamObj.has("url")) {
+                        final String request_url = actionParamObj.getString("url");
+                        LogUtil.d("url : " + request_url);
+                        intent = new Intent(CameraActivity.this, WebViewActivity.class);
+                        intent.putExtra("webviewUrl", request_url);
+                        startActivity(intent);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
