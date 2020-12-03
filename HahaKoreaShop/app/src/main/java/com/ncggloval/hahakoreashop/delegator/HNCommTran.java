@@ -48,7 +48,8 @@ public class HNCommTran {
             String result = "";
 
             try {
-                URL url = new URL(HNApplication.URL + params[0]);
+//                URL url = new URL(HNApplication.URL + params[0]);
+                URL url = new URL(HNApplication.PUSH_URL);
                 System.out.println("url : " + url);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("POST"); // default GET

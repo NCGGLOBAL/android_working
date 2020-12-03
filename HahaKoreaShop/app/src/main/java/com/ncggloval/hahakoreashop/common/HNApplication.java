@@ -12,7 +12,7 @@ import java.net.CookieManager;
 public class HNApplication {
     public static boolean mSigned = true;
     public static String URL = "https://hahakoreashop.com";
-    public static String PUSH_URL = URL + "/m/app/pushRegister.asp";
+    public static String PUSH_URL = URL + "/api/test/test_push.asp";
     public static IWXAPI mWechatApi;
     public static String mWechatToken = "";
     public static String mWechatUserInfo = "";

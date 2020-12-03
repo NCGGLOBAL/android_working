@@ -13,6 +13,7 @@ import android.util.Log;
 import com.baidu.android.pushservice.PushMessageReceiver;
 import com.ncggloval.hahakoreashop.MainActivity;
 import com.ncggloval.hahakoreashop.R;
+import com.ncggloval.hahakoreashop.common.HNApplication;
 import com.ncggloval.hahakoreashop.delegator.HNCommTran;
 import com.ncggloval.hahakoreashop.delegator.HNCommTranInterface;
 import com.ncggloval.hahakoreashop.util.HNConfig;
@@ -110,12 +111,12 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
                     mHNCommTran = new HNCommTran(new HNCommTranInterface() {
                         @Override
                         public void recvMsg(String tranCode, String params) {
-                            if (tranCode.equals("/pushRegister.asp")) {
+                            if (tranCode.equals(HNApplication.PUSH_URL)) {
                                 LogUtil.e("recv pushRegister : " + params);
                             }
                         }
                     });
-                    mHNCommTran.sendMsg("/pushRegister.asp", jsonObject);
+                    mHNCommTran.sendMsg(HNApplication.PUSH_URL, jsonObject);
                     return;
                 }
                 catch (JSONException localJSONException)
