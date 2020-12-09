@@ -21,9 +21,9 @@ public class HNApplication extends Application {
     private RequestQueue mRequestQueue;
 
     public static boolean mSigned = false;
-    public static String URL = "http://labang.tv/m";
-    public static String PUSH_URL = URL + "/app/pushRegister.asp";
-    public static String UPLOAD_URL = URL + "/app/";
+    public static String URL = "https://labang.tv";
+    public static String PUSH_URL = URL + "/m/app/pushRegister.asp";
+    public static String UPLOAD_URL = URL + "/m/app/";
     public static boolean mIsFirstLoading = false;
     private static HNApplication mInstance;
     public static String mDeviceId = "";
