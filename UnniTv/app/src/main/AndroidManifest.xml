@@ -17,25 +17,7 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id"/>
-<!--        <activity-->
-<!--            android:name="com.creator.unnitv.SplashActivity"-->
-<!--            android:screenOrientation="portrait">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
 
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
-
-<!--                <data-->
-<!--                    android:scheme="unnitv" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
-
-        <!-- ilikelux://pay? -->
         <activity
             android:name="com.creator.unnitv.MainActivity"
             android:configChanges="orientation|screenSize"
@@ -94,6 +76,10 @@
         </activity>
         <activity
             android:name="com.creator.unnitv.ImageEditActivity"
+            android:configChanges="orientation|screenSize" />
+
+        <activity
+            android:name="com.creator.unnitv.ImageCropActivity"
             android:configChanges="orientation|screenSize" />
 
         <activity android:name=".CameraActivity"
