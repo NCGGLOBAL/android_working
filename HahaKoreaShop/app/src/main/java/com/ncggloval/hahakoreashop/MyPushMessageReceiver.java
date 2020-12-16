@@ -80,8 +80,8 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
         String responseString = "onBind errorCode=" + errorCode + " appid="
                 + appid + " userId=" + userId + " channelId=" + channelId
                 + " requestId=" + requestId;
-        LogUtil.d(TAG, " (onBind) : 1");
-        LogUtil.d(TAG, " (onBind) : " + responseString);
+        Log.e(TAG, " (onBind) : 1");
+        Log.e(TAG, " (onBind) : " + responseString);
 
         this.mHNconfig = new HNConfig(context);
         this.mHNconfig.setAppId(appid);
@@ -112,7 +112,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
                         @Override
                         public void recvMsg(String tranCode, String params) {
                             if (tranCode.equals(HNApplication.PUSH_URL)) {
-                                LogUtil.e("recv pushRegister : " + params);
+                                Log.e(TAG, "recv pushRegister : " + params);
                             }
                         }
                     });

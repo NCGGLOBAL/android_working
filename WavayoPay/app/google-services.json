@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "789157697402",
+    "firebase_url": "https://wavayopay.firebaseio.com",
+    "project_id": "wavayopay",
+    "storage_bucket": "wavayopay.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:789157697402:android:9b19dbd706e34b6d94a8c3",
+        "android_client_info": {
+          "package_name": "com.nechingu.wavayopay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "789157697402-bmt6jc2cvi5srsen3v10ndfhmgf130up.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjKHKqK93QUYsW5aXxgANrt2iQxKqiLRM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "789157697402-bmt6jc2cvi5srsen3v10ndfhmgf130up.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
