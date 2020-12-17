@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "429529338254",
+    "firebase_url": "https://migemme.firebaseio.com",
+    "project_id": "migemme",
+    "storage_bucket": "migemme.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:429529338254:android:9119785e9c468e0e9954df",
+        "android_client_info": {
+          "package_name": "com.mallup.migemme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "429529338254-1sgli9olm2416u12cgaapjnnh1p98sid.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXhmQgffDUSJhE0E_S6a_EKB3Ylq0hKW4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "429529338254-1sgli9olm2416u12cgaapjnnh1p98sid.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
