@@ -364,24 +364,24 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 
     private void updateContent(Context context, String content) {
         LogUtil.d(TAG, "updateContent content : " + content);
-        String logText = "" + Utils.logStringCache;
-
-        if (!logText.equals("")) {
-            logText += "\n";
-        }
-
-        SimpleDateFormat sDateFormat = new SimpleDateFormat("HH-mm-ss");
-        logText += sDateFormat.format(new Date()) + ": ";
-        logText += content;
-
-        Utils.logStringCache = logText;
-
-        LogUtil.d(TAG, " (updateContent) : 8");
-        LogUtil.e(TAG, " (updateContent) : " + logText);
-        Intent intent = new Intent();
-        intent.setClass(context.getApplicationContext(), MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.getApplicationContext().startActivity(intent);
+//        String logText = "" + Utils.logStringCache;
+//
+//        if (!logText.equals("")) {
+//            logText += "\n";
+//        }
+//
+//        SimpleDateFormat sDateFormat = new SimpleDateFormat("HH-mm-ss");
+//        logText += sDateFormat.format(new Date()) + ": ";
+//        logText += content;
+//
+//        Utils.logStringCache = logText;
+//
+//        LogUtil.d(TAG, " (updateContent) : 8");
+//        LogUtil.e(TAG, " (updateContent) : " + logText);
+//        Intent intent = new Intent();
+//        intent.setClass(context.getApplicationContext(), MainActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        context.getApplicationContext().startActivity(intent);
     }
 
     private void sendNotification(Context context, String message)
