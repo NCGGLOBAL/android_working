@@ -170,7 +170,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 
             // Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
 //            updateContent(context, messageString);
-            sendNotification(context, message);
+//            sendNotification(context, message);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -255,7 +255,11 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
         }
 
         // Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
-        updateContent(context, notifyString);
+//        updateContent(context, notifyString);
+        Intent intent = new Intent();
+        intent.setClass(context.getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.getApplicationContext().startActivity(intent);
     }
 
     /**
