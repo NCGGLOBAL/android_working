@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "585561486445",
+    "project_id": "ownerspay",
+    "storage_bucket": "ownerspay.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585561486445:android:d4ed27c978c83267fcfb64",
+        "android_client_info": {
+          "package_name": "com.mallup.ownerspay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "585561486445-td176ld2d575nudpu9k5hre0ooc5vnob.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFmcuBSqLIAbjCGNXOy3DwrcHJlrwVk_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "585561486445-td176ld2d575nudpu9k5hre0ooc5vnob.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
