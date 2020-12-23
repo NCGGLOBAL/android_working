@@ -17,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -61,7 +62,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
  * 云推送Demo主Activity。
@@ -93,6 +96,8 @@ public class MainActivity extends Activity implements
     private WebView wv;
     private String mCallback;
     private String mGetUserinfo = "";
+
+    private String mLandingUrl = "";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,8 +163,17 @@ public class MainActivity extends Activity implements
         HNApplication.mWechatApi = WXAPIFactory.createWXAPI(this, HNApplication.APP_ID, true);
         HNApplication.mWechatApi.registerApp(HNApplication.APP_ID);
 
+        mLandingUrl = getIntent().getStringExtra("url");
+
         // WebView 초기화
         initWebView();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        mLandingUrl = intent.getStringExtra("url");
+        Log.e(TAG, "onNewIntent mLandingUrl : " + mLandingUrl);
+        loadUrl();
     }
 
     // 删除tag操作
@@ -517,7 +531,19 @@ public class MainActivity extends Activity implements
         this.wv.getSettings().setAppCacheEnabled(true);
         this.wv.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
         this.wv.addJavascriptInterface(new AndroidBridge(), "android");
-        this.wv.loadUrl(HNApplication.URL);
+//        this.wv.loadUrl(HNApplication.URL);
+        loadUrl();
+    }
+
+    private void loadUrl() {
+        Map<String, String> extraHeaders = new HashMap<>();
+        extraHeaders.put("webview-type", "main");
+        if (!TextUtils.isEmpty(mLandingUrl)) {
+            wv.loadUrl(mLandingUrl, extraHeaders);
+            mLandingUrl = "";
+        } else {
+            wv.loadUrl(HNApplication.URL, extraHeaders);
+        }
     }
 
     public class HNWebViewClient extends WebViewClient {
