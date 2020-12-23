@@ -1,9 +1,13 @@
 package com.creator.labangtv;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -29,6 +33,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.creator.labangtv.common.HNApplication;
 import com.creator.labangtv.helpers.Constants;
@@ -36,6 +41,7 @@ import com.creator.labangtv.models.Image;
 import com.creator.labangtv.util.BitmapUtil;
 import com.creator.labangtv.util.EtcUtil;
 import com.creator.labangtv.util.LogUtil;
+import com.creator.labangtv.util.NicePayUtility;
 import com.creator.labangtv.util.RealPathUtil;
 import com.kakao.auth.Session;
 import com.ksyun.media.streamer.capture.CameraCapture;
@@ -49,6 +55,9 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -380,6 +389,98 @@ public class CameraActivity extends Activity {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Uri uri = Uri.parse(url);
 
+            Intent intent = null;
+
+            if (url.startsWith("sms:") || url.startsWith("smsto:")) {
+                Intent i = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
+                startActivity(i);
+                return true;
+            } else if (url.startsWith("tel:")) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    int permissionResult = checkSelfPermission(Manifest.permission.CALL_PHONE);
+
+                    if (permissionResult == PackageManager.PERMISSION_DENIED) {
+                        if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(CameraActivity.this);
+                            dialog.setTitle("권한이 필요합니다.")
+                                    .setMessage("이 기능을 사용하기 위해서는 단말기의 \"전화걸기\" 권한이 필요합니다. 계속 하시겠습니까?")
+                                    .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                // CALL_PHONE 권한을 Android OS에 요청한다.
+                                                requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 1000);
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Toast.makeText(CameraActivity.this, "기능을 취소했습니다", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).create().show();
+                        }
+                    } else {
+                        intent = new Intent(Intent.ACTION_CALL, Uri.parse(url));
+                        startActivity(intent);
+                    }
+                } else {
+                    intent = new Intent(Intent.ACTION_CALL, Uri.parse(url));
+                    startActivity(intent);
+                }
+                return true;
+            } else if (url.startsWith("mailto:")) {
+                intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
+                startActivity(intent);
+                return true;
+            } else if (url != null && url.startsWith("intent://")) {
+                try {
+                    intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+                    Intent existPackage = getPackageManager().getLaunchIntentForPackage(intent.getPackage());
+                    if (existPackage != null) {
+                        startActivity(intent);
+                    } else {
+                        Intent marketIntent = new Intent(Intent.ACTION_VIEW);
+                        marketIntent.setData(Uri.parse("market://details?id=" + intent.getPackage()));
+                        startActivity(marketIntent);
+                    }
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (url != null && url.startsWith("market://")) {
+                try {
+                    intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+                    if (intent != null) {
+                        startActivity(intent);
+                    }
+                    return true;
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            } else if (url.startsWith(INTENT_PROTOCOL_START)) {
+                final int customUrlStartIndex = INTENT_PROTOCOL_START.length();
+                final int customUrlEndIndex = url.indexOf(INTENT_PROTOCOL_INTENT);
+                if (customUrlEndIndex < 0) {
+                    return false;
+                } else {
+                    final String customUrl = url.substring(customUrlStartIndex, customUrlEndIndex);
+                    try {
+                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(customUrl));
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getBaseContext().startActivity(i);
+                    } catch (ActivityNotFoundException e) {
+                        final int packageStartIndex = customUrlEndIndex + INTENT_PROTOCOL_INTENT.length();
+                        final int packageEndIndex = url.indexOf(INTENT_PROTOCOL_END);
+
+                        final String packageName = url.substring(packageStartIndex, packageEndIndex < 0 ? url.length() : packageEndIndex);
+                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(GOOGLE_PLAY_STORE_PREFIX + packageName));
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getBaseContext().startActivity(i);
+                    }
+                    return true;
+                }
+            }
             return false;       // webview replace
         }
 
