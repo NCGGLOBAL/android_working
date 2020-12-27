@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.provider.MediaStore.Audio;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -576,7 +577,9 @@ public class MainActivity extends Activity implements
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            LogUtil.e("shouldOverrideUrlLoading : " + url);
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, "shouldOverrideUrlLoading : " + url);
+            }
             if (url != null && url.startsWith("intent://")) {
                 try {
                     Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);

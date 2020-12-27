@@ -239,14 +239,15 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
         LogUtil.d(TAG, " (onNotificationClicked) : 4");
         LogUtil.e(TAG, " (onNotificationClicked) : " + notifyString);
 
+        String landingUrl = "";
         // 自定义内容获取方式，mykey和myvalue对应通知推送时自定义内容中设置的键和值
         if (!TextUtils.isEmpty(customContentString)) {
             JSONObject customJson = null;
             try {
                 customJson = new JSONObject(customContentString);
-                String myvalue = null;
-                if (!customJson.isNull("mykey")) {
-                    myvalue = customJson.getString("mykey");
+//                String myvalue = null;
+                if (!customJson.isNull("url")) {
+                    landingUrl = customJson.getString("url");
                 }
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
@@ -259,7 +260,7 @@ public class MyPushMessageReceiver extends PushMessageReceiver {
 //        customContentString = "https://www.google.com";
         Intent intent = new Intent();
         intent.setClass(context.getApplicationContext(), MainActivity.class);
-        intent.putExtra("url", customContentString);
+        intent.putExtra("url", landingUrl);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.getApplicationContext().startActivity(intent);
     }
