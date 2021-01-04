@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "741191802305",
+    "project_id": "nicecaddy-23cd4",
+    "storage_bucket": "nicecaddy-23cd4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:741191802305:android:4ccc3f201a5398d5f52340",
+        "android_client_info": {
+          "package_name": "com.mallup.nicecaddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "741191802305-3g11e78b6kd5bi294b95hks7fd8defc4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmtElPsG2MDMvdQdOYiDsruj_yYHDA2L4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "741191802305-3g11e78b6kd5bi294b95hks7fd8defc4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
