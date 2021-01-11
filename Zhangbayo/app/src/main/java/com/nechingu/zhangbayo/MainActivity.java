@@ -63,14 +63,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
-import com.kakao.auth.AuthType;
-import com.kakao.auth.ISessionCallback;
-import com.kakao.auth.Session;
-import com.kakao.network.ErrorResult;
-import com.kakao.usermgmt.UserManagement;
-import com.kakao.usermgmt.callback.MeV2ResponseCallback;
-import com.kakao.usermgmt.response.MeV2Response;
-import com.kakao.util.exception.KakaoException;
 import com.nechingu.zhangbayo.common.BackPressCloseHandler;
 import com.nechingu.zhangbayo.common.HNApplication;
 import com.nechingu.zhangbayo.delegator.HNCommTran;
@@ -867,17 +859,6 @@ public class MainActivity extends AppCompatActivity {
                         if(actionParamObj.getString("snsType").equals("1")) {
                             // 네이버 로그인
                             callNaverLogin();
-                        } else if(actionParamObj.getString("snsType").equals("2")) {
-                            // 카카오톡 로그인
-                            Session session = Session.getCurrentSession();
-                            session.addCallback(new SessionCallback());
-                            session.open(AuthType.KAKAO_LOGIN_ALL, MainActivity.this);
-//                            if (session.checkAndImplicitOpen()) {
-//                                // 액세스토큰 유효하거나 리프레시 토큰으로 액세스 토큰 갱신을 시도할 수 있는 경우
-//                            } else {
-//                                // 무조건 재로그인을 시켜야 하는 경우
-//                            }
-
                         } else if(actionParamObj.getString("snsType").equals("3")) {
                             // 페이스북 로그인
                             if (AccessToken.isCurrentAccessTokenActive()) {
@@ -1003,9 +984,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("SeongKwon", "requestCode = " + requestCode);
         Log.d("SeongKwon", "resultCode = " + resultCode);
         Log.d("SeongKwon", "============================================");
-        if(Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-            return;
-        } else if ((requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) && resultCode == RESULT_OK) {
+        if ((requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) && resultCode == RESULT_OK) {
             String result = "";
             try {
                 JSONObject jObj = new JSONObject();
@@ -1831,63 +1810,6 @@ public class MainActivity extends AppCompatActivity {
                 default:
                     break;
             }
-        }
-    }
-
-    // 카카오톡 로그인
-    private class SessionCallback implements ISessionCallback {
-        // 로그인에 성공한 상태
-        @Override
-        public void onSessionOpened() {
-            try {
-                requestMe();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        // 로그인에 실패한 상태
-        @Override
-        public void onSessionOpenFailed(KakaoException exception) {
-            Log.e("SessionCallback :: ", "onSessionOpenFailed : " + exception.getMessage());
-        }
-
-        // 사용자 정보 요청
-        private void requestMe() {
-            // 사용자정보 요청 결과에 대한 Callback
-            UserManagement.getInstance().me(new MeV2ResponseCallback() {
-                @Override
-                public void onSessionClosed(ErrorResult errorResult) {
-                    Log.d("SeongKwon", "SessionCallback :: onSessionClosed : " + errorResult.getErrorMessage());
-                }
-
-                @Override
-                public void onSuccess(MeV2Response result) {
-                    Log.d("SeongKwon", "SessionCallback :: onSuccess");
-                    try {
-                        String email = result.getKakaoAccount().getEmail();
-                        String nickname = result.getNickname();
-                        String profileImagePath = result.getProfileImagePath();
-                        String thumnailPath = result.getThumbnailImagePath();
-                        long id = result.getId();
-
-                        JSONObject jsonAccount = new JSONObject();
-                        jsonAccount.put("email", email);
-                        jsonAccount.put("nickname", nickname);
-                        jsonAccount.put("profileImagePath", profileImagePath);
-                        jsonAccount.put("thumnailPath", thumnailPath);
-                        jsonAccount.put("id", id);
-                        Log.e("SeongKwon", "jsonAccount : " + jsonAccount.toString());
-
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("accessToken", Session.getCurrentSession().getAccessToken());      // getAccessToken
-                        jsonObject.put("userInfo", jsonAccount);      // 사용자정보
-                        executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
         }
     }
 

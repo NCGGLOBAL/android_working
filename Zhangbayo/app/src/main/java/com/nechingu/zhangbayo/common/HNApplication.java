@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.kakao.auth.KakaoSDK;
 import com.nechingu.zhangbayo.MyNotificationManager;
 
 import java.net.CookieManager;
@@ -62,8 +61,6 @@ public class HNApplication extends Application {
         mInstance = this;
 
         MyNotificationManager.createChannel(this);
-
-        KakaoSDK.init(new KakaoSDKAdapter());
     }
 
     public static synchronized HNApplication getInstance() {
