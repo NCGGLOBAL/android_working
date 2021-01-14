@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "281907061297",
+    "project_id": "hkcmall",
+    "storage_bucket": "hkcmall.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:281907061297:android:e29314b177f7ba4bffab10",
+        "android_client_info": {
+          "package_name": "com.mallup.hkcmall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "281907061297-8m0svl6osdtbmpdavcnlt9m7hfn90qjq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtIVGpTR5MaNrb3zGpsyqwKUjriDsmhk4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "281907061297-8m0svl6osdtbmpdavcnlt9m7hfn90qjq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
