@@ -105,6 +105,15 @@ public class MainActivity extends Activity implements
 //        Utils.logStringCache = Utils.getLogText(getApplicationContext());
 
         setContentView(R.layout.activity_main);
+        // main
+        if (HNSharedPreference.getSharedPreference(this, "deviceId").equals("")) {
+            HNApplication.mDeviceId = EtcUtil.getRandomKey(16);
+
+            HNSharedPreference.putSharedPreference(this, "deviceId", HNApplication.mDeviceId);
+        } else {
+            HNApplication.mDeviceId = HNSharedPreference.getSharedPreference(this, "deviceId");
+        }
+        Log.e(TAG, "HNApplication.mDeviceId : " + HNApplication.mDeviceId);
         // 启动百度push
         checkStoragePerms(REQ_CODE_INIT_APIKEY);
 
@@ -146,15 +155,6 @@ public class MainActivity extends Activity implements
         // 推送高级设置，通知栏样式设置为下面的ID，ID应与server下发字段notification_builder_id值保持一致
         PushManager.setNotificationBuilder(this, 1, cBuilder);
 
-        // main
-        if (HNSharedPreference.getSharedPreference(this, "deviceId").equals("")) {
-            HNApplication.mDeviceId = EtcUtil.getRandomKey(16);
-
-            HNSharedPreference.putSharedPreference(this, "deviceId", HNApplication.mDeviceId);
-        } else {
-            HNApplication.mDeviceId = HNSharedPreference.getSharedPreference(this, "deviceId");
-        }
-        Log.e(TAG, "HNApplication.mDeviceId : " + HNApplication.mDeviceId);
         // Back Handler
         mBackPressCloseHandler = new BackPressCloseHandler(this);
         HNApplication.mIsFirstLoading = true;
