@@ -38,6 +38,7 @@
         <!-- ilikelux://pay? -->
         <activity
             android:name="com.mallup.mungemarket.MainActivity"
+            android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

@@ -30,7 +30,7 @@ public class QRCodeActivity extends CaptureActivity {
                     Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(this, WebViewActivity.class);
+                    Intent intent = new Intent(this, MainActivity.class);
                     intent.putExtra("webviewUrl", result.getContents());
                     startActivity(intent);
                 }
