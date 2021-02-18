@@ -23,7 +23,7 @@ public class HNApplication extends Application {
     public static boolean mSigned = false;
     public static String URL = "http://mungemarket.co.kr/m";
     public static String PUSH_URL = URL + "/app/pushRegister.asp";
-    public static String UPLOAD_URL = URL + "/app/";
+    public static String UPLOAD_URL = "https://mungemarket.co.kr/m/app/default.asp";
     public static boolean mIsFirstLoading = false;
     private static HNApplication mInstance;
     public static String mDeviceId = "";
