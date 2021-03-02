@@ -544,23 +544,11 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
                 selectedImages.set(images.get(i).sequence - 1, images.get(i));
 
                 // Image 저장
-                if(BitmapUtil.saveImage(this,
+                JSONObject jObjItem = BitmapUtil.saveImage(this,
                         images.get(i).path,
                         images.get(i).name,
-                        String.valueOf(images.get(i).sequence))) {
-
-                    try {
-                        // ACT1011 CALLBACK
-                        JSONObject jObjItem = new JSONObject();
-                        jObjItem.put("imgUrl", "");
-                        jObjItem.put("fileName", images.get(i).name);
-                        jObjItem.put("utype", 1);   // utype =  0: 기존이미지, 1: 신규, 2: 수정
-                        jObjItem.put("sort", images.get(i).sequence);    // 마지막에 추가
-                        mImgArr.put(jObjItem);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                        String.valueOf(images.get(i).sequence));
+                mImgArr.put(jObjItem);
             }
         }
 

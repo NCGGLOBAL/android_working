@@ -18,6 +18,8 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.mallup.mungemarket.delegator.HNSharedPreference;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -151,8 +153,9 @@ public class BitmapUtil extends BitmapTransformation {
         }
     }
 
-    public static boolean saveImage(Context context, String preFilePath, String fileName, String sequence) {
+    public static JSONObject saveImage(Context context, String preFilePath, String fileName, String sequence) {
         try {
+            JSONObject jObjItem = new JSONObject();
             Log.e("SeongKwon", "BitmapUtil saveImage@@@@@@@@@@@@ " + preFilePath);
             Log.e("SeongKwon", "BitmapUtil saveImage@@@@@@@@@@@@ " + fileName);
             Log.e("SeongKwon", "BitmapUtil saveImage@@@@@@@@@@@@ " + GetExifOrientation(preFilePath));
@@ -190,11 +193,19 @@ public class BitmapUtil extends BitmapTransformation {
             savedImage += fileName + "&" + sequence + ",";
 
             HNSharedPreference.putSharedPreference(context, "savedImage", savedImage);
+
+            // ACT1011 CALLBACK
+            jObjItem = new JSONObject();
+            jObjItem.put("imgUrl", "");
+            jObjItem.put("fileName", fileName);
+            jObjItem.put("utype", 1);   // utype =  0: 기존이미지, 1: 신규, 2: 수정
+            jObjItem.put("sort", sequence);    // 마지막에 추가
+
+            return jObjItem;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
-        return true;
     }
 
     public static boolean saveRotate(Context context, String preFilePath, String fileName) {

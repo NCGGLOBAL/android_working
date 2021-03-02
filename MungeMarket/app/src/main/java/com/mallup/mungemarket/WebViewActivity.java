@@ -44,14 +44,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.kakao.auth.AuthType;
@@ -159,8 +151,6 @@ public class WebViewActivity extends Activity {
     private static final int SEND_FACEBOOK_MESSAGE = 2;
 
     private static OAuthLogin mOAuthLoginModule;
-
-    private CallbackManager callbackManager;
 
     private List<String> permissionNeeds = Arrays.asList("public_profile", "email");
     private Button btnNaverLogin;
@@ -801,17 +791,6 @@ public class WebViewActivity extends Activity {
 
                         } else if(actionParamObj.getString("snsType").equals("3")) {
                             // 페이스북 로그인
-                            if (AccessToken.isCurrentAccessTokenActive()) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject();
-                                    jsonObject.put("accessToken", AccessToken.getCurrentAccessToken());      // getAccessToken
-                                    executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                initFacebookLogin();
-                            }
                         }
                     }
                 }
@@ -1776,91 +1755,5 @@ public class WebViewActivity extends Activity {
                 }
             });
         }
-    }
-
-    // 페이스북 로그인
-    private void initFacebookLogin() {
-        LoginManager.getInstance().logInWithReadPermissions(WebViewActivity.this, permissionNeeds);
-
-        callbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d("SeongKwon", "onSuccess - getAccessToken : " + loginResult.getAccessToken().getToken());
-                Log.d("SeongKwon", "onSuccess - getUserId : " + loginResult.getAccessToken().getUserId());
-                Log.d("SeongKwon", "onSuccess - getExpires : " + loginResult.getAccessToken().getExpires());
-                Log.d("SeongKwon", "onSuccess - getLastRefresh : " + loginResult.getAccessToken().getLastRefresh());
-
-                // getFbInfo();
-                try {
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("accessToken", loginResult.getAccessToken().getToken());      // getAccessToken
-                    executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d("SeongKwon", "onCancel");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.d("SeongKwon", "onError : " + error.getLocalizedMessage());
-            }
-        });
-    }
-
-    private void getFbInfo() {
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        Log.d("SeongKwon", "====================================0");
-        Log.d("SeongKwon", "onSuccess - getToken : " + accessToken.getToken());
-        Log.d("SeongKwon", "onSuccess - getUserId : " + accessToken.getUserId());
-        Log.d("SeongKwon", "onSuccess - isExpired : " + accessToken.isExpired());
-        Log.d("SeongKwon", "onSuccess - getExpires : " + accessToken.getExpires());
-        Log.d("SeongKwon", "onSuccess - getLastRefresh : " + accessToken.getLastRefresh());
-        Log.d("SeongKwon", "====================================1");
-
-        mFacebookMessage = "Token = " + accessToken.getToken() + "\n";
-        mFacebookMessage += "UserId = " + accessToken.getUserId() + "\n";
-        mFacebookMessage += "Expires = " + accessToken.getExpires() + "\n";
-        mFacebookMessage += "LastRefresh = " + accessToken.getLastRefresh() + "\n";
-
-        GraphRequest request = GraphRequest.newMeRequest(
-                AccessToken.getCurrentAccessToken(),
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        try {
-                            Log.d("SeongKwon", "fb json object: " + object);
-                            Log.d("SeongKwon", "fb graph response: " + response);
-
-                            mFacebookMessage += "fb_json_object = " + object + "\n";
-
-                            runOnUiThread(new Runnable(){
-                                @Override
-                                public void run() {
-                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-                                    alertDialogBuilder.setTitle("알림");
-                                    alertDialogBuilder.setMessage(mFacebookMessage)
-                                            .setPositiveButton("확인" , new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {}
-                                            })
-                                            .setCancelable(false)
-                                            .create().show();
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,first_name,last_name,email,gender,birthday"); // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-        request.setParameters(parameters);
-        request.executeAsync();
     }
 }

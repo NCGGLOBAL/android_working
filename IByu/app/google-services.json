@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "713632394772",
+    "project_id": "ibyu-d3587",
+    "storage_bucket": "ibyu-d3587.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:713632394772:android:3ad7fa52eeee9906214101",
+        "android_client_info": {
+          "package_name": "com.mallup.ibyu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "713632394772-th9u2plfmup84ukc54e81anbsp62mj73.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBY7GWJbSXGiNZFWtr6eLuW6qyPXx0yozY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "713632394772-th9u2plfmup84ukc54e81anbsp62mj73.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
