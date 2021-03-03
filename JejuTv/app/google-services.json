@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "514053398961",
+    "project_id": "jejutv-8d082",
+    "storage_bucket": "jejutv-8d082.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514053398961:android:ebc483993fbb022fac1d90",
+        "android_client_info": {
+          "package_name": "com.creator.jejutv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "514053398961-msufemenvhu24tdjhcu828c19bi71fh7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFZJ727EzNn7KiQlF9tBVcsVlCeNPpSJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "514053398961-msufemenvhu24tdjhcu828c19bi71fh7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
