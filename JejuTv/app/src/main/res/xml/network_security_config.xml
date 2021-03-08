@@ -5,6 +5,7 @@
     <domain-config cleartextTrafficPermitted="true">
 
         <domain includeSubdomains="true">jejutv.co.kr</domain>
+        <domain includeSubdomains="true">chat.wavayo.com</domain>
 
     </domain-config>
 
