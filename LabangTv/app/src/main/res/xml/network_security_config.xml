@@ -3,6 +3,7 @@
 <network-security-config>
 
     <domain-config cleartextTrafficPermitted="true">
+
         <domain includeSubdomains="true">labang.tv</domain>
         <domain includeSubdomains="true">chat.mallup.co.kr</domain>
         <domain includeSubdomains="true">livedemo.mallup.co.kr</domain>
