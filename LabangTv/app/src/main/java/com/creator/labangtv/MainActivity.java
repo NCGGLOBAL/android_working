@@ -695,10 +695,10 @@ public class MainActivity extends AppCompatActivity {
             return false;       // webview replace
         }
 
-        @Override
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-            handler.proceed();
-        }
+//        @Override
+//        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+//            handler.proceed();
+//        }
     }
 
     private class WebAppInterface {
