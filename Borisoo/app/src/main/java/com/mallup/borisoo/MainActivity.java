@@ -1589,7 +1589,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 try {
-                    result = UploadUtil.upload(mContext, "http://laos.mallshopping.co.kr/m/app/", mSelectedImages, param);
+                    result = UploadUtil.upload(MainActivity.this, HNApplication.UPLOAD_URL, mSelectedImages, param);
 
                 } catch (Exception e) {
                     e.printStackTrace();
