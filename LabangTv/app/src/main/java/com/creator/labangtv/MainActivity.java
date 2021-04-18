@@ -1863,6 +1863,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onSessionOpenFailed(KakaoException exception) {
             Log.e("SessionCallback :: ", "onSessionOpenFailed : " + exception.getMessage());
+            Toast.makeText(MainActivity.this, "로그인 실패 원인 : " + exception.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         // 사용자 정보 요청
@@ -1872,11 +1873,13 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSessionClosed(ErrorResult errorResult) {
                     Log.d("SeongKwon", "SessionCallback :: onSessionClosed : " + errorResult.getErrorMessage());
+                    Toast.makeText(MainActivity.this, "로그인 실패 원인 onSessionClosed : " + errorResult.getErrorMessage(), Toast.LENGTH_LONG).show();
                 }
 
                 @Override
                 public void onSuccess(MeV2Response result) {
                     Log.d("SeongKwon", "SessionCallback :: onSuccess");
+                    Toast.makeText(MainActivity.this, "로그인 성공", Toast.LENGTH_LONG).show();
                     try {
                         String email = result.getKakaoAccount().getEmail();
                         String nickname = result.getNickname();
@@ -1897,6 +1900,7 @@ public class MainActivity extends AppCompatActivity {
                         jsonObject.put("userInfo", jsonAccount);      // 사용자정보
                         executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
                     } catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "로그인 성공했지만 파싱 실패 원인 : " + e.getMessage(), Toast.LENGTH_LONG).show();
                         e.printStackTrace();
                     }
                 }
