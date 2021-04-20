@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1094016465533",
+    "project_id": "withel",
+    "storage_bucket": "withel.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094016465533:android:4cf4cc3710a8b2faf5cf14",
+        "android_client_info": {
+          "package_name": "com.admin.withel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1094016465533-ne2c75nbt4dg6jtl36v9vkgoh40ge33r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDa7VKDcMGn2K1HJiQ3UJBYkea2kTCNjS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1094016465533-ne2c75nbt4dg6jtl36v9vkgoh40ge33r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
