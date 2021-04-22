@@ -16,8 +16,7 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        final int welcomeScreenDisplay = 1000;
-//        final int welcomeScreenDisplay = 0;
+        final int welcomeScreenDisplay = 3000;
 
         Intent intent = getIntent();
         if (intent != null) {
