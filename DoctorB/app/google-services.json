@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "745425839415",
+    "project_id": "doctorb-530b3",
+    "storage_bucket": "doctorb-530b3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745425839415:android:d97b40945592a0256ca6b2",
+        "android_client_info": {
+          "package_name": "com.mallup.doctorb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "745425839415-21lojg9igj5qg3d9795uj620sds5cht3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHw--ph96SMi9uszWzzEu7jVyoQiKgqgI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "745425839415-21lojg9igj5qg3d9795uj620sds5cht3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
