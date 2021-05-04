@@ -720,11 +720,6 @@ public class MainActivity extends AppCompatActivity {
             view.loadUrl(url);
             return false;       // webview replace
         }
-
-//        @Override
-//        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-//            handler.proceed();
-//        }
     }
 
     private class WebAppInterface {

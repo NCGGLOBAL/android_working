@@ -483,11 +483,6 @@ public class CameraActivity extends Activity {
             }
             return false;       // webview replace
         }
-
-        @Override
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-            handler.proceed();
-        }
     }
 
     private class WebAppInterface {
