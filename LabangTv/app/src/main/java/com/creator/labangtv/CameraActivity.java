@@ -227,7 +227,8 @@ public class CameraActivity extends Activity {
 // 设置推流帧率，当预览帧率大于推流帧率时，编码模块会自动丢帧以适应设定的推流帧率
         mStreamer.setTargetFps(15);
 // 设置视频码率，分别为初始平均码率、最高平均码率、最低平均码率，单位为kbps，另有setVideoBitrate接口，单位为bps
-        mStreamer.setVideoKBitrate(600, 800, 400);
+//        mStreamer.setVideoKBitrate(600, 800, 400);
+        mStreamer.setVideoKBitrate(2048, 2160, 2000);
 // 设置音频采样率
         mStreamer.setAudioSampleRate(44100);
 // 设置音频码率，单位为kbps，另有setAudioBitrate接口，单位为bps
