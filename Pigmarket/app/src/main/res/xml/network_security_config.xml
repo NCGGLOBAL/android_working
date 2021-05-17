@@ -4,8 +4,7 @@
 
     <domain-config cleartextTrafficPermitted="true">
 
-        <domain includeSubdomains="true">modookot.co.kr</domain>
-        <domain includeSubdomains="true">modookot.co.kr/addon/m_mallinmall</domain>
+        <domain includeSubdomains="true">pigmarket.co.kr</domain>
 
     </domain-config>
 
