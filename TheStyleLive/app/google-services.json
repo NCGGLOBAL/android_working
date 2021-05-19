@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "728383807854",
+    "project_id": "thestylelive-69cf4",
+    "storage_bucket": "thestylelive-69cf4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:728383807854:android:e23812495175acd6cbe17f",
+        "android_client_info": {
+          "package_name": "com.creator.thestylelive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "728383807854-efe030n74t85pc0e9juissten4b7piv7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUz2PK5vJkS24p4UQ7-fUlqZo0_ke48Cw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "728383807854-efe030n74t85pc0e9juissten4b7piv7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
