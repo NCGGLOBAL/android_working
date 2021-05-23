@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 //            Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
-//            Manifest.permission.CALL_PHONE
+            Manifest.permission.CALL_PHONE,
             Manifest.permission.GET_ACCOUNTS
     };
 
@@ -874,6 +874,14 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }
+                } else if ("ACT1022".equals(actionCode)) {
+                    if(actionParamObj.has("tel")) {
+                        String tel = actionParamObj.getString("tel");
+                        if (tel != null && TextUtils.isEmpty(tel)) {
+                            intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + tel));
+                            startActivity(intent);
+                        }
+                    }
                 } else if ("ACT1026".equals(actionCode)) {
                     // 위치 정보 조회
                     LogUtil.d("ACT1026 - 위치 정보 조회");
@@ -1274,7 +1282,7 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 + ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
 //                + ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-//                + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
                 + ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
                 + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -1282,7 +1290,7 @@ public class MainActivity extends AppCompatActivity {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
 //                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
-//                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.GET_ACCOUNTS)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
@@ -1299,7 +1307,7 @@ public class MainActivity extends AppCompatActivity {
                                                     Manifest.permission.READ_EXTERNAL_STORAGE,
                                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
 //                                                    Manifest.permission.CAMERA,
-//                                                    Manifest.permission.CALL_PHONE,
+                                                    Manifest.permission.CALL_PHONE,
                                                     Manifest.permission.GET_ACCOUNTS,
                                                     Manifest.permission.ACCESS_FINE_LOCATION,
                                                     Manifest.permission.ACCESS_COARSE_LOCATION
@@ -1315,7 +1323,7 @@ public class MainActivity extends AppCompatActivity {
                                     Manifest.permission.READ_EXTERNAL_STORAGE,
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
 //                                    Manifest.permission.CAMERA,
-//                                    Manifest.permission.CALL_PHONE,
+                                    Manifest.permission.CALL_PHONE,
                                     Manifest.permission.GET_ACCOUNTS,
                                     Manifest.permission.ACCESS_FINE_LOCATION,
                                     Manifest.permission.ACCESS_COARSE_LOCATION
@@ -1371,7 +1379,7 @@ public class MainActivity extends AppCompatActivity {
                                                             Manifest.permission.READ_EXTERNAL_STORAGE,
                                                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
 //                                                            Manifest.permission.CAMERA,
-//                                                            Manifest.permission.CALL_PHONE,
+                                                            Manifest.permission.CALL_PHONE,
                                                             Manifest.permission.GET_ACCOUNTS,
                                                             Manifest.permission.ACCESS_FINE_LOCATION,
                                                             Manifest.permission.ACCESS_COARSE_LOCATION
