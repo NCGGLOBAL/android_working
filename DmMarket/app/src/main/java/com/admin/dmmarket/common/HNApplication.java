@@ -21,8 +21,8 @@ public class HNApplication extends Application {
     private RequestQueue mRequestQueue;
 
     public static boolean mSigned = false;
-    public static String URL = "http://dmmarket.mallup.co.kr";
-    public static String PUSH_URL = "http://dmmarket.mallup.co.kr/m/app/pushRegister.asp";
+    public static String URL = "https://marketdm.co.kr/m";
+    public static String PUSH_URL = URL + "/app/pushRegister.asp";
     public static boolean mIsFirstLoading = false;
     private static HNApplication mInstance;
     public static String mDeviceId = "";
