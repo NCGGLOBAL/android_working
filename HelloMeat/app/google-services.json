@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "489688372279",
+    "project_id": "hellomeat-cab0a",
+    "storage_bucket": "hellomeat-cab0a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489688372279:android:5d63dc7a0d68558b87dbb2",
+        "android_client_info": {
+          "package_name": "com.mallup.hellomeat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "489688372279-tqkv8vll00laamma6rr4c4vo0j7vdkp6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGmdXbWBVPeQwBJQ1t58Fcy2X6e2ba2FM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "489688372279-tqkv8vll00laamma6rr4c4vo0j7vdkp6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
