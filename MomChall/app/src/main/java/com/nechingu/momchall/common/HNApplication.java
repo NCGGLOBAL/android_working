@@ -10,8 +10,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.igaworks.IgawCommon;
-import com.igaworks.v2.core.application.AbxActivityHelper;
-import com.igaworks.v2.core.application.AbxActivityLifecycleCallbacks;
 import com.kakao.auth.KakaoSDK;
 import com.nechingu.momchall.MyNotificationManager;
 import com.nechingu.momchall.R;
@@ -72,10 +70,10 @@ public class HNApplication extends Application {
         MyNotificationManager.createChannel(this);
         KakaoSDK.init(new KakaoSDKAdapter());
 
-        AbxActivityHelper.initializeSdk(HNApplication.this, getApplicationContext().getString(R.string.adbrix_remaster_app_key), getApplicationContext().getString(R.string.adbbix_remaster_secret_key));
-        if (Build.VERSION.SDK_INT >= 14) {
-            registerActivityLifecycleCallbacks(new AbxActivityLifecycleCallbacks());
-        }
+//        AbxActivityHelper.initializeSdk(HNApplication.this, getApplicationContext().getString(R.string.adbrix_remaster_app_key), getApplicationContext().getString(R.string.adbbix_remaster_secret_key));
+//        if (Build.VERSION.SDK_INT >= 14) {
+//            registerActivityLifecycleCallbacks(new AbxActivityLifecycleCallbacks());
+//        }
     }
 
     public static synchronized HNApplication getInstance() {

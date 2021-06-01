@@ -66,7 +66,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.igaworks.IgawCommon;
 import com.igaworks.adbrix.IgawAdbrix;
-import com.igaworks.v2.core.AdBrixRm;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
@@ -991,22 +990,22 @@ public class MainActivity extends AppCompatActivity {
         @JavascriptInterface
         public void purchase(String orderId, String productId, String productName, double price, int quantity, String currencyCode, String category){
 
-            try {
-                ArrayList productModelArrayList = new ArrayList<>();
-
-                AdBrixRm.CommerceProductModel productModel =
-                        new AdBrixRm.CommerceProductModel().setProductID(productId)
-                                .setProductName(productName)
-                                .setCategory(new AdBrixRm.CommerceCategoriesModel().setCategory(category))
-                                .setPrice(price)
-                                .setQuantity(quantity)
-                                .setCurrency(AdBrixRm.Currency.getCurrencyByCurrencyCode(currencyCode));
-
-                productModelArrayList.add(productModel);
-                AdBrixRm.Common.purchase(orderId, productModelArrayList, 0.00, 0.00, AdBrixRm.CommercePaymentMethod.CreditCard);
-
-            }catch (Exception e){
-            }
+//            try {
+//                ArrayList productModelArrayList = new ArrayList<>();
+//
+//                AdBrixRm.CommerceProductModel productModel =
+//                        new AdBrixRm.CommerceProductModel().setProductID(productId)
+//                                .setProductName(productName)
+//                                .setCategory(new AdBrixRm.CommerceCategoriesModel().setCategory(category))
+//                                .setPrice(price)
+//                                .setQuantity(quantity)
+//                                .setCurrency(AdBrixRm.Currency.getCurrencyByCurrencyCode(currencyCode));
+//
+//                productModelArrayList.add(productModel);
+//                AdBrixRm.Common.purchase(orderId, productModelArrayList, 0.00, 0.00, AdBrixRm.CommercePaymentMethod.CreditCard);
+//
+//            }catch (Exception e){
+//            }
         }
 
         @JavascriptInterface

@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MomChall.iml" filepath="$PROJECT_DIR$/MomChall.iml" group="MomChall" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MomChall-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MomChall-app.iml" group="MomChall/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/liveVideoBroadcasterSDK/MomChall-liveVideoBroadcasterSDK.iml" filepath="$PROJECT_DIR$/.idea/modules/liveVideoBroadcasterSDK/MomChall-liveVideoBroadcasterSDK.iml" group="MomChall/liveVideoBroadcasterSDK" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/NCGGlobal-MomChall.iml" filepath="$PROJECT_DIR$/.idea/modules/NCGGlobal-MomChall.iml" group="MomChall" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="MomChall/app" />
-      <module fileurl="file://$PROJECT_DIR$/liveVideoBroadcasterSDK/liveVideoBroadcasterSDK.iml" filepath="$PROJECT_DIR$/liveVideoBroadcasterSDK/liveVideoBroadcasterSDK.iml" group="MomChall/liveVideoBroadcasterSDK" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MomChall.iml" filepath="$PROJECT_DIR$/.idea/modules/MomChall.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MomChall.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MomChall.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/liveVideoBroadcasterSDK/MomChall.liveVideoBroadcasterSDK.iml" filepath="$PROJECT_DIR$/.idea/modules/liveVideoBroadcasterSDK/MomChall.liveVideoBroadcasterSDK.iml" />
     </modules>
   </component>
 </project>
