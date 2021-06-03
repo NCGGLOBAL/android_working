@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<network-security-config>
+
+    <domain-config cleartextTrafficPermitted="true">
+
+        <domain includeSubdomains="true">tgsmall.kr</domain>
+        <domain includeSubdomains="true">chat.mallup.co.kr</domain>
+        <domain includeSubdomains="true">livedemo.mallup.co.kr</domain>
+        <domain includeSubdomains="true">voddemo.mallup.co.kr</domain>
+        <domain includeSubdomains="true">ncg.codewiz.kr</domain>
+
+    </domain-config>
+
+</network-security-config>

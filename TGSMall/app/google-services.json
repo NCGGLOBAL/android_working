@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "80448741468",
+    "project_id": "tgsmall",
+    "storage_bucket": "tgsmall.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80448741468:android:0a9a981a6c32253ec38699",
+        "android_client_info": {
+          "package_name": "com.creator.tgsmall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "80448741468-8v998qnm82r5k7g934bnsfr4vrk1nn0m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsKnWrjIO-1CQ_wqevGtSUrnXEdUDQpkI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "80448741468-8v998qnm82r5k7g934bnsfr4vrk1nn0m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
