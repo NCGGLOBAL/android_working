@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "515949641186",
+    "project_id": "dabaltong",
+    "storage_bucket": "dabaltong.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:515949641186:android:2a65242c2e87f1ac17cdbb",
+        "android_client_info": {
+          "package_name": "com.mallup.dabaltong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "515949641186-pd0a601u7r9jgkdflo98ss8fomcs7fl4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmDlDT7IjfVfSH4BwFGRxBDzmwBSpbC6g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "515949641186-pd0a601u7r9jgkdflo98ss8fomcs7fl4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
