@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "514053398961",
-    "project_id": "jejutv-8d082",
-    "storage_bucket": "jejutv-8d082.appspot.com"
+    "project_number": "554653978532",
+    "project_id": "jejutv-ad223",
+    "storage_bucket": "jejutv-ad223.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:514053398961:android:ebc483993fbb022fac1d90",
+        "mobilesdk_app_id": "1:554653978532:android:8ae8774c7d3f500404fb31",
         "android_client_info": {
-          "package_name": "com.creator.jejutv"
+          "package_name": "com.creator.jejutvapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "514053398961-msufemenvhu24tdjhcu828c19bi71fh7.apps.googleusercontent.com",
+          "client_id": "554653978532-n8a5ulfnjt4rrrkod2muo1m2f1at7lbk.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAFZJ727EzNn7KiQlF9tBVcsVlCeNPpSJM"
+          "current_key": "AIzaSyBjiVH97z1Ag3uvRIkSWMmAiAAHHwWdxGA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "514053398961-msufemenvhu24tdjhcu828c19bi71fh7.apps.googleusercontent.com",
+              "client_id": "554653978532-n8a5ulfnjt4rrrkod2muo1m2f1at7lbk.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

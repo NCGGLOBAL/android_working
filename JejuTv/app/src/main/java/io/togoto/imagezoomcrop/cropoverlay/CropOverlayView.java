@@ -13,7 +13,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.creator.jejutv.R;
+import com.creator.jejutvapp.R;
 
 import io.togoto.imagezoomcrop.cropoverlay.edge.Edge;
 import io.togoto.imagezoomcrop.cropoverlay.utils.PaintUtil;

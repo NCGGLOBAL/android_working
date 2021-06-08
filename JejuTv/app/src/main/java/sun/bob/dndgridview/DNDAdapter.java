@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
-import com.creator.jejutv.delegator.HNSharedPreference;
+import com.creator.jejutvapp.delegator.HNSharedPreference;
 
 import java.util.ArrayList;
 import java.util.List;
