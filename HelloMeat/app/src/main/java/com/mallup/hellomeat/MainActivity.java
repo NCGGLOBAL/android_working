@@ -333,7 +333,9 @@ public class MainActivity extends AppCompatActivity {
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         mWebView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
         mWebView.addJavascriptInterface(new WebAppInterface(this, mWebView), "android");
-
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            mWebView.getSettings().setTextZoom(100);
+        }
         mWebView.setDrawingCacheEnabled(true);
         mWebView.buildDrawingCache();
 
