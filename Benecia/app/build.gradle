@@ -1,0 +1,118 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 30
+    defaultConfig {
+        applicationId "com.nechingu.benecia"
+        minSdkVersion 19
+        targetSdkVersion 30
+        versionCode 4
+        versionName "1.0.3"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
+
+        ndk.abiFilters 'armeabi-v7a','arm64-v8a','x86','x86_64'
+    }
+    dexOptions {
+        javaMaxHeapSize "Xg"
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+    }
+}
+
+dependencies {
+    implementation 'com.google.firebase:firebase-core:16.0.5'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+
+    implementation 'com.android.support:multidex:1.0.3'
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation files('libs/YouTubeAndroidPlayerApi.jar')
+
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.google.android.exoplayer:exoplayer:r2.3.1'
+
+    implementation project(path: ':liveVideoBroadcasterSDK')
+    testImplementation 'junit:junit:4.12'
+
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.edmodo:cropper:1.0.1'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+
+    implementation 'com.google.apis:google-api-services-youtube:v3-rev120-1.19.0'
+    implementation 'com.joooonho:selectableroundedimageview:1.0.1'
+    implementation 'com.android.support:cardview-v7:27.1.1'
+
+    // youtube
+    implementation 'com.google.android.gms:play-services-plus:16.0.0'
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation 'com.google.apis:google-api-services-youtube:v3-rev120-1.19.0'
+    implementation 'com.google.http-client:google-http-client-android:1.23.0'
+    implementation 'com.google.api-client:google-api-client-android:1.23.0'
+    implementation 'com.google.api-client:google-api-client-gson:1.23.0'
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.mcxiaoke.volley:library:1.0.19'
+
+    implementation 'com.github.jakob-grabner:Circle-Progress-View:v1.3'
+
+    implementation 'net.butterflytv.utils:rtmp-client:3.0.1'
+    // =============================================================================================
+    // Supports Android 4.0.3 and later (API level 15)
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0@aar'
+    implementation 'com.google.zxing:core:3.3.1'
+    // =============================================================================================
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation 'com.mcxiaoke.volley:library:1.0.19'
+    implementation 'com.android.installreferrer:installreferrer:1.0'
+
+    // 네이버로그인
+    implementation 'com.naver.nid:naveridlogin-android-sdk:4.2.0'
+    implementation 'com.android.support:support-core-utils:27.1.1'
+    implementation 'com.android.support:customtabs:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+
+    // 카카오로그인
+    implementation group: 'com.kakao.sdk', name: 'usermgmt', version: project.KAKAO_SDK_VERSION     // 카카오 로그인 sdk를 사용하기 위해 필요.
+    //implementation group: 'com.kakao.sdk', name: 'kakaolink', version: project.KAKAO_SDK_VERSION    // 카카오링크 sdk를 사용하기 위해 필요.
+    //implementation group: 'com.kakao.sdk', name: 'kakaotalk', version: project.KAKAO_SDK_VERSION    // 카카오톡 sdk를 사용하기 위해 필요.
+
+    // 페이스북로그인
+    implementation 'com.facebook.android:facebook-login:4.35.0'
+    implementation 'com.facebook.android:facebook-applinks:4.38.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.android.support:cardview-v7:27.1.1'
+
+    // for IGAWorks
+    implementation 'com.google.android.gms:play-services-ads:15.0.0'
+    implementation 'com.android.installreferrer:installreferrer:1.0'
+//    implementation 'com.igaworks.adbrix:abx-common-rm:+'
+    implementation 'com.google.android.play:core:1.6.4'
+}
+apply plugin: 'com.google.gms.google-services'

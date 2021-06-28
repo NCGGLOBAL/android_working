@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.nechingu.benecia.MainActivity">
+
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/ll_permission"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/progress"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/permission_contents" />
+
+        <LinearLayout
+            android:id="@+id/ll_permission_agree"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/permission_btn"
+            android:orientation="horizontal" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_youtube"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="youtube등록"
+        android:visibility="gone" />
+    <!--
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnNaverLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="네이버 ID로 로그인" />
+
+        <Button
+            android:id="@+id/btnFacebookLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="Faceboook ID로 로그인" />
+
+        <Button
+            android:id="@+id/btnKakaoLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="카카오 계정으로 로그인" />
+    </LinearLayout>
+    -->
+<!--
+    <Button
+        android:id="@+id/btn_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="send Message"
+        />
+-->
+</FrameLayout>

@@ -1,0 +1,147 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="facebook_app_id">209107949866889</string>
+    <string name="fb_login_protocol_scheme">fb209107949866889</string>
+    <string name="kakao_app_key">b32e41f4678d77e2abed8b5eaa120290</string>
+
+    <!-- adbrix -->
+    <string name="adbrix_remaster_app_key">reZwS440E02WZnxNVkxtiw</string>
+    <string name="adbbix_remaster_secret_key">XsU9BMyK1kiVzKQvb0xOww</string>
+
+    <string name="app_name">베네시아</string>
+
+    <string name="confirm">확인</string>
+    <string name="cancel">취소</string>
+    <string name="alert_title">알림</string>
+
+    <string name="exit">"\'뒤로\'버튼을 한번 더 누르시면 종료됩니다."</string>
+
+    <!-- GCM -->
+    <string name="registering_message_ready">InstanceID 토큰 가져오기</string>
+    <string name="registering_message_generating">InstanceID 토큰 생성중...</string>
+    <string name="registering_message_complete">완료!</string>
+
+    <string name="album_view">Select photo album</string>
+    <string name="image_view">Tap to select images</string>
+
+    <string name="add">ADD</string>
+    <string name="selected">selected</string>
+    <string name="limit_exceeded">Can select a maximum of %d images</string>
+
+    <string name="error_null_cursor">Oops, something went wrong!</string>
+    <string name="default_notification_channel_id">100</string>
+
+    <string name="notification_channel_message_title">Message</string>
+    <string name="notification_channel_message_description">Receive notification about new message.</string>
+    <string name="notification_channel_comment_title">Comment</string>
+    <string name="notification_channel_comment_description">Receive notification about your post or related post\'s comment.</string>
+    <string name="notification_channel_notice_title">Notice</string>
+    <string name="notification_channel_notice_description">Receive notification about our service\'s notice</string>
+
+    <!--Request Permission-->
+    <string name="permission_info">App requires permission to Storage to view images.</string>
+    <string name="permission_force">App requires permission to Storage to view images. Tap Settings and go to Permissions to grant permission.</string>
+    <string name="permission_ok">OK</string>
+    <string name="permission_settings">Settings</string>
+    <string name="permission_package">package</string>
+
+    <!-- crop -->
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="retake_pic">Retake Picture</string>
+    <string name="from_gallery">From Gallery</string>
+    <string name="update_profile_picture">Update Picture</string>
+
+    <string name="label_complete">완료</string>
+    <string name="label_picture_change">순서변경</string>
+    <string name="label_select_folder">폴더선택</string>
+    <string name="label_pick_camera">직접촬영</string>
+
+    <!-- live -->
+    <string name="live_indicator">on-air</string>
+    <string name="start_broadcasting">Start Broadcasting</string>
+    <string name="stream_name">Stream Name</string>
+    <string name="nocamera">No camera exists in your device</string>
+    <string name="camera_not_running_properly">Camera is not running properly</string>
+    <string name="restart">Restart</string>
+    <string name="streaming_not_finished">Your previous broadcast still sends packets due to slow internet speed</string>
+    <string name="oopps_shouldnt_happen">Oopps this shouldn\'t be happened. Please let the library developer this status</string>
+    <string name="broadcast_connection_lost">Connection to media server is lost</string>
+    <string name="low_bandwidth">Network speed is low. Latency is increasing.</string>
+    <string name="not_eligible_for_broadcast">Your device is not eligible to broadcast. There is no hardware encoder.</string>
+    <string name="no_network_connectivity">You\'re not connected to any network. Please connect to Internet</string>
+    <string name="stop_broadcasting">Stop</string>
+    <string name="camera_permission_is_required">Camera permission is required to run this app</string>
+    <string name="microphone_permission_is_required">Microphone permission is required to run this app</string>
+    <string name="permission">Permission</string>
+    <string name="app_doesnot_work_without_permissions">App does not work without permissions. Please give Camera and Record Audio permission on app settings</string>
+
+    <!-- youtube watch me -->
+    <string name="button_create">CREATE LIVE EVENT</string>
+    <string name="connection_to_google_play_failed">Connection to Play Services failed.</string>
+    <string name="not_signed_in">Not signed in</string>
+    <string name="error">Error</string>
+    <string name="error_format">[Error] %s</string>
+    <string name="refresh">Refresh</string>
+    <string name="accounts">Accounts</string>
+    <string name="pick_one_of_your_videos_to_submit">Create a new live event or click on one of your events to start streaming</string>
+    <string name="no_videos_to_show_here_">No videos to show here.</string>
+    <string name="avatar">avatar</string>
+    <string name="activeStreamingStatus">Currently streaming video.</string>
+    <string name="activeStreamingLabel">Watch Me is streaming!</string>
+    <string name="loadingEvents">Loading events. Please wait…</string>
+    <string name="creatingEvent">Creating event. Please wait…</string>
+    <string name="streamingOn">live broadcast 시작하기</string>
+    <string name="streamingOff">live broadcast 종료하기</string>
+    <string name="startEvent">START EVENT</string>
+    <string name="endEvent">END EVENT</string>
+    <string name="startingEvent">Starting event. Please wait…</string>
+    <string name="endingEvent">Ending event. Please wait…</string>
+    <string name="videoThumbnail">video thumbnail</string>
+    <string name="permission_camera_rationale">App needs camera for video stream.</string>
+    <string name="permission_microphone_rationale">App needs microphone for audio stream.</string>
+    <string name="permissions_not_granted">Streaming service won\'t be able to work without camera and microphone permissions.</string>
+    <string name="permission_camera_explain">You need to turn on the camera permission in settings dialog for this app for streamer to work.</string>
+    <string name="permission_microphone_explain">You need to turn on the record audio permission in settings dialog for this app for streamer to work.</string>
+
+    <string name="video">Video</string>
+
+    <string name="audio">Audio</string>
+
+    <string name="text">Text</string>
+
+    <string name="retry">Retry</string>
+
+    <string name="selection_disabled">Disabled</string>
+
+    <string name="selection_default">Default</string>
+
+    <string name="selection_default_none">Default (none)</string>
+
+    <string name="unexpected_intent_action">Unexpected intent action: <xliff:g id="action">%1$s</xliff:g></string>
+
+    <string name="enable_random_adaptation">Enable random adaptation</string>
+
+    <string name="error_drm_not_supported">Protected content not supported on API levels below 18</string>
+
+    <string name="error_drm_unsupported_scheme">This device does not support the required DRM scheme</string>
+
+    <string name="error_drm_unknown">An unknown DRM error occurred</string>
+
+    <string name="error_no_decoder">This device does not provide a decoder for <xliff:g id="mime_type">%1$s</xliff:g></string>
+
+    <string name="error_no_secure_decoder">This device does not provide a secure decoder for <xliff:g id="mime_type">%1$s</xliff:g></string>
+
+    <string name="error_querying_decoders">Unable to query device decoders</string>
+
+    <string name="error_instantiating_decoder">Unable to instantiate decoder <xliff:g id="decoder_name">%1$s</xliff:g></string>
+
+    <string name="error_unsupported_video">Media includes video tracks, but none are playable by this device</string>
+
+    <string name="error_unsupported_audio">Media includes audio tracks, but none are playable by this device</string>
+
+    <string name="storage_permission_denied">Permission to access storage was denied</string>
+
+    <string name="sample_list_load_error">One or more sample lists failed to load</string>
+    <string name="stream_not_started">Failed to start. Please check server url and security credentials.</string>
+</resources>
