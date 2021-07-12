@@ -2,6 +2,6 @@
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <cache-path name="cache" path="/" />
     <!--<files-path name="files" path="/" />-->
-    <!--<files-path name="my_images" path="Android/data/com.hellomeat.doctorb/files/Pictures" />-->
-    <external-path name="my_images" path="Android/data/com.hellomeat.doctorb/files/Pictures" />
+    <!--<files-path name="my_images" path="Android/data/com.ssmaas.doctorb/files/Pictures" />-->
+    <external-path name="my_images" path="Android/data/com.ssmaas.doctorb/files/Pictures" />
 </paths>
