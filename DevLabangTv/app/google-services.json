@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "604988574694",
+    "project_id": "devlabangtv",
+    "storage_bucket": "devlabangtv.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604988574694:android:9cca8e6cd77b3eda8aa427",
+        "android_client_info": {
+          "package_name": "com.creator.devlabangtv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "604988574694-tpej7f9bajirtvqg4adul322pcbge5kf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFNwfZdzWyP3lbmhqHTxTPHu9L9o0WD_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "604988574694-tpej7f9bajirtvqg4adul322pcbge5kf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
