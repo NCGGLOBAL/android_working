@@ -785,9 +785,10 @@ public class MainActivity extends AppCompatActivity {
                         LogUtil.d("mCameraType : " + mCameraType);
                     }
 
+                    callQR();
                     mCameraType = 0;
 //                    requestPermission(Constants.REQUEST_CAMERA);
-//                    executeJavascript(mCallback + "()");
+                    executeJavascript(mCallback + "()");
                 }
                 // 위쳇페이
                 else if ("ACT1003".equals(actionCode)) {
