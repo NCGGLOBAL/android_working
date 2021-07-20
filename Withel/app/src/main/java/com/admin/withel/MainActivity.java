@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mWebView.getSettings().setSupportZoom(true);
-        mWebView.getSettings().setDisplayZoomControls(true);
+        mWebView.getSettings().setDisplayZoomControls(false);
         mWebView.getSettings().setBuiltInZoomControls(true);
 
         // setSavePassword - default false in android 4.4 and above
