@@ -85,6 +85,12 @@
             android:name="com.mallup.modooticket.ImageEditActivity"
             android:configChanges="orientation|screenSize" />
 
+        <activity android:name=".QRCodeActivity"
+            android:screenOrientation="fullSensor"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
         <service android:name="com.mallup.modooticket.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
