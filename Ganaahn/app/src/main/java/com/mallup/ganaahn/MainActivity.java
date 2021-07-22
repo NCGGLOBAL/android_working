@@ -58,6 +58,7 @@ import com.facebook.login.LoginResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.kakao.auth.AuthType;
@@ -107,6 +108,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private String TAG = "MainActivity";
@@ -209,22 +211,22 @@ public class MainActivity extends AppCompatActivity {
             mBackPressCloseHandler = new BackPressCloseHandler(this);
 
             // topic 생성
-//            mFirebaseMessaging = FirebaseMessaging.getInstance();
-//            if (HNSharedPreference.getSharedPreference(this, "pushtopic").equals("")) {
-//                int topic = (new Random()).nextInt(100) + 1;          // topic 1 ~ 100의 값으로 임의 지정
-//
-//                mFirebaseMessaging.subscribeToTopic(String.valueOf(topic));
-//                HNSharedPreference.putSharedPreference(this, "pushtopic", String.valueOf(topic));
-//            }
-//
-//            // token 생성
-//            String token = FirebaseInstanceId.getInstance().getToken();
-//            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
-//                HNSharedPreference.putSharedPreference(this, "pushtoken", token);
-//
-//                sendRegistrationToServer(token);
-//            }
-//            LogUtil.e("push token : " + token);
+            mFirebaseMessaging = FirebaseMessaging.getInstance();
+            if (HNSharedPreference.getSharedPreference(this, "pushtopic").equals("")) {
+                int topic = (new Random()).nextInt(100) + 1;          // topic 1 ~ 100의 값으로 임의 지정
+
+                mFirebaseMessaging.subscribeToTopic(String.valueOf(topic));
+                HNSharedPreference.putSharedPreference(this, "pushtopic", String.valueOf(topic));
+            }
+
+            // token 생성
+            String token = FirebaseInstanceId.getInstance().getToken();
+            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
+                HNSharedPreference.putSharedPreference(this, "pushtoken", token);
+
+                sendRegistrationToServer(token);
+            }
+            LogUtil.e("push token : " + token);
 
             Intent intent = getIntent();
             if (intent != null) {

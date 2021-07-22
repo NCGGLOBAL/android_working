@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "397054880567",
+    "project_id": "ganaahn-38fc0",
+    "storage_bucket": "ganaahn-38fc0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:397054880567:android:9ea6312f2e404d129a48b2",
+        "android_client_info": {
+          "package_name": "com.mallup.ganaahn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "397054880567-favt440luecumsqlbnkct4h37fcv3bcs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD52eaNsuSE3ACwwyIyn198kQE4RePFkSY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "397054880567-favt440luecumsqlbnkct4h37fcv3bcs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
