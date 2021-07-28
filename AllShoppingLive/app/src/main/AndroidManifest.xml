@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.creator.allshoppinglive">
+    package="com.creator.allshoppingliveapp">
 
     <application
-        android:name="com.creator.allshoppinglive.common.HNApplication"
+        android:name="com.creator.allshoppingliveapp.common.HNApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,7 +21,7 @@
 
         <!-- ilikelux://pay? -->
         <activity
-            android:name="com.creator.allshoppinglive.MainActivity"
+            android:name="com.creator.allshoppingliveapp.MainActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -40,14 +40,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.creator.allshoppinglive.WebViewActivity"
+        <activity android:name="com.creator.allshoppingliveapp.WebViewActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"/>
 
-        <activity android:name="com.creator.allshoppinglive.AlbumSelectActivity"
+        <activity android:name="com.creator.allshoppingliveapp.AlbumSelectActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="com.creator.allshoppinglive.SelectImageMethodActivity"
+            android:name="com.creator.allshoppingliveapp.SelectImageMethodActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
@@ -57,7 +57,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.creator.allshoppinglive.ImageSelectActivity"
+            android:name="com.creator.allshoppingliveapp.ImageSelectActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -67,7 +67,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.creator.allshoppinglive.ImageEditChangeOrder"
+            android:name="com.creator.allshoppingliveapp.ImageEditChangeOrder"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -77,25 +77,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.creator.allshoppinglive.ImageEditActivity"
+            android:name="com.creator.allshoppingliveapp.ImageEditActivity"
             android:configChanges="orientation|screenSize" />
 
         <activity
-            android:name="com.creator.allshoppinglive.ImageCropActivity"
+            android:name="com.creator.allshoppingliveapp.ImageCropActivity"
             android:configChanges="orientation|screenSize" />
 
-        <activity android:name="com.creator.allshoppinglive.CameraActivity"
+        <activity android:name="com.creator.allshoppingliveapp.CameraActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"/>
 
-        <service android:name="com.creator.allshoppinglive.MyFirebaseMessagingService">
+        <service android:name="com.creator.allshoppingliveapp.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <!-- [END firebase_service] -->
         <!-- [START firebase_iid_service] -->
-        <service android:name="com.creator.allshoppinglive.MyFirebaseInstanceIdService">
+        <service android:name="com.creator.allshoppingliveapp.MyFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>

@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "858575664108",
-    "project_id": "allshoppinglive",
-    "storage_bucket": "allshoppinglive.appspot.com"
+    "project_number": "406304927508",
+    "project_id": "allshoppinglive-f4b53",
+    "storage_bucket": "allshoppinglive-f4b53.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:858575664108:android:ed6f44b4799e76853406c9",
+        "mobilesdk_app_id": "1:406304927508:android:49bbcffc962e03dbe15c01",
         "android_client_info": {
-          "package_name": "com.creator.allshoppinglive"
+          "package_name": "com.creator.allshoppingliveapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "858575664108-n8t5jse0bo07beklltc615hk71g7cfut.apps.googleusercontent.com",
+          "client_id": "406304927508-fok19l0ndrhovljncle8r7vp1elbao4h.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAnY_cgp8fyD7w_CEyxDBAR6S4-zzQOq1U"
+          "current_key": "AIzaSyDgInw4WGkUgJ62O-jC3yv0dJCGydNzGGg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "858575664108-n8t5jse0bo07beklltc615hk71g7cfut.apps.googleusercontent.com",
+              "client_id": "406304927508-fok19l0ndrhovljncle8r7vp1elbao4h.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
