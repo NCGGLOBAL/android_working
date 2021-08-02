@@ -21,7 +21,7 @@ public class HNApplication extends Application {
     private RequestQueue mRequestQueue;
 
     public static boolean mSigned = false;
-    public static String URL = "http://allshoppinglive.com";
+    public static String URL = "https://allshoppinglive.com";
     public static String PUSH_URL = URL + "/m/app/pushRegister.asp";
     public static String UPLOAD_URL = URL + "/m/app/";
     public static boolean mIsFirstLoading = false;
