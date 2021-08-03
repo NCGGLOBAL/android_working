@@ -6,7 +6,11 @@ android {
         applicationId "com.creator.allshoppingliveapp"
         minSdkVersion 21
         targetSdkVersion 29
+<<<<<<< HEAD
         versionCode 2
+=======
+        versionCode 1
+>>>>>>> 7060bbb55305dc0a7c58ace07cbee7315d11d3a9
         versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 

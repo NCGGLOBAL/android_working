@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 [{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":2,"versionName":"1.0.1","enabled":true,"outputFile":"app-release.apk","fullName":"release","baseName":"release"},"path":"app-release.apk","properties":{}}]
+=======
+[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":1,"versionName":"1.0.1","enabled":true,"outputFile":"app-release.apk","fullName":"release","baseName":"release"},"path":"app-release.apk","properties":{}}]
+>>>>>>> 7060bbb55305dc0a7c58ace07cbee7315d11d3a9
