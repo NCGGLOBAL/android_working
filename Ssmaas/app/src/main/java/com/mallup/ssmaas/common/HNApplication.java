@@ -21,8 +21,8 @@ public class HNApplication extends Application {
     private RequestQueue mRequestQueue;
 
     public static boolean mSigned = false;
-    public static String URL = "http://ssmaas.com/default.asp";
-    public static String PUSH_URL = "http://ssmaas.com/app/pushRegister.asp";
+    public static String URL = "https://ssmaas.com";
+    public static String PUSH_URL = URL + "/app/pushRegister.asp";
     public static boolean mIsFirstLoading = false;
     private static HNApplication mInstance;
     public static String mDeviceId = "";
