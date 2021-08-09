@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "380296858265",
+    "project_id": "gonggongmarket-348ec",
+    "storage_bucket": "gonggongmarket-348ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:380296858265:android:1f232d1e4660455b6ec608",
+        "android_client_info": {
+          "package_name": "com.mallup.gonggongmarket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "380296858265-vbb23286dp1u203de9h3n1qc7dmjdn5n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBQw5QDvsH1Fd_F3vfx-b7bny9dSiUu4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "380296858265-vbb23286dp1u203de9h3n1qc7dmjdn5n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
