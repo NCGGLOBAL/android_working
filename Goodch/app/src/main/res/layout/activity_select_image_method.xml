@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_image_select_method"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/toolbar"/>
+
+    <View
+        android:id="@+id/toolbar_line"
+        android:layout_width="fill_parent"
+        android:layout_height="1.0dip"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginBottom="6dip"
+        android:background="@color/custom_gallery_header_bottom_divider_color" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_image_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:id="@+id/text_view_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/error_null_cursor" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/common_layout_bg"
+        android:orientation="vertical"
+        android:layout_below="@+id/toolbar_line">
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1.0dip"
+            android:background="@color/custom_gallery_header_bottom_divider_color" />
+
+        <LinearLayout
+            android:id="@+id/headerLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="92.5dip"
+            android:background="@color/custom_gallery_header_bg"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/cameraLayout"
+                android:layout_width="0.0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="1.0"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20.0dip"
+                    android:src="@drawable/btn_register_camera" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10.0dip"
+                    android:includeFontPadding="false"
+                    android:text="@string/label_pick_camera"
+                    android:textColor="@color/custom_gallery_header_title_color"
+                    android:textSize="13.0sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1.0dip"
+                android:layout_height="62.5dip"
+                android:layout_gravity="center_vertical"
+                android:background="@color/custom_gallery_header_divider_color" />
+
+            <LinearLayout
+                android:id="@+id/folderLayout"
+                android:layout_width="0.0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="1.0"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20.0dip"
+                    android:src="@drawable/btn_register_gallery" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10.0dip"
+                    android:includeFontPadding="false"
+                    android:text="@string/label_select_folder"
+                    android:textColor="@color/custom_gallery_header_title_color"
+                    android:textSize="13.0sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <GridView
+            android:id="@+id/grid_view_image_select"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="1dp"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
+            android:paddingTop="1dp"
+            android:stretchMode="columnWidth" />
+    </LinearLayout>
+    <!--
+    <kr.co.quicket.register.CustomGalleryImageCtrl
+        android:id="@id/image_ctrl"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="vertical" />
+    -->
+</RelativeLayout>

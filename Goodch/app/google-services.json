@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "593098678523",
+    "project_id": "goodch-fafe7",
+    "storage_bucket": "goodch-fafe7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:593098678523:android:aa6be74f319cc7b8a1105e",
+        "android_client_info": {
+          "package_name": "com.mallup.goodch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "593098678523-fsvvrgklkoeth7fe6mcf2t6neg1roia2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDi3dKYZUFt_dE9CQToMNLo4zvXQZFUA-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "593098678523-fsvvrgklkoeth7fe6mcf2t6neg1roia2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
