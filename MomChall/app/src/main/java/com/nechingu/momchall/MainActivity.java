@@ -819,6 +819,28 @@ public class MainActivity extends AppCompatActivity {
                     mCallback = jObj.getString("callBack");
                 }
 
+                if ("ACT0001".equals(actionCode)) {
+                    LogUtil.d("ACT0001 - 앱 설치체크");
+
+                    int checkInstall = 0;
+                    if (actionParamObj.has("packagename")) {
+                        try {
+                            String packagename = actionParamObj.getString("packagename");
+                            LogUtil.d("packagename : " + packagename);
+
+                            PackageManager pm = context.getPackageManager();
+                            pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
+                            checkInstall = 1;
+                        } catch (Exception e) {
+                            checkInstall = 0;
+                        }
+                    }
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("checkInstall", checkInstall);      // check install - 0 : 미설치, 1 : 설치
+
+                    executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
+                }
                 // 사진첩 or 카메라 호출
                     if ("ACT1001".equals(actionCode)) {
                     LogUtil.d("ACT1001 - 앱 데이터 저장 (키체인 저장 및 파일저장)");
