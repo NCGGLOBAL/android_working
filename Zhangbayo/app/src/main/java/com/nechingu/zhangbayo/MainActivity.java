@@ -885,20 +885,28 @@ public class MainActivity extends AppCompatActivity {
                 } else if ("ACT1026".equals(actionCode)) {
                     // 위치 정보 조회
                     LogUtil.d("ACT1026 - 위치 정보 조회");
-                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                            + ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        setLocation();
+                    setLocation();
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("deviceId", HNApplication.mDeviceId);      // 디바이스 아이디
+                    jsonObject.put("latitude", mLatitude);
+                    jsonObject.put("longitude", mLongitude);
 
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("deviceId", HNApplication.mDeviceId);      // 디바이스 아이디
-                        jsonObject.put("latitude", mLatitude);
-                        jsonObject.put("longitude", mLongitude);
-
-                        Log.e(TAG, mCallback + "(" + jsonObject.toString() + ")");
-                        executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
-                    } else  {
-                        checkPermission();
-                    }
+                    Log.e(TAG, mCallback + "(" + jsonObject.toString() + ")");
+                    executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
+//                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+//                            + ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//                        setLocation();
+//
+//                        JSONObject jsonObject = new JSONObject();
+//                        jsonObject.put("deviceId", HNApplication.mDeviceId);      // 디바이스 아이디
+//                        jsonObject.put("latitude", mLatitude);
+//                        jsonObject.put("longitude", mLongitude);
+//
+//                        Log.e(TAG, mCallback + "(" + jsonObject.toString() + ")");
+//                        executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
+//                    } else  {
+//                        checkPermission();
+//                    }
                 }
 
             } catch (Exception e) {
