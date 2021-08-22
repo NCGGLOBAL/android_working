@@ -599,22 +599,28 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (url.startsWith("intent")) { //chrome πˆ¡Ø πÊΩƒ
-
-                        if (getPackageManager().resolveActivity(intent, 0) == null) {
-                            String packagename = intent.getPackage();
-                            if (packagename != null) {
-                                uri = Uri.parse("market://search?q=pname:" + packagename);
+                        if( Build.VERSION.SDK_INT < Build.VERSION_CODES.R ) {
+                            if( getPackageManager().resolveActivity(intent,0) == null ) {
+                                String pkgName = intent.getPackage();
+                                if( pkgName != null ) {
+                                    uri = Uri.parse("market://search?q=pname:" + pkgName);
+                                    intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    startActivity(intent);
+                                }
+                            } else {
+                                uri = Uri.parse(intent.getDataString());
                                 intent = new Intent(Intent.ACTION_VIEW, uri);
                                 startActivity(intent);
-                                return true;
+                            }
+                        } else {
+                            try {
+                                startActivity(intent);
+                            } catch (ActivityNotFoundException e) {
+                                uri = Uri.parse("market://search?q=pname:" + intent.getPackage());
+                                intent = new Intent(Intent.ACTION_VIEW, uri);
+                                startActivity(intent);
                             }
                         }
-
-                        uri = Uri.parse(intent.getDataString());
-                        intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-
-                        return true;
                     } else { //±∏ πÊΩƒ
                         intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         startActivity(intent);
@@ -885,28 +891,28 @@ public class MainActivity extends AppCompatActivity {
                 } else if ("ACT1026".equals(actionCode)) {
                     // 위치 정보 조회
                     LogUtil.d("ACT1026 - 위치 정보 조회");
-                    setLocation();
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("deviceId", HNApplication.mDeviceId);      // 디바이스 아이디
-                    jsonObject.put("latitude", mLatitude);
-                    jsonObject.put("longitude", mLongitude);
+//                    setLocation();
+//                    JSONObject jsonObject = new JSONObject();
+//                    jsonObject.put("deviceId", HNApplication.mDeviceId);      // 디바이스 아이디
+//                    jsonObject.put("latitude", mLatitude);
+//                    jsonObject.put("longitude", mLongitude);
+//
+//                    Log.e(TAG, mCallback + "(" + jsonObject.toString() + ")");
+//                    executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                            + ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        setLocation();
 
-                    Log.e(TAG, mCallback + "(" + jsonObject.toString() + ")");
-                    executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
-//                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-//                            + ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//                        setLocation();
-//
-//                        JSONObject jsonObject = new JSONObject();
-//                        jsonObject.put("deviceId", HNApplication.mDeviceId);      // 디바이스 아이디
-//                        jsonObject.put("latitude", mLatitude);
-//                        jsonObject.put("longitude", mLongitude);
-//
-//                        Log.e(TAG, mCallback + "(" + jsonObject.toString() + ")");
-//                        executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
-//                    } else  {
-//                        checkPermission();
-//                    }
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("deviceId", HNApplication.mDeviceId);      // 디바이스 아이디
+                        jsonObject.put("latitude", mLatitude);
+                        jsonObject.put("longitude", mLongitude);
+
+                        Log.e(TAG, mCallback + "(" + jsonObject.toString() + ")");
+                        executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
+                    } else  {
+                        checkPermission();
+                    }
                 }
 
             } catch (Exception e) {
