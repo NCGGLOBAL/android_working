@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "464864908294",
+    "project_id": "sellovely-a48af",
+    "storage_bucket": "sellovely-a48af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464864908294:android:13ca19b496e51c1f43df87",
+        "android_client_info": {
+          "package_name": "com.creator.sellovely"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "464864908294-s6g1grfsjrmlti10sngsffnlvvarvlml.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEcj-BJb_VhZe-7B2A4nPMiKThHje9iZ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "464864908294-s6g1grfsjrmlti10sngsffnlvvarvlml.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
