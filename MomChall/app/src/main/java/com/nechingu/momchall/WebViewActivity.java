@@ -466,26 +466,35 @@ public class WebViewActivity extends Activity {
                         return false;
                     }
 
+                    Uri curUri = uri;
                     if (url.startsWith("intent")) { //chrome πˆ¡Ø πÊΩƒ
-                        Uri intentUri;
-                        if (getPackageManager().resolveActivity(intent, 0) == null) {
-                            String packagename = intent.getPackage();
-                            if (packagename != null) {
-                                intentUri = Uri.parse("market://search?q=pname:" + packagename);
-                                intent = new Intent(Intent.ACTION_VIEW, intentUri);
+                        if( Build.VERSION.SDK_INT < Build.VERSION_CODES.R ) {
+                            if( getPackageManager().resolveActivity(intent,0) == null ) {
+                                String pkgName = intent.getPackage();
+                                if( pkgName != null ) {
+                                    curUri = Uri.parse("market://search?q=pname:" + pkgName);
+                                    intent = new Intent(Intent.ACTION_VIEW, curUri);
+                                    startActivity(intent);
+                                }
+                            } else {
+                                curUri = Uri.parse(intent.getDataString());
+                                intent = new Intent(Intent.ACTION_VIEW, curUri);
                                 startActivity(intent);
-                                return true;
+                            }
+                        } else {
+                            try {
+                                startActivity(intent);
+                            } catch (ActivityNotFoundException e) {
+                                curUri = Uri.parse("market://search?q=pname:" + intent.getPackage());
+                                intent = new Intent(Intent.ACTION_VIEW, curUri);
+                                startActivity(intent);
                             }
                         }
-                        intentUri = Uri.parse(intent.getDataString());
-                        intent = new Intent(Intent.ACTION_VIEW, intentUri);
-                        startActivity(intent);
-
                         return true;
                     } else { //±∏ πÊΩƒ
                         intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         startActivity(intent);
-                        //return true;
+                        return true;
                     }
                 } catch (Exception e) {
                     Log.i("NICE", e.getMessage());
