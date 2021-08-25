@@ -56,6 +56,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.kakao.auth.AuthType;
@@ -107,6 +108,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private Context mContext;
@@ -209,24 +211,24 @@ public class MainActivity extends AppCompatActivity {
             mBackPressCloseHandler = new BackPressCloseHandler(this);
 
             // topic 생성
-//            mFirebaseMessaging = FirebaseMessaging.getInstance();
-//            if (HNSharedPreference.getSharedPreference(this, "pushtopic").equals("")) {
-//                int topic = (new Random()).nextInt(100) + 1;          // topic 1 ~ 100의 값으로 임의 지정
-//
-//                mFirebaseMessaging.subscribeToTopic(String.valueOf(topic));
-//                HNSharedPreference.putSharedPreference(this, "pushtopic", String.valueOf(topic));
-//            }
+            mFirebaseMessaging = FirebaseMessaging.getInstance();
+            if (HNSharedPreference.getSharedPreference(this, "pushtopic").equals("")) {
+                int topic = (new Random()).nextInt(100) + 1;          // topic 1 ~ 100의 값으로 임의 지정
+
+                mFirebaseMessaging.subscribeToTopic(String.valueOf(topic));
+                HNSharedPreference.putSharedPreference(this, "pushtopic", String.valueOf(topic));
+            }
 
             getHashKey();
 
             // token 생성
-//            String token = FirebaseInstanceId.getInstance().getToken();
-//            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
-//                HNSharedPreference.putSharedPreference(this, "pushtoken", token);
-//
-//                sendRegistrationToServer(token);
-//            }
-//            LogUtil.e("push token : " + token);
+            String token = FirebaseInstanceId.getInstance().getToken();
+            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
+                HNSharedPreference.putSharedPreference(this, "pushtoken", token);
+
+                sendRegistrationToServer(token);
+            }
+            LogUtil.e("push token : " + token);
 
             Intent intent = getIntent();
             if (intent != null) {
@@ -634,21 +636,28 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (url.startsWith("intent")) { //chrome πˆ¡Ø πÊΩƒ
-
-                        if (getPackageManager().resolveActivity(intent, 0) == null) {
-                            String packagename = intent.getPackage();
-                            if (packagename != null) {
-                                uri = Uri.parse("market://search?q=pname:" + packagename);
+                        if( Build.VERSION.SDK_INT < Build.VERSION_CODES.R ) {
+                            if( getPackageManager().resolveActivity(intent,0) == null ) {
+                                String pkgName = intent.getPackage();
+                                if( pkgName != null ) {
+                                    uri = Uri.parse("market://search?q=pname:" + pkgName);
+                                    intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    startActivity(intent);
+                                }
+                            } else {
+                                uri = Uri.parse(intent.getDataString());
                                 intent = new Intent(Intent.ACTION_VIEW, uri);
                                 startActivity(intent);
-                                return true;
+                            }
+                        } else {
+                            try {
+                                startActivity(intent);
+                            } catch (ActivityNotFoundException e) {
+                                uri = Uri.parse("market://search?q=pname:" + intent.getPackage());
+                                intent = new Intent(Intent.ACTION_VIEW, uri);
+                                startActivity(intent);
                             }
                         }
-
-                        uri = Uri.parse(intent.getDataString());
-                        intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-
                         return true;
                     } else { //±∏ πÊΩƒ
                         intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));

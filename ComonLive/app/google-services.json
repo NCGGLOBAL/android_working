@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "476313792806",
+    "project_id": "comonlive-d77d6",
+    "storage_bucket": "comonlive-d77d6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:476313792806:android:2b504f7165cbc9d13ed1e7",
+        "android_client_info": {
+          "package_name": "com.creator.comonlive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "476313792806-8omp8jqhpcltu0e36ebijnspll1d44qi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwfi3vIemOwC5K60k8MXCXEbJdjAFcvCI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "476313792806-8omp8jqhpcltu0e36ebijnspll1d44qi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
