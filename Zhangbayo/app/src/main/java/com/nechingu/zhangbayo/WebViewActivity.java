@@ -529,6 +529,7 @@ public class WebViewActivity extends Activity {
                                 startActivity(intent);
                             }
                         }
+                        return true;
                     } else { //±∏ πÊΩƒ
                         intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         startActivity(intent);
