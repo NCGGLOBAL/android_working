@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "877659973919",
+    "project_id": "modooticket",
+    "storage_bucket": "modooticket.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:877659973919:android:4fa58bb73b0cc0ce59a82a",
+        "android_client_info": {
+          "package_name": "com.mallup.modooticket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "877659973919-cde0mjcu7ek44u50gt5ievnok8ohv0nn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2-oJAeW-6W8RgVAeZnRTu6OQNRfsy7tg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "877659973919-cde0mjcu7ek44u50gt5ievnok8ohv0nn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
