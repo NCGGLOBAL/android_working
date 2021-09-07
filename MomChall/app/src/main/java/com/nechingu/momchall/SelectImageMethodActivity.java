@@ -67,12 +67,11 @@ import java.util.List;
  */
 
 public class SelectImageMethodActivity extends HelperActivity implements View.OnClickListener {
-    private final String TAG = SelectImageMethodActivity.class.getSimpleName();
     private int mCameraType = 0;            // 카메라 Type
     private String mCurrentPhotoPath;       // 촬영된 이미지 경로
 
     // ============================= Album =============================
-    private ArrayList<Image> mImageItems;
+    private ArrayList<Image> images;
     private String album;
 
     private TextView errorDisplay;
@@ -106,12 +105,10 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
     private ProgressDialog mProgressDialog;
     private int mImgDownloadingCnt = 0;
 
-    private final String mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "ncg/";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "#onCreate()");
+        Log.d("SeongKwon", "#onCreate()");
         try {
             setContentView(R.layout.activity_select_image_method);
 
@@ -141,8 +138,8 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
 
                 }
             }
-            Log.d(TAG, "pageGbn = " + mPageGbn);
-            Log.d(TAG, "mImgArr = " + mImgArr);
+            Log.d("SeongKwon", "pageGbn = " + mPageGbn);
+            Log.d("SeongKwon", "mImgArr = " + mImgArr);
 
             // Set a toolbar to  replace to action bar
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -167,9 +164,9 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
                         Intent intent = new Intent();
                         if(mImgArr != null) {
                             mCnt = String.valueOf(mImgArr.length());
-                            Log.d(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!pageGbn = " + mPageGbn);
-                            Log.d(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!mImgArr = " + mImgArr);
-                            Log.d(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!mCnt = " + mCnt);
+                            Log.d("SeongKwon", "!!!!!!!!!!!!!!!!!!!!!!!!!pageGbn = " + mPageGbn);
+                            Log.d("SeongKwon", "!!!!!!!!!!!!!!!!!!!!!!!!!mImgArr = " + mImgArr);
+                            Log.d("SeongKwon", "!!!!!!!!!!!!!!!!!!!!!!!!!mCnt = " + mCnt);
                             if(mIsChanged) {
                                 intent.putExtra("isChanged", true);
                             }
@@ -178,7 +175,7 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
                             intent.putExtra("cnt", mCnt);
                             intent.putExtra("pageGbn", mPageGbn);
                         } else {
-                            intent.putParcelableArrayListExtra(Constants.INTENT_EXTRA_IMAGES, mImageItems);
+                            intent.putParcelableArrayListExtra(Constants.INTENT_EXTRA_IMAGES, images);
                         }
                         setResult(RESULT_OK, intent);
                         SelectImageMethodActivity.this.finish();
@@ -206,10 +203,10 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
             boolean isExist = false;
             int isGarbageCount = 0;
 
-            File file = new File(mFilePath);
+            File file = new File(getFilesDir() + "/");
             File[] flist = file.listFiles();
-            if (mImageItems == null) {
-                mImageItems = new ArrayList<Image>();
+            if (images == null) {
+                images = new ArrayList<Image>();
             }
             savedImageSize = flist.length;
             // 이미지 존재여부 확인
@@ -249,7 +246,7 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
                     }
                 } else {
                     // 전체삭제
-                    BitmapUtil.deleteImages(this, mFilePath);
+                    BitmapUtil.deleteImages(this, getFilesDir() + "/");
                 }
             }
             imageCount.setText(savedImageSize + "/8");
@@ -300,14 +297,14 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case Constants.PERMISSION_GRANTED: {
-                        Log.d(TAG, "PERMISSION_GRANTED");
+                        Log.d("SeongKwon", "PERMISSION_GRANTED");
 
                         loadImages();
                         break;
                     }
 
                     case Constants.FETCH_STARTED: {
-                        Log.d(TAG, "FETCH_STARTED");
+                        Log.d("SeongKwon", "FETCH_STARTED");
 //                        progressBar.setVisibility(View.VISIBLE);
                         gridView.setVisibility(View.INVISIBLE);
                         break;
@@ -315,26 +312,26 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
 
                     case Constants.FETCH_COMPLETED: {
                         /*
-                        If adapter is null, this implies that the loaded mImageItems will be shown
+                        If adapter is null, this implies that the loaded images will be shown
                         for the first time, hence send FETCH_COMPLETED message.
                         However, if adapter has been initialised, this thread was run either
                         due to the activity being restarted or content being changed.
                          */
-                        Log.d(TAG, "FETCH_COMPLETED mImageItems.size() : " + mImageItems.size());
+                        Log.d("SeongKwon", "FETCH_COMPLETED : " + images.size());
                         if (adapter == null) {
-                            adapter = new CustomImageSelectAdapter(getApplicationContext(), mImageItems, false);
+                            adapter = new CustomImageSelectAdapter(getApplicationContext(), images, false);
                             gridView.setAdapter(adapter);
 
                             gridView.setVisibility(View.VISIBLE);
                             orientationBasedUI(getResources().getConfiguration().orientation);
-                            Log.d(TAG, "FETCH_COMPLETED : ====================================1");
+                            Log.d("SeongKwon", "FETCH_COMPLETED : ====================================1");
                         } else {
                             adapter.notifyDataSetChanged();
                             /*
-                            Some selected mImageItems may have been deleted
+                            Some selected images may have been deleted
                             hence update action mode title
                              */
-                            Log.d(TAG, "FETCH_COMPLETED : ====================================2");
+                            Log.d("SeongKwon", "FETCH_COMPLETED : ====================================2");
                             if (actionMode != null) {
                                 countSelected = msg.arg1;
 //                                actionMode.setTitle("상품등록");
@@ -345,7 +342,7 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
                     }
 
                     case Constants.ERROR: {
-                        Log.d(TAG, "ERROR");
+                        Log.d("SeongKwon", "ERROR");
 //                        progressBar.setVisibility(View.INVISIBLE);
 //                        errorDisplay.setVisibility(View.VISIBLE);
                         break;
@@ -399,7 +396,7 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(null);
         }
-        mImageItems = null;
+        images = null;
         if (adapter != null) {
             adapter.releaseResources();
         }
@@ -493,31 +490,31 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
     };
 
     private void toggleSelection(int position) {
-        if (!mImageItems.get(position).isSelected && countSelected >= Constants.limit) {
+        if (!images.get(position).isSelected && countSelected >= Constants.limit) {
             Toast.makeText(getApplicationContext(), String.format(getString(R.string.limit_exceeded), Constants.limit), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        mImageItems.get(position).isSelected = !mImageItems.get(position).isSelected;
-        if (mImageItems.get(position).isSelected) {
+        images.get(position).isSelected = !images.get(position).isSelected;
+        if (images.get(position).isSelected) {
             countSelected++;
 
-            mImageItems.get(position).sequence = countSelected;
-//            Log.d("===============", mImageItems.get(position).sequence + "//POSITION");
+            images.get(position).sequence = countSelected;
+//            Log.d("===============", images.get(position).sequence + "//POSITION");
         } else {
             countSelected--;
 
             // 재정렬
-            int tmpSequence = mImageItems.get(position).sequence;
-            mImageItems.get(position).sequence = -1;
-//            Log.d("delete===============", "toggleSelection = " + position + "// sequence = " + mImageItems.get(position).sequence);
-            for (int idx = 0; idx < mImageItems.size(); idx++) {
-                if (mImageItems.get(idx).isSelected) {
-                    if (mImageItems.get(idx).sequence > tmpSequence) {
-                        mImageItems.get(idx).sequence = mImageItems.get(idx).sequence - 1;
+            int tmpSequence = images.get(position).sequence;
+            images.get(position).sequence = -1;
+//            Log.d("delete===============", "toggleSelection = " + position + "// sequence = " + images.get(position).sequence);
+            for (int idx = 0; idx < images.size(); idx++) {
+                if (images.get(idx).isSelected) {
+                    if (images.get(idx).sequence > tmpSequence) {
+                        images.get(idx).sequence = images.get(idx).sequence - 1;
                     }
                 }
-//                Log.d("update===============", "idx = " + idx + " // sequence = " + mImageItems.get(idx).sequence);
+//                Log.d("update===============", "idx = " + idx + " // sequence = " + images.get(idx).sequence);
             }
         }
 
@@ -525,13 +522,11 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
     }
 
     private void deselectAll() {
-        for (int i = 0, l = mImageItems.size(); i < l; i++) {
-            mImageItems.get(i).isSelected = false;
+        for (int i = 0, l = images.size(); i < l; i++) {
+            images.get(i).isSelected = false;
         }
         countSelected = 0;
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
+        adapter.notifyDataSetChanged();
     }
 
     private ArrayList<Image> getSelected() {
@@ -540,40 +535,40 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
         ArrayList<Image> selectedImages = new ArrayList<>(countSelected);
         selectedImages.clear();
         for (int i = 0; i < countSelected; i++) {
-            selectedImages.add(i, mImageItems.get(0));
+            selectedImages.add(i, images.get(0));
         }
 
-        for (int i = 0; i < mImageItems.size(); i++) {
-            if (mImageItems.get(i).isSelected) {
-                path = path + ((mImageItems.get(i).sequence - 1)) + "//" + mImageItems.get(i).path + "\n\n";
-                Log.e(TAG, "getSelected path = " + mImageItems.get(i).path);
-                Log.e(TAG, "getSelected " + (mImageItems.get(i).sequence - 1) + "//" + selectedImages.size() + "//" + countSelected);
-                selectedImages.set(mImageItems.get(i).sequence - 1, mImageItems.get(i));
-
-                try {
-                    // ACT1011 CALLBACK
-                    JSONObject jObjItem = new JSONObject();
-                    jObjItem.put("imgUrl", "");
-                    jObjItem.put("fileName", mImageItems.get(i).name);
-                    jObjItem.put("utype", 1);   // utype =  0: 기존이미지, 1: 신규, 2: 수정
-                    jObjItem.put("sort", mImageItems.get(i).sequence);    // 마지막에 추가
-                    mImgArr.put(jObjItem);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        for (int i = 0; i < images.size(); i++) {
+            if (images.get(i).isSelected) {
+                path = path + ((images.get(i).sequence - 1)) + "//" + images.get(i).path + "\n\n";
+                Log.e("SeongKwon", "selected path = " + images.get(i).path);
+                Log.e("SeongKwon", (images.get(i).sequence - 1) + "//" + selectedImages.size() + "//" + countSelected);
+                selectedImages.set(images.get(i).sequence - 1, images.get(i));
 
                 // Image 저장
                 if(BitmapUtil.saveImage(this,
-                        mImageItems.get(i).path,
-                        mImageItems.get(i).name,
-                        String.valueOf(mImageItems.get(i).sequence))) {
+                        images.get(i).path,
+                        images.get(i).name,
+                        String.valueOf(images.get(i).sequence))) {
+
+                    try {
+                        // ACT1011 CALLBACK
+                        JSONObject jObjItem = new JSONObject();
+                        jObjItem.put("imgUrl", "");
+                        jObjItem.put("fileName", images.get(i).name);
+                        jObjItem.put("utype", 1);   // utype =  0: 기존이미지, 1: 신규, 2: 수정
+                        jObjItem.put("sort", images.get(i).sequence);    // 마지막에 추가
+                        mImgArr.put(jObjItem);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
 
-        Log.d(TAG, "getSelected countSelected = " + countSelected);
-        Log.d(TAG, "getSelected mImageItems.size() = " + mImageItems.size());
-        Log.d(TAG, "getSelected selectedImages.size() = " + selectedImages.size());
+        Log.d("SeongKwon", "countSelected = " + countSelected);
+        Log.d("SeongKwon", "images.size() = " + images.size());
+        Log.d("SeongKwon", "selectedImages.size() = " + selectedImages.size());
 
         return selectedImages;
     }
@@ -583,8 +578,7 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
     }
 
     private void loadImages() {
-        Handler handler = new Handler();
-        handler.post(new ImageLoaderRunnable());
+        startThread(new SelectImageMethodActivity.ImageLoaderRunnable());
     }
 
     private class ImageLoaderRunnable implements Runnable {
@@ -594,7 +588,7 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
             /*
             If the adapter is null, this is first time this activity's view is
             being shown, hence send FETCH_STARTED message to show progress bar
-            while mImageItems are loaded from phone
+            while images are loaded from phone
              */
             if (adapter == null) {
                 sendMessage(Constants.FETCH_STARTED);
@@ -604,13 +598,15 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
             try {
                 boolean isExist = false;
 
-                File file = new File(mFilePath);
+                File file = new File(getFilesDir() + "/");
                 File[] flist = file.listFiles();
-                Log.d(TAG, "ImageLoaderRunnable : " + mFilePath + "/imgcnt = " + flist.length);
-                if (mImageItems == null) {
-                    mImageItems = new ArrayList<Image>();
+                Log.d("SeongKwon", "*************************************************");
+                Log.d("SeongKwon", getFilesDir() + "/imgcnt = " + flist.length);
+                Log.d("SeongKwon", "*************************************************");
+                if (images == null) {
+                    images = new ArrayList<Image>();
                 }
-                mImageItems.clear();
+                images.clear();
                 savedImageSize = flist.length;
 
                 for (int i = 0; i < flist.length; i++) {
@@ -634,15 +630,15 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
                         }
                     }
 
-                    Log.d(TAG, "ImageLoaderRunnable =========================");
-                    Log.d(TAG, "id = " + id);
-                    Log.d(TAG, "name = " + name);
-                    Log.d(TAG, "path = " + path);
-                    Log.d(TAG, "isSelected = " + isSelected);
-                    Log.d(TAG, "========================= ImageLoaderRunnable");
+                    Log.d("SeongKwon", "=========================");
+                    Log.d("SeongKwon", "id = " + id);
+                    Log.d("SeongKwon", "name = " + name);
+                    Log.d("SeongKwon", "path = " + path);
+                    Log.d("SeongKwon", "isSelected = " + isSelected);
+                    Log.d("SeongKwon", "=========================");
 
                     if (file.exists()) {
-                        mImageItems.add(new Image(id, name, path, isSelected, sort));
+                        images.add(new Image(id, name, path, isSelected, sort));
                     }
                 }
 
@@ -654,15 +650,15 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
                 ArrayList<Image> tempArray = new ArrayList<Image>();
                 for(int j = 0; j < savedImageArray.length; j++) {
                     fName = savedImageArray[j].split("&")[0];
-                    for(int k = 0; k <  mImageItems.size(); k++) {
-                        if(fName.equals(mImageItems.get(k).name)) {
-                            tempArray.add(mImageItems.get(k));
+                    for(int k = 0; k <  images.size(); k++) {
+                        if(fName.equals(images.get(k).name)) {
+                            tempArray.add(images.get(k));
                             break;
                         }
                     }
                 }
-                mImageItems.clear();
-                mImageItems.addAll(tempArray);
+                images.clear();
+                images.addAll(tempArray);
             } catch (Exception e) {
                 e.printStackTrace();
                 sendMessage(Constants.ERROR);
@@ -867,113 +863,110 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "============================================");
-        Log.d(TAG, "requestCode = " + requestCode);
-        Log.d(TAG, "resultCode = " + resultCode);
-        Log.d(TAG, "mCurrentPhotoPath = " + mCurrentPhotoPath);
-        Log.d(TAG, "data = " + data);
-        Log.d(TAG, "============================================");
+        Log.d("SeongKwon", "============================================");
+        Log.d("SeongKwon", "requestCode = " + requestCode);
+        Log.d("SeongKwon", "resultCode = " + resultCode);
+        Log.d("SeongKwon", "mCurrentPhotoPath = " + mCurrentPhotoPath);
+        Log.d("SeongKwon", "data = " + data);
+        Log.d("SeongKwon", "============================================");
 
         super.onActivityResult(requestCode, resultCode, data);
-        try {
-            if(data != null) {
-                Bundle extras = data.getExtras();
-                if(extras != null) {
-                    for(String _key : extras.keySet()) {
-                        Log.d(TAG, "key=" + _key + " : " + extras.get(_key));
-                    }
+        if(data != null) {
+            Bundle extras = data.getExtras();
+            if(extras != null) {
+                for(String _key : extras.keySet()) {
+                    Log.d("SeongKwon", "key=" + _key + " : " + extras.get(_key));
                 }
             }
-            if (requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM && resultCode == RESULT_OK && data != null) {
-                Log.d(TAG, "////" + mImageItems.size());
-                ArrayList<Image> addimages = data.getParcelableArrayListExtra("mImageItems");
-                Log.d(TAG, "////" + addimages.size());
-                if(addimages.size() > 0) {
-                    mIsChanged = true;
-                }
-                for (int i = 0; i < addimages.size(); i++) {
-                    Image image = addimages.get(i);
-                    image.sequence = mImageItems.size() + 1;
-                    image.isSelected = true;
-                    mImageItems.add(image);
-                    Log.e(TAG, "//// sequence = " + image.sequence);
-                }
-                countSelected = mImageItems.size();
-                Log.e(TAG, "//// countSelected = " + countSelected);
+        }
+        if (requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM && resultCode == RESULT_OK && data != null) {
+            Log.d("SeongKwon", "////" + images.size());
+            ArrayList<Image> addimages = data.getParcelableArrayListExtra("images");
+            Log.d("SeongKwon", "////" + addimages.size());
+            if(addimages.size() > 0) {
+                mIsChanged = true;
+            }
+            for (int i = 0; i < addimages.size(); i++) {
+                Image image = addimages.get(i);
+                image.sequence = images.size() + 1;
+                image.isSelected = true;
+                images.add(image);
+                Log.e("SeongKwon", "//// sequence = " + image.sequence);
+            }
+            countSelected = images.size();
+            Log.e("SeongKwon", "//// countSelected = " + countSelected);
 
-                // 이미지 저장
-                new saveImagesAsyncTask().execute(addimages);
-            } else if (requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA) {
-                if (resultCode != RESULT_OK) {
-                    Toast.makeText(this, "카메라 촬영에 실패했습니다.", Toast.LENGTH_LONG).show();
-                    return;
-                }
+            // 이미지 저장
+            new saveImagesAsyncTask().execute(addimages);
+        } else if (requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA) {
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(this, "카메라 촬영에 실패했습니다.", Toast.LENGTH_LONG).show();
+                return;
+            }
 //            Uri currImageURI = data.getData();
 //            if(data.getData() == null) {
 //                currImageURI = mImageCaptureUri;
 //            }
 //            currImageURI = mImageCaptureUri;
 //            mCurrentPhotoPath = getRealPathFromURI(currImageURI);
-                mIsChanged = true;
-                Image addImage = new Image(
-                        0,
-                        mCurrentPhotoPath.substring(mCurrentPhotoPath.lastIndexOf("/") + 1),
-                        mCurrentPhotoPath,
-                        true,
-                        mImageItems.size() + 1);
-                ArrayList<Image> addimages = new ArrayList<Image>();
-                addimages.add(addImage);
-                mImageItems.add(addImage);
-                countSelected = mImageItems.size();
+            mIsChanged = true;
+            Image addImage = new Image(
+                    0,
+                    mCurrentPhotoPath.substring(mCurrentPhotoPath.lastIndexOf("/") + 1),
+                    mCurrentPhotoPath,
+                    true,
+                    images.size() + 1);
+            ArrayList<Image> addimages = new ArrayList<Image>();
+            addimages.add(addImage);
+            images.add(addImage);
+            countSelected = images.size();
 
-                // 이미지 저장
-                Log.e(TAG, "//// saveImagesAsyncTask");
-                new saveImagesAsyncTask().execute(addimages);
-            } else if(requestCode == Constants.REQUEST_EDIT_IMAGE) {
-                if(data == null)    return;
+            // 이미지 저장
+            Log.e("SeongKwon", "//// saveImagesAsyncTask");
+            new saveImagesAsyncTask().execute(addimages);
+        } else if(requestCode == Constants.REQUEST_EDIT_IMAGE) {
+            if(data == null)    return;
 //            if (resultCode == RESULT_OK) {
-                if(data.hasExtra("isChanged")) {
-                    mIsChanged = data.getBooleanExtra("isChanged", false);
-                    Log.d(TAG, "Constants.REQUEST_EDIT_IMAGE ******************************************* isChanged = " + data.getBooleanExtra("isChanged", false));
+            if(data.hasExtra("isChanged")) {
+                mIsChanged = data.getBooleanExtra("isChanged", false);
+                Log.d("SeongKwon", "Constants.REQUEST_EDIT_IMAGE ******************************************* isChanged = " + data.getBooleanExtra("isChanged", false));
+            }
+
+            try {
+                if(data.hasExtra("imgArr")) {
+                    mImgArr = new JSONArray(data.getStringExtra("imgArr"));
                 }
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+            mToken = data.getStringExtra("token");
+            if(mIsChanged) {
+                String savedImage = HNSharedPreference.getSharedPreference(SelectImageMethodActivity.this, "savedImage");
+                String[] savedImageArray = savedImage.split(",");
 
-                try {
-                    if(data.hasExtra("imgArr")) {
-                        mImgArr = new JSONArray(data.getStringExtra("imgArr"));
-                    }
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-                mToken = data.getStringExtra("token");
-                if(mIsChanged) {
-                    String savedImage = HNSharedPreference.getSharedPreference(SelectImageMethodActivity.this, "savedImage");
-                    String[] savedImageArray = savedImage.split(",");
+                // Data변경
+                String fName = "";
+                ArrayList<Image> tempArray = new ArrayList<Image>();
+                for(int i = 0; i < savedImageArray.length; i++) {
+                    fName = savedImageArray[i].split("&")[0];
+                    for(int k = 0; k <  images.size(); k++) {
+                        if(fName.equals(images.get(k).name)) {
+                            tempArray.add(images.get(k));
 
-                    // Data변경
-                    String fName = "";
-                    ArrayList<Image> tempArray = new ArrayList<Image>();
-                    for(int i = 0; i < savedImageArray.length; i++) {
-                        fName = savedImageArray[i].split("&")[0];
-                        for(int k = 0; k <  mImageItems.size(); k++) {
-                            if(fName.equals(mImageItems.get(k).name)) {
-                                tempArray.add(mImageItems.get(k));
-
-                                break;
-                            }
+                            break;
                         }
                     }
-                    mImageItems.clear();
-                    mImageItems.addAll(tempArray);
-
-                    // 파일내용 변경
-                    adapter.notifyDataSetChanged();
-                    Log.d(TAG, "Constants.REQUEST_EDIT_IMAGE ******************************************* adapter.notifyDataSetChanged();");
                 }
-//            }
+                images.clear();
+                images.addAll(tempArray);
+
+                // 파일내용 변경
+                adapter.notifyDataSetChanged();
+                Log.d("SeongKwon", "Constants.REQUEST_EDIT_IMAGE ******************************************* adapter.notifyDataSetChanged();");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+//            }
         }
+
     }
 
     public class saveImagesAsyncTask extends AsyncTask<Object, Void, ArrayList<Image>> {
@@ -987,7 +980,7 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
             mProgressDialog.setMessage("처리중입니다.\n잠시만 기다려 주세요.");
             if(!mProgressDialog.isShowing())
                 mProgressDialog.show();
-            Log.e(TAG, "//// saveImagesAsyncTask onPreExecute");
+            Log.e("SeongKwon", "//// saveImagesAsyncTask onPreExecute");
         }
 
         @Override
@@ -1005,13 +998,13 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
 
         @Override
         protected void onPostExecute(ArrayList<Image> img) {
-//            mImageItems = img;
+//            images = img;
 
             // 화면 그리기
-            Log.e(TAG, "//// saveImagesAsyncTask onPostExecute");
-            sendMessage(Constants.FETCH_COMPLETED, countSelected);
+            Log.e("SeongKwon", "//// saveImagesAsyncTask onPostExecute");
+//            sendMessage(Constants.FETCH_COMPLETED, countSelected);
             mProgressDialog.dismiss();
-            savedImageSize = mImageItems.size();
+            savedImageSize = images.size();
             imageCount.setText(savedImageSize + "/8");
 
             // Close progressdialog
@@ -1062,13 +1055,7 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
         protected void onPostExecute(Bitmap bitmap) {
             OutputStream outStream = null;
 
-            File file = new File(mFilePath + fileName);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-                }
-            });
+            File file = new File(getFilesDir() + "/" + fileName);
             try {
                 outStream = new FileOutputStream(file);
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
@@ -1085,14 +1072,14 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
             String path = file.getAbsolutePath();
             boolean isSelected = true;
 
-            Log.d(TAG, "DownloadImage =========================");
-            Log.d(TAG, "id = " + id);
-            Log.d(TAG, "name = " + name);
-            Log.d(TAG, "path = " + path);
-            Log.d(TAG, "isSelected = " + isSelected);
-            Log.d(TAG, "========================= DownloadImage");
+            Log.d("SeongKwon", "=========================");
+            Log.d("SeongKwon", "id = " + id);
+            Log.d("SeongKwon", "name = " + name);
+            Log.d("SeongKwon", "path = " + path);
+            Log.d("SeongKwon", "isSelected = " + isSelected);
+            Log.d("SeongKwon", "=========================");
 
-            mImageItems.add(new Image(id, name, path, isSelected, sort));
+            images.add(new Image(id, name, path, isSelected, sort));
 
             // 저장된 이미지 리스트를 preference에 저장
             String savedImage = HNSharedPreference.getSharedPreference(SelectImageMethodActivity.this, "savedImage");
