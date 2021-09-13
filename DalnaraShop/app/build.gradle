@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.creator.labangtv"
+        applicationId "com.creator.dalnarashop"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
