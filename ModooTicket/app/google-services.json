@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "877659973919",
-    "project_id": "modooticket",
-    "storage_bucket": "modooticket.appspot.com"
+    "project_number": "736279782675",
+    "project_id": "modooticket-a4e2e",
+    "storage_bucket": "modooticket-a4e2e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:877659973919:android:4fa58bb73b0cc0ce59a82a",
+        "mobilesdk_app_id": "1:736279782675:android:3581a014a64f8b6a29e6e6",
         "android_client_info": {
           "package_name": "com.mallup.modooticket"
         }
       },
       "oauth_client": [
         {
-          "client_id": "877659973919-cde0mjcu7ek44u50gt5ievnok8ohv0nn.apps.googleusercontent.com",
+          "client_id": "736279782675-rhvn9e642v340aakrlqc5pfa8ft16fss.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB2-oJAeW-6W8RgVAeZnRTu6OQNRfsy7tg"
+          "current_key": "AIzaSyAxUUeFDe118iJuZR0K_p8uokXzWDpON1U"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "877659973919-cde0mjcu7ek44u50gt5ievnok8ohv0nn.apps.googleusercontent.com",
+              "client_id": "736279782675-rhvn9e642v340aakrlqc5pfa8ft16fss.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
