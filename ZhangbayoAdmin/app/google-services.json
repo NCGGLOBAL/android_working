@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "813639299840",
+    "firebase_url": "https://zhangbayoadmin.firebaseio.com",
+    "project_id": "zhangbayoadmin",
+    "storage_bucket": "zhangbayoadmin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813639299840:android:ef1bc87a8db56f088e79e5",
+        "android_client_info": {
+          "package_name": "com.admin.zhangbayo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "813639299840-hjv4mu5vgpnnna5t0ad2rr8ask3i321l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfDAk7z5Qjc0MkRIHmElSxbHAWaNSXv-I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "813639299840-hjv4mu5vgpnnna5t0ad2rr8ask3i321l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
