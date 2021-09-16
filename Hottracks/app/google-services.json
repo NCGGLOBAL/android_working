@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "348710659831",
+    "project_id": "hottracks-e31af",
+    "storage_bucket": "hottracks-e31af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348710659831:android:3b3bc09d91cc8722ff55f2",
+        "android_client_info": {
+          "package_name": "com.creator.hottracks"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "348710659831-n43s6eecpa371fo5gjgucsi68ob57udn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_sAW13LXdmXwlPxsh148AbChGkrU6EhY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "348710659831-n43s6eecpa371fo5gjgucsi68ob57udn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
