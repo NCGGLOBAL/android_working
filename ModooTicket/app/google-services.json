@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:736279782675:android:3581a014a64f8b6a29e6e6",
+        "mobilesdk_app_id": "1:736279782675:android:9d770cb95165a8ae29e6e6",
         "android_client_info": {
-          "package_name": "com.mallup.modooticket"
+          "package_name": "com.mallup.modooticketapp"
         }
       },
       "oauth_client": [
@@ -29,6 +29,13 @@
             {
               "client_id": "736279782675-rhvn9e642v340aakrlqc5pfa8ft16fss.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "736279782675-bujqrgj1g5orefhfqrm5n01d9f5sfjc8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mallup.modooticketapp"
+              }
             }
           ]
         }
