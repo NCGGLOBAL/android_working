@@ -22,7 +22,8 @@ public class HNApplication extends Application {
 
     public static boolean mSigned = false;
     public static String URL = "https://zhangbayo.co.kr/addon/m_mallinmall";
-    public static String UPLOAD_URL = "https://zhangbayo.co.kr/m/app/";
+    public static String UPLOAD_URL = "https://zhangbayo.co.kr/m/app";
+    public static String PUSH_URL = UPLOAD_URL + "/pushRegister.asp";
     public static boolean mIsFirstLoading = false;
     private static HNApplication mInstance;
     public static String mDeviceId = "";
