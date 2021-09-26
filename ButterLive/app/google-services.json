@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "385110542753",
+    "project_id": "butterlive-1dcb2",
+    "storage_bucket": "butterlive-1dcb2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:385110542753:android:9f852960895379f275e3e0",
+        "android_client_info": {
+          "package_name": "com.creator.butterlive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "385110542753-9bu66dl393vji99ojqj4j9btckpsgkli.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-kTPyyTiLWIAWagq4PdF8MLlrJ-zWvzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "385110542753-9bu66dl393vji99ojqj4j9btckpsgkli.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
