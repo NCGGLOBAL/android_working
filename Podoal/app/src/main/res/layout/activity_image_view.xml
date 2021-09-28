@@ -17,7 +17,7 @@
     <RelativeLayout android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/ultra_dark"
-        tools:context=".ImageViewActivity">
+        tools:context="kr.fanbridge.podoaltv.ImageViewActivity">
         <android.support.v7.widget.CardView
             android:id="@+id/cv_image_container"
             android:layout_width="match_parent"

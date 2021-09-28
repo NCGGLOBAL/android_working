@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
-import com.creator.podoal.delegator.HNSharedPreference;
+import kr.fanbridge.podoaltv.delegator.HNSharedPreference;
 
 import java.util.ArrayList;
 import java.util.List;

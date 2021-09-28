@@ -29,6 +29,49 @@
             {
               "client_id": "303569745392-hkaac22b91trbighodktmu45nocuthp6.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "303569745392-gfnuic3sdfiobe27netjmkkkujcfpfpo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "kr.fanbridge.podoaltv"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:303569745392:android:bf69b09c872b350f141935",
+        "android_client_info": {
+          "package_name": "kr.fanbridge.podoaltv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "303569745392-hkaac22b91trbighodktmu45nocuthp6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIhCEd6ohlg__K1KxUJBSHfKyP24wlwxo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "303569745392-hkaac22b91trbighodktmu45nocuthp6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "303569745392-gfnuic3sdfiobe27netjmkkkujcfpfpo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "kr.fanbridge.podoaltv"
+              }
             }
           ]
         }

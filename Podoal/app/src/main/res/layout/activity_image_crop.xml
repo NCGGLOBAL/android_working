@@ -56,7 +56,7 @@
 
     <RelativeLayout android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity"
+        tools:context="kr.fanbridge.podoaltv.MainActivity"
         android:background="@color/ultra_dark">
 
         <io.togoto.imagezoomcrop.photoview.PhotoView

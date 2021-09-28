@@ -13,11 +13,11 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.creator.podoal.R;
 
 import io.togoto.imagezoomcrop.cropoverlay.edge.Edge;
 import io.togoto.imagezoomcrop.cropoverlay.utils.PaintUtil;
 import io.togoto.imagezoomcrop.photoview.IGetImageBounds;
+import kr.fanbridge.podoaltv.R;
 
 
 /**
