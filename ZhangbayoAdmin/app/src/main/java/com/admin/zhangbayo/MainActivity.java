@@ -204,9 +204,8 @@ public class MainActivity extends AppCompatActivity {
             String token = FirebaseInstanceId.getInstance().getToken();
             if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
                 HNSharedPreference.putSharedPreference(this, "pushtoken", token);
-
-                sendRegistrationToServer(token);
             }
+            sendRegistrationToServer(token);
             LogUtil.e("push token : " + token);
 
             Intent intent = getIntent();
