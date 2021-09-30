@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.creator.labangtv.adapters.CustomImageSelectAdapter;
+import com.creator.labangtv.common.HNApplication;
 import com.creator.labangtv.helpers.Constants;
 import com.creator.labangtv.models.Image;
 
@@ -106,7 +107,7 @@ public class ImageSelectActivity extends HelperActivity {
 //                if (countSelected == 0) {
 //                    actionMode.finish();
 //                }
-                imageCount.setText(countSelected + "/8");
+                imageCount.setText(countSelected + "/" + HNApplication.LIMIT_IMAGE_COUNT);
             }
         });
     }

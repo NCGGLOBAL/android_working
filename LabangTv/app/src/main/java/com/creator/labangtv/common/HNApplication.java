@@ -29,6 +29,7 @@ public class HNApplication extends Application {
     public static String mDeviceId = "";
 
     public static String mImgArrForReg = "";
+    public static final int LIMIT_IMAGE_COUNT = 10;
 
     public static CookieManager mCookieManager;
 
