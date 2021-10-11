@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "805443314905",
+    "project_id": "tachi-60d44",
+    "storage_bucket": "tachi-60d44.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:805443314905:android:84f1b2844ad1ecd88d4ac8",
+        "android_client_info": {
+          "package_name": "com.creator.tachi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "805443314905-k2lq836fmgvgr0hge0185os03t4ncltn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgDdRTyBWGaS5DTZfTM9y_ZMaTAPiczjI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "805443314905-k2lq836fmgvgr0hge0185os03t4ncltn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
