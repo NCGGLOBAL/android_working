@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "515949641186",
-    "project_id": "dabaltong",
-    "storage_bucket": "dabaltong.appspot.com"
+    "project_number": "876507613126",
+    "project_id": "dabaltong-6d461",
+    "storage_bucket": "dabaltong-6d461.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:515949641186:android:2a65242c2e87f1ac17cdbb",
+        "mobilesdk_app_id": "1:876507613126:android:fb24a0edfcd71fb19694c7",
         "android_client_info": {
-          "package_name": "com.mallup.dabaltong"
+          "package_name": "com.mallup.dabaltongapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "515949641186-pd0a601u7r9jgkdflo98ss8fomcs7fl4.apps.googleusercontent.com",
+          "client_id": "876507613126-9q521md44gq1v8bf6o0gduq375n12isd.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBmDlDT7IjfVfSH4BwFGRxBDzmwBSpbC6g"
+          "current_key": "AIzaSyDdx48Gl-cZUpZbGILFNQ1wDuphhjHMszo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "515949641186-pd0a601u7r9jgkdflo98ss8fomcs7fl4.apps.googleusercontent.com",
+              "client_id": "876507613126-9q521md44gq1v8bf6o0gduq375n12isd.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
