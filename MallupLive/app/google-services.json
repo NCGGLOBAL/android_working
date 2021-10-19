@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "827307388617",
+    "project_id": "malluplive",
+    "storage_bucket": "malluplive.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827307388617:android:dda62cdea7a6318271a718",
+        "android_client_info": {
+          "package_name": "com.creator.malluplive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "827307388617-1lm5sgveeuvqqf0kpl5mttbst6727h1m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZ7DNv8XOjwxWS6iSpnLDMEabnnOp6s90"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "827307388617-1lm5sgveeuvqqf0kpl5mttbst6727h1m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
