@@ -15,6 +15,7 @@
  */
 package com.admin.zhangbayo;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.PowerManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -80,6 +82,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             if(remoteMessage.getData().containsKey("imgUrl")) {
                 mImgUrl = remoteMessage.getData().get("imgUrl");
             }
+
+            //푸시울렸을때 화면깨우기.
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE );
+            @SuppressLint("InvalidWakeLockTag")
+            PowerManager.WakeLock wakeLock = pm.newWakeLock( PowerManager.SCREEN_DIM_WAKE_LOCK
+                    | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG" );
+            wakeLock.acquire(3000);
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
