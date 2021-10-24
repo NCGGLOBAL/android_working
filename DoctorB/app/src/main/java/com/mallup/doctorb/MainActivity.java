@@ -221,11 +221,11 @@ public class MainActivity extends AppCompatActivity {
 
             // token 생성
             String token = FirebaseInstanceId.getInstance().getToken();
-            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
+//            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
                 HNSharedPreference.putSharedPreference(this, "pushtoken", token);
 
                 sendRegistrationToServer(token);
-            }
+//            }
             LogUtil.e("push token : " + token);
 
             Intent intent = getIntent();
@@ -1237,12 +1237,12 @@ public class MainActivity extends AppCompatActivity {
                     mHNCommTran = new HNCommTran(new HNCommTranInterface() {
                         @Override
                         public void recvMsg(String tranCode, String params) {
-                            if (tranCode.equals(HNApplication.URL + "/m/app/pushReceive.asp")) {
+                            if (tranCode.equals(HNApplication.PUSH_URL)) {
                                 LogUtil.e("recv pushRegister : " + tranCode + " : " + params);
                             }
                         }
                     });
-                    mHNCommTran.sendMsg(HNApplication.URL + "/m/app/pushReceive.asp", jObj);
+                    mHNCommTran.sendMsg(HNApplication.PUSH_URL, jObj);
                     return;
                 } catch (Exception localException) {
                     localException.printStackTrace();
