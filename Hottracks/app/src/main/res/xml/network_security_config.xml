@@ -4,6 +4,8 @@
 
     <domain-config cleartextTrafficPermitted="true">
 
+        <domain includeSubdomains="true">image.kyobobook.co.kr</domain>
+        <domain includeSubdomains="true">mobile.kyobobook.co.kr</domain>
         <domain includeSubdomains="true">hottracks.online</domain>
         <domain includeSubdomains="true">hottracks.co.kr</domain>
         <domain includeSubdomains="true">m.hottracks.co.kr</domain>
