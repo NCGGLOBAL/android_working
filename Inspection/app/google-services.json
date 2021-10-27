@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "868561727833",
+    "project_id": "inspection-6fa39",
+    "storage_bucket": "inspection-6fa39.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:868561727833:android:ae419a10a9990051459c48",
+        "android_client_info": {
+          "package_name": "com.admin.inspection"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "868561727833-9licp3d3gvilj4brbgm741016fdaqpci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnTu70_EPH_K7PGjEDXMO8wKF54qUELPM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "868561727833-9licp3d3gvilj4brbgm741016fdaqpci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
