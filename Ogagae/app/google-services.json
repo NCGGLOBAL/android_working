@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "594774552512",
+    "project_id": "ogagae-998dc",
+    "storage_bucket": "ogagae-998dc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:594774552512:android:bce1c58162443266566225",
+        "android_client_info": {
+          "package_name": "com.mallup.ogagae"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "594774552512-6qdf5jt2mfprjaqq4fdvd12qt5mfedqh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqV-nTUrRAkvDfmybQQcUnEvCXSup2OjE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "594774552512-6qdf5jt2mfprjaqq4fdvd12qt5mfedqh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
