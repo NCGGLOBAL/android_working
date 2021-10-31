@@ -300,8 +300,8 @@ public class MainActivity extends AppCompatActivity {
         }
         mWebView.getSettings().setUserAgentString(mWebView.getSettings().getUserAgentString() + " NINTH"
                 + "&deviceId=" + HNApplication.mDeviceId);
-        if (Build.VERSION.SDK_INT >= 21) {
-            mWebView.getSettings().setMixedContentMode(0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mWebView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
             this.mCookieManager = CookieManager.getInstance();
             this.mCookieManager.setAcceptCookie(true);
             this.mCookieManager.setAcceptThirdPartyCookies(mWebView, true);
@@ -596,48 +596,36 @@ public class MainActivity extends AppCompatActivity {
                     || url.contains("kakaopay")
                     || url.contains("naversearchapp://")
                     || url.contains("http://m.ahnlab.com/kr/site/download"))) {
+
                 try {
-                    try {
-                        intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
-                        Log.i("NICE", "intent getDataString +++===>" + intent.getDataString());
-
-                    } catch (URISyntaxException ex) {
-                        Log.e("Browser", "Bad URI " + url + ":" + ex.getMessage());
-                        return false;
-                    }
-
-                    if (url.startsWith("intent")) { //chrome πˆ¡Ø πÊΩƒ
-                        if( Build.VERSION.SDK_INT < Build.VERSION_CODES.R ) {
-                            if( getPackageManager().resolveActivity(intent,0) == null ) {
-                                String pkgName = intent.getPackage();
-                                if( pkgName != null ) {
-                                    uri = Uri.parse("market://search?q=pname:" + pkgName);
-                                    intent = new Intent(Intent.ACTION_VIEW, uri);
-                                    startActivity(intent);
-                                }
-                            } else {
-                                uri = Uri.parse(intent.getDataString());
-                                intent = new Intent(Intent.ACTION_VIEW, uri);
-                                startActivity(intent);
-                            }
-                        } else {
-                            try {
-                                startActivity(intent);
-                            } catch (ActivityNotFoundException e) {
-                                uri = Uri.parse("market://search?q=pname:" + intent.getPackage());
-                                intent = new Intent(Intent.ACTION_VIEW, uri);
-                                startActivity(intent);
-                            }
-                        }
-                        return true;
-                    } else { //±∏ πÊΩƒ
-                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        startActivity(intent);
-                        return true;
-                    }
-                } catch (Exception e) {
-                    Log.i("NICE", e.getMessage());
+                    intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+                } catch (URISyntaxException ex) {
+                    Log.e(TAG,"[error] Bad request uri format : [" + url + "] =" + ex.getMessage());
                     return false;
+                }
+
+                //
+                if( Build.VERSION.SDK_INT < Build.VERSION_CODES.R ) {
+                    if( getPackageManager().resolveActivity(intent,0) == null ) {
+                        String pkgName = intent.getPackage();
+                        if( pkgName != null ) {
+                            uri = Uri.parse("market://search?q=pname:" + pkgName);
+                            intent = new Intent(Intent.ACTION_VIEW, uri);
+                            startActivity(intent);
+                        }
+                    } else {
+                        uri = Uri.parse(intent.getDataString());
+                        intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    }
+                } else {
+                    try {
+                        startActivity(intent);
+                    } catch (ActivityNotFoundException e) {
+                        uri = Uri.parse("market://search?q=pname:" + intent.getPackage());
+                        intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    }
                 }
             }
             // ispmobile에서 결제 완료후 스마트주문 앱을 호출하여 결제결과를 전달하는 경우
