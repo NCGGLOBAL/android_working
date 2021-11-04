@@ -54,6 +54,9 @@
         <activity android:name="com.admin.inspection.WebViewActivity"
             android:configChanges="orientation|screenSize"/>
 
+        <activity android:name="com.admin.inspection.QRCodeActivity"
+            android:configChanges="orientation|screenSize"/>
+
         <activity android:name="com.admin.inspection.AlbumSelectActivity" />
         <activity
             android:name="com.admin.inspection.SelectImageMethodActivity"
