@@ -627,6 +627,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 }
+                return true;
             }
             // ispmobile에서 결제 완료후 스마트주문 앱을 호출하여 결제결과를 전달하는 경우
             else if (url.startsWith(WAP_URL)) {
