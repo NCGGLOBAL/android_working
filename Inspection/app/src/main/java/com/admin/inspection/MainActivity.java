@@ -267,6 +267,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if (intent != null) {
+            mLandingUrl = intent.getStringExtra("webviewUrl");
+            Map<String, String> extraHeaders = new HashMap<>();
+            extraHeaders.put("webview-type", "main");
+            if (!mLandingUrl.equals("")) {
+                mWebView.loadUrl(mLandingUrl, extraHeaders);
+            }
+        }
+    }
+
     private void setLocation() {
         Log.e(TAG, "setLocation");
         try {
