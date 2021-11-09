@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "9222395183",
+    "project_id": "stylesu-c7372",
+    "storage_bucket": "stylesu-c7372.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:9222395183:android:fcac418d4bedc6952ebdda",
+        "android_client_info": {
+          "package_name": "com.mallup.stylesu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "9222395183-o4ie7o9qcr12hgcf5h3lqrc91bn76a9j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrDyd9HCwsHR5rd8h-fG3_EzQ--xKEam0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "9222395183-o4ie7o9qcr12hgcf5h3lqrc91bn76a9j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

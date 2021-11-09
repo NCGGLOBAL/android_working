@@ -31,7 +31,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="goodch" />
+                    android:scheme="goodchscheme" />
             </intent-filter>
         </activity>
 
@@ -47,7 +47,7 @@
 
                 <data
                     android:host="pay"
-                    android:scheme="goodch" />
+                    android:scheme="goodchscheme" />
             </intent-filter>
         </activity>
 
