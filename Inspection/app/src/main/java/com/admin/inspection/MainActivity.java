@@ -271,9 +271,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         if (intent != null) {
             mLandingUrl = intent.getStringExtra("webviewUrl");
+            Log.e(TAG, "mLandingUrl : " + mLandingUrl);
             Map<String, String> extraHeaders = new HashMap<>();
             extraHeaders.put("webview-type", "main");
             if (!mLandingUrl.equals("")) {
+                /*앱도메인+/addon/m_admin/barcode_list.asp?code=+스캔값*/
+                mLandingUrl = HNApplication.URL + "/barcode_list.asp?code=" + mLandingUrl;
+                Log.e(TAG, "full mLandingUrl : " + mLandingUrl);
                 mWebView.loadUrl(mLandingUrl, extraHeaders);
             }
         }
