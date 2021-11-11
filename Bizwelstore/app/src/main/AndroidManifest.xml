@@ -53,6 +53,9 @@
         <activity android:name="com.mallup.bizwelstore.WebViewActivity"
             android:configChanges="orientation|screenSize"/>
 
+        <activity android:name="com.mallup.bizwelstore.TutorialActivity"
+            android:configChanges="orientation|screenSize"/>
+
         <activity android:name="com.mallup.bizwelstore.AlbumSelectActivity" />
         <activity
             android:name="com.mallup.bizwelstore.SelectImageMethodActivity"

@@ -3,6 +3,11 @@ package com.mallup.bizwelstore;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+
+import com.mallup.bizwelstore.common.CODE;
+import com.mallup.bizwelstore.delegator.HNSharedPreference;
 
 /**
  * Created by skcrackers on 5/27/16.
@@ -17,7 +22,6 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.activity_splash);
 
         final int welcomeScreenDisplay = 1000;
-//        final int welcomeScreenDisplay = 0;
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -27,36 +31,21 @@ public class SplashActivity extends Activity {
             }
         }
 
-        Thread welcomeThread = new Thread() {
-            int wait = 0;
-
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                try {
-                    super.run();
-                    /**
-                     * use while to get the splash time. Use sleep() to increase
-                     * the wait variable for every 100L.
-                     */
-                    while (wait < welcomeScreenDisplay) {
-                        sleep(100);
-                        wait += 100;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    /**
-                     * Called after splash times up. Do some action after splash
-                     * times up. Here we moved to another main activity class
-                     */
-                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                Log.e("jj", "tutorial : " + HNSharedPreference.getSharedPreference(SplashActivity.this, CODE.PREF_TUTORIAL));
+                if (HNSharedPreference.getSharedPreference(SplashActivity.this, CODE.PREF_TUTORIAL) == "") {
+                    intent =  new Intent(SplashActivity.this, TutorialActivity.class);
+                } else {
                     intent.putExtra("pushUid", mPushUid);
                     intent.putExtra("url", mLandingUrl);
-                    startActivity(intent);
-                    finish();
                 }
+                startActivity(intent);
+                finish();
             }
-        };
-        welcomeThread.start();
+        }, welcomeScreenDisplay);
     }
 }

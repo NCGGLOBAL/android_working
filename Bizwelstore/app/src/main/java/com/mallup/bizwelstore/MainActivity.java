@@ -28,13 +28,17 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
@@ -44,6 +48,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -261,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
             }
             // WebView 초기화
             initWebView();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
