@@ -7,6 +7,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:38389930978:android:48a4d4d8ee7fbe8f2ff7bb",
+        "android_client_info": {
+          "package_name": "com.creator.thenpay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "38389930978-9g3sgaln1qce24he7ksfllkcittn112k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDG59OGzKw0q0wlTL_EPRMBHecA0NLwlhI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "38389930978-9g3sgaln1qce24he7ksfllkcittn112k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:38389930978:android:74a3832392e83c992ff7bb",
         "android_client_info": {
           "package_name": "com.mallup.thenpay"
