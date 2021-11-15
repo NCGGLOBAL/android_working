@@ -72,8 +72,15 @@ class CustomViewPagerAdapter extends PagerAdapter {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.item_viewpager, container, false);
 
-            ImageView imageView = (ImageView) view.findViewById(R.id.tutorialImageView) ;
-            imageView.setImageResource(R.drawable.btn_register_camera);
+            switch (position) {
+                case 0 :
+                    view.setBackgroundResource(R.drawable.bg_swipe1);
+                    break;
+                case 1 :
+                    view.setBackgroundResource(R.drawable.bg_swipe2);
+                    break;
+            }
+
         }
 
         // 뷰페이저에 추가.
