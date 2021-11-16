@@ -69,6 +69,7 @@ import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
 import com.mallup.dsmall.common.BackPressCloseHandler;
+import com.mallup.dsmall.common.CODE;
 import com.mallup.dsmall.common.HNApplication;
 import com.mallup.dsmall.delegator.HNCommTran;
 import com.mallup.dsmall.delegator.HNCommTranInterface;
@@ -207,6 +208,11 @@ public class MainActivity extends AppCompatActivity {
 
             // Back Handler
             mBackPressCloseHandler = new BackPressCloseHandler(this);
+
+            if (HNSharedPreference.getSharedPreference(MainActivity.this, CODE.PREF_TUTORIAL) == "") {
+                Intent intent =  new Intent(MainActivity.this, TutorialActivity.class);
+                startActivity(intent);
+            }
 
             // topic 생성
 //            mFirebaseMessaging = FirebaseMessaging.getInstance();

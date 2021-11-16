@@ -21,7 +21,7 @@ public class HNApplication extends Application {
     private RequestQueue mRequestQueue;
 
     public static boolean mSigned = false;
-    public static String URL = "http://dsmall.bizwelstore.com/m";
+    public static String URL = "http://damall.me/m";
     public static String PUSH_URL = URL + "/app/pushRegister.asp";
     public static boolean mIsFirstLoading = false;
     private static HNApplication mInstance;

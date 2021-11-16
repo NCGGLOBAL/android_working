@@ -36,12 +36,7 @@ public class SplashActivity extends Activity {
             @Override
             public void run() {
                 Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                if (HNSharedPreference.getSharedPreference(SplashActivity.this, CODE.PREF_TUTORIAL) == "") {
-                    intent =  new Intent(SplashActivity.this, TutorialActivity.class);
-                } else {
-                    intent.putExtra("pushUid", mPushUid);
-                    intent.putExtra("url", mLandingUrl);
-                }
+                intent.putExtra("pushUid", mPushUid);intent.putExtra("url", mLandingUrl);
                 startActivity(intent);
                 finish();
             }

@@ -98,7 +98,7 @@ class CustomViewPagerAdapter extends PagerAdapter {
     @Override
     public int getCount() {
         // 전체 페이지 수는 10개로 고정.
-        return 3;
+        return 2;
     }
 
     @Override
