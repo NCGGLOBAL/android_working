@@ -4,7 +4,7 @@
 
     <domain-config cleartextTrafficPermitted="true">
 
-        <domain includeSubdomains="true">damall.me</domain>
+        <domain includeSubdomains="true">dsmall.me</domain>
         <domain includeSubdomains="true">kspay.ksnet.to</domain>
 
     </domain-config>
