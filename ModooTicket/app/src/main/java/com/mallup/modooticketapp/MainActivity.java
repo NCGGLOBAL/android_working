@@ -16,6 +16,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.Location;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -816,7 +818,11 @@ public class MainActivity extends AppCompatActivity {
                         mWebView.loadUrl(request_url);
                     }
                 }
-                // Custom Native 카메라 및 사진 라이브러리 호출
+                // 알림
+                else if ("ACT1004".equals(actionCode)) {
+                    // 기본 알림음 호출
+                    getRingtoneSound();
+                }
                 else if ("ACT1011".equals(actionCode)) {
                     LogUtil.d("ACT1011 - Custom Native 카메라 및 사진 라이브러리 호출");
 
@@ -1167,6 +1173,24 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             executeJavascript(mCallback + "(" + result + ")");
+        }
+    }
+
+    //================== [기본 알림을 발생 시키는 메소드] ==================
+    public void getRingtoneSound(){
+        try {
+            /**
+             * [실행 방법]
+             * 1. Uri 사용해서 사용자 휴대폰 기본 알림음을 지정합니다
+             * 2. Ringtone 기본 알림음 실행 설정 및 재생을 합니다
+             * 3. 사용자 휴대폰이 진동, 무음 모드일 경우는 알림음 재생이 안될 수 있습니다
+             */
+            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(),defaultSoundUri);
+            ringtone.play();
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
     }
 
