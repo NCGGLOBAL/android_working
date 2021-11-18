@@ -16,7 +16,7 @@ import com.mallup.dsmall.common.CODE;
 import com.mallup.dsmall.delegator.HNSharedPreference;
 
 public class TutorialActivity extends Activity {
-
+    int currentSelectedPosition = 0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,28 +28,33 @@ public class TutorialActivity extends Activity {
 
     private void initTutorial() {
         ViewPager pager = findViewById(R.id.viewPager);
-        CustomViewPagerAdapter pagerAdapter = new CustomViewPagerAdapter(this);
+        final CustomViewPagerAdapter pagerAdapter = new CustomViewPagerAdapter(this);
         pager.setAdapter(pagerAdapter);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
+            public void onPageScrolled(int position, float v, int i1) {
+                Log.e("jj", "onPageScrolled position : " + position);
             }
 
             @Override
-            public void onPageSelected(int i) {
-
+            public void onPageSelected(int position) {
+                currentSelectedPosition = position;
             }
 
             @Override
-            public void onPageScrollStateChanged(int i) {
-
+            public void onPageScrollStateChanged(int position) {
+                if (currentSelectedPosition == pagerAdapter.MAX_PAGE_COUNT - 1 &&
+                        position == pagerAdapter.MAX_PAGE_COUNT - 1) {
+                    finish();
+                }
             }
         });
     }
 }
 
 class CustomViewPagerAdapter extends PagerAdapter {
+
+    final int MAX_PAGE_COUNT = 2;
 
     // LayoutInflater 서비스 사용을 위한 Context 참조 저장.
     private Context mContext = null ;
@@ -97,8 +102,7 @@ class CustomViewPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        // 전체 페이지 수는 10개로 고정.
-        return 2;
+        return MAX_PAGE_COUNT;
     }
 
     @Override
