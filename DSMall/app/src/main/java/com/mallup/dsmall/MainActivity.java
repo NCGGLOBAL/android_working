@@ -44,6 +44,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -153,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     private String mToken = "";             // 이미지 Token
     private JSONArray mImgArr = null;
 
-    private LinearLayout mLlPermission;     // 권한페이지
+    private FrameLayout mLlPermission;     // 권한페이지
 
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mFilePathCallback;
@@ -209,11 +210,6 @@ public class MainActivity extends AppCompatActivity {
             // Back Handler
             mBackPressCloseHandler = new BackPressCloseHandler(this);
 
-            if (HNSharedPreference.getSharedPreference(MainActivity.this, CODE.PREF_TUTORIAL) == "") {
-                Intent intent =  new Intent(MainActivity.this, TutorialActivity.class);
-                startActivity(intent);
-            }
-
             // topic 생성
 //            mFirebaseMessaging = FirebaseMessaging.getInstance();
 //            if (HNSharedPreference.getSharedPreference(this, "pushtopic").equals("")) {
@@ -243,14 +239,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+//            if (HNSharedPreference.getSharedPreference(MainActivity.this, CODE.PREF_TUTORIAL) == "") {
+                intent =  new Intent(MainActivity.this, TutorialActivity.class);
+                startActivity(intent);
+//            }
+
             // permission 체크 - 최초실행
             if (HNSharedPreference.getSharedPreference(getApplicationContext(), "isPermissionCheck").equals("")) {
                 HNSharedPreference.putSharedPreference(getApplicationContext(), "isPermissionCheck", "1");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    mLlPermission = (LinearLayout)findViewById(R.id.ll_permission);
+                    mLlPermission = findViewById(R.id.ll_permission);
                     mLlPermission.setVisibility(View.VISIBLE);
 
-                    LinearLayout ll_permission_agree = (LinearLayout)findViewById(R.id.ll_permission_agree);
+                    LinearLayout ll_permission_agree = findViewById(R.id.ll_permission_agree);
                     ll_permission_agree.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
