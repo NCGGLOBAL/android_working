@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "126617862377",
+    "project_id": "jumpro-e9bc5",
+    "storage_bucket": "jumpro-e9bc5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:126617862377:android:e3795b7f1f9069d20f3078",
+        "android_client_info": {
+          "package_name": "com.mallup.jumpro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "126617862377-e2rq76ruimnc3ib3movcq75mo4o5e3ei.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrfgD-aoV3gTS5LTUo7UsmFe0l1fGYsAc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "126617862377-e2rq76ruimnc3ib3movcq75mo4o5e3ei.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
