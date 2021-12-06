@@ -1,0 +1,2345 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">몰업라이브 스튜디오</string>
+
+    <string name="confirm">확인</string>
+    <string name="cancel">취소</string>
+    <string name="alert_title">알림</string>
+
+    <string name="exit">"\'뒤로\'버튼을 한번 더 누르시면 종료됩니다."</string>
+
+    <!-- SNS -->
+    <string name="facebook_app_id">194886367799154</string>
+    <string name="fb_login_protocol_scheme">fb194886367799154</string>
+    <string name="kakao_app_key">20a5a19074892fea22a99d21dc8cfb37</string>
+    <string name="naver_client_id">mpLrVSaumgWVVWty0c42</string>
+    <string name="naver_client_secret">OCXBj9dWXd</string>
+
+    <!-- GCM -->
+    <string name="registering_message_ready">InstanceID 토큰 가져오기</string>
+    <string name="registering_message_generating">InstanceID 토큰 생성중...</string>
+    <string name="registering_message_complete">완료!</string>
+    <string name="default_notification_channel_id">99</string>
+
+    <string name="album_view">Select photo album</string>
+    <string name="image_view">Tap to select images</string>
+
+    <string name="add">ADD</string>
+    <string name="selected">selected</string>
+    <string name="limit_exceeded">Can select a maximum of %d images</string>
+
+    <string name="error_null_cursor">Oops, something went wrong!</string>
+
+    <string name="notification_channel_message_title">Message</string>
+    <string name="notification_channel_message_description">Receive notification about new message.</string>
+    <string name="notification_channel_comment_title">Comment</string>
+    <string name="notification_channel_comment_description">Receive notification about your post or related post\'s comment.</string>
+    <string name="notification_channel_notice_title">Notice</string>
+    <string name="notification_channel_notice_description">Receive notification about our service\'s notice</string>
+
+    <!--Request Permission-->
+    <string name="permission_info">App requires permission to Storage to view images.</string>
+    <string name="permission_force">App requires permission to Storage to view images. Tap Settings and go to Permissions to grant permission.</string>
+    <string name="permission_ok">OK</string>
+    <string name="permission_settings">Settings</string>
+    <string name="permission_package">package</string>
+
+    <!-- crop -->
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="retake_pic">Retake Picture</string>
+    <string name="from_gallery">From Gallery</string>
+    <string name="update_profile_picture">Update Picture</string>
+
+    <string name="label_complete">완료</string>
+    <string name="label_picture_change">순서변경</string>
+    <string name="label_select_folder">폴더선택</string>
+    <string name="label_pick_camera">직접촬영</string>
+
+    <!-- live -->
+    <string name="live_indicator">on-air</string>
+    <string name="start_broadcasting">Start Broadcasting</string>
+    <string name="stream_name">Stream Name</string>
+    <string name="nocamera">No camera exists in your device</string>
+    <string name="camera_not_running_properly">Camera is not running properly</string>
+    <string name="restart">Restart</string>
+    <string name="streaming_not_finished">Your previous broadcast still sends packets due to slow internet speed</string>
+    <string name="oopps_shouldnt_happen">Oopps this shouldn\'t be happened. Please let the library developer this status</string>
+    <string name="broadcast_connection_lost">Connection to media server is lost</string>
+    <string name="low_bandwidth">Network speed is low. Latency is increasing.</string>
+    <string name="not_eligible_for_broadcast">Your device is not eligible to broadcast. There is no hardware encoder.</string>
+    <string name="no_network_connectivity">You\'re not connected to any network. Please connect to Internet</string>
+    <string name="stop_broadcasting">Stop</string>
+    <string name="camera_permission_is_required">Camera permission is required to run this app</string>
+    <string name="microphone_permission_is_required">Microphone permission is required to run this app</string>
+    <string name="permission">Permission</string>
+    <string name="app_doesnot_work_without_permissions">App does not work without permissions. Please give Camera and Record Audio permission on app settings</string>
+
+    <!-- youtube watch me -->
+    <string name="button_create">CREATE LIVE EVENT</string>
+    <string name="connection_to_google_play_failed">Connection to Play Services failed.</string>
+    <string name="not_signed_in">Not signed in</string>
+    <string name="error">Error</string>
+    <string name="error_format">[Error] %s</string>
+    <string name="refresh">Refresh</string>
+    <string name="accounts">Accounts</string>
+    <string name="pick_one_of_your_videos_to_submit">Create a new live event or click on one of your events to start streaming</string>
+    <string name="no_videos_to_show_here_">No videos to show here.</string>
+    <string name="avatar">avatar</string>
+    <string name="activeStreamingStatus">Currently streaming video.</string>
+    <string name="activeStreamingLabel">Watch Me is streaming!</string>
+    <string name="loadingEvents">Loading events. Please wait…</string>
+    <string name="creatingEvent">Creating event. Please wait…</string>
+    <string name="streamingOn">live broadcast 시작하기</string>
+    <string name="streamingOff">live broadcast 종료하기</string>
+    <string name="startEvent">START EVENT</string>
+    <string name="endEvent">END EVENT</string>
+    <string name="startingEvent">Starting event. Please wait…</string>
+    <string name="endingEvent">Ending event. Please wait…</string>
+    <string name="videoThumbnail">video thumbnail</string>
+    <string name="permission_camera_rationale">App needs camera for video stream.</string>
+    <string name="permission_microphone_rationale">App needs microphone for audio stream.</string>
+    <string name="permissions_not_granted">Streaming service won\'t be able to work without camera and microphone permissions.</string>
+    <string name="permission_camera_explain">You need to turn on the camera permission in settings dialog for this app for streamer to work.</string>
+    <string name="permission_microphone_explain">You need to turn on the record audio permission in settings dialog for this app for streamer to work.</string>
+
+    <string name="video">Video</string>
+
+    <string name="audio">Audio</string>
+
+    <string name="text">Text</string>
+
+    <string name="retry">Retry</string>
+
+    <string name="selection_disabled">Disabled</string>
+
+    <string name="selection_default">Default</string>
+
+    <string name="selection_default_none">Default (none)</string>
+
+    <string name="unexpected_intent_action">Unexpected intent action: <xliff:g id="action">%1$s</xliff:g></string>
+
+    <string name="enable_random_adaptation">Enable random adaptation</string>
+
+    <string name="error_drm_not_supported">Protected content not supported on API levels below 18</string>
+
+    <string name="error_drm_unsupported_scheme">This device does not support the required DRM scheme</string>
+
+    <string name="error_drm_unknown">An unknown DRM error occurred</string>
+
+    <string name="error_no_decoder">This device does not provide a decoder for <xliff:g id="mime_type">%1$s</xliff:g></string>
+
+    <string name="error_no_secure_decoder">This device does not provide a secure decoder for <xliff:g id="mime_type">%1$s</xliff:g></string>
+
+    <string name="error_querying_decoders">Unable to query device decoders</string>
+
+    <string name="error_instantiating_decoder">Unable to instantiate decoder <xliff:g id="decoder_name">%1$s</xliff:g></string>
+
+    <string name="error_unsupported_video">Media includes video tracks, but none are playable by this device</string>
+
+    <string name="error_unsupported_audio">Media includes audio tracks, but none are playable by this device</string>
+
+    <string name="storage_permission_denied">Permission to access storage was denied</string>
+
+    <string name="sample_list_load_error">One or more sample lists failed to load</string>
+    <string name="stream_not_started">Failed to start. Please check server url and security credentials.</string>
+
+    <!-- 번개장터에서 가져온 String -->
+    <string name="abc_action_bar_home_description">Navigate home</string>
+    <string name="abc_action_bar_home_description_format">%1$s, %2$s</string>
+    <string name="abc_action_bar_home_subtitle_description_format">%1$s, %2$s, %3$s</string>
+    <string name="abc_action_bar_up_description">Navigate up</string>
+    <string name="abc_action_menu_overflow_description">More options</string>
+    <string name="abc_action_mode_done">Done</string>
+    <string name="abc_activity_chooser_view_see_all">See all</string>
+    <string name="abc_activitychooserview_choose_application">Choose an app</string>
+    <string name="abc_capital_off">OFF</string>
+    <string name="abc_capital_on">ON</string>
+    <string name="abc_search_hint">Search…</string>
+    <string name="abc_searchview_description_clear">Clear query</string>
+    <string name="abc_searchview_description_query">Search query</string>
+    <string name="abc_searchview_description_search">Search</string>
+    <string name="abc_searchview_description_submit">Submit query</string>
+    <string name="abc_searchview_description_voice">Voice search</string>
+    <string name="abc_shareactionprovider_share_with">Share with</string>
+    <string name="abc_shareactionprovider_share_with_application">Share with %s</string>
+    <string name="abc_toolbar_collapse_description">Collapse</string>
+    <string name="com_facebook_device_auth_instructions">Visit &lt;b>facebook.com/device&lt;/b> and enter the code shown above.</string>
+    <string name="com_facebook_image_download_unknown_error">Unexpected error while downloading an image.</string>
+    <string name="com_facebook_internet_permission_error_message">WebView login requires INTERNET permission</string>
+    <string name="com_facebook_internet_permission_error_title">AndroidManifest Error</string>
+    <string name="com_facebook_like_button_liked">Liked</string>
+    <string name="com_facebook_like_button_not_liked">Like</string>
+    <string name="com_facebook_loading">Loading…</string>
+    <string name="com_facebook_loginview_cancel_action">Cancel</string>
+    <string name="com_facebook_loginview_log_in_button">Log in</string>
+    <string name="com_facebook_loginview_log_in_button_continue">Continue with Facebook</string>
+    <string name="com_facebook_loginview_log_in_button_long">Log in with Facebook</string>
+    <string name="com_facebook_loginview_log_out_action">Log out</string>
+    <string name="com_facebook_loginview_log_out_button">Log out</string>
+    <string name="com_facebook_loginview_logged_in_as">Logged in as: %1$s</string>
+    <string name="com_facebook_loginview_logged_in_using_facebook">Logged in using Facebook</string>
+    <string name="com_facebook_send_button_text">Send</string>
+    <string name="com_facebook_share_button_text">Share</string>
+    <string name="com_facebook_smart_device_instructions">To connect your account, open the Facebook app on your mobile device and check for notifications.</string>
+    <string name="com_facebook_smart_device_instructions_or">- OR -</string>
+    <string name="com_facebook_smart_login_confirmation_cancel">Not you?</string>
+    <string name="com_facebook_smart_login_confirmation_title">Confirm Login</string>
+    <string name="com_facebook_tooltip_default">"You're in control - choose what info you want to share with apps."</string>
+    <string name="common_google_play_services_enable_button">Enable</string>
+    <string name="common_google_play_services_enable_text">"%1$s won't work unless you enable Google Play services."</string>
+    <string name="common_google_play_services_enable_title">Enable Google Play services</string>
+    <string name="common_google_play_services_install_button">Install</string>
+    <string name="common_google_play_services_install_text">"%1$s won't run without Google Play services, which are missing from your device."</string>
+    <string name="common_google_play_services_install_title">Get Google Play services</string>
+    <string name="common_google_play_services_notification_ticker">Google Play services error</string>
+    <string name="common_google_play_services_unknown_issue">%1$s is having trouble with Google Play services. Please try again.</string>
+    <string name="common_google_play_services_unsupported_text">"%1$s won't run without Google Play services, which are not supported by your device."</string>
+    <string name="common_google_play_services_update_button">Update</string>
+    <string name="common_google_play_services_update_text">"%1$s won't run unless you update Google Play services."</string>
+    <string name="common_google_play_services_update_title">Update Google Play services</string>
+    <string name="common_google_play_services_updating_text">"%1$s won't run without Google Play services, which are currently updating."</string>
+    <string name="common_google_play_services_wear_update_text">New version of Google Play services needed. It will update itself shortly.</string>
+    <string name="common_open_on_phone">Open on phone</string>
+    <string name="common_signin_button_text">Sign in</string>
+    <string name="common_signin_button_text_long">Sign in with Google</string>
+    <string name="exo_controls_fastforward_description">Fast forward</string>
+    <string name="exo_controls_next_description">Next track</string>
+    <string name="exo_controls_pause_description">Pause</string>
+    <string name="exo_controls_play_description">Play</string>
+    <string name="exo_controls_previous_description">Previous track</string>
+    <string name="exo_controls_rewind_description">Rewind</string>
+    <string name="exo_controls_stop_description">Stop</string>
+    <string name="messenger_send_button_text">Send</string>
+    <string name="s1">Save image</string>
+    <string name="s2">Allow Ad to store image in Picture gallery?</string>
+    <string name="s3">Accept</string>
+    <string name="s4">Decline</string>
+    <string name="s5">Create calendar event</string>
+    <string name="s6">Allow Ad to create a calendar event?</string>
+    <string name="search_menu_title">Search</string>
+    <string name="status_bar_notification_info_overflow">999+</string>
+    <string name="pull_to_refresh_pull_label">Pull to refresh…</string>
+    <string name="pull_to_refresh_refreshing_label">Loading…</string>
+    <string name="pull_to_refresh_release_label">Release to refresh…</string>
+    <string name="com_facebook_smart_login_confirmation_continue_as">Continue as %1$s</string>
+    <string name="pull_to_refresh_from_bottom_pull_label">@string/pull_to_refresh_pull_label</string>
+    <string name="pull_to_refresh_from_bottom_refreshing_label">@string/pull_to_refresh_refreshing_label</string>
+    <string name="pull_to_refresh_from_bottom_release_label">@string/pull_to_refresh_release_label</string>
+    <string name="com_kakao_account_cancel">Cancel</string>
+    <string name="com_kakao_account_cancel_tts">Cancel, Button</string>
+    <string name="com_kakao_alert_appKey">need to declare com.kakao.sdk.AppKey in your AndroidManifest.xml</string>
+    <string name="com_kakao_alert_install_kakaotalk">Please update KakaoTalk to the latest version.</string>
+    <string name="com_kakao_alert_uri_too_long">Failed to send message because it exceeds the message size limit. Please contact the app administrator.</string>
+    <string name="com_kakao_cancel_button">Cancel</string>
+    <string name="com_kakao_confirm_logout">Are you sure to log out from this app?</string>
+    <string name="com_kakao_confirm_unlink">Are you sure to unlink from this app?</string>
+    <string name="com_kakao_kakaostory_account">with KakaoStory</string>
+    <string name="com_kakao_kakaostory_account_tts">with KakaoStory, Button</string>
+    <string name="com_kakao_kakaotalk_account">with KakaoTalk</string>
+    <string name="com_kakao_kakaotalk_account_tts">with KakaoTalk, Button</string>
+    <string name="com_kakao_login_button">Log in with KakaoAccount</string>
+    <string name="com_kakao_login_button_tts">Log in with KakaoAccount, Button</string>
+    <string name="com_kakao_logout_button">Log out</string>
+    <string name="com_kakao_ok_button">OK</string>
+    <string name="com_kakao_other_kakaoaccount">with another KakaoAccount</string>
+    <string name="com_kakao_other_kakaoaccount_tts">with another KakaoAccount, Button</string>
+    <string name="com_kakao_profile_userId">Kakao User ID</string>
+    <string name="com_kakao_tokeninfo_button">Token Info</string>
+    <string name="com_kakao_unlink_button">Unlink</string>
+    <string name="abc_font_family_body_1_material">sans-serif</string>
+    <string name="abc_font_family_body_2_material">sans-serif-medium</string>
+    <string name="abc_font_family_button_material">sans-serif-medium</string>
+    <string name="abc_font_family_caption_material">sans-serif</string>
+    <string name="abc_font_family_display_1_material">sans-serif</string>
+    <string name="abc_font_family_display_2_material">sans-serif</string>
+    <string name="abc_font_family_display_3_material">sans-serif</string>
+    <string name="abc_font_family_display_4_material">sans-serif-light</string>
+    <string name="abc_font_family_headline_material">sans-serif</string>
+    <string name="abc_font_family_menu_material">sans-serif</string>
+    <string name="abc_font_family_subhead_material">sans-serif</string>
+    <string name="abc_font_family_title_material">sans-serif-medium</string>
+    <string name="ad_name_ad_category_top">카테고리</string>
+    <string name="ad_name_ad_keyword">키워드탑</string>
+    <string name="ad_name_ad_pop_shop">인기상점</string>
+    <string name="ad_name_ad_super_keyword">슈퍼키워드</string>
+    <string name="ad_name_plus">PLUS</string>
+    <string name="ad_name_today_deal">추천Plus</string>
+    <string name="ad_name_today_deal_plus">추천VIP</string>
+    <string name="ad_popup_title">종료 전에 이 상품 어떠세요?</string>
+    <string name="add_search_keyword">상세 검색어를 입력하세요</string>
+    <string name="admob_app_id">ca-app-pub-2456681334277769~6251288334</string>
+    <string name="admob_key_item_detail">ca-app-pub-2456681334277769/2833916339</string>
+    <string name="admob_key_search_result_big">ca-app-pub-2456681334277769/3333980334</string>
+    <string name="after_register_biz_btn_ad">효과적인 광고상품으로 매출을 UP!</string>
+    <string name="after_register_biz_btn_cafe">퀵 / 택배 신청도 이젠 번개처럼!</string>
+    <string name="after_register_biz_btn_category">네이버 카페/블로그에 공유하고 판매 Up!</string>
+    <string name="after_register_btn_ad">퀵 / 택배 신청도 이젠 번개처럼!</string>
+    <string name="after_register_btn_cafe">네이버 카페/블로그에 공유하고 판매 Up!</string>
+    <string name="after_register_btn_category">네이버페이 연동하고 신뢰 Up!</string>
+    <string name="after_register_btn_check_product">등록상품 확인</string>
+    <string name="after_register_btn_continue">등록 계속하기</string>
+    <string name="after_register_btn_view_product">등록상품 보기</string>
+    <string name="after_register_title_end">되었습니다!</string>
+    <string name="after_register_title_first">상품등록이</string>
+    <string name="after_register_title_mid">완료</string>
+    <string name="alert_free_sharing">"나눔시에 해당글 찜 및 팔로우는 허용되며 별평가, 홍보글, 다른상품 찜, 타사이트/어플 가입 유도 등의 행위는 이용정책에 위반되어 제재됩니다.
+또한 정확한 당첨발표(당발) 일자가 없는 나눔은 자동 취소 됩니다."</string>
+    <string name="alliancetxt">광고센터 (보기/신청)</string>
+    <string name="alliancetxt_for_bizseller">광고센터 (슈퍼UP관리)</string>
+    <string name="androidMarket">PLAY</string>
+    <string name="apiSecureUrl">https://core-api.bunjang.co.kr/api/1/</string>
+    <string name="apiUrl">http://core-api.bunjang.co.kr/api/1/</string>
+    <string name="apixSecureUrlNew">https://core-api.bunjang.co.kr/api/1/</string>
+    <string name="apixUrl">http://core-api.bunjang.co.kr/api/1/</string>
+    <string name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="appindexing_url">http://m.bunjang.co.kr/products/</string>
+    <string name="baro_shipping_url">http://bit.ly/1T84exZ</string>
+    <string name="birthdate">생년월일</string>
+    <string name="birthdate_guide">생일을 입력시 맞춤 정보를 제공해드립니다</string>
+    <string name="block_confirm">"차단하시겠습니까?
+상대방과의 대화방은 자동 삭제되며 내 상점, 상품에 댓글을 쓸 수 없습니다.
+(차단 여부는 상대방이 알 수 없습니다)"</string>
+    <string name="bottom_my_menu_cancel">취소</string>
+    <string name="bottom_sheet_behavior">android.support.design.widget.BottomSheetBehavior</string>
+    <string name="btn_delete">삭제</string>
+    <string name="btn_resend">재전송</string>
+    <string name="btn_send">전송</string>
+    <string name="bunjang_host">goto</string>
+    <string name="bunjang_scheme">bunjang</string>
+    <string name="bunp_guide_close">@string/label_continue</string>
+    <string name="bunp_guide_content_1">"약속을 지키는 번장인이 되기 위한
+번개장터의 새로운 서비스"</string>
+    <string name="bunp_guide_content_2">"먼저 번개톡에서 거래방법,거래금액을
+합의 후 번프 시작"</string>
+    <string name="bunp_guide_content_3">상대방과 약속된 거래조건 입력</string>
+    <string name="bunp_guide_content_4">"번프를 받았다면 상대방과 약속된 사항인지
+확인 후 승인"</string>
+    <string name="bunp_guide_content_5">거래 완료 시에만 가능한 리뷰 작성</string>
+    <string name="bunp_guide_content_6">판매,구매 내역을 한곳에서 관리</string>
+    <string name="bunp_guide_next">다음</string>
+    <string name="bunp_guide_title_1">번개 프라미스</string>
+    <string name="bunp_guide_title_2">번프 시작</string>
+    <string name="bunp_guide_title_3">번프 작성</string>
+    <string name="bunp_guide_title_4">번프 승인</string>
+    <string name="bunp_guide_title_5">믿고 보는 리뷰</string>
+    <string name="bunp_guide_title_6">거래 내역을 한눈에</string>
+    <string name="bunp_msg_review_block">구매자가 거래완료 후 리뷰작성이 가능합니다.</string>
+    <string name="bunp_new_start_msg">"최근 대화내용이 없습니다.
+거래방법 및 거래금액의 합의가 되었나요?"</string>
+    <string name="category_ad_alert_button">내용확인</string>
+    <string name="category_ad_alert_message_1">빠른 노출량 확보</string>
+    <string name="category_ad_alert_message_1_sub">신청 카테고리의 모든 상품페이지 및 카테고리 결과 페이지에서 노출</string>
+    <string name="category_ad_alert_message_2">높은 광고 효과</string>
+    <string name="category_ad_alert_message_2_sub">신청한 카테고리의 상품 페이지에만 노출되어 효과적인 타겟팅</string>
+    <string name="category_etc_log_msg">"사용자 의견을 받습니다.
+원하는 신규 카테고리를 알려주시면 내부 검토 후 반영하겠습니다."</string>
+    <string name="category_etc_log_msg_empty">원하는 카테고리명을 입력해 주세요.</string>
+    <string name="category_etc_log_msg_hint">신규 카테고리명</string>
+    <string name="category_etc_log_msg_succ">"감사합니다.
+접수되었습니다."</string>
+    <string name="category_fmt_show_all">전체 보기</string>
+    <string name="category_history_empty">최근 이용한 카테고리가 없습니다.</string>
+    <string name="category_msg_no_register_commend_review">상점후기는 해당 상점의 후기 목록에서 작성해주세요.</string>
+    <string name="category_suggestions">추천 카테고리</string>
+    <string name="change">변경</string>
+    <string name="change_favorite_place">즐겨찾는 지역 변경</string>
+    <string name="change_password">비밀번호 변경</string>
+    <string name="change_phone_number">휴대폰 번호 변경</string>
+    <string name="change_shop_name">상점명 변경</string>
+    <string name="character_counter_pattern">%1$d / %2$d</string>
+    <string name="chat_account_check">사기피해 계좌 조회</string>
+    <string name="chat_agree_terms">채팅 정보 제공 동의</string>
+    <string name="chat_bubble_address_contact_copy">연락처 복사</string>
+    <string name="chat_bubble_address_copy">주소 복사</string>
+    <string name="chat_bubble_address_receiver_copy">수령인 복사</string>
+    <string name="chat_bubble_bank_code_copy">은행명 복사</string>
+    <string name="chat_bubble_bank_name_copy">예금주 복사</string>
+    <string name="chat_bubble_bank_number_copy">계좌번호 복사</string>
+    <string name="chat_bubble_bank_price_copy">금액 복사</string>
+    <string name="chat_bubble_delivery_name_copy">택배사 복사</string>
+    <string name="chat_bubble_delivery_number_copy">운송장 번호 복사</string>
+    <string name="chat_bubble_track">택배 배송 조회하기</string>
+    <string name="chat_channel_no_exist">개설된 대화방이 없습니다</string>
+    <string name="chat_enable_chatting">번개톡 이용하기</string>
+    <string name="chat_image_date">촬영일시</string>
+    <string name="chat_image_date_format">촬영일시 : %s</string>
+    <string name="chat_image_source">첨부방식</string>
+    <string name="chat_image_source_album">앨범</string>
+    <string name="chat_image_source_carmera">직접촬영</string>
+    <string name="chat_image_source_format">첨부방식 : %s</string>
+    <string name="chat_image_unknown">알수없음</string>
+    <string name="chat_label">번개톡</string>
+    <string name="chat_message_account_view_btn">사기피해 계좌조회</string>
+    <string name="chat_message_account_view_careful">사기피해 계좌조회를 하지 않아 발생 하는 문제는 구매자 본인 책임입니다.</string>
+    <string name="chat_message_account_view_message_title">유의사항 안내</string>
+    <string name="chat_message_account_view_notice">"안내 : 계좌 휴대폰번호는 '신고내역조회' 후 거래해주세요"</string>
+    <string name="chat_message_box_parcel">싸고 편리한 번개택배 신청하기</string>
+    <string name="chat_msg_terms">거래 분쟁 방지 및 사용자 편의를 위해 입력 내용을 기록 및 열람할 수 있으며, 제공된 정보는 관련 법률에 따라 보관됩니다.</string>
+    <string name="chat_msg_terms_update">2014년 3월 21일 업데이트</string>
+    <string name="chat_popup_account_add_delivery_price">택배비 포함</string>
+    <string name="chat_popup_account_beware_delivery_invoice_content">&lt;font color=#777777>물건가격에 택배비가 포함된(택포) 거래인지, 택배비를 별도로 지불하는(착불) 거래인지 정확한 확인이 필요하며, 판매자가 택배를 보냈을 경우 송장번호를 꼭 미리 받아두는 습관을 가지면 좋습니다.&lt;/font>&lt;br>&lt;font color=#e14436>(만약의 경우를 대비해서 상세 사진, 상세 설명 자료 및 기타 대화 내용을 보관해두세요.)&lt;/font></string>
+    <string name="chat_popup_account_beware_delivery_invoice_title">택배비 여부 및 송장번호 확인</string>
+    <string name="chat_popup_account_beware_product_state_content">"구매자의 경우 물건의 상태를 직접 확인할 수 없기 때문에 판매자로부터 물건에 대한 정보를 꼼꼼히 얻는 것이 중요합니다.
+(하자여부, 실제상품사진)"</string>
+    <string name="chat_popup_account_beware_product_state_title">하자여부 확인</string>
+    <string name="chat_popup_account_beware_title">선입금 거래 주의사항</string>
+    <string name="chat_popup_account_beware_transaction_sequence_1">판매자 계좌전달</string>
+    <string name="chat_popup_account_beware_transaction_sequence_2">구매자 입금</string>
+    <string name="chat_popup_account_beware_transaction_sequence_3">판매자가 입금 확인 후 물건 배송</string>
+    <string name="chat_popup_account_beware_transaction_sequence_4">구매자에게 송장번호 전달</string>
+    <string name="chat_popup_account_beware_transaction_sequence_5">구매자 물건 수령 후 하자유무 확인</string>
+    <string name="chat_popup_account_beware_transaction_sequence_content">택배 거래를 할 경우 보통의 거래 순서는 아래와 같습니다.</string>
+    <string name="chat_popup_account_beware_transaction_sequence_title">거래순서 확인</string>
+    <string name="chat_popup_account_hint_bank_select">은행선택</string>
+    <string name="chat_popup_account_hint_name_input">예금주 입력</string>
+    <string name="chat_popup_account_hint_number_input">계좌번호 입력</string>
+    <string name="chat_popup_account_hint_price_input">금액 입력</string>
+    <string name="chat_popup_account_send_button">구매자에게 전송</string>
+    <string name="chat_popup_account_text_message">"%1$s님이 아래 계좌로 입금을 요청하였습니다.
+은행명:%2$s
+계좌번호:%3$s
+예금주:%4$s
+금액:%5$d(택배비 미포함)"</string>
+    <string name="chat_popup_account_text_message_delivery">"%1$s님이 아래 계좌로 입금을 요청하였습니다.
+은행명:%2$s
+계좌번호:%3$s
+예금주:%4$s
+금액:%5$d(택배비 포함)"</string>
+    <string name="chat_popup_account_title">계좌정보 입력</string>
+    <string name="chat_popup_address_contact">@string/label_contact</string>
+    <string name="chat_popup_address_receiver">수령인</string>
+    <string name="chat_popup_address_send_seller">판매자에게 전송</string>
+    <string name="chat_popup_address_text_message">"%1$s님이 아래 주소로 배송을 요청하였습니다.
+수령인:%2$s
+연락처:%3$s
+주소:(%4$s)%5$s"</string>
+    <string name="chat_popup_address_zip_hint">우편번호</string>
+    <string name="chat_popup_bunp_create">거래 진행중인 번프는 자동으로 취소처리됩니다.</string>
+    <string name="chat_popup_bunp_end">정말 거래가 완료되었습니까?</string>
+    <string name="chat_popup_delivery">배송신청</string>
+    <string name="chat_popup_delivery_empty_message">"등록된 운송장 번호가 없습니다.
+판매자에게 송장번호입력을 요청해주세요."</string>
+    <string name="chat_popup_delivery_hint_delivery_select">택배사 선택</string>
+    <string name="chat_popup_delivery_hint_number_input">운송장 번호 입력</string>
+    <string name="chat_popup_delivery_text_message">"%1$s님의 택배가 발송 되었습니다.
+택배사:%2$s
+송장번호:%3$s"</string>
+    <string name="chat_popup_delivery_title">운송장정보 입력</string>
+    <string name="chat_popup_empty_result">입력 되지 않은 항목이 있습니다. 입력 값을 확인해주세요.</string>
+    <string name="chat_popup_gallery">앨범</string>
+    <string name="chat_popup_limit_number">30자이내로 입력해주세요.</string>
+    <string name="chat_popup_order_chatchanel_account">님이 아래의 계좌로 입금을 요청하였습니다.</string>
+    <string name="chat_popup_order_chatchanel_address">님이 아래의 주소로 배송을 요청하였습니다.</string>
+    <string name="chat_popup_order_chatchanel_delivery">님의 택배가 발송 되었습니다.</string>
+    <string name="chat_popup_order_deposit_title">입금을 확인해주세요.</string>
+    <string name="chat_popup_order_guide_buyer_guide">구매자 기능</string>
+    <string name="chat_popup_order_guide_buyer_guide_address_content">"배송 받을 주소를 입력 할 수 있어요.
+입력된 배송지 정보는 계속 사용할 수 있어요."</string>
+    <string name="chat_popup_order_guide_buyer_guide_address_title">주소입력</string>
+    <string name="chat_popup_order_guide_buyer_guide_review_content">"상품 수령 후 구매후기를 남겨주세요.
+구매 후기는 다른 이용자에게 큰 도움이 됩니다."</string>
+    <string name="chat_popup_order_guide_buyer_guide_review_title">구매후기</string>
+    <string name="chat_popup_order_guide_buyer_guide_track_content">판매자가 입력한 택배사와 송장번호로 배송 상태를 조회해보세요.</string>
+    <string name="chat_popup_order_guide_buyer_guide_track_title">배송조회</string>
+    <string name="chat_popup_order_guide_seller_guide">판매자 기능</string>
+    <string name="chat_popup_order_guide_seller_guide_account_content">"판매자 계좌 정보를 깔끔하게 입력할 수 있어요.
+입력된 계좌정보는 계속 사용할 수 있어요."</string>
+    <string name="chat_popup_order_guide_seller_guide_account_title">계좌입력</string>
+    <string name="chat_popup_order_guide_seller_guide_delivery_content">번장 택배를 신청할 수 있어요.&lt;br>&lt;b>&lt;font color=#000000>더욱 저렴하고 편리한 번장 택배&lt;/font>&lt;/b>를 이용해보세요.</string>
+    <string name="chat_popup_order_guide_seller_guide_delivery_titlet">번장배송신청</string>
+    <string name="chat_popup_order_guide_seller_guide_invoice_content">"발송한 택배의 송장번호를 입력할 수 있어요.
+입력 정보를 통해 배송 상태를 조회해 보세요."</string>
+    <string name="chat_popup_order_guide_seller_guide_invoice_titlet">송장번호입력</string>
+    <string name="chat_popup_order_guide_title">거래 툴박스 이용가이드</string>
+    <string name="chat_popup_req_address">주소정보 입력</string>
+    <string name="chat_popup_req_deposit">입금정보 입력</string>
+    <string name="chat_popup_track">배송조회</string>
+    <string name="chat_precaution_check">계정 및 신고내역</string>
+    <string name="chat_quit_alert_message">"대화방을 나가면 대화 내용이
+모두 삭제됩니다.
+대화방을 나가시겠습니까?"</string>
+    <string name="chat_resend_alert_message">재전송 하시겠습니까?</string>
+    <string name="chat_sending_exit_btn">나가기</string>
+    <string name="chat_sending_wait_btn">기다리기</string>
+    <string name="chat_title_agree_terms">번개톡 채팅 정보 제공 동의</string>
+    <string name="chat_video_tooltip_content">"글이나 사진으로 설명이 부족하다면?
+아이템을 직접 촬영하여 전송하세요!"</string>
+    <string name="chat_video_tooltip_title">동영상기능 출시!</string>
+    <string name="chat_way_in_talking_blocked_user">"상대방을 차단중입니다.
+상점정보화면에서 차단해제를 먼저 해주세요."</string>
+    <string name="check_biz_seller_num_error">"사업자등록번호가 올바르지 않습니다.
+(-없이 숫자만 입력)"</string>
+    <string name="checkout_buy_info_cancel">취소</string>
+    <string name="checkout_buy_info_content1_1">- 원하는 상품이 맞는지 상품설명을 꼭 읽어 주세요.</string>
+    <string name="checkout_buy_info_content1_2">- 사이즈/컬러, 배송비 포함 여부, 배송일 등 구매조건을 확인해주세요.</string>
+    <string name="checkout_buy_info_content2_1">- 판매자가 구매전 연락을 요청한 경우 주문전에 미리 번개톡으로 상담해주세요.</string>
+    <string name="checkout_buy_info_content2_2">- 수량이 적은 상품은 예약 중 또는 판매완료된 경우가 있으니 사전에 확인해보세요.</string>
+    <string name="checkout_buy_info_ok">구매</string>
+    <string name="checkout_buy_info_title1">상품설명을 자세히 확인하셨나요?</string>
+    <string name="checkout_buy_info_title2">판매자와 구매상담을 하셨나요?</string>
+    <string name="checkout_sell_info_content1_1">- 사이즈/컬러, 재고수량, 배송일 등 판매조건을 잘 설명해주세요.</string>
+    <string name="checkout_sell_info_content1_2">- 수량이 제한된 상품의 경우 재고량, 판매완료 상태 등을 바로바로 업데이트해주세요.</string>
+    <string name="checkout_sell_info_content2_1">- 안전결제로 판매할 경우 결제시 구매자가 택배비까지 같이 지불할 수 있도록 택배비 포함을 권장합니다.</string>
+    <string name="checkout_sell_info_ok">확인</string>
+    <string name="checkout_sell_info_title1">상품설명을 자세히 작성해주셨나요?</string>
+    <string name="checkout_sell_info_title2">[무료배송]을 체크하셨나요?</string>
+    <string name="close">닫기</string>
+    <string name="com.crashlytics.android.build_id">31a2855c-e8db-4a2b-94ee-680c6cb4047e</string>
+    <string name="com_kakao_profile_nickname">Nickname</string>
+    <string name="command_apply">관리모드로 설정되었습니다. 앱을 종료 후 다시 실행해주세요.</string>
+    <string name="command_fail">잘못된 명령어 입니다.</string>
+    <string name="command_remove">관리모드가 종료되었습니다. 앱을 종료 후 다시 실행해주세요.</string>
+    <string name="comment_del_feedback_success">댓글이 삭제되었습니다</string>
+    <string name="comment_del_message">댓글을 삭제하시겠습니까?</string>
+    <string name="comments_admin_alert_message">"운영자 상점은 메일 접수만 가능합니다.
+[앱/설정]의 문의/제안/신고로 메일접수 부탁드립니다.
+(cs@quicket.co.kr)"</string>
+    <string name="comments_title_default">문의</string>
+    <string name="condition_search">상세검색</string>
+    <string name="confirm_email">이메일 확인</string>
+    <string name="confirm_phone_number">휴대폰 번호 확인</string>
+    <string name="contact_additional_alert_content">"안전한 거래를 위해 번개톡으로 연락해주세요
+(번개톡>사기내역조회 필수!)"</string>
+    <string name="contact_alert_content_expensive_item">고액(10만원 이상)의 물품 구매 시 사기예방법!&lt;br>&lt;br>- 직접 만나서 거래하기&lt;br>- 네이버 안전결제 요청하기&lt;br>- 번개톡>사기내역조회하기 &lt;font color=#eb4131>(필수)&lt;/font>&lt;br>&lt;br>고액물품 계좌/택배 거래는 사기발생 위험!!!</string>
+    <string name="contact_fraud_need_all_item_check">"사기예방법을 읽고
+모든 항목에 체크해주세요."</string>
+    <string name="contact_fraud_protection">사기피해 발생주의</string>
+    <string name="contact_fraud_protection_btok_aks_fraud_history">번개톡 > 사기내역 조회하기</string>
+    <string name="contact_fraud_protection_content_description">고액 물품 계좌/택배 거래는 사기발생 위험!!!</string>
+    <string name="contact_fraud_protection_content_title">고액(10만원 이상)물품 구매시 사기예방법!</string>
+    <string name="contact_fraud_protection_direct_deal">직접 만나서 거래하기</string>
+    <string name="contact_fraud_protection_req_naver_pay">네이버 안전결제 요청하기</string>
+    <string name="contact_info_email_title">@string/label_email</string>
+    <string name="contact_info_katalk_title">카카오톡 아이디</string>
+    <string name="contact_info_myself_contact_msg">자기 자신과 대화할수 없습니다.</string>
+    <string name="contact_info_phone_title">휴대폰 번호</string>
+    <string name="contact_info_sub_title">휴대폰번호, 카톡아이디</string>
+    <string name="contact_info_title">연락처 정보</string>
+    <string name="core_com_kakao_sdk_loading">Loading…</string>
+    <string name="create_channel_failed">채널 생성이 실패했습니다</string>
+    <string name="crop_label">사진편집</string>
+    <string name="ctg_dummy_community">커뮤니티</string>
+    <string name="curation_buy_info">구매안내</string>
+    <string name="curation_info_join">참여하기</string>
+    <string name="curation_info_later">나중에</string>
+    <string name="curation_info_message">"중고명품을 포함한 다양한 기획전이 전문상점의 입점신청을 기다리고 있습니다.
+지금 기획전 목록을 확인하고 참여 해보세요!"</string>
+    <string name="curation_product_list">상품목록</string>
+    <string name="custom_gal_over_max_img">선택 가능한 사진 개수를 초과했습니다.</string>
+    <string name="custom_gal_source_album">album</string>
+    <string name="custom_gal_source_camera">camera</string>
+    <string name="deal_info_buy_notice">구매전 유의사항</string>
+    <string name="deal_info_buy_notice_hint">상품의 사이즈, 색깔을 확인하시고 구매하세요^^</string>
+    <string name="deal_info_close_time">끝 시간</string>
+    <string name="deal_info_contact_time">연락 가능 시간</string>
+    <string name="deal_info_open_time">시작 시간</string>
+    <string name="deal_info_return_policy">교환/환불/반품정책</string>
+    <string name="deal_info_return_policy_bunjang">물품의 상태가 기재된 것과 상이할 경우 배송완료일 기준 7일 이내에 환불 및 반품이 가능합니다. (번개장터 규정)</string>
+    <string name="deal_info_return_policy_hint">번개장터 규정 외 정책을 입력해주세요.</string>
+    <string name="deal_info_sell_location">판매지역</string>
+    <string name="deal_info_sell_location_hint">전국</string>
+    <string name="deal_info_title">거래 가이드</string>
+    <string name="del_item_info">"상품을 삭제하시겠습니까?
+(댓글이 있는 상품은 하루 뒤에 자동 삭제 됩니다)"</string>
+    <string name="delete">삭제하기</string>
+    <string name="deleteAccountPopupTitle">탈퇴사유를 선택해주세요</string>
+    <string name="description_change_hint">내 상점을 소개하세요</string>
+    <string name="documentUrl">http://srv1.quicket.co.kr:8001/quicket/doc/</string>
+    <string name="download_sending_msg">번개장터 함께 해요~ 지금 확인해 보세요!</string>
+    <string name="download_sending_msg_for_sold">번개장터에서 용돈 벌었어요 ^_^ 지금 확인해 보세요!</string>
+    <string name="edit_profile_img">사진 변경</string>
+    <string name="email_change_hint">새로운 이메일을 입력하세요</string>
+    <string name="empty_myfeed_subtitle">"원하는 상점을 팔로우 하시고
+상점에 업데이트되는 상품을
+실시간으로 확인하세요."</string>
+    <string name="empty_myfeed_title">팔로우한 상점이 없습니다.</string>
+    <string name="empty_recom_subtitle">"로그인 하시면 회원님의 관심사에 맞는
+상품을 실시간으로 추천해 드립니다."</string>
+    <string name="empty_recom_title">관심상품을 추천 받으세요!</string>
+    <string name="empty_register_title">"로그인 후
+상품등록이 가능합니다"</string>
+    <string name="enliple_media_code">bunjang1</string>
+    <string name="err_check_connection">인터넷 연결을 확인하세요</string>
+    <string name="err_clientside">데이터 처리에 실패했습니다. 다시 시도해주세요</string>
+    <string name="err_linkage">네트워크 또는 서버가 원활하지 않습니다. 다시 시도해주세요</string>
+    <string name="err_loading_data">데이터를 가져오는데 실패했습니다</string>
+    <string name="err_network_server">네트워크 또는 서버가 원활하지 않습니다.</string>
+    <string name="err_pin_no_more_retry">"더 이상 시도하실 수 없습니다.
+[앱/설정]의 문의/제안/신고로 메일접수부탁드립니다.
+(cs@quicket.co.kr)"</string>
+    <string name="err_profile_upload">"프로필 이미지 등록에 실패했습니다.
+잠시 후 다시 시도해 주세요"</string>
+    <string name="err_unknown">알 수 없는 에러가 발생했습니다</string>
+    <string name="errorContentUpload">"상세내용 업로드중 네트워크가 원활하지 않습니다.
+다시 시도해주세요."</string>
+    <string name="errorImageUpload">"사진 업로드중 네트워크가 원활하지 않습니다.
+다시 시도해주세요."</string>
+    <string name="errorNetwork">네트워크가 원활하지 않습니다.다시 시도해주세요.</string>
+    <string name="errorNetworkDialog">"네트워크가 원활하지 않습니다.
+다시 시도해주세요."</string>
+    <string name="errorNetworkReExecute">인터넷 연결을 확인한 후에 다시 실행해주세요.</string>
+    <string name="errorNotExistedImageUpload">"이미지 파일이 존재하지 않습니다.
+사진을 재촬영 후 등록을 진행해주세요."</string>
+    <string name="errorServerContentUpload">"상세내용 업로드 중 서버오류가 발생했습니다.
+다시 시도해주세요."</string>
+    <string name="errorServerImageUpload">"이미지 업로드 중 서버오류가 발생했습니다.
+다시 시도해주세요."</string>
+    <string name="error_fetch_my_account">계좌 정보를 가져오지 못했습니다</string>
+    <string name="error_fetch_my_address">주소 정보를 가져오지 못했습니다</string>
+    <string name="escrow_buy_now">바로구매(안전결제)</string>
+    <string name="escrow_delete_message">삭제된(DELETED) 상품은 결제하실 수 없습니다</string>
+    <string name="escrow_guide_title">안전결제 이용방법</string>
+    <string name="escrow_join_title">안전결제 지원하기</string>
+    <string name="escrow_order_title">네이버페이 안전결제</string>
+    <string name="escrow_sold_out_message">판매완료(Sold Out) 상품은 결제하실 수 없습니다</string>
+    <string name="escrow_unlink">해제</string>
+    <string name="escrow_unlink_fail">현재 연동된 네이버페이 계정이 없거나, 일시적 서버 오류로 연동해제가 실패하였습니다. 잠시후 다시 시도해 주세요.</string>
+    <string name="escrow_unlink_message">"현재 번개장터 계정에 연동되어 있는 네이버페이 계정을 연동해제 합니다.
+기존에 판매중인 안전결제 상품이 연동 해제될 수 있습니다.
+
+네이버페이 계정을 연동해제 하시겠습니까?"</string>
+    <string name="escrow_unlink_success">네이버페이 계정의 연동해제가 완료되었습니다.</string>
+    <string name="escrow_webview_back_message">주문창을 닫으시려면 화면 우측 상단의 X 버튼을 눌러주세요</string>
+    <string name="escrow_webview_title">주문/판매관리</string>
+    <string name="extraServiceSetting">부가서비스 설정</string>
+    <string name="extra_noti_agree">수신 동의</string>
+    <string name="extra_noti_deny">수신 거부</string>
+    <string name="extra_noti_email_agree" formatted="false">"번개장터에서 보내는 이메일/SMS광고 수신 여부 가 ‘%s’로 변경 되었습니다.
+%s"</string>
+    <string name="extra_noti_event_agree" formatted="false">"번개장터에서 보내는 이벤트 및 알림(PUSH) 수신 여부가 ‘%s’로 변경 되었습니다.
+%s"</string>
+    <string name="extra_noti_event_desc1">수신동의 시 이벤트, 핫딜상품 등 다양한 혜택과 정보에 대한 알림을 받아 보실 수 있습니다.</string>
+    <string name="extra_noti_event_desc2">본 설정은 해당 단말기에서 유효하며, 수신거부 시에도 일반공지, 약관 변경 등의 정보성 알림은 발송 될 수 있습니다.</string>
+    <string name="extra_noti_pref_email">이메일/SMS광고 수신동의</string>
+    <string name="extra_noti_pref_event">이벤트 및 알림(PUSH) 수신동의</string>
+    <string name="facebook_ad_key_item_detail">412067982143246_1546312338718799</string>
+    <string name="facebook_ad_key_search_result">412067982143246_1546263705390329</string>
+    <string name="facebook_app_id_scheme">fb412067982143246</string>
+    <string name="fail_register_modify">수정에 실패했습니다</string>
+    <string name="fail_report_my_shop">자신의 상점은 신고할 수 없습니다.</string>
+    <string name="failed">실패하였습니다</string>
+    <string name="faqlinktxt">자주 묻는 질문</string>
+    <string name="fav_list">찜 목록</string>
+    <string name="favorites">즐겨찾기</string>
+    <string name="female">여자</string>
+    <string name="follow_text">팔로우</string>
+    <string name="follower_empty">등록된 팔로워가 없습니다.</string>
+    <string name="follower_empty_button">상품 등록 하기</string>
+    <string name="follower_empty_sub">상품을 등록하여 팬을 만들어보세요.</string>
+    <string name="following_empty">등록된 팔로잉이 없습니다.</string>
+    <string name="following_empty_button">인기 상점 보기</string>
+    <string name="following_empty_sub">"마음에 드는 상점을 팔로잉하여
+실시간 소식으로 상품을 구독하세요."</string>
+    <string name="following_text">팔로우중</string>
+    <string name="friend_add_fb_title">페이스북</string>
+    <string name="friend_add_katalk_title">카카오톡</string>
+    <string name="friend_add_liketxt">"번개장터 페이스북 '좋아요'"</string>
+    <string name="friend_add_msg_make_shop_url">http://shop.bunjang.co.kr/로 시작하는 주소를 생성하세요.</string>
+    <string name="friend_add_phone_title">전화번호부</string>
+    <string name="friend_add_subtitle">번개장터에 친구를 초대 해 보세요!</string>
+    <string name="friend_add_title">친구 초대</string>
+    <string name="friend_add_title_make_shop_url">상점주소를 만들어 친구에게 알리세요</string>
+    <string name="friend_add_url_copy_title">내상점 URL 복사</string>
+    <string name="friend_sms_message">"번개장터에 초대되었습니다
+500만 유저가 선택한 1위 모바일 쇼핑
+함께하기 >"</string>
+    <string name="friends_no_add">알수없는 이유로 친구를 불러올 수 없거나 목록이 존재하지 않습니다.</string>
+    <string name="gallery_item_title">상품사진</string>
+    <string name="general_apply">적용</string>
+    <string name="general_block">차단하기</string>
+    <string name="general_cancel">@string/cancel</string>
+    <string name="general_close">@string/close</string>
+    <string name="general_confirm">@string/confirm</string>
+    <string name="general_continue">계속하기</string>
+    <string name="general_copy">복사하기</string>
+    <string name="general_edit_confirm">변경사항을 저장하시겠습니까?</string>
+    <string name="general_no">아니오</string>
+    <string name="general_noti_guide">안내</string>
+    <string name="general_quit">종료</string>
+    <string name="general_save">저장</string>
+    <string name="general_send">보내기</string>
+    <string name="general_transmit">전송</string>
+    <string name="general_unknown">알 수 없음</string>
+    <string name="general_want_to_quit">종료하시겠습니까?</string>
+    <string name="general_yes">네</string>
+    <string name="get_all_channel_list_failed">채널 목록을 불러오지 못했습니다 잠시 후 다시 시도해주세요</string>
+    <string name="guide_ad_center">"판매를 크게 늘리고 싶으세요?
+그럼 번장 '광고센터' 를 이용해보세요."</string>
+    <string name="guide_ad_center_ok">광고센터 가기</string>
+    <string name="guide_never_open">다시 보지 않기</string>
+    <string name="guide_reg_report">거래 신고가 필요한 경우는 [설정] 메뉴의 [1:1 상담하기]를 통해 접수 부탁드립니다.</string>
+    <string name="guide_reg_report_ok">신고하기</string>
+    <string name="have_read_so_far">여기까지 읽었습니다</string>
+    <string name="help_discussion_attache_name">사진 %d</string>
+    <string name="help_discussion_empty">1:1 상담 내역이 없습니다.</string>
+    <string name="help_discussion_state_value_0">확인중</string>
+    <string name="help_discussion_state_value_1">답장완료</string>
+    <string name="help_discussion_title">상담내용</string>
+    <string name="help_discussion_wait">&lt;font color=#fbe733>담당자가 답변을 준비중 입니다.&lt;/font>&lt;font color=#ffffff>조금만 기다려주세요.&lt;/font></string>
+    <string name="help_main_list_title">상담내역 확인</string>
+    <string name="help_main_register_title">1:1 상담하기</string>
+    <string name="help_main_title">1:1 상담</string>
+    <string name="help_register_success_message">"상담 내용이 정상적으로
+접수되었습니다."</string>
+    <string name="help_register_success_message_red">"답장은 평일 기준 24시간
+이내에 드리겠습니다."</string>
+    <string name="help_reply_content_hint">문의내용을 입력해 주세요.</string>
+    <string name="help_reply_title">재문의하기</string>
+    <string name="helpcenter_image_auth_base64_encoded_key">aG93bWFueXRpbWV3YXN0ZWZvcmNyYWNraW5ndGhpcz8=</string>
+    <string name="hint_free_sharing">나눔 설명과 정확한 당첨발표(당발) 일자를 꼭 명시해주세요</string>
+    <string name="hint_input_shop_name">상점명(별칭)을 입력해주세요</string>
+    <string name="hint_premium_review_desc">다른 구매자들이 참고할 수 있도록 상세한 후기를 남겨주세요 ^^</string>
+    <string name="host_bunjang_web">m.bunjang.co.kr</string>
+    <string name="host_curation">curation</string>
+    <string name="host_identification_fail">identification_fail</string>
+    <string name="host_identification_success">identification_success</string>
+    <string name="host_isp_payment_success">isp_payment_success</string>
+    <string name="host_item_register">item_register</string>
+    <string name="host_product">product</string>
+    <string name="host_profile">profile</string>
+    <string name="hours_before">%1$d시간전</string>
+    <string name="identification_bar_title">내 신뢰정보</string>
+    <string name="identification_btn_need_adult">보호자 동의</string>
+    <string name="identification_description_bottom_1">신뢰를 기반으로 하는 중고거래는 높은 신뢰도가 빠른 거래에 도움이 됩니다.</string>
+    <string name="identification_description_bottom_2">서로 믿을 수 있는 안전한 상품 거래를 위해 판매자, 구매자 모두 신뢰 인증 정보를 확인하세요.</string>
+    <string name="identification_description_top_1">님의 신뢰정보입니다</string>
+    <string name="identification_description_top_2">다양한 인증을 통해 번장인에게 믿음을 주세요.</string>
+    <string name="identification_fail_need_adult">"만 14세 미만은 보호자 동의가 필요합니다.
+보호자 동의로 재인증 해주세요"</string>
+    <string name="identification_item_checkout">안전거래 가입</string>
+    <string name="identification_item_facebook">Facebook 연동</string>
+    <string name="identification_item_phone">휴대폰 본인인증</string>
+    <string name="identification_item_reg_request_content">신뢰거래를 위해 본인인증 후 상품등록이 가능합니다</string>
+    <string name="identification_item_up_request_content">신뢰거래를 위해 본인인증 후 업이 가능합니다</string>
+    <string name="identification_link_notice">신뢰정보 안내></string>
+    <string name="identification_popup_button">내 신뢰정보 확인</string>
+    <string name="identification_popup_message">"번개장터는 안전한 거래문화를 만들기 위해 강력한 인증제도 및 기능을 도입하였습니다.
+
+본인인증 서비스를 통해 이용자의 신원정보를 명확히 하여 사기사건을 최소화하고, 거래 분쟁 발생 시 보다 정확한 대응이 가능해집니다.
+
+인증정보는 상품탐색 시 상품프로필, 상점정보를 통해 구매 이용자에게 표시됩니다.
+
+본인인증이 안된 판매자의 상품은 구매 결정단계에서 구매자에게 불안감을 줄 수 있습니다.
+
+번개장터는 지속적으로 신뢰정보를 강화하여구매자와 판매자 모두 안심하고 이용 할 수 있는 거래 문화를 만들기 위해 노력하겠습니다.
+
+
+*인증된 개인정보는 임의로 타인에게 노출되지 않습니다."</string>
+    <string name="identification_popup_title">신뢰정보 안내</string>
+    <string name="identification_request_btn_adult">14세 이상 본인인증</string>
+    <string name="identification_request_btn_minor">14세 미만 보호자동의</string>
+    <string name="identification_request_content">회원님의 나이를 선택해주세요</string>
+    <string name="identification_web_view_title">번개장터 본인인증</string>
+    <string name="imageUploadUrl">http://imgupload.bunjang.co.kr/tmp_image/</string>
+    <string name="image_no_exist">원본 사진이 존재하지 않습니다</string>
+    <string name="inputCmt">판매자에게 메시지를 보내세요</string>
+    <string name="input_message">메시지를 입력하세요</string>
+    <string name="input_receiver_address_detail_empty_text">받는사람 상세주소를 입력해주세요.</string>
+    <string name="input_receiver_address_empty_text">받는사람 우편번호를 입력해주세요.</string>
+    <string name="input_receiver_name_empty_text">받는사람 이름을 입력해주세요.</string>
+    <string name="input_receiver_phone_empty_text">받는사람 연락처를 입력해주세요.</string>
+    <string name="input_receiver_phone_error_text">받는분 연락처가 정확하지 않습니다.</string>
+    <string name="input_send_address_detail_text">보내는사람 상세주소를 입력해주세요.</string>
+    <string name="input_send_address_empty_text">보내는사람 우편번호를 입력해주세요.</string>
+    <string name="input_send_name_empty_text">보내는사람 이름을 입력해주세요.</string>
+    <string name="input_send_phone_empty_text">보내는사람 연락처를 입력해주세요.</string>
+    <string name="input_send_phone_error_text">보내는사람 연락처를 올바른 형식으로 입력해주세요.</string>
+    <string name="integrate_actionbar_tag_confirm">완료</string>
+    <string name="integrate_bottom_layout_brand_text">입력한 브랜드로 직접 등록</string>
+    <string name="integrate_bottom_layout_loc_text">내위치 설정</string>
+    <string name="integrate_brand_edit_hint">브랜드를 입력해주세요</string>
+    <string name="integrate_brand_empty_text">최근 검색한 브랜드 없습니다</string>
+    <string name="integrate_brand_search">브랜드 검색</string>
+    <string name="integrate_brand_server_data_empty_text">정확한 브랜드명을 입력해주세요</string>
+    <string name="integrate_location_edit_hint">지하철, 지역을 입력해주세요</string>
+    <string name="integrate_location_empty_text">최근 검색한 지역이 없습니다.</string>
+    <string name="integrate_location_gps_err">GPS 위치 정보를 얻지 못했습니다.</string>
+    <string name="integrate_location_search">선호 거래지역</string>
+    <string name="integrate_location_server_data_empty_text">지하철, 지역명을 입력해주세요</string>
+    <string name="integrate_tag_desc">"-연관없는 태그 입력시 상품이 삭제될 수 있습니다
+-태그는 최대 5개까지 입력 가능
+-태그명은 최대 9자까지 가능
+-태그는 띄어쓰기로 구분합니다."</string>
+    <string name="integrate_tag_full_contents">"&lt;font color=#f35c25>&lt;b> 최대 입력 가능한 태그는 %s개입니다.&lt;/font>&lt;/b>
+기존 태그 삭제 후 추가해 주세요."</string>
+    <string name="integrate_tag_hint">태그를 입력해주세요(최대 %s개)</string>
+    <string name="integrate_tag_limit">태그명은 최대 9자입니다.</string>
+    <string name="interest_all">전체</string>
+    <string name="interest_audio">음향/AV</string>
+    <string name="interest_babies">유아동</string>
+    <string name="interest_books">도서</string>
+    <string name="interest_camera">카메라</string>
+    <string name="interest_desktop">"PC/
+주변기기"</string>
+    <string name="interest_electronics">가전제품</string>
+    <string name="interest_female">여성상품</string>
+    <string name="interest_foods">식품</string>
+    <string name="interest_furniture">가구/생활</string>
+    <string name="interest_games">게임</string>
+    <string name="interest_keyword_manager">키워드 알림 관리</string>
+    <string name="interest_laptop">노트북/태블릿</string>
+    <string name="interest_male">남성상품</string>
+    <string name="interest_man_beauty">남성뷰티</string>
+    <string name="interest_man_clothes">남성의류</string>
+    <string name="interest_man_fashion">남성잡화</string>
+    <string name="interest_mobile">모바일</string>
+    <string name="interest_msg_omit">선택 관심사가 없으면 전체 선택 상태로 저장됩니다. 반영하시겠습니까?</string>
+    <string name="interest_network_error">인터넷 연결 문제로 관심사 설정이 적용되지 않았습니다.</string>
+    <string name="interest_outdoors">"스포츠/
+아웃도어"</string>
+    <string name="interest_subject">원하는 상품을 설정해 보세요</string>
+    <string name="interest_tickets">"티켓/예술/
+애완"</string>
+    <string name="interest_title">관심사 설정</string>
+    <string name="interest_tooltip">버튼을 누르면 &lt;font color=#c61c10>관심설정&lt;/font>을 할 수 있어요</string>
+    <string name="interest_vehicles">차량</string>
+    <string name="interest_woman_beauty">여성뷰티</string>
+    <string name="interest_woman_clothes">여성의류</string>
+    <string name="interest_woman_fashion">여성잡화</string>
+    <string name="invite_done_text">초대완료</string>
+    <string name="invite_friends">친구 추천</string>
+    <string name="invite_katalk_friends">카톡 친구에게 추천</string>
+    <string name="invite_text">초대하기</string>
+    <string name="itemAvail">구입가능</string>
+    <string name="itemBuy">안전결제</string>
+    <string name="itemBuyReqNotAvail">요청할 수 없는 상품입니다.</string>
+    <string name="itemCategory">카테고리</string>
+    <string name="itemDel">삭제하기</string>
+    <string name="itemExchangeTag">교환</string>
+    <string name="itemLinkToBuy">구매하기</string>
+    <string name="itemLoc">거래지역</string>
+    <string name="itemMod">수정하기</string>
+    <string name="itemReserved">예약됨</string>
+    <string name="itemSafeTranJoinDone">안전결제지원을 했다면 상품수정을 통해 안전결제 체크를 해주세요</string>
+    <string name="itemSendParcel">배송신청</string>
+    <string name="itemSoldOut">판매완료</string>
+    <string name="itemStatus">상태변경</string>
+    <string name="itemSuperUp">슈퍼UP</string>
+    <string name="itemTag">상품태그</string>
+    <string name="itemTransportTag">무료배송</string>
+    <string name="itemUp">UP하기</string>
+    <string name="item_alliance">광고신청</string>
+    <string name="item_alliance_category">카테고리TOP</string>
+    <string name="item_alliance_impossible_message">광고 신청이 불가능한 상품입니다.</string>
+    <string name="item_alliance_super_keyword">슈퍼 키워드</string>
+    <string name="item_alliance_title">광고 상품 선택</string>
+    <string name="item_alliance_today_deal">추천 PLUS</string>
+    <string name="item_alliance_today_deal_plus">추천 VIP</string>
+    <string name="item_alliance_top_keyword">키워드TOP</string>
+    <string name="item_alliance_top_shop">인기상점</string>
+    <string name="item_condition_title">전체 상태</string>
+    <string name="item_copy">상품복사</string>
+    <string name="item_detail_modify_tooltip">"현재 카테고리가 \"기타\"입니다.
+정확한 카테고리를 지정하여
+더욱 효과적인 판매를 해보세요"</string>
+    <string name="item_detail_preview_count">개</string>
+    <string name="item_detail_preview_more">상품 더보기</string>
+    <string name="item_fav">찜</string>
+    <string name="item_fmt_left_qty">개 남음</string>
+    <string name="item_fmt_length_exceeded">최대 %d자 까지만 입력 가능합니다</string>
+    <string name="item_freecycle">번개나눔</string>
+    <string name="item_msg_url_copied">상품의 웹 주소가 복사되었습니다</string>
+    <string name="item_no_description">상세 설명 없음</string>
+    <string name="item_related_item_label">오늘의 추천상품</string>
+    <string name="item_share">공유</string>
+    <string name="item_share_blog">네이버블로그</string>
+    <string name="item_share_cafe">중고카페(네이버)</string>
+    <string name="item_shop_title_suffix">님의 상점</string>
+    <string name="item_title_comments">상품 문의</string>
+    <string name="join">가입하기</string>
+    <string name="join_aleary_bizseller_info">"회원님의 정보와 연관된 전문상점 계정이 확인되며 '전문상점'으로 회원가입이 진행 됩니다.해당 계정이 본인 계정이 아닐 경우 가입 완료 후 1:1 문의하기를 이용해주세요."</string>
+    <string name="join_cancel">가입취소</string>
+    <string name="join_channel_failed">채널 참여에 실패했습니다</string>
+    <string name="join_continue">계속가입</string>
+    <string name="join_duplicate_account_content">휴대폰 번호로 로그인 해주세요. 해당 번호로 본인이 가입하지 않은 경우 아래 문의하기를 통해 문의 바랍니다.</string>
+    <string name="join_duplicate_account_title">이미 가입된 휴대폰번호 입니다.</string>
+    <string name="join_err_already_signed_up">"이미 가입되어 있습니다
+로그인을 해보세요"</string>
+    <string name="join_err_blocked">이용이 제한된 유저로 로그인할 수 없습니다. (차단 사유를 확인해 주세요)</string>
+    <string name="join_err_combination_password">비밀번호는 영문과 숫자와 특수문자를 조합해 주세요.</string>
+    <string name="join_err_deleted">이미 탈퇴하셨습니다. 재가입을 하시려면 일주일 뒤에 다시 시도하세요.</string>
+    <string name="join_err_duplicated_device">해당 기기로 이미 가입된 사용자가 있습니다</string>
+    <string name="join_err_empty_email">이메일 주소를 적어주세요</string>
+    <string name="join_err_fmt_name_length">이름은 %1$d~%2$d자리여야 합니다</string>
+    <string name="join_err_fmt_pw_length">비밀번호는 %1$d~%2$d자리여야 합니다</string>
+    <string name="join_err_invalid_email">이메일 주소가 올바르지 않습니다</string>
+    <string name="join_err_invalid_inviter">추천인 입력 형식이 잘못되었습니다</string>
+    <string name="join_err_invalid_name">이름에는 한글, 영문, 숫자만 들어갈 수 있습니다</string>
+    <string name="join_err_invalid_number">휴대폰 번호가 올바르지 않습니다</string>
+    <string name="join_err_invalid_password">비밀번호에 사용할 수 없는 문자가 포함되어 있습니다</string>
+    <string name="join_err_length_email">이메일 주소가 너무 깁니다</string>
+    <string name="join_err_oauth_token_inval">올바르지 않은 소셜 토큰입니다.</string>
+    <string name="join_err_password">비밀번호가 올바르지 않습니다</string>
+    <string name="join_err_recommend">"유효하지 않은 추천인 코드입니다.
+다시 한번 확인해주세요."</string>
+    <string name="join_err_sns_join">이미 가입된 SNS 계정입니다.</string>
+    <string name="join_err_token_inval">올바르지 않은 토큰입니다.</string>
+    <string name="join_err_whitespace_in_name">이름에 공백이 포함되어있습니다</string>
+    <string name="join_err_wrong_pin">인증번호가 일치하지 않습니다</string>
+    <string name="join_input_inviter">추천인을 입력해주세요</string>
+    <string name="join_msg_pick_survey_item">선택을 해주세요</string>
+    <string name="join_phone">휴대폰 번호 입력</string>
+    <string name="join_show_tnc">약관 보기</string>
+    <string name="join_survey_description">"아래 선택사항을 작성해 주세요.
+더 나은 번개장터가 되도록 노력하겠습니다."</string>
+    <string name="join_survey_subtitle"><b>회원가입이 완료</b>되었습니다</string>
+    <string name="join_vcode">인증번호 입력</string>
+    <string name="join_vcode_btn">인증번호요청</string>
+    <string name="kakao_scheme">kakao934df846db7171e9bd5968621bdae46d</string>
+    <string name="kakaolink_applink">앱으로 이동</string>
+    <string name="kakaolink_host">kakaolink</string>
+    <string name="katalk_change_hint">카카오톡 아이디를 입력하세요</string>
+    <string name="katalk_id_copy">"카카오톡 아이디가 복사되었습니다! 카톡을 실행한 후 '친구찾기탭 선택' - '메뉴버튼 터치' - 'ID검색' 에서 붙여넣기를 하세요"</string>
+    <string name="keyword_comment_for_exchange">교신,교환</string>
+    <string name="keyword_comment_for_exchange_msg">"현재 상품은 교환을 허용하지 않습니다.
+교환신청을 계속하시겠습니까?
+(반복적인 요청시 이용제한될 수 있음)"</string>
+    <string name="keyword_comment_for_shop">나눔,구경,놀러,싸게,공구,무료,급처,찜하신</string>
+    <string name="keyword_comment_for_shop_msg">"입력하신 댓글에 '나눔, 상품, 상점 광고' 문구가 발견되었습니다.
+계속하시겠습니까?
+(광고성 댓글을 남길시 이용제한이 될 수 있음)"</string>
+    <string name="kicked_from_channel">채널에서 강퇴되었습니다</string>
+    <string name="label_account_check">거래 전 필수! 판매자 휴대폰/계좌조회</string>
+    <string name="label_account_holder">예금주</string>
+    <string name="label_account_number">계좌번호</string>
+    <string name="label_ad">광고</string>
+    <string name="label_add_interest_keyword">키워드 알림 추가</string>
+    <string name="label_add_picture">사진추가</string>
+    <string name="label_add_suggestion">추가 제안하기</string>
+    <string name="label_additional_info">추가정보</string>
+    <string name="label_address">주소</string>
+    <string name="label_age_all">전연령</string>
+    <string name="label_age_forty">40대 이상</string>
+    <string name="label_age_teenage">10대</string>
+    <string name="label_age_thirty">30대</string>
+    <string name="label_age_twenty">20대</string>
+    <string name="label_agree">동의하기</string>
+    <string name="label_agree_all_terms">모든 약관에 동의</string>
+    <string name="label_agree_receive">수신 동의</string>
+    <string name="label_agree_required">동의(필수)</string>
+    <string name="label_agree_select">동의(선택)</string>
+    <string name="label_agree_terms">약관 동의</string>
+    <string name="label_am">AM</string>
+    <string name="label_apply">적용하기</string>
+    <string name="label_band">밴드</string>
+    <string name="label_bank_name">은행명</string>
+    <string name="label_bank_price">금액</string>
+    <string name="label_battery_charging">충전 중</string>
+    <string name="label_battery_full_charge">충전완료</string>
+    <string name="label_battery_not_charging">충전 중 아님</string>
+    <string name="label_bizSeller_store">전문상점</string>
+    <string name="label_block_account_info">[계정차단안내]</string>
+    <string name="label_brand">브랜드</string>
+    <string name="label_bunp_date">번개톡 대화일시</string>
+    <string name="label_bunp_product">구매 상품</string>
+    <string name="label_bunp_product_no_data">기록없음</string>
+    <string name="label_buntalk_alrimi">번톡알리미</string>
+    <string name="label_buy_option">구매옵션</string>
+    <string name="label_category">카테고리</string>
+    <string name="label_change_password">비밀번호 변경하기</string>
+    <string name="label_change_phone_num">연락처 변경(%s)</string>
+    <string name="label_change_privacy_info">개인정보 변경하기</string>
+    <string name="label_check_product_info">상품정보 확인</string>
+    <string name="label_contact">연락처</string>
+    <string name="label_continue">계속하기</string>
+    <string name="label_copy_url">URL복사</string>
+    <string name="label_deal_option">거래옵션</string>
+    <string name="label_delivery_name">택배사</string>
+    <string name="label_delivery_number">운송장 번호</string>
+    <string name="label_demand_contact">연락요망</string>
+    <string name="label_deposit_complete">거래완료</string>
+    <string name="label_detail_explanation">상세설명</string>
+    <string name="label_detail_info">상세정보</string>
+    <string name="label_disSatisfaction">불만족</string>
+    <string name="label_dissatisfied">아쉬워요</string>
+    <string name="label_do_inquery">문의하기</string>
+    <string name="label_do_it_again_in_a_three_month">3개월 뒤 다시보기</string>
+    <string name="label_do_release">해제하기</string>
+    <string name="label_do_setting">설정하기</string>
+    <string name="label_do_up">UP 하기</string>
+    <string name="label_edit">편집</string>
+    <string name="label_email">이메일</string>
+    <string name="label_email_update">이메일 업데이트</string>
+    <string name="label_enter_search_term">검색어 입력</string>
+    <string name="label_etc">기타</string>
+    <string name="label_exchange_possible">교환가능</string>
+    <string name="label_facebook">페이스북</string>
+    <string name="label_favorite_product">찜한 상품</string>
+    <string name="label_female">여성</string>
+    <string name="label_follow_count">팔로워 %d</string>
+    <string name="label_follower">팔로워</string>
+    <string name="label_fri">FRI</string>
+    <string name="label_gender">성별</string>
+    <string name="label_goto_bunjang_app">번개장터 바로가기</string>
+    <string name="label_goto_buntalk">번톡 바로가기</string>
+    <string name="label_interest_keyword">키워드 알림</string>
+    <string name="label_kakao">카카오톡</string>
+    <string name="label_kastory">카카오스토리</string>
+    <string name="label_katalk">카카오톡</string>
+    <string name="label_keyword">키워드</string>
+    <string name="label_keyword_alram_register">키워드 알림 추가</string>
+    <string name="label_keyword_notification_bottom_item_complete">검색하단추가완료</string>
+    <string name="label_keyword_notification_inducing_complete">유도팝업추가완료</string>
+    <string name="label_keyword_notification_upper_item_complete">검색상단추가완료</string>
+    <string name="label_line">라인</string>
+    <string name="label_link_naverpay">네이버페이 연동</string>
+    <string name="label_location">지역</string>
+    <string name="label_location_info_use_info">위치기반서비스 이용약관</string>
+    <string name="label_lock_screen_setting">번개스크린 화면 설정</string>
+    <string name="label_make_pw_rule">비밀번호 작성규칙</string>
+    <string name="label_male">남성</string>
+    <string name="label_manage_shop_address">상점주소 관리</string>
+    <string name="label_menu_setting">메뉴설정</string>
+    <string name="label_mon">MON</string>
+    <string name="label_move_action">바로가기</string>
+    <string name="label_naver">네이버</string>
+    <string name="label_naverpay_count">상품수량</string>
+    <string name="label_new_password_input">새 비밀번호 입력</string>
+    <string name="label_next">다음</string>
+    <string name="label_no_location">위치없음</string>
+    <string name="label_no_tag">정보없음</string>
+    <string name="label_normalSeller_store">개인상점</string>
+    <string name="label_notification_release">알림 해제</string>
+    <string name="label_oath_fail">인증실패</string>
+    <string name="label_personal_info_treatment">개인정보 취급방침</string>
+    <string name="label_pm">PM</string>
+    <string name="label_policy">환불정책 및 거래유의사항</string>
+    <string name="label_popular_shop">인기상점</string>
+    <string name="label_price">가격</string>
+    <string name="label_price_unit">원</string>
+    <string name="label_priority_location_name">선호거래지역</string>
+    <string name="label_product">상품</string>
+    <string name="label_product_comment">상품 문의</string>
+    <string name="label_product_inquery">(%d)</string>
+    <string name="label_product_name">상품명</string>
+    <string name="label_product_picture">상품사진</string>
+    <string name="label_product_search">인기검색어</string>
+    <string name="label_product_status">상품상태</string>
+    <string name="label_product_video">상품동영상</string>
+    <string name="label_profile">프로필</string>
+    <string name="label_push_noti_in_day">하루 1회 알림 받기</string>
+    <string name="label_query_open_seller">판매자 거래내역 조회</string>
+    <string name="label_receive_advertise_info">이메일,SMS 광고 수신 동의(선택)</string>
+    <string name="label_receive_noti">알림 받기</string>
+    <string name="label_receiver">수령인</string>
+    <string name="label_recent_search">최근검색어</string>
+    <string name="label_recent_view_item">최근 본 상품</string>
+    <string name="label_recommend_product">추천상품</string>
+    <string name="label_recommend_setting">추천설정</string>
+    <string name="label_refuse_receive">수신 거절</string>
+    <string name="label_register">등록하기</string>
+    <string name="label_register_delete">알림해제</string>
+    <string name="label_register_modify">알림수정</string>
+    <string name="label_register_notification">알림등록</string>
+    <string name="label_register_shop_address">상점주소 등록</string>
+    <string name="label_relative_tag">연관태그</string>
+    <string name="label_remain_charging_time">남은 충전시간</string>
+    <string name="label_report_activity">신고유형 선택</string>
+    <string name="label_report_shop">상점 신고</string>
+    <string name="label_retake">재촬영</string>
+    <string name="label_retry">재시도</string>
+    <string name="label_review">상점 후기</string>
+    <string name="label_review_reply">상점후기답글</string>
+    <string name="label_review_write">리뷰 작성</string>
+    <string name="label_review_write_permission">리뷰 작성 권한</string>
+    <string name="label_sat">SAT</string>
+    <string name="label_satisfaction">만족</string>
+    <string name="label_satisfied">만족해요</string>
+    <string name="label_search_keyword_register">키워드 알림 등록</string>
+    <string name="label_search_market_price">시세검색</string>
+    <string name="label_search_result">검색결과</string>
+    <string name="label_search_result_count_unit">개</string>
+    <string name="label_select_age">나이선택</string>
+    <string name="label_select_product">상품선택</string>
+    <string name="label_select_sex">성별선택</string>
+    <string name="label_select_shop_type">상점유형 선택</string>
+    <string name="label_send_account">계좌전송</string>
+    <string name="label_send_address">주소전송</string>
+    <string name="label_send_suggestion">의견보내기</string>
+    <string name="label_setting_account">계정 설정</string>
+    <string name="label_setting_complete">설정완료</string>
+    <string name="label_setting_function">기능 설정</string>
+    <string name="label_setting_location">지역설정</string>
+    <string name="label_setting_next">다음</string>
+    <string name="label_share">공유</string>
+    <string name="label_share_cafe">게시글 올리기</string>
+    <string name="label_shop">상점</string>
+    <string name="label_shop_introduce_n_inform">상점소개 및 정보</string>
+    <string name="label_shop_setting">상점 설정</string>
+    <string name="label_show_all">전체 보기</string>
+    <string name="label_show_all_2">전체보기</string>
+    <string name="label_show_search_keyword">키워드 목록보기</string>
+    <string name="label_skip">건너뛰기</string>
+    <string name="label_sms">SMS</string>
+    <string name="label_start_bunjang">번개장터 시작하기</string>
+    <string name="label_store_type">상점유형</string>
+    <string name="label_sun">SUN</string>
+    <string name="label_super_up">슈퍼UP</string>
+    <string name="label_terms">이용약관</string>
+    <string name="label_thu">THU</string>
+    <string name="label_time_unit_hour">시간</string>
+    <string name="label_time_unit_minute">분</string>
+    <string name="label_time_unit_sec">초</string>
+    <string name="label_top_shop">TOP 상점</string>
+    <string name="label_total">전체</string>
+    <string name="label_tue">TUE</string>
+    <string name="label_twitter">트위터</string>
+    <string name="label_usage_info">이용방법</string>
+    <string name="label_use_bungae_charge">번개스크린 사용</string>
+    <string name="label_video">비디오</string>
+    <string name="label_view_open_seller">판매자 거래내역 보기</string>
+    <string name="label_watch_product">상품 구경가기</string>
+    <string name="label_wed">WED</string>
+    <string name="label_write_shop_review">상점후기쓰기</string>
+    <string name="label_years">연령</string>
+    <string name="lbsPopupCancel">허용안함</string>
+    <string name="lbsPopupMessage">번개장터에서 현재 위치 정보를 사용합니다.(상품등록시에만 사용)</string>
+    <string name="lbsPopupOK">승인</string>
+    <string name="lbsPopupTitle">위치정보 사용 동의</string>
+    <string name="list_no_location">선호거래지역 없음</string>
+    <string name="loadNextItem">다음 상품을 로딩중입니다</string>
+    <string name="load_location_my_favorite_title">내 선호거래지역 불러오기</string>
+    <string name="loadingText">로딩 중...</string>
+    <string name="loc_search_content">"&lt;font color=#f35c25>&lt;b>'%s' &lt;/font>&lt;/b>"</string>
+    <string name="loc_search_title">선호지역 등록</string>
+    <string name="location_auth_btn_text_false">인증하기</string>
+    <string name="location_auth_btn_text_true">인증완료</string>
+    <string name="location_auth_confirm">적용</string>
+    <string name="location_auth_duplicate">%s개 지역만 등록 가능합니다.</string>
+    <string name="location_auth_fail">"인증에 실패하였습니다.
+현재 위치가 해당지역과 일치하지 않습니다."</string>
+    <string name="location_auth_find_view_find_location">지역검색</string>
+    <string name="location_auth_find_view_my_location">내 위치</string>
+    <string name="location_auth_find_view_title">원하는 선호거래 지역을 검색하세요</string>
+    <string name="location_auth_gps_fail">GPS 수신에 실패하였습니다.</string>
+    <string name="location_auth_location_deny_permission">"신뢰 할 수 있는 거래를 위해
+번개장터가 이 기기의 위치에 엑세스하기를 허용해 주세요"</string>
+    <string name="location_auth_non_select_data">지역을 선택해주세요.</string>
+    <string name="location_auth_select_empty_title">지역을 추가해 주세요</string>
+    <string name="location_auth_select_history_empty_title">최근 이용한 지역이 없습니다</string>
+    <string name="location_auth_select_history_title">내가 이용한 지역</string>
+    <string name="location_auth_select_title">선택된 지역</string>
+    <string name="location_auth_select_title_max_five">5개까지 설정 가능합니다</string>
+    <string name="location_auth_select_title_sub">%d개까지 설정 가능합니다</string>
+    <string name="location_auth_server_fail_msg">위치 정보를 서버에 저장하지 못했습니다.</string>
+    <string name="location_auth_succ">인증에 성공했습니다.</string>
+    <string name="location_container_fragment_feed_btn">팔로잉상점</string>
+    <string name="location_container_fragment_loc_btn">내지역</string>
+    <string name="location_empty">취소</string>
+    <string name="location_get_again">"위치정보를 로딩중 입니다.
+잠시만 기다려주세요"</string>
+    <string name="location_my_favorite_title">내 선호거래지역</string>
+    <string name="location_setting_title">선호거래지역 설정</string>
+    <string name="location_terms">신뢰 할 수 있는 거래를 위해 번개장터 위치기반서비스 이용약관에 동의하시겠습니까?</string>
+    <string name="lock_screen_always">항상 사용</string>
+    <string name="lock_screen_charge">충전시만 사용</string>
+    <string name="lock_screen_enabled_desc">번개스크린을 사용합니다</string>
+    <string name="lock_screen_enabled_title">번개스크린</string>
+    <string name="lock_screen_exit_msg">번개스크린을 종료하시겠습니까?</string>
+    <string name="lock_screen_general">번개 스크린</string>
+    <string name="loggingUrl">https://core-api.bunjang.co.kr/api/1/log/</string>
+    <string name="login_button">로그인</string>
+    <string name="login_forgot_password">비밀번호 찾기</string>
+    <string name="login_password">비밀번호 입력</string>
+    <string name="login_phone">휴대폰번호 입력</string>
+    <string name="login_title">시작하기</string>
+    <string name="logintxt">로그인</string>
+    <string name="mag_find_hot_product">핫한 상품 발견! 친구에게 알려주세요</string>
+    <string name="mag_find_hot_shop">핫한 상점 발견! 친구에게 알려주세요</string>
+    <string name="main_ad_info_text">광고신청</string>
+    <string name="main_categories">전체 카테고리</string>
+    <string name="male">남자</string>
+    <string name="market_review_contents">"번개장터가 마음에 드셨다면,
+%s 리뷰에 별 5개를 남겨주세요.
+더 좋은 서비스로 보답하겠습니다."</string>
+    <string name="market_review_title">번개장터 리뷰</string>
+    <string name="member_out_button_cancel">취소</string>
+    <string name="member_out_button_ok">탈퇴</string>
+    <string name="member_out_message1">회원 탈퇴 시 30일 이내 재가입이 불가하며, 유료 구매한 아이템은 소멸됩니다.</string>
+    <string name="member_out_message2">휴대폰번호/상점명 변경은 탈퇴없이 가능합니다.</string>
+    <string name="member_out_message5">"탈퇴 후 재가입 시 신뢰유지를 위해 이 전 사용내역
+(리뷰, 팔로워/팔로잉 등)이 복구됩니다."</string>
+    <string name="member_out_msg_already_joined">"이미 가입된 휴대폰번호입니다.
+
+본인이 중복가입한 경우 탈퇴 후 연락처를 변경해주세요.
+
+이 번호로 상점을 개설한 적이 없다면 고객센터로 문의해주세요."</string>
+    <string name="member_out_social_type">sns계정으로 가입한 경우 비밀번호 등록 후 탈퇴가 가능합니다.</string>
+    <string name="menu_category">카테고리</string>
+    <string name="menu_confirm">완료</string>
+    <string name="menu_home">홈</string>
+    <string name="menu_item_chat_block_title">차단하기</string>
+    <string name="menu_item_chat_exit_title">대화방나가기</string>
+    <string name="menu_item_chat_report_title">신고하기</string>
+    <string name="menu_more">더보기</string>
+    <string name="menu_myshop">내상점</string>
+    <string name="menu_register">등록</string>
+    <string name="minutes_before">%1$d분전</string>
+    <string name="mobon_ending_close">닫기</string>
+    <string name="mobon_ending_finish">종료</string>
+    <string name="mobon_ending_ment">어플리케이션을 종료 하시겠습니까?</string>
+    <string name="modify">수정하기</string>
+    <string name="msg_alarm_content">팔로잉 상점의 상품이 등록되면 알림으로 받아보시겠어요?</string>
+    <string name="msg_bank_price">%s 원 (택배비 미포함)</string>
+    <string name="msg_bank_price_delivery">%s 원 (택배비 포함)</string>
+    <string name="msg_block_account_info">"'%s' 상점은 번개장터 신고내역이 확인되어 &lt;font color=#e82c1e>영구제제&lt;/font> 처리 되었습니다.&lt;br>&lt;br>&lt;b>거래를 중단해주세요!"</string>
+    <string name="msg_bunp_inducing_message">"안전한 거래를 위해서는 번개톡 내에서 '주소전송', '계좌전송' 버튼을 눌러 거래기록을 반드시 남겨주세요."</string>
+    <string name="msg_bunp_inducing_title">[잠깐! 거래를 진행하시나요?]</string>
+    <string name="msg_cafe_join_fail">카페 가입에 실패하였습니다.</string>
+    <string name="msg_cafe_join_result">"%s에 가입이 완료되었습니다.
+잠시후 다시 시도하여 게시글을 올려주세요."</string>
+    <string name="msg_chat_address">(%1$s)%2$s</string>
+    <string name="msg_check_exit_chat_during_upload_image">"이미지 전송 중 입니다.
+지금 채팅방을 나가면 전송이 실패 할 수 있습니다."</string>
+    <string name="msg_check_exit_chat_during_upload_video">"비디오 전송 중 입니다.
+지금 채팅방을 나가면 전송이 실패 할 수 있습니다."</string>
+    <string name="msg_copy_product">&lt;b>내용을 복사하여 등록하시겠습니까?&lt;br>&lt;/br>상품명,사진을 제외한 나머지 정보를 복사합니다.&lt;/b>&lt;br>&lt;br>&lt;/br>&lt;/br>같은 이름의 상품명,사진 등록시 제재가 있을 수 있습니다.</string>
+    <string name="msg_delete_all_search_history">모든 검색기록을 삭제하시겠습니까?</string>
+    <string name="msg_delete_picture">사진을 삭제하시겠습니까?</string>
+    <string name="msg_delete_product_info">"%s개의 상품을 삭제하시겠습니까?
+(댓글이 있는 상품은 하루 뒤에 자동 삭제 됩니다)"</string>
+    <string name="msg_disconnected">연결이 끊겼습니다</string>
+    <string name="msg_do_initialize">초기화 하시겠습니까?</string>
+    <string name="msg_do_it_again_in_a_three_month">3개월 단위로 개인정보 변경을 권장합니다.</string>
+    <string name="msg_do_register_keyword">키워드를 입력해주세요.</string>
+    <string name="msg_do_register_keyword_price">가격범위가 올바르지 않습니다.</string>
+    <string name="msg_edit_selected_max_count_noti">최대 %s개까지 선택가능합니다.</string>
+    <string name="msg_exceed_record_time">동영상 촬영은 %s 동안 가능합니다.</string>
+    <string name="msg_exceed_selectable_count">최대 %d개까지 선택 가능합니다.</string>
+    <string name="msg_fail_camera_open">카메라 열기에 실패하였습니다.</string>
+    <string name="msg_fail_pick_camera">카메라 촬영에 실패하였습니다.</string>
+    <string name="msg_fail_play_video">동영상 재생에 실패하였습니다.</string>
+    <string name="msg_fail_some_item_delete">일부 상품의 삭제에 실패했습니다.</string>
+    <string name="msg_fail_some_item_status_change">일부 상품의 상태 변경에 실패했습니다.</string>
+    <string name="msg_farewell">"탈퇴에 성공했습니다
+다음에 다시 뵙겠습니다 :)"</string>
+    <string name="msg_fmt_wait_for_pin">"잠시만 기다려주세요. 오랜시간 동안 인증문자가 오지 않을 경우 '문자스팸함'을 확인해보세요. ( %d 번의 시도 남음 )"</string>
+    <string name="msg_following_alarm_limit">팔로잉 상점 알림등록은 최대 5개입니다. 기존 알림을 해제 후 추가해 주세요.</string>
+    <string name="msg_following_alarm_list">팔로잉 목록보기</string>
+    <string name="msg_from_satisfied_with_search_results">검색결과에 만족하시나요?</string>
+    <string name="msg_guide_deposit_complete">거래금액 %s원을 입금했습니다. 실제 계좌 조회 후 거래를 진행해 주시기 바랍니다.</string>
+    <string name="msg_inducing_noti_register">"알림등록을 해보세요!
+신규 상품 등록시 푸시 알림이 됩니다."</string>
+    <string name="msg_inducing_noti_register_detail">"찾으시는 상품이 없나요? 알림등록을 해보세요.
+신규 상품 등록시 푸시 알림이 됩니다."</string>
+    <string name="msg_infomation_sort_distance">설정된 지역 정보를 초기화하고 현재 위치를 기준으로 거리순 정렬됩니다.</string>
+    <string name="msg_interest_keyword_content">"키워드 알림 등록을 해보세요.
+상품 등록시 푸시 알림이 됩니다."</string>
+    <string name="msg_interest_keyword_title">관심있는 상품이 있으신가요?</string>
+    <string name="msg_invite_friends">번개장터를 친구와 함께 써보세요! 친구와 사고 팔면 재미가 2배됩니다!</string>
+    <string name="msg_item_deleted">삭제된 상품입니다.</string>
+    <string name="msg_keyword_alram_basic_info">"- 등록 시점부터 최대 1개월 동안 푸시알림 됩니다.
+- 키워드 알림은 최대 5개까지 등록 가능합니다."</string>
+    <string name="msg_keyword_alram_info">"키워드 알림은 최대 5개까지 등록 가능하며
+등록 시점부터 최대 1개월 동안 푸시알림 됩니다."</string>
+    <string name="msg_keyword_max_select">최대 5개 까지 선택 가능합니다.</string>
+    <string name="msg_keyword_none_select">키워드를 선택해주세요.</string>
+    <string name="msg_limit_keyword_size">키워드는 2자~10자입니다.</string>
+    <string name="msg_listen_your_feedback">소중한 의견 하나하나 귀 기울여 듣겠습니다.</string>
+    <string name="msg_location_guide">"원하는 지역의 인기
+상품을 보여줍니다."</string>
+    <string name="msg_location_list_write_over_one" formatted="false">%s 이외 %d개 지역</string>
+    <string name="msg_logged_in">로그인 되었습니다!</string>
+    <string name="msg_make_pw_rule">영문 대소문자,숫자,특수문자 중 3개 이상을 조합하여 8자 이상의 비밀번호 만들어주세요.</string>
+    <string name="msg_max_feedback">최대 5줄까지 입력 가능합니다.</string>
+    <string name="msg_media_record_temporary_off">동영상 촬영 기능은 추후 사용가능합니다.</string>
+    <string name="msg_modify_notification">알림이 수정되었습니다</string>
+    <string name="msg_move_safe_tran_page">"안전하게 결제할수 있는
+페이지로 이동됩니다."</string>
+    <string name="msg_myfav_edit_guide">선택한 상품을 삭제 할 수 있습니다.</string>
+    <string name="msg_new_version_of_update">최신 버전으로 업데이트 해주세요</string>
+    <string name="msg_no_comments">문의가 없습니다</string>
+    <string name="msg_no_image_folder">이미지 폴더가 없습니다.</string>
+    <string name="msg_no_installed_program">앱이 설치되어 있지 않아서 실행할 수 없습니다.</string>
+    <string name="msg_no_interest_keyword_content">"설정된 키워드 알림이 없습니다.
+키워드 알림을 추가해 보세요."</string>
+    <string name="msg_no_interest_product_content">\"%s\" 신규 상품이 등록되면 푸시 알림을 받아보세요</string>
+    <string name="msg_no_interest_product_title">원하는 상품이 없나요?</string>
+    <string name="msg_no_notifications">알림이 없습니다</string>
+    <string name="msg_no_view_recent_product">최근 본 상품이 없습니다.</string>
+    <string name="msg_not_complete_bunp_state">"합의되지 않은 거래가 있습니다.번개톡 하단 '거래상세보기' 버튼을 눌러 확인해주세요."</string>
+    <string name="msg_not_contain_editable_product">편집할 상품이 없습니다.</string>
+    <string name="msg_not_exist_favorite_product">찜한 상품이 없습니다.</string>
+    <string name="msg_noti_following_shop">내가 팔로잉한 상점들의 새로운 소식을 확인하세요</string>
+    <string name="msg_open_detail_bunp_data_message">판매자의 최근 거래 내역을 확인하세요. 동일 상품을 여러명과 거래중인 경우 사기에 유의하세요!</string>
+    <string name="msg_open_detail_bunp_data_title">[유의사항 안내]</string>
+    <string name="msg_permission_denied_camera">카메라 권한이 없어서 사진 촬영을 하지 못합니다.</string>
+    <string name="msg_permission_denied_contract_info_send_sms">sms 발신 권한이 없어서 실행하지 못합니다.</string>
+    <string name="msg_permission_denied_current_location">위치 권한이 없어서 현재 위치를 알 수 없습니다.</string>
+    <string name="msg_permission_denied_friend_contract">주소록 읽기 권한이 없어서 친구 목록을 불러오지 못합니다.</string>
+    <string name="msg_permission_denied_record_audio">음성녹음을 하지 않습니다.</string>
+    <string name="msg_permission_denied_review_storage">sd card 읽기/쓰기 권한이 없어서 후기 등록을 하지 못합니다.</string>
+    <string name="msg_permission_denied_select_gallery_image">sd card 읽기/쓰기 권한이 없어서 이미지 선택을 할 수 없습니다.</string>
+    <string name="msg_permission_denied_storage_gallary">sd card 읽기/쓰기 권한이 없어서 사진을 읽어오지 못합니다.</string>
+    <string name="msg_permission_denied_storage_register">sd card 권한이 없어서 상품 등록을 시작하지 못합니다.</string>
+    <string name="msg_permission_info_register">&lt;b>저장공간, 카메라&lt;/b> 권한이 없어서 상품 등록을 시작하지 못합니다.&lt;br>권한을 설정하시겠습니까?</string>
+    <string name="msg_permission_req_camera">카메라 사용을 위해 필요합니다.</string>
+    <string name="msg_permission_req_contract_info_send_sms">Sms 발신을 위해서 필요합니다.</string>
+    <string name="msg_permission_req_current_location">현재 위치를 확인하기 위해서 필요합니다.</string>
+    <string name="msg_permission_req_friend_contract">친구 목록을 불러오기 위해서 필요합니다.</string>
+    <string name="msg_permission_req_get_contract">전화번호 획득 및 문자 수신을 위해서 필요합니다.</string>
+    <string name="msg_permission_req_receive_sms">문자 수신을 위해서 필요합니다.</string>
+    <string name="msg_permission_req_record_audio">음성 녹음 기능을 위해서 필요합니다.</string>
+    <string name="msg_permission_req_register_product">내 상품 등록을 위해서 필요합니다.</string>
+    <string name="msg_permission_req_review_storage">프리미엄 후기 등록을 위해서 필요합니다.</string>
+    <string name="msg_permission_req_select_gallery_image">갤러리 이미지를 선택하여 등록하기 위해서 필요합니다.</string>
+    <string name="msg_permission_req_share_naver_cafe">상품 이미지를 업로드 하기 위해서 필요합니다.</string>
+    <string name="msg_permission_req_storage">내 상품 등록을 위해서 필요합니다.</string>
+    <string name="msg_permission_req_storage_gallary">갤러리 목록을 읽어오기 위해서 필요합니다.</string>
+    <string name="msg_please_suggest_for_dissatisfied_result">검색결과 아쉬운 점이 있다면 이야기해주세요!</string>
+    <string name="msg_please_suggest_for_search_result">검색결과 관련 의견이 있다면 제안해주세요!</string>
+    <string name="msg_priority_location_hint">판매위치,원하는 거래지역을 선택하세요</string>
+    <string name="msg_provide_shop_name">기본 상점명은 상대방이 식별하기 어렵습니다. 원활한 거래를 위해 상점명을 등록해 주세요.</string>
+    <string name="msg_provide_shop_name_for_posting">상품 판매를 위해서는 상점명 등록이 필요합니다. 상점명을 등록해 주세요.</string>
+    <string name="msg_receive_alarm">알림 받기</string>
+    <string name="msg_recommend_code_copy">"추천인코드 복사 완료!
+주변 친구들에게 공유해 주세요~"</string>
+    <string name="msg_register">등록해주세요</string>
+    <string name="msg_register_category_hint">상품에 맞는 카테고리를 선택하세요</string>
+    <string name="msg_register_complete">상품등록이 완료되었습니다.</string>
+    <string name="msg_register_complete_fail">상품등록이 실패하였습니다.</string>
+    <string name="msg_register_name_hint">구찌 가방, 아이폰, 삼성 노트북 등</string>
+    <string name="msg_register_notification">알림이 등록되었습니다</string>
+    <string name="msg_register_notification_add_following">알림이 등록되었습니다(자동 팔로우됨)</string>
+    <string name="msg_register_share_cafe_fail_toast">"중고카페에 가입되어 있지 않아 게시글 등록이 실패하였습니다.
+중고카페 가입 후 재시도 해주세요."</string>
+    <string name="msg_register_share_cafe_post_fail_toast">"중고카페 문제로 인해 글을 올릴 수 없습니다.
+네이버에서 확인해주세요."</string>
+    <string name="msg_register_share_cafe_post_success">중고카페 게시글 등록이 완료되었습니다.</string>
+    <string name="msg_release_current_keyword_noti">해당 알림을 해제하시겠습니까?</string>
+    <string name="msg_release_notification">알림이 해제되었습니다</string>
+    <string name="msg_report_failed">신고접수에 실패하였습니다. 잠시후 다시시도해주세요.</string>
+    <string name="msg_request_delete_product_list">%s개의 상품을 삭제하시겠습니까?</string>
+    <string name="msg_request_deposit">입금을 요청합니다.</string>
+    <string name="msg_request_shipping">배송을 요청합니다.</string>
+    <string name="msg_requested_to_delete">삭제 요청이 완료되었습니다!</string>
+    <string name="msg_retry">다시 시도해주세요</string>
+    <string name="msg_review_restriction">일반후기는 거래내역이 확인된 경우 작성할 수 있으며 번개톡을 통해 거래완료된 거래는 번장인증 후기로 등록됩니다.</string>
+    <string name="msg_search_keyword_max_noti_content">"키워드 알림 등록은 최대 5개입니다.
+기존 알림을 해제 후 추가해 주세요."</string>
+    <string name="msg_select_product">상품을 선택하세요</string>
+    <string name="msg_send_auth_num">인증번호가 발송되었습니다.</string>
+    <string name="msg_setting_keyword_noti_data_in_search_screen">키워드 등록에 설정된 검색 조건을 현 검색 결과에 적용하시겠습니까?</string>
+    <string name="msg_start_delivery">택배가 발송 되었습니다.</string>
+    <string name="msg_success_item_delete">삭제 되었습니다.</string>
+    <string name="msg_success_item_status_change">상태 변경되었습니다.</string>
+    <string name="msg_thank_for_search_feedback">참여해주셔서 감사합니다.</string>
+    <string name="msg_thank_for_search_feedback_sub">더욱 발전하는 번개장터가 되겠습니다.</string>
+    <string name="msg_thank_for_send_search_feedback">참여해주셔서 감사합니다.</string>
+    <string name="msg_thank_for_send_search_feedback_sub">여러분의 의견을 귀 기울여 듣고 개선해 나가겠습니다.</string>
+    <string name="msg_unlock_slide_action">밀어서 잠금해제 >></string>
+    <string name="msg_video_record_fail">녹화에 실패하셨습니다. 다시 시도해 주세요.</string>
+    <string name="msg_wait">잠시만 기다려주세요</string>
+    <string name="msg_write_review_information">"리뷰 작성은 16년 11월 15일부터
+번개톡의 '새번프하기'를 통해서만 가능합니다.
+상대방에 대한 신고는
+아래 상점신고를 이용해주세요."</string>
+    <string name="my_item_edit_dialog_cont">"편집 후 선택한 상품을
+UP,상태변경삭제 할 수 있습니다."</string>
+    <string name="my_item_edit_dialog_left_btn">다시보지않기</string>
+    <string name="my_item_edit_dialog_right_btn">닫기</string>
+    <string name="my_item_edit_dialog_title">내상품 편집</string>
+    <string name="my_items">내 상품</string>
+    <string name="my_menu_delete">삭제</string>
+    <string name="my_menu_modify">수정</string>
+    <string name="my_page_policy_lead_popup_content">거래 전 구매자가 확인해야 할 유의사항을 알려주세요!</string>
+    <string name="my_page_policy_lead_popup_title">판매자 필독!</string>
+    <string name="my_profile">내 프로필</string>
+    <string name="my_profile_order_manager">N페이 거래내역</string>
+    <string name="my_profile_order_order">구매현황</string>
+    <string name="my_profile_order_sale">판매현황</string>
+    <string name="mypage_identification_title">신뢰 정보</string>
+    <string name="mypage_label_email">@string/label_email</string>
+    <string name="mypage_label_sns">SNS연동</string>
+    <string name="mypage_social_conn">연결하기</string>
+    <string name="mypage_social_conn_succ">연결완료</string>
+    <string name="mypage_social_disconnect_disable_msg">비밀번호 등록 후 연동해제가 가능합니다.</string>
+    <string name="mypage_social_disconnect_msg">%s 연동을 해제하시겠습니까?</string>
+    <string name="myprofile_empty_password">@string/label_register</string>
+    <string name="myprofile_err_change_desc">"상점소개 변경에 실패했습니다
+다시 시도하세요"</string>
+    <string name="myprofile_fmt_warning_count">경고 이용제한중</string>
+    <string name="myprofile_msg_email_changed">해당 메일로 인증메일이 발송되었습니다. E-mail 인증을 원하시면 메일을 확인해주세요. (발송 후 24시간 유효)</string>
+    <string name="myprofile_msg_fmt_confirm_name">"'%s'으로 상점명을 수정하시겠습니까? 수정을 하시면 30일간 변경이 불가능합니다"</string>
+    <string name="myprofile_msg_katalk_changed">카카오톡 ID가 성공적으로 변경되었습니다</string>
+    <string name="myprofile_msg_login_with_new_pw">새로운 비밀번호로 로그인하세요</string>
+    <string name="myprofile_msg_name_changed">이름이 성공적으로 변경되었습니다</string>
+    <string name="myprofile_msg_phone_num_changed">휴대폰 번호가 성공적으로 변경되었습니다</string>
+    <string name="myprofile_msg_provide_shop_name">원활한 거래를 위해 개성있는 상점명을 등록해 주세요</string>
+    <string name="myprofile_msg_pw_changed">비밀번호가 성공적으로 변경되었습니다</string>
+    <string name="myprofile_msg_pw_empty">재로그인 시 휴대폰번호로 로그인이 가능합니다.</string>
+    <string name="myprofile_password_change">@string/label_change_password</string>
+    <string name="myprofile_shop_url_alert_title">상점 주소 생성</string>
+    <string name="myprofile_shop_url_completed">입력한 단어로 상점주소를 생성 하시겠습니까? (주소변경은 30일에 한번 가능합니다)</string>
+    <string name="myprofile_shop_url_completed_after">상점 주소가 생성되었습니다. [주소복사]를 통해 내상점을 홍보해보세요!</string>
+    <string name="myprofile_shop_url_completed_toast">상점 주소가 클립보드에 복사되었습니다.</string>
+    <string name="myprofile_shop_url_hint">"- 최소 5자 이상 20자 이하의 단어만 허용됩니다.
+- 알파벳 소문자와 숫자만 허용됩니다. 특수문자 불가"</string>
+    <string name="myprofile_shop_url_invalid_error">이미 존재하는 상점 URL입니다.다른 단어를 입력해보세요.</string>
+    <string name="myprofile_shop_url_make_hint">최소 5자 이상 단어를 입력해주세요.</string>
+    <string name="myprofile_shop_url_make_title">상점 주소 만들기</string>
+    <string name="myprofile_shop_url_msg_content">shop.bunjang.co.kr/</string>
+    <string name="myprofile_shop_url_msg_title">등록될 고객님의 상점 주소는 아래와 같습니다.</string>
+    <string name="myprofile_shop_url_preview_title">등록된 상점 주소</string>
+    <string name="myprofile_shop_url_thirty_error">상점 URL은 30일에 한번 변경 가능합니다</string>
+    <string name="myprofile_shop_url_title">내상점 주소 관리</string>
+    <string name="myprofile_warning_list_title">번개장터 정책 위반 목록</string>
+    <string name="name_change_hint">새로운 상점명을 입력하세요</string>
+    <string name="needLogin">로그인 후 이용해주세요.</string>
+    <string name="network_fail">"인터넷에 연결할 수 없습니다.
+네트워크 연결상태를 확인해주세요."</string>
+    <string name="network_fail_sub_title">네트워크 연결상태를 확인해주세요.</string>
+    <string name="network_fail_title">인터넷에 연결할 수 없습니다.</string>
+    <string name="no_history_delete_all">최근 검색어 전체삭제</string>
+    <string name="no_history_result">최근 검색어가 없습니다.</string>
+    <string name="no_rate">평가가 없습니다</string>
+    <string name="no_search_result">검색결과가 없습니다.</string>
+    <string name="no_search_result_subtitle">검색어나 검색조건을 변경해보세요.</string>
+    <string name="no_search_result_subtitle_research">"정확한 검색어인지 확인하시고
+다시 검색해 주세요"</string>
+    <string name="not_conneted_network">인터넷 연결을 확인한 후에 다시 실행해주세요</string>
+    <string name="notiAlarmSetting">@string/noti_settings</string>
+    <string name="noti_category_chat">번개톡 채팅 알림</string>
+    <string name="noti_category_following_noti">팔로잉 상점 알림</string>
+    <string name="noti_category_general">일반</string>
+    <string name="noti_category_item_noti">상품 알림</string>
+    <string name="noti_category_keyword">관심상품 알림</string>
+    <string name="noti_category_shipping_noti">배송 알림</string>
+    <string name="noti_category_shop_noti">상점 알림</string>
+    <string name="noti_category_snd_vib">소리/진동</string>
+    <string name="noti_delete_cmt_fail">댓글을 삭제하지 못했습니다.</string>
+    <string name="noti_delete_cmt_in_my_item">본인의 댓글이 아닌 등록 댓글은 24시간이 경과되어야 삭제가 가능합니다.</string>
+    <string name="noti_err_change_pref">설정 변경에 실패했습니다</string>
+    <string name="noti_fmt_time_am">오전 %d시</string>
+    <string name="noti_fmt_time_pm">오후 %d시</string>
+    <string name="noti_general_set">알림 표시</string>
+    <string name="noti_general_set_summary">체크하면 알림 표시를 합니다</string>
+    <string name="noti_list_tab_html_fmt_chat">번개톡 (%d)</string>
+    <string name="noti_list_tab_html_fmt_general">알림 (%d)</string>
+    <string name="noti_list_tab_plain_chat">번개톡</string>
+    <string name="noti_list_tab_plain_general">알림</string>
+    <string name="noti_pref_chat_msg">메시지를 받았을 때</string>
+    <string name="noti_pref_item_comment">상품에 댓글이 달렸을 때</string>
+    <string name="noti_pref_item_favorite">상품이 찜 되었을 때</string>
+    <string name="noti_pref_item_up_plus">UP플러스 실행 알림</string>
+    <string name="noti_pref_shipped">배송이 완료되었을 때</string>
+    <string name="noti_pref_shipping_process">배송 진행</string>
+    <string name="noti_pref_shop_comment">상점에 댓글이 달렸을 때</string>
+    <string name="noti_pref_shop_followed">상점이 팔로우 되었을 때</string>
+    <string name="noti_pref_shop_reviewed">상점 리뷰가 등록되었을 때</string>
+    <string name="noti_pref_sleep_end">종료 시간</string>
+    <string name="noti_pref_sleep_start">시작 시간</string>
+    <string name="noti_pref_sound">소리</string>
+    <string name="noti_pref_vibration">진동</string>
+    <string name="noti_settings">알림 설정</string>
+    <string name="noti_sleep_mode">방해금지 시간 설정</string>
+    <string name="noti_sleep_mode_summary">설정한 시간동안 알림이 오지 않습니다</string>
+    <string name="noti_time_midnight">밤 12시</string>
+    <string name="noti_time_noon">낮 12시</string>
+    <string name="noti_title_bizseller">전문 상점으로 선정되었습니다</string>
+    <string name="noti_title_chat">@string/qtalk</string>
+    <string name="noti_title_comment_at_item">상품에 댓글이 달렸습니다</string>
+    <string name="noti_title_comment_at_shop">상점에 댓글이 달렸습니다</string>
+    <string name="noti_title_comment_from_seller">판매자가 상품에 댓글을 달았습니다</string>
+    <string name="noti_title_favorited">회원님의 상품이 찜 되었습니다</string>
+    <string name="noti_title_followed">회원님을 팔로우 합니다</string>
+    <string name="noti_title_hot_item">인기 상품에 선정되었습니다</string>
+    <string name="noti_title_hot_shop">인기 상점으로 선정되었습니다</string>
+    <string name="noti_title_invitee_joined">회원님을 추천인으로 가입했습니다</string>
+    <string name="noti_title_mention_at_item">상품 문의에서 회원님이 언급되었습니다</string>
+    <string name="noti_title_mention_at_shop">상점 문의에서 회원님이 언급되었습니다</string>
+    <string name="noti_title_notice">@string/notice</string>
+    <string name="noti_title_request_review">후기를 남겨주세요</string>
+    <string name="noti_title_reviewed">회원님의 상점에 후기를 남겼습니다</string>
+    <string name="noti_title_shipping">배송 현황</string>
+    <string name="noti_title_warned">운영자에 의해 경고를 받았습니다</string>
+    <string name="notice">공지사항</string>
+    <string name="noticetxt">공지사항</string>
+    <string name="notification_center">알림 센터</string>
+    <string name="ollehStore">OLLEH</string>
+    <string name="omit">생략</string>
+    <string name="on_loading_spec">"상품 상세 정보를 로딩 중입니다.
+잠시 후 다시 시도 해주세요."</string>
+    <string name="opensource_license">오픈소스 라이센스</string>
+    <string name="operation_policies">번개장터 운영정책</string>
+    <string name="option_all">전체</string>
+    <string name="option_biz">전문</string>
+    <string name="option_buncar">번개카</string>
+    <string name="option_exchg_title">교환가능</string>
+    <string name="option_flag_title">옵션</string>
+    <string name="option_free_ship_title">무료배송</string>
+    <string name="option_indi">개인</string>
+    <string name="option_is_on_sale">판매중</string>
+    <string name="option_is_on_sale_n_reserved">"판매중
+예약됨"</string>
+    <string name="option_is_reserved">예약됨</string>
+    <string name="option_is_soldout">판매완료</string>
+    <string name="option_loc_here">현 위치로 설정</string>
+    <string name="option_new">새상품</string>
+    <string name="option_old">중고상품</string>
+    <string name="option_on_sale_title">판매상태</string>
+    <string name="option_plus">PLUS</string>
+    <string name="option_price_high">최고가격</string>
+    <string name="option_price_low">최저가격</string>
+    <string name="option_safe_not">일반</string>
+    <string name="option_safe_only">안전</string>
+    <string name="option_shop_title">상점</string>
+    <string name="option_status">상태</string>
+    <string name="option_title">상세검색</string>
+    <string name="option_tran_title">거래</string>
+    <string name="option_used">중고</string>
+    <string name="pager_immunity_agreement">(주)퀵켓은 통신판매중개자로서 중고거래마켓 번개장터의 거래 당사자가 아니며, 입점판매자가 등록한 상품정보 및 거래에 대해 책임을 지지 않습니다.</string>
+    <string name="pager_immunity_agreement_privacy_info">개인정보취급방침</string>
+    <string name="pager_immunity_agreement_use_info">이용약관</string>
+    <string name="pager_immunity_bizinfo_add">서울시 구로구 디지털로 306 대륭 포스트 타워 2차 807호</string>
+    <string name="pager_immunity_bizinfo_ceo">(주)퀵켓 대표이사</string>
+    <string name="pager_immunity_bizinfo_ceo_name">장원귀</string>
+    <string name="pager_immunity_bizinfo_info">사업자정보확인</string>
+    <string name="pager_immunity_bizinfo_lbl_add">주소</string>
+    <string name="pager_immunity_bizinfo_network_seller">통신판매업신고</string>
+    <string name="pager_immunity_bizinfo_network_seller_number">2015-서울구로-0589</string>
+    <string name="pager_immunity_bizinfo_privacy">개인정보보호담당</string>
+    <string name="pager_immunity_bizinfo_privacy_name">장원귀</string>
+    <string name="pager_immunity_bizinfo_reg">사업자등록번호</string>
+    <string name="pager_immunity_bizinfo_reg_number">113-86-45836</string>
+    <string name="pager_immunity_copyright">Copyright ⓒQUICKET Co.,Ltd, All rights reserved</string>
+    <string name="pager_immunity_coustomer_center">고객센터</string>
+    <string name="pager_immunity_coustomer_center_email">cs@quicket.co.kr</string>
+    <string name="pager_immunity_coustomer_center_tel">FAX 02-598-8241</string>
+    <string name="pager_immunity_location_info">위치서비스약관</string>
+    <string name="pager_immunity_partner">제휴문의</string>
+    <string name="pager_immunity_partner_email">partner@quicket.co.kr</string>
+    <string name="parcel_agreement_cj_call">CJ 대한통운 고객센터</string>
+    <string name="parcel_agreement_cj_call_number">1588-1255</string>
+    <string name="parcel_agreement_cvsnet_title">이용 안내</string>
+    <string name="parcel_agreement_ok">네, 이용 가능 상품입니다.</string>
+    <string name="parcel_agreement_price_over_message">방문택배의 최대보상금액은 50만원 입니다.(단, 택배접수시 기사님과 상의 후 추가금액을 지불하면 보상금액 할증이 가능합니다.)</string>
+    <string name="parcel_agreement_price_over_title">피해 보상액 확인</string>
+    <string name="parcel_agreement_price_table_120_width">120cm 이하</string>
+    <string name="parcel_agreement_price_table_15kg_price">4,000원</string>
+    <string name="parcel_agreement_price_table_15kg_weight">15Kg 이하</string>
+    <string name="parcel_agreement_price_table_160_over_width">160cm 이상</string>
+    <string name="parcel_agreement_price_table_160_width">160cm 이하</string>
+    <string name="parcel_agreement_price_table_25kg_over_price">접수 불가</string>
+    <string name="parcel_agreement_price_table_25kg_over_weight">25Kg 이상</string>
+    <string name="parcel_agreement_price_table_25kg_price">5,500원</string>
+    <string name="parcel_agreement_price_table_25kg_weight">25Kg 이하</string>
+    <string name="parcel_agreement_price_table_etc_content">- 기타 도서지역 배송시 운송실비 추가</string>
+    <string name="parcel_agreement_price_table_jeju_content">- 제주특별자치도로 배송시 3,000원 추가</string>
+    <string name="parcel_agreement_price_table_price">운임요금</string>
+    <string name="parcel_agreement_price_table_size">사이즈</string>
+    <string name="parcel_agreement_price_table_size_content">- 사이즈 : 세 변의 합 (가로/세로/높이)</string>
+    <string name="parcel_agreement_price_table_weight">무게</string>
+    <string name="parcel_agreement_title">방문 택배 이용 안내</string>
+    <string name="parcel_agreement_unused_detail_content">"1. 현금, 수표, 주권, 채권, 인지(印紙) 등의 유가증권
+2. 금, 은 귀금속 및 다이아몬드 등 보석류 및 골동품
+3. 개, 고양이등의 동물 및 식물
+4. 화약류, 인마(人馬)살상용 총포류, 인화물질
+5. 밀수품, 밀반출군수품, 부정임산물, 기타범칙물품
+6. 재생불능 또는 재발행할 수 없는 물품
+7. 서신류 등 우편법상 제한물품
+8. 의약품 등 약사법상 제한물품
+9. 기타법령에의하여 취급이 금지ᆞ제한된 물품
+10. 중고 노트북 컴퓨터"</string>
+    <string name="parcel_agreement_unused_detail_text">이용 불가 상품 자세히 보기</string>
+    <string name="parcel_agreement_unused_limit_content">"1. 미술품(가격, 포장상태)
+2. 변질 및 부패성 물품(포장상태, 계절등)
+3. 주류, 음료수등(포장상태)
+4. 포장상태가 운송에 적합하지 않은 물품"</string>
+    <string name="parcel_agreement_unused_limit_title">포장상태 및 운송여건에 따라 “계약상대방”이 별도 합의하여 취급가능한 취급제한 물품</string>
+    <string name="parcel_agreement_unused_product">반드시 이용 가능 상품인지 확인하시고 발송해주세요</string>
+    <string name="parcel_agreement_unused_product_detail">이용 불가 상품을 발송할 경우의 모든 책임은 회원 본인에게 있습니다.</string>
+    <string name="parcel_agreement_unused_product_etc">유리/사기/플라스틱 등 깨지기 쉬운 물건, 현금, 신분증, 살아있는 동물 미포장 혹은 포장상태 불량, 액체류, 기타 접수 금지 상품 등</string>
+    <string name="parcel_agreement_unused_title">택배 이용 불가 상품</string>
+    <string name="parcel_cvsnet_unused_title">이용 불가 상품</string>
+    <string name="parcel_cvsnet_use_detail_backbutton">뒤로 가기</string>
+    <string name="parcel_cvsnet_use_detail_joonggo_box1">1. 가전제품은 공장 출하 시 제공된 원 제품포장 박스와 기본 내포장재(스트로폼) 포장을 원칙으로 합니다.</string>
+    <string name="parcel_cvsnet_use_detail_joonggo_box2">2. 출하시 제공된 원 박스가 아닌 일반 박스 포장 상품은 택배 접수가 불가합니다.</string>
+    <string name="parcel_cvsnet_use_detail_joonggo_box3">3. 배송시 포장 박스에 외부 충격에 의한 손상이 없는 경우, 제품에 대한 손상은 보상되지 않습니다.</string>
+    <string name="parcel_cvsnet_use_detail_joonggo_title">중고 가전제품 접수 안내</string>
+    <string name="parcel_cvsnet_use_detail_location_price1">1. 도서지역은 착불 서비스가 불가하오며, 기상 상황에 따라 배송기일이 다소 소요 (추가 2~5일) 될 수 있으므로, 식품류 접수시 유의하여야 합니다.</string>
+    <string name="parcel_cvsnet_use_detail_location_price2">2. 도선료 4,000원을 별도 지불하셔야 합니다.</string>
+    <string name="parcel_cvsnet_use_detail_location_title">도서지역 안내</string>
+    <string name="parcel_cvsnet_use_detail_title">이용 규정 상세 안내</string>
+    <string name="parcel_cvsnet_use_detail_unused_etc_product1">- 운송장 사이즈보다 작은 박스 포장 상품</string>
+    <string name="parcel_cvsnet_use_detail_unused_etc_product2">- 단일 포장이 아닌 합포장 상품</string>
+    <string name="parcel_cvsnet_use_detail_unused_etc_product3">- 포장 박스의 한 변이 1m가 넘는 상품</string>
+    <string name="parcel_cvsnet_use_detail_unused_etc_product4">- 재생불가 및 신분증류 : 원고, 계약서, 인감도장, 신분증, 여권</string>
+    <string name="parcel_cvsnet_use_detail_unused_etc_product5">- 현금, 신용카드, 유가증권 등</string>
+    <string name="parcel_cvsnet_use_detail_unused_etc_product6">- 가격환산이 어려운 예술품류</string>
+    <string name="parcel_cvsnet_use_detail_unused_etc_product7">- 총포, 도검류, 휘발성 물품</string>
+    <string name="parcel_cvsnet_use_detail_unused_etc_product8">- 박스 포장 불가 상품류</string>
+    <string name="parcel_cvsnet_use_detail_unused_etc_product9">- 섬(제주도제외) 지역으로 가는 착불 상품</string>
+    <string name="parcel_cvsnet_use_detail_unused_etc_title">- 기타 접수 금지 상품</string>
+    <string name="parcel_cvsnet_use_detail_unused_product1">- 가전제품은 공장 출하 시 제공된 원 제품포장 박스와 기본 내포장재(스트로폼) 포장을 원칙으로 합니다.</string>
+    <string name="parcel_cvsnet_use_detail_unused_product10">- 살아있는 동/식물(애완동물)</string>
+    <string name="parcel_cvsnet_use_detail_unused_product11">- 깨지기 쉬운 화물 : 병, 쥬스</string>
+    <string name="parcel_cvsnet_use_detail_unused_product12">- 포장이 불가하여 제품의 성질이나 외관을 손상시킬 수 있는 화물 : 타이어, 부품류</string>
+    <string name="parcel_cvsnet_use_detail_unused_product13">- 견고한 종이 박스에 적합하지 않은 화물 : 쌀, 곡물류</string>
+    <string name="parcel_cvsnet_use_detail_unused_product14">- 운송도중 또는 운송기일내 훼손 또는 부패 가능성 화물</string>
+    <string name="parcel_cvsnet_use_detail_unused_product2">- 출하시 제공된 원 박스가 아닌 일반 박스 포장 상품은 택배 접수가 불가합니다.</string>
+    <string name="parcel_cvsnet_use_detail_unused_product3">- 배송시 포장 박스에 외부 충격에 의한 손상이 없는 경우, 제품에 대한 손상은 보상되지 않습니다.</string>
+    <string name="parcel_cvsnet_use_detail_unused_product4">- 우편법상의 서신류 : 편지, 원서</string>
+    <string name="parcel_cvsnet_use_detail_unused_product5">- 귀중품류 : 현급, 현금카드, 유가증권, 귀금속, 골동품 등</string>
+    <string name="parcel_cvsnet_use_detail_unused_product6">- 미술품, 조각 등 예술품류 : 액자, 병풍, 작품(출품작), 석고상</string>
+    <string name="parcel_cvsnet_use_detail_unused_product7">- 변질 및 부패성 화물 및 인화성 물질 : 붕어즙, 난로, 가스통 등</string>
+    <string name="parcel_cvsnet_use_detail_unused_product8">- 다른 화물에 피해를 입힐 수 있다고 판단되는 화물: 액체화물(샘플류)</string>
+    <string name="parcel_cvsnet_use_detail_unused_product9">- 재발행, 재생이 어렵거나 불가한 화물 : 원고, 테이프, 설계도면, 디스켓, 인감, 여권, 수험표, 면허증, 계산서 외</string>
+    <string name="parcel_cvsnet_use_detail_unused_title">이용 불가 상품</string>
+    <string name="parcel_info_d2d_title">방문 택배 안내</string>
+    <string name="parcel_info_edit_parcel">배송 정보 수정</string>
+    <string name="parcel_info_invoice_zero">발급 전</string>
+    <string name="parcel_info_phone_edit_popup_msg">"번호 도용을 방지하기 위해 다른 연락처로 수정이 불가합니다.
+양해 부탁드립니다."</string>
+    <string name="parcel_info_phone_edit_popup_title">공지사항</string>
+    <string name="parcel_info_reserve_cancel">택배 예약 취소</string>
+    <string name="parcel_info_reserve_title">예약 신청 정보</string>
+    <string name="parcel_info_title">택배 이용 현황</string>
+    <string name="parcel_info_visit_cancel">"방문접수 취소를 원하시면 아래 CJ대한통운
+택배 고객센터로 알려주시면 취소 가능합니다."</string>
+    <string name="parcel_info_visit_cancel_available_first">예약 후(공휴일 제외) 오전 2시까지 수정/취소 가능</string>
+    <string name="parcel_info_visit_cancel_available_second">운송장 발급 후에는 CJ대한통운 고객센터를 통해 전화 취소</string>
+    <string name="parcel_info_visit_info">&lt;font color=#6a6b66>신청일 기준 익일에 택배기사님이 송장을 인쇄하여&lt;br>고객님께 방문 예정입니다. 단, 택배사 사정에 따라 방문일정이&lt;br>&lt;/font>&lt;font color=#e14436>최대 3일까지 연장&lt;/font>&lt;font color=#6a6b66>될 수 있으니 양해 부탁드립니다.&lt;/font></string>
+    <string name="parcel_list_empty_message">택배 목록이 없습니다.</string>
+    <string name="parcel_list_item_receiver_text">수취인 : %s</string>
+    <string name="parcel_list_item_sender_text">발송인 : %s</string>
+    <string name="parcel_list_item_state_cancel">[예약취소]</string>
+    <string name="parcel_list_item_state_invoce_number">송장번호 : %s</string>
+    <string name="parcel_list_item_state_invoce_number_empty">[운송장 발급전]</string>
+    <string name="parcel_list_item_state_reserve_number">예약번호 : %s</string>
+    <string name="parcel_list_tab_receiver_title">수취내역</string>
+    <string name="parcel_list_tab_select_title">택배신청</string>
+    <string name="parcel_list_tab_send_title">발송내역</string>
+    <string name="parcel_list_title">택배관리</string>
+    <string name="parcel_popup_call_service">전화하기</string>
+    <string name="parcel_popup_description_caution">주의사항</string>
+    <string name="parcel_popup_description_delivery_type">배송종류</string>
+    <string name="parcel_popup_description_product">배송물건</string>
+    <string name="parcel_popup_description_region">접수지역</string>
+    <string name="parcel_popup_description_role">적재 기준 및 요금</string>
+    <string name="parcel_popup_service_type">서비스명</string>
+    <string name="parcel_reserve_address_text">주소</string>
+    <string name="parcel_reserve_cancel">택배 예약 취소</string>
+    <string name="parcel_reserve_check_user_name">상점명 : %s</string>
+    <string name="parcel_reserve_cvsnet_commit">택배 예약하기</string>
+    <string name="parcel_reserve_cvsnet_eidt_title">택배 신청 내용</string>
+    <string name="parcel_reserve_cvsnet_title">택배 신청</string>
+    <string name="parcel_reserve_d2d_boxsize_content">- 박스크기는 가로,세로,높이 세변의 길이를 합친 것 (최대 160cm)으로, 상품의 최장변은 100cm 이내</string>
+    <string name="parcel_reserve_d2d_boxsize_text">박스 부피</string>
+    <string name="parcel_reserve_d2d_boxweight_content">- 무게는 최대 25Kg 이내이며, 곡물 및 서적 등 상품의 특성에 따라 일부상품은 20Kg 이내로 예외 적용합니다.</string>
+    <string name="parcel_reserve_d2d_commit">방문 택배 예약 신청</string>
+    <string name="parcel_reserve_d2d_title">방문 택배 신청</string>
+    <string name="parcel_reserve_edit">택배 정보 수정</string>
+    <string name="parcel_reserve_info_box_text">* 예약등록 후 보내실 물품은 박스에 견고히 포장한 후 Postbox가 설치된 가까운 편의점에 가셔서 직접 맡겨주셔야 됩니다.</string>
+    <string name="parcel_reserve_info_cvsnet_info">편의점 택배 접수방법 안내</string>
+    <string name="parcel_reserve_info_cvsnet_info_message1">1. 번개장터 택배 접수신청하여 승인번호를 받으세요.</string>
+    <string name="parcel_reserve_info_cvsnet_info_message2">2. 물품을 들고 무인택배기가 있는 편의점에 방문하세요..</string>
+    <string name="parcel_reserve_info_cvsnet_info_message3">3. Postbox 무인 택배기 내 [쇼핑몰 거래] 버튼을 누르세요.</string>
+    <string name="parcel_reserve_info_cvsnet_info_message4">4. 1.번에서 받은 승인번호를 입력하세요.</string>
+    <string name="parcel_reserve_info_cvsnet_info_message5">5. 무인 택비기에서 보여지는 절차에 따라 진행하여 송장을 출력하세요.</string>
+    <string name="parcel_reserve_info_cvsnet_info_message6">6. 받은 송장을 물건에 부착하여 카운터에 제출하세요.</string>
+    <string name="parcel_reserve_info_reserve">동일물품 더 보내기</string>
+    <string name="parcel_reserve_info_state">택배현황</string>
+    <string name="parcel_reserve_name_text">이름</string>
+    <string name="parcel_reserve_parcel_hint_address_detail">상세주소</string>
+    <string name="parcel_reserve_parcel_hint_phone">휴대폰번호</string>
+    <string name="parcel_reserve_parcel_hint_receiver_name">받는사람</string>
+    <string name="parcel_reserve_parcel_hint_sender_name">보내는사람</string>
+    <string name="parcel_reserve_parcel_hint_user_check">회원확인</string>
+    <string name="parcel_reserve_parcel_price_per">선불</string>
+    <string name="parcel_reserve_parcel_price_post">착불</string>
+    <string name="parcel_reserve_parcel_price_text">배송료</string>
+    <string name="parcel_reserve_parcel_sender_edit_completed">수정완료</string>
+    <string name="parcel_reserve_phone_text">연락처</string>
+    <string name="parcel_reserve_product_loss_text">(분실/파손 보상기준가격)</string>
+    <string name="parcel_reserve_product_price_text">물품가격</string>
+    <string name="parcel_reserve_sender_edit_mode">보내는분 정보를 저장하시겠습니까?</string>
+    <string name="parcel_reserve_sender_edit_mode_no_save">저장안함</string>
+    <string name="parcel_reserve_sender_edit_mode_save">저장</string>
+    <string name="parcel_reserve_state_invoce_number">운송장번호</string>
+    <string name="parcel_reserve_state_price_type">운임</string>
+    <string name="parcel_reserve_state_receiver">받는 분</string>
+    <string name="parcel_reserve_state_reserve_number">예약번호</string>
+    <string name="parcel_reserve_state_sender">보내는 분</string>
+    <string name="parcel_reserve_user_check_fail">번개장터 회원이 아니므로 발송할 수 없습니다.</string>
+    <string name="parcel_reserve_user_check_message">"* '회원확인'을 통해 받는 분이 번개 장터 회원인지 확인해 주세요."</string>
+    <string name="parcel_reserve_user_check_message_fail">번장택배는 회원간 저렴하게 이용하실 수 있는 서비스 입니다. 발송을 위해 받으실 분을 번개장터로 초대하세요.</string>
+    <string name="parcel_reserve_user_check_message_success">* 실제 수령인이 아닌 타인의 번호를 무단 사용할 경우 법에 의거 처벌받을 수 있습니다.</string>
+    <string name="parcel_reserve_user_check_success">번개장터 회원입니다.</string>
+    <string name="parcel_reserve_user_invitation">위 연락처로 초대 SMS 보내기 (무료)</string>
+    <string name="parcel_select_webview_title">택배조회</string>
+    <string name="parcel_support_list_title">배송서비스 선택</string>
+    <string name="parcel_update_complete">수정 완료</string>
+    <string name="parcel_update_complete_message">해당 승인번호(예약번호)의 예약내용을 수정하였습니다.</string>
+    <string name="parcel_update_complete_number">승인번호 (예약번호)</string>
+    <string name="parcel_update_result_title">수정 결과</string>
+    <string name="password_init_change_email_hint">이메일 주소 입력</string>
+    <string name="password_init_change_email_send">"비밀번호 재설정 이메일을 발송하였습니다.
+도착하지 않은 경우 스팸함도 확인해주세요."</string>
+    <string name="password_init_change_warning">8~16자의 영문숫자특수문자를 사용해 주세요</string>
+    <string name="password_init_current_password">현재 비밀번호</string>
+    <string name="password_init_current_password_warning">비밀번호가 일치 하지 않습니다.</string>
+    <string name="password_init_enter">@string/label_change_password</string>
+    <string name="password_init_enter_email">가입시 입력한 이메일 입력</string>
+    <string name="password_init_enter_phone_num">가입시 입력한 휴대폰번호 입력</string>
+    <string name="password_init_forget_email">이메일이 기억나지 않는다면?</string>
+    <string name="password_init_hint">힌트</string>
+    <string name="password_init_new_password">새로운 비밀번호</string>
+    <string name="password_init_new_password_confirm">비밀번호 확인</string>
+    <string name="password_init_not_find_email_msg">입력된 이메일이 없습니다.</string>
+    <string name="password_init_req_auth_email">이메일 인증 요청</string>
+    <string name="password_toggle_content_description">Toggle password visibility</string>
+    <string name="path_password_eye">M12,4.5C7,4.5 2.73,7.61 1,12c1.73,4.39 6,7.5 11,7.5s9.27,-3.11 11,-7.5c-1.73,-4.39 -6,-7.5 -11,-7.5zM12,17c-2.76,0 -5,-2.24 -5,-5s2.24,-5 5,-5 5,2.24 5,5 -2.24,5 -5,5zM12,9c-1.66,0 -3,1.34 -3,3s1.34,3 3,3 3,-1.34 3,-3 -1.34,-3 -3,-3z</string>
+    <string name="path_password_eye_mask_strike_through">M2,4.27 L19.73,22 L22.27,19.46 L4.54,1.73 L4.54,1 L23,1 L23,23 L1,23 L1,4.27 Z</string>
+    <string name="path_password_eye_mask_visible">M2,4.27 L2,4.27 L4.54,1.73 L4.54,1.73 L4.54,1 L23,1 L23,23 L1,23 L1,4.27 Z</string>
+    <string name="path_password_strike_through">M3.27,4.27 L19.74,20.74</string>
+    <string name="pathprefix_bunjang_shop_web">/shop</string>
+    <string name="pathprefix_bunjang_web">/products</string>
+    <string name="photos_have_been_sent">사진</string>
+    <string name="post">등록완료</string>
+    <string name="pref_chat">noti_chat</string>
+    <string name="pref_enable_notification">generalNotiSet</string>
+    <string name="pref_extra_event">noti_extra_event</string>
+    <string name="pref_extra_push">noti_extra_push</string>
+    <string name="pref_item_comment">noti_item_comment</string>
+    <string name="pref_item_favorite">noti_item_favorite</string>
+    <string name="pref_item_up_plus">noti_item_up_plus</string>
+    <string name="pref_lock_screen_always">lock_screen_always</string>
+    <string name="pref_lock_screen_charge">lock_screen_charge</string>
+    <string name="pref_lock_screen_enabled">lock_screen_enable</string>
+    <string name="pref_lock_screen_outlink">lock_screen_outlink</string>
+    <string name="pref_root_screen">rootScreen</string>
+    <string name="pref_shipped">noti_shipped</string>
+    <string name="pref_shipping">noti_shipping</string>
+    <string name="pref_shop_comment">noti_shop_comment</string>
+    <string name="pref_shop_followed">noti_shop_follow</string>
+    <string name="pref_shop_reviewed">noti_shop_review</string>
+    <string name="pref_sleep_end">notiEndTime</string>
+    <string name="pref_sleep_mode">notiSleepMode</string>
+    <string name="pref_sleep_start">notiStartTime</string>
+    <string name="pref_sound">enable_sound</string>
+    <string name="pref_vibration">enable_vibration</string>
+    <string name="price_comparison_expl">중요 키워드만 입력하세요</string>
+    <string name="price_comparison_hint">상품명을 입력해주세요</string>
+    <string name="price_comparison_no_keyword">상품명을 입력해주세요</string>
+    <string name="price_comparison_title">가격검색</string>
+    <string name="privacy_general_setting">일반 설정</string>
+    <string name="privacy_hide_phone_set">내 연락처 비공개</string>
+    <string name="privacy_hide_phone_set_summary">체크하면 내 상품, 상점에서 연락처가 비공개됩니다</string>
+    <string name="privacy_setting_title">비공개 설정</string>
+    <string name="privacy_update_popup_content">"회원님의 소중한 개인 정보 보호를 위해
+정확한 연락처, 이메일 사용과
+주기적인 비밀번호 변경을 부탁드립니다."</string>
+    <string name="privacy_update_popup_title">스스로 지키는 개인정보</string>
+    <string name="productImageUrl">http://cdn.gscdn.bunjang.co.kr/product/</string>
+    <string name="profileImageUrl">http://cdn.gscdn.bunjang.co.kr/profile/</string>
+    <string name="profile_auth_desc">번개장터 &lt;b>본인인증 완료&lt;/b>된 사용자입니다.</string>
+    <string name="profile_buyer_notice">구매 전 유의사항</string>
+    <string name="profile_buyer_notice_default">판매자에게 구매 전 유의사항을 확인 후 거래해주세요.</string>
+    <string name="profile_call_title">연락하기</string>
+    <string name="profile_cant_enter">접근할 수 없는 상점입니다.</string>
+    <string name="profile_desc_format" formatted="false">"연락가능시간 : %s
+
+%s"</string>
+    <string name="profile_intro_title">상점 소개</string>
+    <string name="profile_item_follower_title">팔로워</string>
+    <string name="profile_item_following_title">팔로잉</string>
+    <string name="profile_item_num_title">상품</string>
+    <string name="profile_item_review_title">후기</string>
+    <string name="profile_item_title">상품</string>
+    <string name="profile_my_editbox">찜, 댓글 다신 분에게 메시지를 보내세요</string>
+    <string name="profile_policy">교환/반품/환불정책</string>
+    <string name="profile_policy_default">물품의 상태가 기재된 것과 상이할 경우 배송완료일 기준 7일 이내에 환불 및 반품이 가능합니다(번개장터 기본 정책)</string>
+    <string name="profile_review_title">후기</string>
+    <string name="profile_title_comments">상점 문의</string>
+    <string name="profile_title_default">상점 정보</string>
+    <string name="profile_title_fmt">%s 님의 상점</string>
+    <string name="profile_title_open_date">상점오픈일</string>
+    <string name="profile_title_sail_product">상품판매</string>
+    <string name="profile_title_send_product">상품발송</string>
+    <string name="profile_title_visits">상점방문수</string>
+    <string name="provide_shop_name">상점명 등록</string>
+    <string name="push_noti_agreement_msg">"&lt;b>'번개장터'에서 보내는 이벤트 및 알림(push)을 받아보시겠습니까?&lt;/b>&lt;br>&lt;br>&lt;/br>&lt;/br>수신동의 시 이벤트, 핫딜상품 등 다양한 혜택과 정보에 대한 알림을 받아보실 수 있습니다."</string>
+    <string name="push_noti_result_msg" formatted="false">"'번개장터'에서 보내는 이벤트 및 알림(push) 수신 여부가 '%s'로 설정되었습니다.&lt;br>&lt;br>&lt;/br>&lt;/br>%s"</string>
+    <string name="qtalk">번개톡</string>
+    <string name="quit_channel_failed">채널 나기기가 실패했습니다</string>
+    <string name="rate_app">확인</string>
+    <string name="recent_categories">최근 카테고리</string>
+    <string name="recommand_link">추천 링크</string>
+    <string name="reg_alert_operator_wish">거래 신고가 필요한 경우는 [설정] 메뉴의 [1:1 상담하기]를 통해 접수 부탁드립니다.</string>
+    <string name="reg_btn_title_ctg">카테고리</string>
+    <string name="reg_btn_title_location">위치 입력</string>
+    <string name="reg_btn_title_status">상태</string>
+    <string name="reg_cafe_sahre_check_text">네이버 카페 등록</string>
+    <string name="reg_desc_msg_back">"기입한 상세정보가 지워집니다. 정보를 입력하시려면 화면의 '입력완료'버튼을 눌러주세요
+이전화면으로 돌아가시겠습니까?"</string>
+    <string name="reg_dialog_title_status">상태 선택</string>
+    <string name="reg_exchange_tag_text">교환안함</string>
+    <string name="reg_hint_desc">상세설명</string>
+    <string name="reg_img_fail_copy">"선택된 사진이 손상되었습니다.
+다른 사진을 선택해주세요."</string>
+    <string name="reg_img_not_load_complete">사진이 아직 로딩되지 않았습니다 잠시후 시도해 주세요.</string>
+    <string name="reg_img_uneditable_msg">삭제된 사진입니다.</string>
+    <string name="reg_item_desc">"만족스러운 거래를 위해서 상품의 정확한 설명을 입력해주세요.
+(상품소개, 상품하자 위치 및 정도, 사용감 정도 등)"</string>
+    <string name="reg_item_fitting_guide">판매 팁! 착용 사진을 올리시면 판매율이 높아집니다.^^</string>
+    <string name="reg_item_spec_edit_hint">정확히 기재 해주세요</string>
+    <string name="reg_msg_ipay_min_money">"안전결제 물품은 1,000원이상부터
+등록이 가능합니다."</string>
+    <string name="reg_msg_long_description">상세설명이 너무 깁니다(최대 1000자)</string>
+    <string name="reg_msg_long_title">타이틀이 너무 깁니다(최대 40자)</string>
+    <string name="reg_msg_lose_condition">물품의 상태정보를 선택해주세요</string>
+    <string name="reg_msg_lose_description">상세설명을 입력해주세요</string>
+    <string name="reg_msg_need_additional">추가정보를 입력해주세요</string>
+    <string name="reg_msg_need_category">카테고리를 선택해주세요</string>
+    <string name="reg_msg_need_desc">상세설명을 입력해주세요(최대 1000자)</string>
+    <string name="reg_msg_need_description">상세정보를 입력해 주세요</string>
+    <string name="reg_msg_need_enter_title">상품명을 입력해주세요.</string>
+    <string name="reg_msg_need_location">선호 거래지역을 선택해 주세요</string>
+    <string name="reg_msg_need_more_enter_title">상품명을 2자 이상 입력해주세요.</string>
+    <string name="reg_msg_need_naver_pay_1000won">1000원 이상의 상품만 이용가능합니다.</string>
+    <string name="reg_msg_need_photo">1장 이상의 상품사진을 등록해주세요</string>
+    <string name="reg_msg_need_photo_atleast_three">최소 사진 개수는 %d장입니다</string>
+    <string name="reg_msg_need_price">판매가격이 필요합니다</string>
+    <string name="reg_msg_need_price_upper_100won">가격은 100원 이상 입력해주세요</string>
+    <string name="reg_msg_need_quantity">수량이 필요합니다</string>
+    <string name="reg_msg_not_available_naver_pay_in_demand_contact_mode">연락요망 상태에서는 연동이 불가합니다.</string>
+    <string name="reg_msg_over_comma">주요 태그만 콤마,로 나열해주세요(최대 15자)</string>
+    <string name="reg_msg_short_title">타이틀이 너무 짧습니다(최소 2자)</string>
+    <string name="reg_price_help_msg">중고 시세보다 10% 정도 저렴하게 가격을 정하면 신속한 판매를 하실 수 있습니다.</string>
+    <string name="reg_price_help_new">새상품 시세 검색</string>
+    <string name="reg_price_help_title">가격을 정하기 힘드신가요?</string>
+    <string name="reg_price_help_used">중고 시세 검색</string>
+    <string name="reg_price_hint">가격</string>
+    <string name="reg_quantity_label">수량</string>
+    <string name="reg_required_size_input_msg">사이즈를 선택해주세요</string>
+    <string name="reg_review_msg_need_shop_name">칭찬할 상점을 지정해주세요</string>
+    <string name="reg_spec_input_more">더보기 (선택사항)</string>
+    <string name="reg_tag_hint">태그를 입력해주세요(최대 %d개)</string>
+    <string name="reg_textview_title_basic_info">정보입력</string>
+    <string name="reg_title_community">주제</string>
+    <string name="reg_title_desc">상세 정보 입력</string>
+    <string name="reg_title_hint">물품명</string>
+    <string name="reg_transport_tag_text">무료배송</string>
+    <string name="reg_trash_dig_message">입력하신 내용을 모두 지웁니다</string>
+    <string name="reg_trash_dig_title">휴지통</string>
+    <string name="reg_upload_done">"등록이 완료되었습니다
+"</string>
+    <string name="reg_upload_register">등록화면업로드</string>
+    <string name="reg_upload_review">리뷰등록화면업로드</string>
+    <string name="register">등록</string>
+    <string name="register_addition_option_edit_dialog_title">%s를 입력해 주세요(최대 20자)</string>
+    <string name="register_brand_edit_hint">브랜드를 입력하세요.</string>
+    <string name="register_cafe_share_fail">카페 공유에 실패했습니다.</string>
+    <string name="register_cancel_modify_product">수정을 취소하시겠습니까?</string>
+    <string name="register_category_clear">카테고리가 변경되면 추가정보에 입력된 값은 초기화 됩니다.</string>
+    <string name="register_check_payment_required_msg">"고액 상품의 거래 안전을 위해 %d원 이상의 스마트기기, 전자제품 거래 시 안전결제(네이버페이) 연동이 의무화 되었습니다.
+
+안전결제 지원하기 체크 후 상품등록이 가능합니다."</string>
+    <string name="register_check_payment_required_title">안전결제 지원하기</string>
+    <string name="register_check_price_min">정확한 가격을 입력해 주세요, %d원은 사용할 수 없는 가격입니다.</string>
+    <string name="register_check_price_negative">가격이 맞습니다</string>
+    <string name="register_check_price_over">입력된 가격%d원입니다. 가격이 올바르지 않을 경우 제재 대상이 될 수 있습니다.</string>
+    <string name="register_check_price_positive">가격 수정</string>
+    <string name="register_check_seller_type_confirm">상점유형 선택하기</string>
+    <string name="register_check_seller_type_msg">"상점유형을 선택하신 후 상품등록을 해주세요.
+
+상점을 분류해 맞춤형 혜택과 서비스 를 제공하기 위해 준비중 입니다."</string>
+    <string name="register_check_seller_type_noti_msg">"자신에게 맞는 상점유형을 선택해 주세요
+
+각 상점에 맞는 혜택과 서비스를 제공 합니다."</string>
+    <string name="register_desc_edit_hint">이외 추가적인 설명을 입력하세요(최대 1000자)</string>
+    <string name="register_desc_product">거래금지 품목 안내</string>
+    <string name="register_desc_required">&lt;font color=#e82c1e>%s&lt;/font> 등록시 권고사항</string>
+    <string name="register_description_recommendation_category">&lt;font color=#de4135> %s &lt;/font>&lt;font color=#333333> 상품 등록시 권고사항&lt;/font></string>
+    <string name="register_description_recommendation_menu_copy">복사</string>
+    <string name="register_description_recommendation_text">&lt;font color=#de4135> [%s] &lt;/font>&lt;font color=#333333> 상품 등록 권고사항&lt;/font></string>
+    <string name="register_description_recommendation_title">권고사항안내</string>
+    <string name="register_description_tooltip_content">"아래 권고사항 정보를
+복사 할 수 있습니다."</string>
+    <string name="register_info_faq">거래관련 FAQ</string>
+    <string name="register_info_knowhow">판매노하우</string>
+    <string name="register_info_no_trade">거래금지품목</string>
+    <string name="register_info_tooltip">중고거래를 위한 판매노하우를 확인 해보세요</string>
+    <string name="register_location_address_empty_subtitle">동(읍,면,리) 이름을 확인하시고 다시 검색해 주세요</string>
+    <string name="register_location_address_empty_title">검색결과가 없습니다.</string>
+    <string name="register_location_address_input_hint">동(읍/면/리)을 입력해주세요</string>
+    <string name="register_location_address_title">지역 검색</string>
+    <string name="register_location_duplicated">이미 등록된 지역입니다</string>
+    <string name="register_location_gps_on_msg">내 위치 정보를 사용하려면 설정에서 “위치서비스“ 사용을 허용해주세요</string>
+    <string name="register_location_input_hint">건물명, 지역, 지하철</string>
+    <string name="register_location_input_option_gps">현재 위치지정</string>
+    <string name="register_location_limit">"선호거래지역은 5개까지만 등록 가능합니다
+이미 등록된 지역을 삭제 후 시도해주세요"</string>
+    <string name="register_location_prefer_content">원하시는 선호 거래지역을 검색하세요</string>
+    <string name="register_location_prefer_recent_list">최근 이용한 지역</string>
+    <string name="register_location_prefer_selection_msg">* 택배거래를 이용하시는 경우에도 현재위치와 인접한 지역을 선택해 주세요</string>
+    <string name="register_location_prefer_sub_content">거래 활성화, 지역 맞춤 정보, 거래분쟁 방지 등에 활용됩니다.</string>
+    <string name="register_location_recent_empty_logout_subtitle">로그인 후 확인 가능합니다.</string>
+    <string name="register_location_recent_empty_subtitle">최근 이용한 거래지역이 없습니다.</string>
+    <string name="register_location_subway_empty_subtitle">지하철 이름을 확인하시고 다시 검색해 주세요</string>
+    <string name="register_location_subway_input_hint">지하철 역명을 입력해주세요</string>
+    <string name="register_location_subway_title">지하철 검색</string>
+    <string name="register_location_title">선호 거래지역</string>
+    <string name="register_navercafe_button">@string/label_register</string>
+    <string name="register_navercafe_detail_button">네이버 카페/블로그에 물품 등록하기</string>
+    <string name="register_navercafe_guide">"상세설명 및 번개장터 부가정보가
+복사되었습니다. 내용 입력창을 길게
+눌러 붙여넣기를 해주세요.
+등록 전 카페 정책을 확인하세요."</string>
+    <string name="register_navercafe_guide_done">네이버카페 등록하기</string>
+    <string name="register_navercafe_join_msg">"%s 공식카페에 가입이 필요합니다.
+모든 등록은 가입후 진행됩니다
+가입 동의 하시겠습니까?"</string>
+    <string name="register_navercafe_join_ok_text">가입 동의</string>
+    <string name="register_navercafe_join_title">카페 가입 동의</string>
+    <string name="register_navercafe_message">"빠른 판매를 원하시면,
+네이버 카페에도 상품을 함께 등록해보세요!"</string>
+    <string name="register_navercafe_overlay_message">번개장터 앱에서 상점 [%s]를 찾아주세요</string>
+    <string name="register_navercafe_overlay_url">http://bunjang.kr</string>
+    <string name="register_navercafe_selection_option2">블로그</string>
+    <string name="register_navercafe_selection_title">등록 대상 선택</string>
+    <string name="register_navercafe_share_navercate">네이버카페 공유</string>
+    <string name="register_navercafe_title">상품 등록 완료</string>
+    <string name="register_none_category_select">카테고리가 선택되지 않았습니다</string>
+    <string name="register_photo_up_crop">사진 한 장 불러오기</string>
+    <string name="register_photo_up_default">사진 여러 장 불러오기</string>
+    <string name="register_picture_view_actionbar_title" formatted="false">%d장 중 %d번째 선택</string>
+    <string name="register_product_status_allmost_new_product">거의 새것</string>
+    <string name="register_product_status_new_product">새상품(미사용)</string>
+    <string name="register_product_status_new_product_and_defect">새상품+하자있음</string>
+    <string name="register_product_status_old_product">중고상품</string>
+    <string name="register_product_status_old_product_and_defect">중고+하자있음</string>
+    <string name="register_share_cafe_tooltip">%s 카페에 등록되어 판매가 빨라집니다</string>
+    <string name="register_uploading_description">설명을 등록 중...</string>
+    <string name="register_uploading_image">사진을 등록 중...</string>
+    <string name="related_title">연관 검색어</string>
+    <string name="releaseMarket">@string/androidMarket</string>
+    <string name="reply">답글쓰기</string>
+    <string name="reply_content_confirm">답글을 등록했습니다.</string>
+    <string name="reply_content_limit">100자까지 입력 가능합니다.</string>
+    <string name="reply_delete">답글 삭제하기</string>
+    <string name="reply_modify">답글 수정하기</string>
+    <string name="report">신고</string>
+    <string name="reset">초기화</string>
+    <string name="reset_password">비밀번호 재설정</string>
+    <string name="response_status_bad_req">"잘못된 요청입니다.
+운영자에게 문의해 주세요^^"</string>
+    <string name="response_status_blocked">이용이 제한된 유저로 서비스를 이용하실 수 없습니다.</string>
+    <string name="response_status_unauthorized">"잘못된 토큰입니다.
+다시 로그인해 주세요^^"</string>
+    <string name="review_approved_empty_section">등록된 번장인증후기가 없습니다.</string>
+    <string name="review_approved_more">번장인증후기 전체보기 ></string>
+    <string name="review_approved_section">번장인증후기</string>
+    <string name="review_bunp_date">번개톡 대화일시 : %s</string>
+    <string name="review_close_check">"입력한 후기 내용 및 사진이 있습니다.
+후기 입력을 취소하시겠습니까?"</string>
+    <string name="review_content_check">최소 20자 이상 입력해주세요.</string>
+    <string name="review_content_confirm">"후기 등록 완료!
+후기 수정은 10분이내 가능합니다."</string>
+    <string name="review_delete">리뷰를 삭제하시겠습니까?</string>
+    <string name="review_edit_hint_text">&lt;font color=#999999>거래와 관련없는 후기는 삭제될 수 있습니다. 최소 20자 이상 입력 해주세요.&lt;/font></string>
+    <string name="review_empty_text">리뷰가 없습니다.</string>
+    <string name="review_grade_check">별평가를 입력해주세요.</string>
+    <string name="review_guide_desc_bottom">번개장터의 보다 나은 상점 후기 이용을 위해 앞으로도 더욱 노력하겠습니다!</string>
+    <string name="review_guide_desc_center">후기 어뷰징 방지를 위해 작성된 후기에 대한 재작성은 24시간 이후로 제한됩니다.</string>
+    <string name="review_guide_desc_center_title">리뷰 재작성 시간 제한</string>
+    <string name="review_guide_desc_top">공정하고 신뢰 있는 상점 후기 이용을 위해 상점후기 작성 기능이 일부 변경되었습니다. 모두 함께 공정한 거래 문화를 만들어 나가요!</string>
+    <string name="review_guide_title">상점후기 이용안내</string>
+    <string name="review_list_fmt_title">"상점 후기 '%s'"</string>
+    <string name="review_list_fmt_title_no_shop_name">상점 후기</string>
+    <string name="review_msg_need_star">별평가를 입력해주세요.</string>
+    <string name="review_my_shop">자신의 상점에 프리미엄 후기를 작성할 수 없습니다.</string>
+    <string name="review_non_product_data">"번개톡 하단 '새번프하기'를 통해 거래가 완료되면 리뷰작성이 가능합니다."</string>
+    <string name="review_normal_delete">삭제 시 동일한 거래건으로 후기 재작성이 불가합니다.</string>
+    <string name="review_normal_edit_hint_text">&lt;font color=#999999>거래와 관련없는 후기는 삭제될 수 있습니다. 최소 20자 이상 입력 해주세요.&lt;/font>&lt;br> &lt;font color=#e82c1e>거래관련 비매너/거래취소 후기는 번개톡 스크린샷을 첨부하여 작성해주세요.&lt;/font></string>
+    <string name="review_normal_empty_section">등록된 일반후기가 없습니다.</string>
+    <string name="review_normal_section">일반후기</string>
+    <string name="review_not_available_device_model_tail">N900L</string>
+    <string name="review_not_available_device_prefix">SM</string>
+    <string name="review_quit">후기 등록을 취소하시겠습니까?</string>
+    <string name="review_reg_title">후기 등록</string>
+    <string name="review_shop_hint">칭찬할 상점명</string>
+    <string name="review_title_hint">제목</string>
+    <string name="review_toast_message">후기 재작성은 등록 시점으로부터 24시간 이후에 가능 합니다.</string>
+    <string name="review_upload_done">등록이 완료되었습니다</string>
+    <string name="review_uploading">후기 내용 업로드 중..잠시만 기다려 주세요</string>
+    <string name="right_menu_content_bunp_title">구매/판매내역</string>
+    <string name="right_menu_content_chat_title">번개톡/알림</string>
+    <string name="right_menu_content_delivery_title">택배발송/수취</string>
+    <string name="right_menu_content_keyword_title">키워드 알림</string>
+    <string name="right_menu_content_nPay_title">N페이 주문/판매 내역</string>
+    <string name="right_menu_content_super_up_title">광고센터(슈퍼UP)</string>
+    <string name="right_menu_delivery">택배신청</string>
+    <string name="right_menu_fav">찜</string>
+    <string name="right_menu_follow_title">팔로워 %s</string>
+    <string name="right_menu_prd">내상품</string>
+    <string name="right_menu_recent_more">더보기</string>
+    <string name="right_menu_recent_title">최근 본 상품</string>
+    <string name="right_menu_recommend">내 추천인 코드</string>
+    <string name="right_menu_register">판매하기</string>
+    <string name="right_menu_review">후기</string>
+    <string name="right_now">지금막</string>
+    <string name="safe_tran_purchase_qty_noti">"재고 수량이 없습니다.
+판매자에게 문의해 주세요."</string>
+    <string name="safe_tran_taekpo_recommend">안전결제시에 택배비 포함 가격을 권장합니다.</string>
+    <string name="safe_tran_title">안전결제</string>
+    <string name="saved_search_title">검색어 즐겨찾기</string>
+    <string name="scheme_http">http</string>
+    <string name="scheme_https">https</string>
+    <string name="search">검색</string>
+    <string name="search_bar_hint">상품명, 지역명 검색</string>
+    <string name="search_bar_hint_product">검색어를 입력해주세요</string>
+    <string name="search_bar_hint_shop">상점명을 입력해주세요.</string>
+    <string name="search_bar_hint_spac">모델명을 입력해주세요.</string>
+    <string name="search_brand_title">전체 브랜드</string>
+    <string name="search_header_sort_asc">저가순</string>
+    <string name="search_header_sort_date">최신순</string>
+    <string name="search_header_sort_desc">고가순</string>
+    <string name="search_header_sort_distance">거리순</string>
+    <string name="search_header_sort_hot">인기순</string>
+    <string name="search_keyword_empty_content_prd">최근 검색한 상품이 없습니다.</string>
+    <string name="search_keyword_empty_result">검색 결과가 없습니다.</string>
+    <string name="search_keyword_rank">%2d</string>
+    <string name="search_opt_input_label">결과 내 검색</string>
+    <string name="search_opt_price_label">가격대 검색</string>
+    <string name="search_price_range">가격대</string>
+    <string name="search_result_more_count">%s 개 상품 더보기</string>
+    <string name="search_result_shop_fmt_title">"상점검색 결과 '%s'"</string>
+    <string name="search_suggestion_shop_item_desc">상점검색보기</string>
+    <string name="search_text">@string/search</string>
+    <string name="send_text">보내기</string>
+    <string name="setting_ask_content">"※ 거래/분쟁신고 접수 시, 문제해결을 위해 상대방분께 고객님의 메일주소를 공유할 수 있음을 알려드립니다.
+
+※ 번거로우시더라도 가급적 아시는 만큼의 항목에 대한 기재를 부탁드립니다.
+※ 평일 기준 24시간 이내 답변을 드리고 있습니다. 메일문의가 많을 경우 상황에 따라 조금 지연될 수 있으나 순차적으로 놓치지 않고 처리하도록 최선을 다하겠습니다. 감사합니다."</string>
+    <string name="setting_ask_popup_title">관련 문의사항을 선택해주세요</string>
+    <string name="settings">설정</string>
+    <string name="sex">성별</string>
+    <string name="share_product_title">번개장터에서만 살수있는 %s</string>
+    <string name="share_shop_title">번개장터의 %s 으로 놀러오세요!</string>
+    <string name="share_sns_desc_title">공유할 때 남기고 싶은 말을 입력해주세요</string>
+    <string name="shipment_tracking">배송 조회</string>
+    <string name="shop_intro_info_title">상점소개</string>
+    <string name="shop_msg_url_copied">상점의 웹 주소가 복사되었습니다</string>
+    <string name="shop_open_day">오픈일 %s일전</string>
+    <string name="show_more">더보기</string>
+    <string name="side_menu_footer_help">"1:1
+문의하기"</string>
+    <string name="side_menu_footer_license">오픈소스 라이센스</string>
+    <string name="side_menu_footer_notice">"공지
+사항"</string>
+    <string name="side_menu_footer_operation_policies">"운영
+정책"</string>
+    <string name="side_menu_footer_qna">"자주묻는
+질문"</string>
+    <string name="side_menu_footer_version">버전정보 (%s)</string>
+    <string name="signup">회원가입</string>
+    <string name="signup_alram_agree_all_essential_terms">필수 약관에 모두 동의해주세요.</string>
+    <string name="signup_auth">인증번호 입력</string>
+    <string name="signup_birthday_check">생년월일이 정확한지 한번 더 확인 후 설정해주세요 ^^ 더 좋은 상품을 보여드리는데 도움이 됩니다.</string>
+    <string name="signup_email">이메일 주소 입력</string>
+    <string name="signup_email_desc">"비밀번호 분실 시 이용되므로 실제 사용하는 이메일
+주소로 정확하게 입력해주세요."</string>
+    <string name="signup_email_hint_content">이메일 (비밀번호 분실시 사용)</string>
+    <string name="signup_enter">가입하기</string>
+    <string name="signup_friend">(선택사항) 추천인 아이디 혹은 폰 번호</string>
+    <string name="signup_id_check_dig_button">로그인하기</string>
+    <string name="signup_id_check_dig_title">이미 계정이 있습니다.</string>
+    <string name="signup_keyword_content1">"관심 있는 키워드를 선택해주세요
+해당 상품이 등록되면 알림을 보내드립니다."</string>
+    <string name="signup_keyword_content2">(최대 5개까지 선택 가능)</string>
+    <string name="signup_keyword_title">키워드 알림 등록</string>
+    <string name="signup_password">비밀번호 입력</string>
+    <string name="signup_password_make_rule">(8~16자의 영문,숫자,특수문자 조합)</string>
+    <string name="signup_password_show">비밀번호 표시 (8~16자의 영문,숫자,특수문자 조합)</string>
+    <string name="signup_phone">휴대폰번호 입력</string>
+    <string name="signup_phone_req_auth">인증번호 요청</string>
+    <string name="signup_recommend">추천인 코드 입력(선택)</string>
+    <string name="signup_send_email_msg_kakao_type">가입이 완료되었습니다.</string>
+    <string name="signup_send_email_msg_normal_type">가입이 완료되었습니다.&lt;br>e-mail 인증 을 원하시면 가입된 메일을 확인해주세요.&lt;br>(가입 후 24시간 유효)</string>
+    <string name="signup_send_email_msg_social_type">가입이 완료 되었습니다.&lt;br>e-mail 인증 을 원하시면 가입된 메일을 확인해주세요.</string>
+    <string name="signup_src_json">{\"result\":\"success\", \"question\":\"번개장터를 어떻게 알았나요?^^(선택사항)\", \"examples\":[ {\"example\":\"안드로이드 마켓에서 검색\",\"user_input\":\"false\",\"placeholder\":\"\"}, {\"example\":\"네이버,다음(검색,카페,블로그)\",\"user_input\":\"false\",\"placeholder\":\"\"}, {\"example\":\"모바일 광고\",\"user_input\":\"false\",\"placeholder\":\"\"}, {\"example\":\"친구소개\",\"user_input\":\"false\",\"placeholder\":\"\"}, {\"example\":\"기타(검색한 키워드 또는 사유)\",\"user_input\":\"true\",\"placeholder\":\"\"} ]}</string>
+    <string name="signup_terms_3">위치기반서비스 이용약관</string>
+    <string name="signup_test_already_signed_up">"이미 가입된 번호입니다. 로그인하세요
+
+만약 회원가입을 하신적이 없으시다면 메일로 문의해 주세요 번호 소유자 확인 후 가입을 도와 드리겠습니다."</string>
+    <string name="signup_test_button_mail">@string/label_do_inquery</string>
+    <string name="signup_test_mail_content">"&lt;번호중복 사용자>
+
+* 최근 3개월이내 휴대폰번호를 변경하셨나요? (네/아니오) :
+* 휴대폰번호 변경시기 :
+* 이전휴대폰번호 :
+* 현재휴대폰번호 :
+* 답변 받으실 이메일주소 :
+* 추가로 첨부하실 자료가 있다면 스크린샷으로 첨부요망
+
+휴대폰 번호를 변경 하신적이 없으시다면 친구 등 지인에게 휴대폰 번호를 빌려주어 따로 가입하신 적이 있으신지 확인 부탁드립니다.
+번개장터는 건전한 거래 문화를 위해 휴대폰 번호당 1개의 계정을 운영원칙으로 하여 한 번호로 여러 계정 생성을 제한하고 있어 이러한 경우 번개장터 회원 가입을 하실 수 없습니다."</string>
+    <string name="signup_test_mail_subject">가입-번호중복가입오류</string>
+    <string name="siren">신고하기</string>
+    <string name="siren_popup_title">관련 신고 사항을 선택해주세요</string>
+    <string name="sms_fail_message">문자 발송이 실패하였습니다.</string>
+    <string name="sms_success_message">문자 발송이 성공하였습니다.</string>
+    <string name="sns_login_title">휴대폰번호 로그인</string>
+    <string name="social_guide_connect">"%1$s 계정과 연동되었습니다.
+재로그인시 %2$s 로그인 이용이 가능합니다.
+
+소셜연동은 내 프로필에서 설정할 수 있습니다."</string>
+    <string name="social_label_facebook">페이스북</string>
+    <string name="social_label_kakao">카카오톡</string>
+    <string name="social_label_naver">네이버</string>
+    <string name="social_login_bottom_week_btn">일주일간 보지 않기</string>
+    <string name="social_login_facebook">페이스북으로 시작하기</string>
+    <string name="social_login_kakao">카카오톡으로 시작하기</string>
+    <string name="social_login_naver">네이버로 시작하기</string>
+    <string name="social_not_install_facebook">페이스북 설치가 필요합니다.</string>
+    <string name="social_not_install_kakao">카카오톡 설치가 필요합니다.</string>
+    <string name="spec_header_text_html">&lt;font color=#757575>목록을 선택하면 모델명과 제품정보 링크가 자동 등록됩니다. &lt;/font>&lt;br>&lt;font color=#1db701>(네이버 지식쇼핑 제공)&lt;/font></string>
+    <string name="spec_info_remove_msg">모델명과 제품정보 링크를 모두 삭제하시겠습니까?</string>
+    <string name="speciality_shops_switch_title">내 상점 유형선택</string>
+    <string name="start_noti_daily">하루동안 보지 않기</string>
+    <string name="start_noti_once">다시 보지 않기</string>
+    <string name="start_noti_weekly">7일간 보지 않기</string>
+    <string name="status_a_minus">새것+하자</string>
+    <string name="status_a_minus_note">(새것이나 하자가 있음)</string>
+    <string name="status_a_plus">새상품</string>
+    <string name="status_a_plus_note">(미사용)</string>
+    <string name="status_a_zero">거의새것</string>
+    <string name="status_a_zero_note">(새것이고 하자가 없음)</string>
+    <string name="status_b">중고</string>
+    <string name="status_b_note" />
+    <string name="status_c">중고+하자</string>
+    <string name="status_c_note">(하자가 있는 중고)</string>
+    <string name="successEdit">수정 되었습니다</string>
+    <string name="successSiren">신고가 성공적으로 접수되었습니다</string>
+    <string name="success_register">등록되었습니다!</string>
+    <string name="super_up_lead_fail">상품정보가 올바르지않습니다.</string>
+    <string name="super_up_lead_popup_content">"슈퍼UP은 검색 카테고리,
+팔로잉 상점소식 홈 인기카테고리,
+연관상품 등 많은 곳에서 노출됩니다."</string>
+    <string name="super_up_lead_popup_sub_content">지금 슈퍼UP 1개를 구매하시면 24시간 동안 기다림 없이 10개의 UP을 할 수 있습니다. (최근 월 3만원 이상의 광고 구매 포함)</string>
+    <string name="super_up_lead_popup_sub_title">"슈퍼UP 구매로 판매를 늘려보세요.
+무료UP, UP-Plus 보다 몇 배 강력합니다."</string>
+    <string name="super_up_lead_popup_title1">슈퍼UP구매로</string>
+    <string name="super_up_lead_popup_title2">판매UP!</string>
+    <string name="super_up_tooltip">"UP 보다 위에 노출되는
+슈퍼UP 광고를 이용해보세요!"</string>
+    <string name="superup_plus_community_alert_message">커뮤니티 게시글은 슈퍼UP을 이용할 수 없습니다.</string>
+    <string name="superup_plus_reserve_alert_message">예약중,판매완료 상품은 슈퍼UP을 이용할 수 없습니다.</string>
+    <string name="tStore">T</string>
+    <string name="termsofuse">번개장터 이용약관</string>
+    <string name="test_ad_admob_express_on">ad_admob_express_on</string>
+    <string name="test_ad_admob_on">ad_admob_on</string>
+    <string name="test_ad_cauly_half_off">ad_cauly_half_off</string>
+    <string name="test_ad_cauly_on">ad_cauly_on</string>
+    <string name="test_ad_facebook_on">ad_facebook_on</string>
+    <string name="test_ad_tnk_on">ad_tnk_on</string>
+    <string name="test_allow_app_review">allow_app_review</string>
+    <string name="test_baro_banner_on">baro_banner_on</string>
+    <string name="test_bitmap_recycle_off">bitmap_recycle_off</string>
+    <string name="test_custom_gallery_sync">custom_gallery_sync</string>
+    <string name="test_duplicate_list_off">duplicate_list_off</string>
+    <string name="test_etc_category">ctg_input_msg_on</string>
+    <string name="test_force_identify">force_identify</string>
+    <string name="test_fraud_popup_off">fraud_popup_off</string>
+    <string name="test_glide_skip_memory">glide_skip_memory</string>
+    <string name="test_group_human">human</string>
+    <string name="test_group_monkey">monkey</string>
+    <string name="test_group_mouse">mouse</string>
+    <string name="test_group_rabbit">rabbit</string>
+    <string name="test_guide_duplicate_id">guide_duplicate_id</string>
+    <string name="test_image_cache">image_memory_cache2</string>
+    <string name="test_lock_screen_ad_on">lock_screen_ad_on</string>
+    <string name="test_lock_screen_use_enliple_ad">lock_screen_use_enliple_ad</string>
+    <string name="test_lock_screen_use_raw_file">lock_screen_use_raw_file</string>
+    <string name="test_loop_on_main_banner_3">loop_on_main_banner_3</string>
+    <string name="test_media_record_off">media_record_off</string>
+    <string name="test_navercafe_jungna">joongna</string>
+    <string name="test_navercafe_jungna_type">joongna_overlay_test</string>
+    <string name="test_navercafe_share_link2">cafe_share_link_season2</string>
+    <string name="test_normal_review_on">normal_review_on</string>
+    <string name="test_not_pure_android">not_pure_android</string>
+    <string name="test_off_lock_screen">off_lock_screen</string>
+    <string name="test_off_upplus_reward">off_upplus_reward</string>
+    <string name="test_parcel_banner">parcel_banner</string>
+    <string name="test_search_feedback">search_feedback</string>
+    <string name="test_search_tooltip">search_tooltip</string>
+    <string name="test_set_image_header_to_glide">set_image_header_to_glide</string>
+    <string name="test_side_menu_universial_design">test_side_menu_universial_design</string>
+    <string name="test_sm_n900l_review">sm_n900l_review</string>
+    <string name="test_use_firebase_ad_test">use_firebase_ad_test</string>
+    <string name="time_decade_ago">10년전</string>
+    <string name="time_error">시간 오류</string>
+    <string name="time_fmt_n_days_ago">%d일전</string>
+    <string name="time_fmt_n_hours_ago">%d시간전</string>
+    <string name="time_fmt_n_hours_ago_simple">%d시전</string>
+    <string name="time_fmt_n_mins_ago">%d분전</string>
+    <string name="time_fmt_n_months_ago">%d달전</string>
+    <string name="time_fmt_n_secs_ago">%d초전</string>
+    <string name="time_fmt_n_weeks_ago">%d주전</string>
+    <string name="time_fmt_n_years_ago">%d년전</string>
+    <string name="time_now">지금</string>
+    <string name="title_category">카테고리</string>
+    <string name="title_category_all">카테고리 종합</string>
+    <string name="title_category_setting">카테고리 설정</string>
+    <string name="title_item_detail">상품 정보</string>
+    <string name="title_item_modify">상품 수정</string>
+    <string name="title_item_register">상품 등록</string>
+    <string name="title_my_shop">내 상점</string>
+    <string name="title_req_pin">문자 인증 (자동 입력)</string>
+    <string name="title_review_buyer">만족스러운 거래가 되셨나요?</string>
+    <string name="title_review_fav">보신 상품이 마음에 드셨나요?</string>
+    <string name="title_review_seller">성공적인 거래가 되셨나요?</string>
+    <string name="toast_copy_clipboard">내용이 클립보드에 복사되었습니다.</string>
+    <string name="tracer_androidMarket">google</string>
+    <string name="transaction_text">발송/수취 택배관리</string>
+    <string name="unread_count_of_message">안읽음</string>
+    <string name="up_plus_activity_title">UP하기</string>
+    <string name="up_plus_auto_up">자동UP실행</string>
+    <string name="up_plus_community_alert_message">커뮤니티 게시글은 UP을 이용할 수 없습니다.</string>
+    <string name="up_plus_count_text">개 남음</string>
+    <string name="up_plus_free_up">무료 UP</string>
+    <string name="up_plus_goods_buy">구매하기</string>
+    <string name="up_plus_hyphen">-</string>
+    <string name="up_plus_info1">UP플러스란, 더 빠른 상품 판매를 위해 1일 횟수제한 없이 사용가능한 유료UP 상품입니다.</string>
+    <string name="up_plus_info2">UP플러스 예약기능은 일정 시간마다 자동으로 판매 상품에 UP이 실행되도록 설정할 수 있습니다.</string>
+    <string name="up_plus_info3">UP플러스 구매는 앱스토어 인앱결제를 통해 간편하게 결제 가능합니다.</string>
+    <string name="up_plus_info4">(결제문제 및 환불 시에는 앱스토어 정책에 따라 애플을 통하여 이루어집니다.)</string>
+    <string name="up_plus_info_for_bizseller">기본UP, UP플러스 모두 슈퍼UP 상품 이후 노출되니 참고 부탁드립니다.</string>
+    <string name="up_plus_info_popup_free">기본 제공 UP 안내</string>
+    <string name="up_plus_info_popup_free_1">UP의 효과</string>
+    <string name="up_plus_info_popup_free_2">"UP을 이용하면 검색결과 카테고리에서 상품이 최상단에 노출됩니다.
+(전문상점의 경우 슈퍼업상품 이후 노출)"</string>
+    <string name="up_plus_info_popup_free_3">UP 이용방법</string>
+    <string name="up_plus_info_popup_free_4" formatted="false">"하루에 총 %s개를 사용 할 수 있어요.
+(매일 오전 12시에 UP %s개 생성)"</string>
+    <string name="up_plus_info_popup_free_5">상품당 1일 1회만 사용할 수 있어요.</string>
+    <string name="up_plus_info_popup_free_6">UP 불가상품</string>
+    <string name="up_plus_info_popup_free_7">커뮤니티 카테고리의 상품</string>
+    <string name="up_plus_info_popup_free_8">판매 중이 아닌 상품</string>
+    <string name="up_plus_info_popup_reserve">반복구간 설정</string>
+    <string name="up_plus_info_popup_reserve_1">1) 반복구간 설정이 불필요한 경우</string>
+    <string name="up_plus_info_popup_reserve_2">24시간이 체크된 상태입니다.</string>
+    <string name="up_plus_info_popup_reserve_3">시작시간 ~ 다음날 시작시간까지 계속 UP이 반복 실행됩니다.</string>
+    <string name="up_plus_info_popup_reserve_4">2) 반복구간 설정을 원하는 경우</string>
+    <string name="up_plus_info_popup_reserve_5">24시간 체크를 해제합니다.</string>
+    <string name="up_plus_info_popup_reserve_6">종료시간을 변경하면 시작시간과 종료시간 사이에만 반복이 실행됩니다.</string>
+    <string name="up_plus_info_popup_reserve_7">예시: 시작시간을 18:00,종료시간을 01:00로 설정한 경우 시작일부터 종료일까지 18:00 ~ 01:00 사이에만 반복이 실행됩니다.</string>
+    <string name="up_plus_info_popup_up_plus">UP플러스 안내</string>
+    <string name="up_plus_info_popup_up_plus_1">UP 플러스란?</string>
+    <string name="up_plus_info_popup_up_plus_2">더 빠른 상품 판매를 위한 UP플러스는 해당 상품에 1일/1회 제한없이 사용 가능합니다.</string>
+    <string name="up_plus_info_popup_up_plus_3">UP플러스 예약 기능으로 더 효과적인 판매를 할 수 있습니다.</string>
+    <string name="up_plus_info_popup_up_plus_4">결제 및 환불</string>
+    <string name="up_plus_info_popup_up_plus_5">구글플레이 인앱결제를 통해 간편하게 결제</string>
+    <string name="up_plus_info_popup_up_plus_6">서비스 이용이 불가한 상황 등 예외적인 경우를 제외하고 구글플레이 정책에 따라 인앱결제는 환불이 불가합니다.</string>
+    <string name="up_plus_info_popup_up_plus_7">아이템을 사용하더라도 허위상품 등 운영 정책에 의해 상품이 삭제될 수 있습니다.</string>
+    <string name="up_plus_info_title">UP플러스 소개</string>
+    <string name="up_plus_limit_use_alert_title">UP 이용 제한 상품</string>
+    <string name="up_plus_multy_free_up_fail">"사용가능한 무료UP이 부족합니다!
+UP플러스를 구매 해주세요."</string>
+    <string name="up_plus_multy_result_fail">적용실패 %d</string>
+    <string name="up_plus_multy_result_free_remain_up">남은무료UP %d개</string>
+    <string name="up_plus_multy_result_remain_up">남은UP %d개</string>
+    <string name="up_plus_multy_result_succ">적용완료 %d</string>
+    <string name="up_plus_multy_select">%d개의 상품을 선택하였습니다.</string>
+    <string name="up_plus_multy_up_plus_fail">"사용가능한 UP플러스가 부족합니다!
+UP플러스를 구매 해주세요."</string>
+    <string name="up_plus_product_name">제품명</string>
+    <string name="up_plus_product_title">원하는 UP플러스 상품을 선택하세요</string>
+    <string name="up_plus_reserve_alert_message">예약중,판매완료 상품은 UP을 이용할 수 없습니다.</string>
+    <string name="up_plus_reserve_btn">예약하기</string>
+    <string name="up_plus_reserve_button">예약하기</string>
+    <string name="up_plus_reserve_edit_title">UP-플러스 예약 수정</string>
+    <string name="up_plus_reserve_end_date">종료일</string>
+    <string name="up_plus_reserve_end_tiem">종료</string>
+    <string name="up_plus_reserve_low_up_count_title">남은 UP개수 부족</string>
+    <string name="up_plus_reserve_low_up_plus_count">사용 예정 UP 플러스 개수(%1$d개)가 남은 개수(%2$d개)보다 많습니다. 사용가능한 개수 만큼만 예약이 실행됩니다. 예약을 진행하시겠습니까?</string>
+    <string name="up_plus_reserve_message1">&lt;u>예약설정 가이드&lt;/u>를 참고해보세요.</string>
+    <string name="up_plus_reserve_message2">예약 설정된 UP 플러스는 실제 사용될 때 남은 개수에서 차감됩니다.</string>
+    <string name="up_plus_reserve_multy_desc">예약 기능은 단일 상품 업 실행시 제공됩니다</string>
+    <string name="up_plus_reserve_repeat">반복실행</string>
+    <string name="up_plus_reserve_repeat_day">24시간</string>
+    <string name="up_plus_reserve_repeat_time">반복구간</string>
+    <string name="up_plus_reserve_start_date">시작일</string>
+    <string name="up_plus_reserve_start_tiem">시작</string>
+    <string name="up_plus_reserve_state">예약설정</string>
+    <string name="up_plus_reserve_up_plus_count">사용예정 UP플러스 : %d개</string>
+    <string name="up_plus_reserve_use_up_plus">사용현황</string>
+    <string name="up_plus_state_reserve_count">예약설정(%d개)</string>
+    <string name="up_plus_state_reserve_count_default">예약설정(0개)</string>
+    <string name="up_plus_state_up_count">UP 플러스 사용 중(%d개 남음)</string>
+    <string name="up_plus_state_up_count_default">UP 플러스 사용 중(0개 남음)</string>
+    <string name="up_plus_up_btn">UP하기</string>
+    <string name="up_plus_upplus">UP플러스</string>
+    <string name="update">업데이트</string>
+    <string name="uplusStore">OZ</string>
+    <string name="url_account_check">https://m.bunjang.co.kr/talk/account_check?</string>
+    <string name="url_alliance_category">https://partner.bunjang.co.kr/request/category/%s/when</string>
+    <string name="url_alliance_category_info">https://partner.bunjang.co.kr/request/category/choose</string>
+    <string name="url_alliance_super_keyword">http://www.bunjang.co.kr/ad_center/request/super_keyword/%s/when</string>
+    <string name="url_alliance_todat_deal">https://partner.bunjang.co.kr/request/today_deal/%s/when</string>
+    <string name="url_alliance_today_deal_plus">https://partner.bunjang.co.kr/request/today_deal_plus/%s/when</string>
+    <string name="url_alliance_top_keyword">https://partner.bunjang.co.kr/request/fav_keyword/%s/keyword/search</string>
+    <string name="url_alliance_top_shop">https://partner.bunjang.co.kr/request/shop_popular/%s/when</string>
+    <string name="url_bizinfo">http://www.ftc.go.kr/info/bizinfo/communicationView.jsp?apv_perm_no=2013322016230201533&amp;area1=&amp;area2=&amp;currpage=1&amp;searchKey=04&amp;searchVal=1138645836</string>
+    <string name="url_chat_popup_send_parcel">https://bunjang.co.kr/shipment/apply/%1$s?channel_id=%2$s&amp;recipient_uid=%3$s</string>
+    <string name="url_download">http://bunjang.kr/apps</string>
+    <string name="url_escrow_guide">http://m.bunjang.co.kr/sale/about_escrow</string>
+    <string name="url_faq">http://m.bunjang.co.kr/customer/faq/</string>
+    <string name="url_license">http://www.bunjang.co.kr/m/opensource/</string>
+    <string name="url_locinfo">http://fastly.bunjang.co.kr/terms/location/</string>
+    <string name="url_notice">http://m.bunjang.co.kr/customer/notice/</string>
+    <string name="url_operating_policies">http://m.bunjang.co.kr/customer/policy/</string>
+    <string name="url_param_product_popular_f_age">f_age=</string>
+    <string name="url_param_product_popular_f_gender">f_gender=</string>
+    <string name="url_personalization">home/personalization.json</string>
+    <string name="url_play_app_page">market://details?id=kr.co.quicket</string>
+    <string name="url_price_comparison">http://m.shopping.naver.com/search/all_search.nhn?</string>
+    <string name="url_privacyinfo">http://fastly.bunjang.co.kr/terms/privacy/</string>
+    <string name="url_product_popular">home/product/popular.json</string>
+    <string name="url_register_complete_for_bizseller" formatted="false">https://partner.bunjang.co.kr/notice/ad_guide/%s/%s</string>
+    <string name="url_send_parcel">http://www.bunjang.co.kr/shipment/apply/</string>
+    <string name="url_super_up">http://partner.bunjang.co.kr/request/super_up/add?product_id=%s</string>
+    <string name="url_term">http://fastly.bunjang.co.kr/terms/service/</string>
+    <string name="url_term2">http://fastly.bunjang.co.kr/terms/privacy/</string>
+    <string name="url_term3">http://fastly.bunjang.co.kr/terms/location/</string>
+    <string name="url_tstore_app_page">http://tsto.re/0000187497</string>
+    <string name="url_useinfo">http://fastly.bunjang.co.kr/terms/service/</string>
+    <string name="userBlockPageTitle">이용제한 안내</string>
+    <string name="user_invite_others">%1$s 님이 %2$s 님을 초대했습니다</string>
+    <string name="user_kick_others">%1$s 님이 %2$s 님을 강퇴했습니다</string>
+    <string name="user_leaves_channel">%1$s 님이 퇴장했습니다</string>
+    <string name="user_no_description">상점소개가 없습니다.</string>
+    <string name="userprofile_shop_url_web">%s의 웹 상점</string>
+    <string name="userprofile_shop_url_web_empty">%s의 웹 상점이 없습니다.</string>
+    <string name="version_info">버전정보</string>
+    <string name="view">보기</string>
+    <string name="warning_noti">4진 아웃정책</string>
+    <string name="weather_day_format" formatted="false">%d일 %s시</string>
+    <string name="weather_info_update">날씨 정보 업데이트</string>
+    <string name="weather_lock_screen_add_fail_msg">더이상 추가할수 없습니다.</string>
+    <string name="weather_lock_screen_exit_msg">잠금화면을 종료하시겠습니까?</string>
+    <string name="weather_lock_screen_fav_title">내가 찜한상품 (%d)</string>
+    <string name="weather_lock_screen_license">"정보제공 : 기상청, 한국환경공단
+Ver.%s"</string>
+    <string name="weather_null_small_unit">-</string>
+    <string name="weather_null_unit">ㅡㅡ</string>
+    <string name="weather_rain_pall_unit">%s mm</string>
+    <string name="weather_temp_unit">%s°C</string>
+    <string name="welcome">환영합니다</string>
+    <string name="widget_weather_dust">미세먼지 %s</string>
+    <string name="widget_weather_rain_fall">강수량 %s mm</string>
+    <string name="widget_weather_setting">kr.co.quicket.widget.weather.setting</string>
+    <string name="widget_weather_super_dust">초미세먼지 %s</string>
+    <string name="withdraw">회원탈퇴</string>
+    <string name="withdraw_info">"서비스에 만족드리지 못해 대단히 죄송합니다.
+보다 좋은 서비스로 다음에 다시 뵐 수 있도록 최선을 다하겠습니다."</string>
+    <string name="zipcode_jibun_hint_text">동(읍/면/리)을 입력해주세요.</string>
+    <string name="zipcode_jibun_text">지번주소</string>
+    <string name="zipcode_road_hint_text">길 이름을 입력해주세요. (예 : 세종대로 9길)</string>
+    <string name="zipcode_road_text">도로명 주소</string>
+    <string name="zipcode_search_title">우편번호 검색</string>
+    <string name="zipcoed_empty_keyword">주소를 입력하세요.</string>
+    <string name="zipcoed_search_empty">검색결과가 없습니다.</string>
+</resources>
