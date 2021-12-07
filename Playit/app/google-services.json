@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "413744273137",
+    "project_id": "playit-e5017",
+    "storage_bucket": "playit-e5017.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:413744273137:android:398383e8f4765942e27b50",
+        "android_client_info": {
+          "package_name": "com.creator.playit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "413744273137-k1dfct43mj076sp6nsnfhej8lbm93tsv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCc8WNjK77Z0k1XfVC2jV1PxEr9XTo-GXc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "413744273137-k1dfct43mj076sp6nsnfhej8lbm93tsv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
