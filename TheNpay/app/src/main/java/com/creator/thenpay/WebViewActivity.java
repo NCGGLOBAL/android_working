@@ -716,8 +716,15 @@ public class WebViewActivity extends Activity {
                     }
 
                     mCameraType = 0;
+
+                    if (!hasPermissions(mContext, PERMISSIONS)) {
+                        ActivityCompat.requestPermissions(WebViewActivity.this, PERMISSIONS, Constants.PERMISSIONS_MULTIPLE_REQUEST);
+                    } else {
+                        intent = new Intent(context, QRCodeActivity.class);
+                        startActivity(intent);
+                    }
 //                    requestPermission(Constants.REQUEST_CAMERA);
-//                    executeJavascript(mCallback + "()");
+                    executeJavascript(mCallback + "()");
                 }
                 // 위쳇페이
                 else if ("ACT1003".equals(actionCode)) {
