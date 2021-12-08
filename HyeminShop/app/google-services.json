@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1009847112247",
+    "project_id": "hyeminshop-9ce7c",
+    "storage_bucket": "hyeminshop-9ce7c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1009847112247:android:279ddd73438602676725b2",
+        "android_client_info": {
+          "package_name": "com.mallup.hyeminshop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1009847112247-ck5e75rc587ejgt1jbq7ek8qelj83smi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEzC_cbKie_hvj0F5oep17M06d31JlyUI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1009847112247-ck5e75rc587ejgt1jbq7ek8qelj83smi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
