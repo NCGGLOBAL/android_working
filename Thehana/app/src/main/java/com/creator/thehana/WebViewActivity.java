@@ -258,6 +258,7 @@ public class WebViewActivity extends Activity {
         mWebView.getSettings().setSupportMultipleWindows(true);
         mWebView.getSettings().setAppCacheEnabled(true);
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        mWebView.getSettings().setTextZoom(100);
         mWebView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
         mWebView.getSettings().setUserAgentString(mWebView.getSettings().getUserAgentString() + "webview-type=sub");
 

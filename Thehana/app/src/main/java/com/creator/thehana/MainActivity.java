@@ -360,6 +360,7 @@ public class MainActivity extends AppCompatActivity {
         mWebView.getSettings().setSupportMultipleWindows(true);
         mWebView.getSettings().setAppCacheEnabled(true);
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        mWebView.getSettings().setTextZoom(100);
         mWebView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
         mWebView.addJavascriptInterface(new WebAppInterface(this, mWebView), "android");
 
