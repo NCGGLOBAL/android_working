@@ -6,8 +6,8 @@ android {
         applicationId "com.creator.thehana"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.0.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -88,4 +88,4 @@ dependencies {
     implementation 'com.ksyun.media:libksylive-arm64:3.0.0'
 }
 
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'

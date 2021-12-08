@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "553130272284",
+    "project_id": "thehana-1f868",
+    "storage_bucket": "thehana-1f868.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553130272284:android:b9d5618f9da44e4f29a1d9",
+        "android_client_info": {
+          "package_name": "com.creator.thehana"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "553130272284-9jlp4b18kbon8ds0f7e9l7mehp24atgk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8HVzfe_McyKahT3kXkYH_7goVO6NsK_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "553130272284-9jlp4b18kbon8ds0f7e9l7mehp24atgk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
