@@ -23,6 +23,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
@@ -45,6 +46,7 @@ import com.creator.labangtv.util.NicePayUtility;
 import com.creator.labangtv.util.RealPathUtil;
 import com.kakao.auth.Session;
 import com.ksyun.media.streamer.capture.CameraCapture;
+import com.ksyun.media.streamer.capture.camera.CameraTouchHelper;
 import com.ksyun.media.streamer.filter.imgtex.ImgTexFilterMgt;
 import com.ksyun.media.streamer.kit.KSYStreamer;
 import com.ksyun.media.streamer.kit.StreamerConstants;
@@ -77,6 +79,8 @@ public class CameraActivity extends Activity {
     private JSONArray mImgArr = null;
 
     KSYStreamer mStreamer;
+    GLSurfaceView mCameraPreview;
+    CameraHintView mCameraHintView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -208,7 +212,7 @@ public class CameraActivity extends Activity {
     }
 
     private void initCamera() {
-        GLSurfaceView mCameraPreview = (GLSurfaceView)findViewById(R.id.camera_preview);
+        mCameraPreview = (GLSurfaceView)findViewById(R.id.camera_preview);
         // 创建KSYStreamer实例
         mStreamer = new KSYStreamer(this);
 // 设置预览View
@@ -248,6 +252,17 @@ public class CameraActivity extends Activity {
         mStreamer.setCameraFacing(CameraCapture.FACING_FRONT);
 
         mStreamer.toggleTorch(false);
+
+        // 触摸对焦和手势缩放功能
+//        if (config.mZoomFocus) {
+        CameraTouchHelper cameraTouchHelper = new CameraTouchHelper();
+        cameraTouchHelper.setCameraCapture(mStreamer.getCameraCapture());
+        mCameraPreview.setOnTouchListener(cameraTouchHelper);
+        // set CameraHintView to show focus rect and zoom ratio
+        mCameraHintView = findViewById(R.id.camera_hint);
+        mCameraHintView.setVisibility(View.VISIBLE);
+        cameraTouchHelper.setCameraHintView(mCameraHintView);
+//        }
 
         mStreamer.startStream();
 
