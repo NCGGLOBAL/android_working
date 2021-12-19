@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
+import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -349,6 +351,12 @@ public class CameraActivity extends Activity {
     @Override
     public void onDestroy() {
         if (mStreamer != null) {
+            mStreamer.onPause();
+            // 一般在这里停止摄像头采集
+            mStreamer.stopCameraPreview();
+            // 如果希望App切后台后，停止录制主播端的声音，可以在此切换为DummyAudio采集，
+            // 该模块会代替mic采集模块产生静音数据，同时释放占用的mic资源
+            mStreamer.setUseDummyAudioCapture(true);
             // 清理相关资源
             mStreamer.release();
         }
@@ -378,6 +386,11 @@ public class CameraActivity extends Activity {
             // LogUtil.d("onPageLoadStarted : " + url);
 
             executeJavascript("localStorage.setItem(\"dv_id\"," + "\"" + HNApplication.mDeviceId + "\")");
+        }
+
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            handler.proceed();
         }
 
         @Override
