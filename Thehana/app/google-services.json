@@ -7,6 +7,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:553130272284:android:187d1a5f79426cf829a1d9",
+        "android_client_info": {
+          "package_name": "com.byapps.thehana"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "553130272284-9jlp4b18kbon8ds0f7e9l7mehp24atgk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8HVzfe_McyKahT3kXkYH_7goVO6NsK_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "553130272284-9jlp4b18kbon8ds0f7e9l7mehp24atgk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "553130272284-6vbo7upipdi8cjsmssq0m7h3sbr0llpb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.creator.thehana"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:553130272284:android:b9d5618f9da44e4f29a1d9",
         "android_client_info": {
           "package_name": "com.creator.thehana"
@@ -29,6 +65,13 @@
             {
               "client_id": "553130272284-9jlp4b18kbon8ds0f7e9l7mehp24atgk.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "553130272284-6vbo7upipdi8cjsmssq0m7h3sbr0llpb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.creator.thehana"
+              }
             }
           ]
         }

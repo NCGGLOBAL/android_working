@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 30
     defaultConfig {
-        applicationId "com.creator.thehana"
+        applicationId "com.byapps.thehana"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 4
