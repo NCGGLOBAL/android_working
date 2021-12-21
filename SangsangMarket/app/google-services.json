@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "600410498626",
+    "project_id": "sangsangmarket-9a289",
+    "storage_bucket": "sangsangmarket-9a289.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:600410498626:android:fe56310568f687ad2f6fdb",
+        "android_client_info": {
+          "package_name": "com.mallup.sangsangmarket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "600410498626-mc354v6ukd8651cltbdufdu808l95pio.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmEyTzJ9IULt5hyvOQyNdqWiM4yEWicCM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "600410498626-mc354v6ukd8651cltbdufdu808l95pio.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
