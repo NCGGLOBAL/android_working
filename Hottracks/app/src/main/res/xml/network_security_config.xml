@@ -7,8 +7,7 @@
         <domain includeSubdomains="true">kyobobook.co.kr </domain>
         <domain includeSubdomains="true">image.kyobobook.co.kr</domain>
         <domain includeSubdomains="true">mobile.kyobobook.co.kr</domain>
-        <domain includeSubdomains="true">hottracks.online</domain>
-        <domain includeSubdomains="true">hottracks.co.kr</domain>
+        <domain includeSubdomains="true">live.hottracks.co.kr</domain>
         <domain includeSubdomains="true">m.hottracks.co.kr</domain>
         <domain includeSubdomains="true">chat.mallup.co.kr</domain>
         <domain includeSubdomains="true">livedemo.mallup.co.kr</domain>
