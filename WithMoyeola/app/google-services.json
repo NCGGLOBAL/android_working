@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "647407569050",
+    "project_id": "withmoyeola-ab2a1",
+    "storage_bucket": "withmoyeola-ab2a1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647407569050:android:d1d8551128fb99eb8b3723",
+        "android_client_info": {
+          "package_name": "com.mallup.withmoyeola"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "647407569050-b0ppdhd32so5vg2ta6dtod99qha96e43.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLaCaML0X4WZu9-ERRqBOqKvKKxELQKP0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "647407569050-b0ppdhd32so5vg2ta6dtod99qha96e43.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
