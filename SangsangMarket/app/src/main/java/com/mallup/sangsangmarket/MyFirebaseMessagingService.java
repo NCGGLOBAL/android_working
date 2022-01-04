@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -214,7 +215,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             .setContentTitle(title)
                             .setContentText(message)
                             .setAutoCancel(true)
-                            .setSound(defaultSoundUri)
                             .setContentIntent(pendingIntent);
                 } else {
                     LogUtil.d(TAG, "Message Notification 5");
@@ -228,10 +228,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             .setContentTitle(getResources().getString(R.string.app_name))
                             .setContentText(message)
                             .setAutoCancel(true)
-                            .setSound(defaultSoundUri)
                             .setContentIntent(pendingIntent);
                 }
                 getManager(ctx).notify(0 /* ID of notification */, notificationBuilder.build());
+                Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), defaultSoundUri);
+                ringtone.play();
             } catch (Exception e) {
                 e.printStackTrace();
             }
