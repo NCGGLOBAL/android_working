@@ -28,6 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -429,9 +430,14 @@ public class MainActivity extends AppCompatActivity {
 
                 // Continue only if the File was successfully created
                 if (photoFile != null) {
-                    mCameraPhotoPath = "file:"+photoFile.getAbsolutePath();
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                            Uri.fromFile(photoFile));
+                    // File 객체의 URI 를 얻는다.
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        mCapturedImageURI = FileProvider.getUriForFile(MainActivity.this, getPackageName() + ".fileprovider", photoFile);
+                    } else {
+                        mCameraPhotoPath = "file:"+photoFile.getAbsolutePath();
+                        mCapturedImageURI = Uri.fromFile(photoFile);
+                    }
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
                 } else {
                     takePictureIntent = null;
                 }
@@ -1136,11 +1142,19 @@ public class MainActivity extends AppCompatActivity {
                 super.onActivityResult(requestCode, resultCode, data);
                 return;
             }
-            Log.e("SeongKwon", getResultUri(data).toString());
-            Uri[] results = new Uri[]{getResultUri(data)};
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (data == null)
+                    data = new Intent();
+                if (data.getData() == null)
+                    data.setData(mCapturedImageURI);
 
-            mFilePathCallback.onReceiveValue(results);
-            mFilePathCallback = null;
+                mFilePathCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+                mFilePathCallback = null;
+            } else {
+                Uri[] results = new Uri[]{getResultUri(data)};
+                mFilePathCallback.onReceiveValue(results);
+                mFilePathCallback = null;
+            }
         }
 
         if (data == null) return;
