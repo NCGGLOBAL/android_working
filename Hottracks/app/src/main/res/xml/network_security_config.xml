@@ -14,6 +14,8 @@
         <domain includeSubdomains="true">voddemo.mallup.co.kr</domain>
         <domain includeSubdomains="true">ncg.codewiz.kr</domain>
         <domain includeSubdomains="true">dthumb.phinf.naver.net</domain>
+        <domain includeSubdomains="true">livetv.hottracks.co.kr</domain>
+        <domain includeSubdomains="true">vod.hottracks.co.kr</domain>
 
     </domain-config>
 
