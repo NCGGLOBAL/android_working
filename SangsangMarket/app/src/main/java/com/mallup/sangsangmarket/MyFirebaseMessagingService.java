@@ -214,6 +214,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                     .setSummaryText(message))
                             .setContentTitle(title)
                             .setContentText(message)
+                            .setSound(defaultSoundUri)
                             .setAutoCancel(true)
                             .setContentIntent(pendingIntent);
                 } else {
@@ -227,12 +228,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                     .setSummaryText(message))
                             .setContentTitle(getResources().getString(R.string.app_name))
                             .setContentText(message)
+                            .setSound(defaultSoundUri)
                             .setAutoCancel(true)
                             .setContentIntent(pendingIntent);
                 }
-                getManager(ctx).notify(0 /* ID of notification */, notificationBuilder.build());
                 Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), defaultSoundUri);
                 ringtone.play();
+                getManager(ctx).notify(0 /* ID of notification */, notificationBuilder.build());
             } catch (Exception e) {
                 e.printStackTrace();
             }
