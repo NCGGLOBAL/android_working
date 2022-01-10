@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.byapps.thehana">
+    package="com.creator.thehana">
 
     <application
-        android:name="com.byapps.thehana.common.HNApplication"
+        android:name="com.creator.thehana.common.HNApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,7 +21,7 @@
 
         <!-- ilikelux://pay? -->
         <activity
-            android:name="com.byapps.thehana.MainActivity"
+            android:name="com.creator.thehana.MainActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -40,14 +40,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.byapps.thehana.WebViewActivity"
+        <activity android:name="com.creator.thehana.WebViewActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"/>
 
-        <activity android:name="com.byapps.thehana.AlbumSelectActivity"
+        <activity android:name="com.creator.thehana.AlbumSelectActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="com.byapps.thehana.SelectImageMethodActivity"
+            android:name="com.creator.thehana.SelectImageMethodActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
@@ -57,7 +57,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.byapps.thehana.ImageSelectActivity"
+            android:name="com.creator.thehana.ImageSelectActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -67,7 +67,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.byapps.thehana.ImageEditChangeOrder"
+            android:name="com.creator.thehana.ImageEditChangeOrder"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -77,25 +77,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.byapps.thehana.ImageEditActivity"
+            android:name="com.creator.thehana.ImageEditActivity"
             android:configChanges="orientation|screenSize" />
 
         <activity
-            android:name="com.byapps.thehana.ImageCropActivity"
+            android:name="com.creator.thehana.ImageCropActivity"
             android:configChanges="orientation|screenSize" />
 
-        <activity android:name="com.byapps.thehana.CameraActivity"
+        <activity android:name="com.creator.thehana.CameraActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"/>
 
-        <service android:name="com.byapps.thehana.MyFirebaseMessagingService">
+        <service android:name="com.creator.thehana.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <!-- [END firebase_service] -->
         <!-- [START firebase_iid_service] -->
-        <service android:name="com.byapps.thehana.MyFirebaseInstanceIdService">
+        <service android:name="com.creator.thehana.MyFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
