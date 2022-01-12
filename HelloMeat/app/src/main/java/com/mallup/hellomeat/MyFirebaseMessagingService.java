@@ -195,10 +195,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     notificationBuilder = new Notification.Builder(ctx, MyNotificationManager.Channel.MESSAGE)  // round Image
                             .setSmallIcon(R.drawable.ic_launcher)
                             .setLargeIcon(BitmapFactory.decodeResource(ctx.getResources(), R.mipmap.ic_launcher))
-                            .setStyle(new Notification.BigPictureStyle()
-                                    .bigPicture(result)
-                                    .setBigContentTitle(title)
-                                    .setSummaryText(message))
                             .setContentTitle(title)
                             .setContentText(message)
                             .setAutoCancel(true)
@@ -208,15 +204,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     notificationBuilder = new Notification.Builder(ctx)
                             .setSmallIcon(R.drawable.ic_launcher)
                             .setLargeIcon(BitmapFactory.decodeResource(ctx.getResources(), R.mipmap.ic_launcher))
-                            .setStyle(new Notification.BigPictureStyle()
-                                    .bigPicture(result)
-                                    .setBigContentTitle(title)
-                                    .setSummaryText(message))
                             .setContentTitle(getResources().getString(R.string.app_name))
                             .setContentText(message)
                             .setAutoCancel(true)
                             .setSound(defaultSoundUri)
                             .setContentIntent(pendingIntent);
+                }
+                if (result == null) {
+                    notificationBuilder.setStyle(new Notification.BigTextStyle().bigText(message));
+                } else {
+                    notificationBuilder.setStyle(new Notification.BigPictureStyle()
+                            .bigPicture(result)
+                            .setBigContentTitle(title)
+                            .setSummaryText(message));
                 }
                 getManager(ctx).notify(0 /* ID of notification */, notificationBuilder.build());
             } catch (Exception e) {
