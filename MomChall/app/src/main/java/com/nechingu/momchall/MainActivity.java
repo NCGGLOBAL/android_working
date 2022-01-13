@@ -790,6 +790,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
             }
+            view.loadUrl(url);
             return false;       // webview replace
         }
     }

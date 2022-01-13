@@ -5,6 +5,7 @@
     <domain-config cleartextTrafficPermitted="true">
 
         <domain includeSubdomains="true">momchall.com</domain>
+        <domain includeSubdomains="true">nid.naver.com</domain>
 
     </domain-config>
 

@@ -554,7 +554,7 @@ public class WebViewActivity extends Activity {
                     return true;
                 }
             }
-
+            view.loadUrl(url);
             return false;       // webview replace
         }
     }
