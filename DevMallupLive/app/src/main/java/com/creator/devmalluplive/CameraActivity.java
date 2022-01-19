@@ -631,7 +631,7 @@ public class CameraActivity extends Activity {
                     jsonObject.put("resultcd", resultcd);      //1: 성공, 0: 실패
 
                     executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
-                } else if ("ACT1031".equals(actionCode)) {
+                } else if ("ACT1031".equals(actionCode) || "ACT1035".equals(actionCode)) {
                     // 종료
                     finish();
 
