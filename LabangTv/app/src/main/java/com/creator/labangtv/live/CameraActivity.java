@@ -15,6 +15,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -77,6 +78,7 @@ public class CameraActivity extends Activity {
     KSYStreamer mStreamer;
     GLSurfaceView mCameraPreview;
     CameraHintView mCameraHintView;
+    Handler mMainHandler;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,6 +211,7 @@ public class CameraActivity extends Activity {
 
     private void initCamera() {
         mCameraPreview = (GLSurfaceView)findViewById(R.id.camera_preview);
+        mMainHandler = new Handler();
         // 创建KSYStreamer实例
         mStreamer = new KSYStreamer(this);
 // 设置预览View
@@ -260,7 +263,15 @@ public class CameraActivity extends Activity {
         cameraTouchHelper.setCameraHintView(mCameraHintView);
 //        }
 
-        mStreamer.startStream();
+        if (mMainHandler != null) {
+            mMainHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mStreamer.startStream();
+                }
+            }, 100);
+        }
+
 
         // 切换前后摄像头
 //        mStreamer.switchCamera();
@@ -279,8 +290,8 @@ public class CameraActivity extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
-        mWebView.getSettings().setUserAgentString(mWebView.getSettings().getUserAgentString() + " NINTH"
-                + "&deviceId=" + HNApplication.mDeviceId);
+        String userAgentString = "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/97.0.4692.87 Mobile Safari/535.19 " + "webview-type=sub";
+        mWebView.getSettings().setUserAgentString(userAgentString);
         if (Build.VERSION.SDK_INT >= 21) {
             mWebView.getSettings().setMixedContentMode(0);
             this.mCookieManager = CookieManager.getInstance();
@@ -365,7 +376,12 @@ public class CameraActivity extends Activity {
 
     @Override
     public void onDestroy() {
+        if (mMainHandler != null) {
+            mMainHandler.removeCallbacksAndMessages(null);
+            mMainHandler = null;
+        }
         if (mStreamer != null) {
+            mStreamer.stopRecord();
             // 清理相关资源
             mStreamer.release();
         }
