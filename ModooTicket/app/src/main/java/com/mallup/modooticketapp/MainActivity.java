@@ -325,12 +325,11 @@ public class MainActivity extends AppCompatActivity {
         mWebView.getSettings().setAllowContentAccess(true);
         mWebView.getSettings().setLoadsImagesAutomatically(true);
         mWebView.getSettings().setLoadWithOverviewMode(true);
-        mWebView.getSettings().setSupportMultipleWindows(false);
         mWebView.getSettings().setUseWideViewPort(true);
         mWebView.getSettings().setDatabaseEnabled(true);
         mWebView.getSettings().setDomStorageEnabled(true);
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        mWebView.getSettings().setSupportMultipleWindows(true);
+        mWebView.getSettings().setSupportMultipleWindows(false);
         mWebView.getSettings().setAppCacheEnabled(true);
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         mWebView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
