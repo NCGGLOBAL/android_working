@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -59,6 +60,7 @@ import com.facebook.login.LoginResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.kakao.auth.AuthType;
@@ -102,6 +104,8 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,6 +113,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private String TAG = "MainActivity";
@@ -209,24 +214,25 @@ public class MainActivity extends AppCompatActivity {
 
             // Back Handler
             mBackPressCloseHandler = new BackPressCloseHandler(this);
+            getHashKey();
 
             // topic 생성
-//            mFirebaseMessaging = FirebaseMessaging.getInstance();
-//            if (HNSharedPreference.getSharedPreference(this, "pushtopic").equals("")) {
-//                int topic = (new Random()).nextInt(100) + 1;          // topic 1 ~ 100의 값으로 임의 지정
-//
-//                mFirebaseMessaging.subscribeToTopic(String.valueOf(topic));
-//                HNSharedPreference.putSharedPreference(this, "pushtopic", String.valueOf(topic));
-//            }
+            mFirebaseMessaging = FirebaseMessaging.getInstance();
+            if (HNSharedPreference.getSharedPreference(this, "pushtopic").equals("")) {
+                int topic = (new Random()).nextInt(100) + 1;          // topic 1 ~ 100의 값으로 임의 지정
+
+                mFirebaseMessaging.subscribeToTopic(String.valueOf(topic));
+                HNSharedPreference.putSharedPreference(this, "pushtopic", String.valueOf(topic));
+            }
 
             // token 생성
-//            String token = FirebaseInstanceId.getInstance().getToken();
-//            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
-//                HNSharedPreference.putSharedPreference(this, "pushtoken", token);
-//
-//                sendRegistrationToServer(token);
-//            }
-//            LogUtil.e("push token : " + token);
+            String token = FirebaseInstanceId.getInstance().getToken();
+            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
+                HNSharedPreference.putSharedPreference(this, "pushtoken", token);
+
+                sendRegistrationToServer(token);
+            }
+            LogUtil.e("push token : " + token);
 
             Intent intent = getIntent();
             if (intent != null) {
@@ -291,6 +297,27 @@ public class MainActivity extends AppCompatActivity {
                     });
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void getHashKey(){
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (packageInfo == null)
+            Log.e("KeyHash", "KeyHash:null");
+
+        for (Signature signature : packageInfo.signatures) {
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            } catch (NoSuchAlgorithmException e) {
+                Log.e("KeyHash", "Unable to get MessageDigest. signature=" + signature, e);
+            }
         }
     }
 
@@ -1874,14 +1901,16 @@ public class MainActivity extends AppCompatActivity {
                 public void onSuccess(MeV2Response result) {
                     Log.d("SeongKwon", "SessionCallback :: onSuccess");
                     try {
-                        String email = result.getKakaoAccount().getEmail();
                         String nickname = result.getNickname();
                         String profileImagePath = result.getProfileImagePath();
                         String thumnailPath = result.getThumbnailImagePath();
                         long id = result.getId();
 
                         JSONObject jsonAccount = new JSONObject();
-                        jsonAccount.put("email", email);
+                        if (result.getKakaoAccount() != null) {
+                            String email = result.getKakaoAccount().getEmail();
+                            jsonAccount.put("email", email);
+                        }
                         jsonAccount.put("nickname", nickname);
                         jsonAccount.put("profileImagePath", profileImagePath);
                         jsonAccount.put("thumnailPath", thumnailPath);

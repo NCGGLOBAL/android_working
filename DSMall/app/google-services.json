@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "550143412713",
+    "project_id": "dsmall-d582e",
+    "storage_bucket": "dsmall-d582e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:550143412713:android:d129ff1938545dbd5c2378",
+        "android_client_info": {
+          "package_name": "com.mallup.dsmall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "550143412713-upja3b1oo6nc8ad54rpntcdt4vjkc0n4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjR_L41_K2PihRA_T3RumHippwXWS9r7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "550143412713-upja3b1oo6nc8ad54rpntcdt4vjkc0n4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
