@@ -272,8 +272,8 @@ public class CameraActivity extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
-        mWebView.getSettings().setUserAgentString(mWebView.getSettings().getUserAgentString() + " NINTH"
-                + "&deviceId=" + HNApplication.mDeviceId);
+        String userAgentString = "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/97.0.4692.87 Mobile Safari/535.19 " + "webview-type=sub";
+        mWebView.getSettings().setUserAgentString(userAgentString);
         if (Build.VERSION.SDK_INT >= 21) {
             mWebView.getSettings().setMixedContentMode(0);
             this.mCookieManager = CookieManager.getInstance();
