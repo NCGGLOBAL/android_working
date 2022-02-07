@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1018631214641",
+    "project_id": "modoodalive-86633",
+    "storage_bucket": "modoodalive-86633.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018631214641:android:9fb88a4db43863ff11e710",
+        "android_client_info": {
+          "package_name": "com.creator.modoodalive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1018631214641-10aorhnvb8fetbaa7r8n9pi9766jvbit.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDP4kp7el2GBcGD41hyPyd1fnDmQ7zJaSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1018631214641-10aorhnvb8fetbaa7r8n9pi9766jvbit.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
