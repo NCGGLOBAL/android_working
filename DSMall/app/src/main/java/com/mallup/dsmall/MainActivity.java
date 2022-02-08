@@ -1300,7 +1300,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private void sendRegistrationToServer(String token) {
         LogUtil.e("sendRegistrationToServer : " + token);
-
+        String toastMsg = "deviceId : " + HNApplication.mDeviceId;
+        Toast.makeText(mContext, toastMsg, Toast.LENGTH_SHORT).show();
         new Thread(new Runnable() {
             public void run() {
                 try {
