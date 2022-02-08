@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "523562802509",
+    "project_id": "helloamarket-68117",
+    "storage_bucket": "helloamarket-68117.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523562802509:android:e8d2e96fa2ada309986b04",
+        "android_client_info": {
+          "package_name": "com.creator.helloamarket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "523562802509-73v0aje13g4u98lnqago5skp2j44ii0q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGEsSgcDNGg-9DOopUIVNw-6xHvw1F0ls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "523562802509-73v0aje13g4u98lnqago5skp2j44ii0q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
