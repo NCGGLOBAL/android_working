@@ -907,15 +907,25 @@ public class MainActivity extends AppCompatActivity {
                             callNaverLogin();
                         } else if(actionParamObj.getString("snsType").equals("2")) {
                             // 카카오톡 로그인
-                            Session session = Session.getCurrentSession();
-                            session.addCallback(new SessionCallback());
-                            session.open(AuthType.KAKAO_LOGIN_ALL, MainActivity.this);
+                            String PACKAGE_NAME = "com.kakao.talk";
+                            if (isPackageInstalled(PACKAGE_NAME, mContext.getPackageManager())) {
+                                Session session = Session.getCurrentSession();
+                                session.addCallback(new SessionCallback());
+                                session.open(AuthType.KAKAO_LOGIN_ALL, MainActivity.this);
 //                            if (session.checkAndImplicitOpen()) {
 //                                // 액세스토큰 유효하거나 리프레시 토큰으로 액세스 토큰 갱신을 시도할 수 있는 경우
 //                            } else {
 //                                // 무조건 재로그인을 시켜야 하는 경우
 //                            }
-
+                            } else {
+                                final String url = actionParamObj.getString("url");
+                                mWebView.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mWebView.loadUrl(url);
+                                    }
+                                });
+                            }
                         } else if(actionParamObj.getString("snsType").equals("3")) {
                             // 페이스북 로그인
                             if (AccessToken.isCurrentAccessTokenActive()) {
@@ -980,6 +990,15 @@ public class MainActivity extends AppCompatActivity {
         @JavascriptInterface
         public void setMemberKey(String paramString) {
             HNSharedPreference.putSharedPreference(getApplicationContext(), "memberKey", paramString);
+        }
+    }
+
+    private boolean isPackageInstalled(String packageName, PackageManager packageManager) {
+        try {
+            packageManager.getLaunchIntentForPackage(packageName);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
