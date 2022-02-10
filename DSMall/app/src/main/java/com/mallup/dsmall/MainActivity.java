@@ -1896,6 +1896,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onSessionOpened() {
             try {
+                Toast.makeText(mContext, "카카오 로그인 성공", Toast.LENGTH_SHORT).show();
                 requestMe();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1905,6 +1906,7 @@ public class MainActivity extends AppCompatActivity {
         // 로그인에 실패한 상태
         @Override
         public void onSessionOpenFailed(KakaoException exception) {
+            Toast.makeText(mContext, "카카오 로그인 실패", Toast.LENGTH_SHORT).show();
             Log.e("SessionCallback :: ", "onSessionOpenFailed : " + exception.getMessage());
         }
 
@@ -1915,11 +1917,13 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSessionClosed(ErrorResult errorResult) {
                     Log.d("SeongKwon", "SessionCallback :: onSessionClosed : " + errorResult.getErrorMessage());
+                    Toast.makeText(mContext, "카카오 로그인 세션 닫기", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onSuccess(MeV2Response result) {
                     Log.d("SeongKwon", "SessionCallback :: onSuccess");
+                    Toast.makeText(mContext, "카카오 로그인 사용자 정보 요청 성공", Toast.LENGTH_SHORT).show();
                     try {
                         String nickname = result.getNickname();
                         String profileImagePath = result.getProfileImagePath();
@@ -1942,6 +1946,7 @@ public class MainActivity extends AppCompatActivity {
                         jsonObject.put("userInfo", jsonAccount);      // 사용자정보
                         executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
                     } catch (Exception e) {
+                        Toast.makeText(mContext, "카카오 로그인 사용자 정보 전달 익셉션 발생 : " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
                 }
