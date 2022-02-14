@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.creator.playit">
 
+    <supports-screens android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"/>
+
     <application
         android:name="com.creator.playit.common.HNApplication"
         android:allowBackup="true"
@@ -178,4 +183,7 @@
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
+
+<!--    <uses-feature android:name="android.hardware.telephony" android:required="false" />-->
+
 </manifest>
