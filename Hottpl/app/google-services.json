@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "868784607475",
+    "project_id": "hottpl-aa420",
+    "storage_bucket": "hottpl-aa420.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:868784607475:android:a7e069596e2c3046aaa786",
+        "android_client_info": {
+          "package_name": "com.creator.hottpl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "868784607475-jng07hndal7ptf8rjpgbrls16pibaffj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-CmM6MtdKTdh_Y9Y8oPVYRzoi34pbbio"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "868784607475-jng07hndal7ptf8rjpgbrls16pibaffj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
