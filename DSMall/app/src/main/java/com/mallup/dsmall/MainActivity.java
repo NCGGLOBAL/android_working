@@ -909,6 +909,7 @@ public class MainActivity extends AppCompatActivity {
                             // 카카오톡 로그인
                             String PACKAGE_NAME = "com.kakao.talk";
                             if (isPackageInstalled(PACKAGE_NAME, mContext.getPackageManager())) {
+                                Toast.makeText(mContext, "앱설치되어있음, 앱으로 이동", Toast.LENGTH_SHORT).show();
                                 Session session = Session.getCurrentSession();
                                 session.addCallback(new SessionCallback());
                                 session.open(AuthType.KAKAO_LOGIN_ALL, MainActivity.this);
@@ -918,6 +919,7 @@ public class MainActivity extends AppCompatActivity {
 //                                // 무조건 재로그인을 시켜야 하는 경우
 //                            }
                             } else {
+                                Toast.makeText(mContext, "앱설치 되어있지 않음, 웹으로 이동", Toast.LENGTH_SHORT).show();
                                 final String url = actionParamObj.getString("url");
                                 mWebView.post(new Runnable() {
                                     @Override
