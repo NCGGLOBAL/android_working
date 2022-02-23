@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "367751028681",
+    "project_id": "allinmall-f9f26",
+    "storage_bucket": "allinmall-f9f26.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367751028681:android:4f88cdbbb7f8180aee9218",
+        "android_client_info": {
+          "package_name": "com.creator.allinmall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "367751028681-944fsl0l6adhdvq6p9i6k6urreo86s3s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZrH1-K174WytmxaQqkezZ-jRKiZ6IssM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "367751028681-944fsl0l6adhdvq6p9i6k6urreo86s3s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
