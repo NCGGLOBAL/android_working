@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "794826336647",
+    "project_id": "ipjumadang",
+    "storage_bucket": "ipjumadang.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:794826336647:android:00a68c3cb29b9aa4368b22",
+        "android_client_info": {
+          "package_name": "com.creator.ipjumadang"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "794826336647-e18aj6df0hmvk5g20is3j3r65rfl9rgv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARLaPoV6u0fIhYs8tsM4k0fqjkwWXPGK8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "794826336647-e18aj6df0hmvk5g20is3j3r65rfl9rgv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
