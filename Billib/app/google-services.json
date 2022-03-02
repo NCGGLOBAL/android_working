@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1081627813814",
+    "project_id": "billib-af567",
+    "storage_bucket": "billib-af567.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1081627813814:android:e3d145ff833a224792c317",
+        "android_client_info": {
+          "package_name": "com.creator.billib"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1081627813814-ej5k3f5em6aa3cvdehmdtmm9h6m5lsht.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjQWcW5HbLuSLiPUo9JMJyG4lbV5lQGe4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1081627813814-ej5k3f5em6aa3cvdehmdtmm9h6m5lsht.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
