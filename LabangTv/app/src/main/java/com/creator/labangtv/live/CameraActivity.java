@@ -655,8 +655,13 @@ public class CameraActivity extends Activity {
                     int resultcd = 1;
                     String streamUrl = actionParamObj.getString("stream_url");
 
-                    initStreamer(streamUrl);
-
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            initStreamer(streamUrl);
+                        }
+                    });
+                    
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("resultcd", resultcd);      //1: 성공, 0: 실패
 
