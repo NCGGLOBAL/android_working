@@ -653,9 +653,14 @@ public class CameraActivity extends Activity {
                 } else if ("ACT1030".equals(actionCode)) {
                     LogUtil.d("ACT1030 - wlive 스트림키 전달 및 송출");
                     int resultcd = 1;
-                    String streamUrl = actionParamObj.getString("stream_url");
-
-                    initStreamer(streamUrl);
+                    final String streamUrl = actionParamObj.getString("stream_url");
+                    Log.e("TAG", "streamUrl : " + streamUrl);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            initStreamer(streamUrl);
+                        }
+                    });
 
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("resultcd", resultcd);      //1: 성공, 0: 실패
