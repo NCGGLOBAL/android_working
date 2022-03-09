@@ -68,7 +68,7 @@ public class CameraActivity extends Activity {
     private WebView mWebView;
     private String mCallback;
     private CookieManager mCookieManager;
-    private String LIVE_URL = HNApplication.URL + "/addon/wlive/TV_live_creator.asp";
+    private String LIVE_URL = "https://live.hottpl.com/addon/wlive/TV_live_creator.asp";
 
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mFilePathCallback;
