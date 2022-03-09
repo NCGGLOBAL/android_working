@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
+import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -391,6 +393,11 @@ public class CameraActivity extends Activity {
         }
 
         @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            handler.proceed();
+        }
+
+        @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Uri uri = Uri.parse(url);
 
@@ -623,9 +630,14 @@ public class CameraActivity extends Activity {
                 } else if ("ACT1030".equals(actionCode)) {
                     LogUtil.d("ACT1030 - wlive 스트림키 전달 및 송출");
                     int resultcd = 1;
-                    String streamUrl = actionParamObj.getString("stream_url");
+                    final String streamUrl = actionParamObj.getString("stream_url");
 
-                    initStreamer(streamUrl);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            initStreamer(streamUrl);
+                        }
+                    });
 
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("resultcd", resultcd);      //1: 성공, 0: 실패
