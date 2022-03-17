@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -74,6 +75,7 @@ public class CameraActivity extends Activity {
     private ValueCallback<Uri[]> mFilePathCallback;
     private String mCameraPhotoPath;
     private String mCurrentPhotoPath;       // 촬영된 이미지 경로
+    private Uri mCapturedImageURI;
 
     private JSONArray mImgArr = null;
 
@@ -194,11 +196,19 @@ public class CameraActivity extends Activity {
                 super.onActivityResult(requestCode, resultCode, data);
                 return;
             }
-            Log.e("SeongKwon", getResultUri(data).toString());
-            Uri[] results = new Uri[]{getResultUri(data)};
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (data == null)
+                    data = new Intent();
+                if (data.getData() == null)
+                    data.setData(mCapturedImageURI);
 
-            mFilePathCallback.onReceiveValue(results);
-            mFilePathCallback = null;
+                mFilePathCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+                mFilePathCallback = null;
+            } else {
+                Uri[] results = new Uri[]{getResultUri(data)};
+                mFilePathCallback.onReceiveValue(results);
+                mFilePathCallback = null;
+            }
         }
     }
 
@@ -773,9 +783,14 @@ public class CameraActivity extends Activity {
 
                 // Continue only if the File was successfully created
                 if (photoFile != null) {
-                    mCameraPhotoPath = "file:"+photoFile.getAbsolutePath();
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                            Uri.fromFile(photoFile));
+                    // File 객체의 URI 를 얻는다.
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        mCapturedImageURI = FileProvider.getUriForFile(CameraActivity.this, getPackageName() + ".fileprovider", photoFile);
+                    } else {
+                        mCameraPhotoPath = "file:"+photoFile.getAbsolutePath();
+                        mCapturedImageURI = Uri.fromFile(photoFile);
+                    }
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
                 } else {
                     takePictureIntent = null;
                 }
