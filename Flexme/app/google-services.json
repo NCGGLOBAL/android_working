@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "872195454277",
+    "project_id": "flexme",
+    "storage_bucket": "flexme.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872195454277:android:fc6b357a6b28709ebdba2c",
+        "android_client_info": {
+          "package_name": "com.flexme.shop.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "872195454277-g44uvp4qfhi2l9gc20g029rn4ueq5r8e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZWSozTTgr5QtKfdjfHme86qh4o9OSCus"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "872195454277-g44uvp4qfhi2l9gc20g029rn4ueq5r8e.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "872195454277-pjtjptdcp3tef632n4d6d0nbfn4pu2vi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.flexme.shop.ios"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
