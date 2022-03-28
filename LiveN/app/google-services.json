@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "122710093629",
+    "project_id": "liven-304a5",
+    "storage_bucket": "liven-304a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122710093629:android:193bec4dd0e6349798df54",
+        "android_client_info": {
+          "package_name": "com.creator.liven"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "122710093629-lvcocktjdq70jg333nd22q3vhrtv4b5c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOqXsU1MRVenSEYQpMzY3jIebLOiDM0vA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "122710093629-lvcocktjdq70jg333nd22q3vhrtv4b5c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
