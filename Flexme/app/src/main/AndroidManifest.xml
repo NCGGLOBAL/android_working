@@ -36,7 +36,7 @@
 
                 <data
                     android:host="pay"
-                    android:scheme="labangtv" />
+                    android:scheme="flexme" />
             </intent-filter>
         </activity>
 
