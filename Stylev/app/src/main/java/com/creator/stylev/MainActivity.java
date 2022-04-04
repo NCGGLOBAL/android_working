@@ -503,7 +503,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            // LogUtil.d("onPageLoadStopped : " + url);
+            LogUtil.d("onPageLoadStopped : " + url);
 
 //            mProgressUtil.dismiss();
         }
@@ -511,14 +511,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap paramBitmap) {
             super.onPageStarted(view, url, paramBitmap);
-            // LogUtil.d("onPageLoadStarted : " + url);
+            LogUtil.d("onPageLoadStarted : " + url);
 
             executeJavascript("localStorage.setItem(\"dv_id\"," + "\"" + HNApplication.mDeviceId + "\")");
         }
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            // LogUtil.e("shouldOverrideUrlLoading : " + url);
+            LogUtil.e("shouldOverrideUrlLoading : " + url);
 
             Uri uri = Uri.parse(url);
 
