@@ -453,6 +453,7 @@ public class WebViewActivity extends Activity {
                     || url.contains("samsungpay")
                     || url.contains("droidx3web://")
                     || url.contains("kakaopay")
+                    || url.contains("nidlogin://")
                     || url.contains("naversearchapp://")
                     || url.contains("http://m.ahnlab.com/kr/site/download"))) {
 
