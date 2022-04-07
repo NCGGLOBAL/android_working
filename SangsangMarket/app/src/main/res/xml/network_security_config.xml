@@ -5,6 +5,7 @@
     <domain-config cleartextTrafficPermitted="true">
 
         <domain includeSubdomains="true">borisoo.co.kr</domain>
+        <domain includeSubdomains="true">event2.pay.naver.com</domain>
 
     </domain-config>
 
