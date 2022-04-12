@@ -6,8 +6,8 @@ android {
         applicationId "com.creator.labangtv"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 20
-        versionName "1.1.9"
+        versionCode 21
+        versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -86,6 +86,8 @@ dependencies {
     implementation 'com.ksyun.media:libksylive-java:3.0.0'
     implementation 'com.ksyun.media:libksylive-armv7a:3.0.0'
     implementation 'com.ksyun.media:libksylive-arm64:3.0.0'
+
+    implementation 'gun0912.ted:tedpermission:1.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
