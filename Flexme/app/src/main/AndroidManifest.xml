@@ -44,6 +44,11 @@
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"/>
 
+        <activity android:name="com.flexme.shop.android.live.CameraActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+
+
         <activity android:name="com.flexme.shop.android.AlbumSelectActivity"
             android:screenOrientation="portrait"/>
         <activity
