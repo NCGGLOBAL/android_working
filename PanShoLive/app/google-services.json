@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "974864716333",
+    "project_id": "pansholive-6f9ba",
+    "storage_bucket": "pansholive-6f9ba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:974864716333:android:413af860c0002f8d399ea4",
+        "android_client_info": {
+          "package_name": "com.creator.pansholive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "974864716333-2nleeh1kfeq4l1jtcnm3apf27oka3cu8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIlGr7xTMlTk0f8tpx4YfTxCVZSv7U1hM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "974864716333-2nleeh1kfeq4l1jtcnm3apf27oka3cu8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
