@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
-import com.flexme.shop.android.delegator.HNSharedPreference;
+import com.flexme.mallup.android.delegator.HNSharedPreference;
 
 import java.util.ArrayList;
 import java.util.List;

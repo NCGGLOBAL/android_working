@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.flexme.shop.android.live.CameraHintView
+    <com.flexme.mallup.android.live.CameraHintView
         android:id="@+id/camera_hint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
