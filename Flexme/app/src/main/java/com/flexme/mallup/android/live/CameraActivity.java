@@ -433,7 +433,7 @@ public class CameraActivity extends Activity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Uri uri = Uri.parse(url);
-
+            LogUtil.d("shouldOverrideUrlLoading : " + url);
             Intent intent = null;
 
             if (url.startsWith("sms:") || url.startsWith("smsto:")) {
