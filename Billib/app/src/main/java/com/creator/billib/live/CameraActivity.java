@@ -80,7 +80,7 @@ public class CameraActivity extends Activity {
 
     KSYStreamer mStreamer;
     GLSurfaceView mCameraPreview;
-    CameraHintView mCameraHintView;
+//    CameraHintView mCameraHintView;
     Handler mMainHandler;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -257,13 +257,13 @@ public class CameraActivity extends Activity {
 
         // 触摸对焦和手势缩放功能
 //        if (config.mZoomFocus) {
-        CameraTouchHelper cameraTouchHelper = new CameraTouchHelper();
-        cameraTouchHelper.setCameraCapture(mStreamer.getCameraCapture());
-        mCameraPreview.setOnTouchListener(cameraTouchHelper);
+//        CameraTouchHelper cameraTouchHelper = new CameraTouchHelper();
+//        cameraTouchHelper.setCameraCapture(mStreamer.getCameraCapture());
+//        mCameraPreview.setOnTouchListener(cameraTouchHelper);
         // set CameraHintView to show focus rect and zoom ratio
-        mCameraHintView = findViewById(R.id.camera_hint);
-        mCameraHintView.setVisibility(View.VISIBLE);
-        cameraTouchHelper.setCameraHintView(mCameraHintView);
+//        mCameraHintView = findViewById(R.id.camera_hint);
+//        mCameraHintView.setVisibility(View.VISIBLE);
+//        cameraTouchHelper.setCameraHintView(mCameraHintView);
 //        }
 
         if (mMainHandler != null) {
