@@ -2,6 +2,7 @@ package com.creator.billib.live;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +20,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -27,6 +28,7 @@ import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
+import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -37,6 +39,7 @@ import android.widget.Toast;
 import com.creator.billib.R;
 import com.creator.billib.WebViewActivity;
 import com.creator.billib.common.HNApplication;
+import com.creator.billib.delegator.HNSharedPreference;
 import com.creator.billib.helpers.Constants;
 import com.creator.billib.models.Image;
 import com.creator.billib.util.BitmapUtil;
@@ -411,6 +414,36 @@ public class CameraActivity extends Activity {
             // LogUtil.d("onPageLoadStarted : " + url);
 
             executeJavascript("localStorage.setItem(\"dv_id\"," + "\"" + HNApplication.mDeviceId + "\")");
+        }
+
+        @Override
+        public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
+            if (HNSharedPreference.getSharedPreference(CameraActivity.this, "isFirstLive").equals("")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
+
+                builder.setTitle("라이브방송으로 이동하시겠습니까?");
+
+                builder.setPositiveButton("예", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        handler.proceed();
+                    }
+                });
+
+                builder.setNegativeButton("아니요", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        handler.cancel();
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+                HNSharedPreference.putSharedPreference(CameraActivity.this, "isFirstLive", "Y");
+            } else  {
+                handler.proceed();
+            }
         }
 
         @Override
