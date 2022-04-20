@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.creator.pandaya.adapters.CustomImageSelectAdapter;
+import com.creator.pandaya.common.HNApplication;
 import com.creator.pandaya.helpers.Constants;
 import com.creator.pandaya.models.Image;
 
@@ -106,7 +107,7 @@ public class ImageSelectActivity extends HelperActivity {
 //                if (countSelected == 0) {
 //                    actionMode.finish();
 //                }
-                imageCount.setText(countSelected + "/8");
+                imageCount.setText(countSelected + "/" + HNApplication.LIMIT_IMAGE_COUNT);
             }
         });
     }

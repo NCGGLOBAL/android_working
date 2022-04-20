@@ -21,7 +21,7 @@ public class HNApplication extends Application {
     private RequestQueue mRequestQueue;
 
     public static boolean mSigned = false;
-    public static String URL = "http://pandaya.co.kr/";
+    public static String URL = "https://pandaya.co.kr";
     public static String PUSH_URL = URL + "/m/app/pushRegister.asp";
     public static String UPLOAD_URL = URL + "/m/app/";
     public static boolean mIsFirstLoading = false;
@@ -29,6 +29,7 @@ public class HNApplication extends Application {
     public static String mDeviceId = "";
 
     public static String mImgArrForReg = "";
+    public static final int LIMIT_IMAGE_COUNT = 10;
 
     public static CookieManager mCookieManager;
 

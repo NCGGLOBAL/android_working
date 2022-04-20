@@ -28,6 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -48,6 +49,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.creator.pandaya.live.CameraActivity;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -211,35 +213,42 @@ public class MainActivity extends AppCompatActivity {
             mBackPressCloseHandler = new BackPressCloseHandler(this);
 
             // topic 생성
-//            mFirebaseMessaging = FirebaseMessaging.getInstance();
-//            if (HNSharedPreference.getSharedPreference(this, "pushtopic").equals("")) {
-//                int topic = (new Random()).nextInt(100) + 1;          // topic 1 ~ 100의 값으로 임의 지정
-//
-//                mFirebaseMessaging.subscribeToTopic(String.valueOf(topic));
-//                HNSharedPreference.putSharedPreference(this, "pushtopic", String.valueOf(topic));
-//            }
+            mFirebaseMessaging = FirebaseMessaging.getInstance();
+            if (HNSharedPreference.getSharedPreference(this, "pushtopic").equals("")) {
+                int topic = (new Random()).nextInt(100) + 1;          // topic 1 ~ 100의 값으로 임의 지정
+
+                mFirebaseMessaging.subscribeToTopic(String.valueOf(topic));
+                HNSharedPreference.putSharedPreference(this, "pushtopic", String.valueOf(topic));
+            }
 
             getHashKey();
 
             // token 생성
-//            String token = FirebaseInstanceId.getInstance().getToken();
-//            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
-//                HNSharedPreference.putSharedPreference(this, "pushtoken", token);
-//
-//                sendRegistrationToServer(token);
-//            }
-//            LogUtil.e("push token : " + token);
+            String token = FirebaseInstanceId.getInstance().getToken();
+            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
+                HNSharedPreference.putSharedPreference(this, "pushtoken", token);
+
+                sendRegistrationToServer(token);
+            }
+            LogUtil.e("push token : " + token);
 
             Intent intent = getIntent();
-            if (intent != null) {
-                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
-                    if (!intent.getStringExtra("url").equals("")) {
-                        mPushUid = intent.getStringExtra("pushUid");
-                        mLandingUrl = intent.getStringExtra("url");
-                        sendPushReceiveToServer(mPushUid);
-                    }
-                }
+
+            if (intent.hasExtra("pushUid")) {
+                mPushUid = intent.getStringExtra("pushUid");
+                sendPushReceiveToServer(mPushUid);
             }
+            if (intent.getDataString() != null && !intent.getDataString().isEmpty()) {
+                String landingUri = intent.getDataString();
+//                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
+//                Log.e("jj", "landingUri : " + landingUri);
+                String splitUrl = landingUri.split("\\?")[1];
+//                Log.e("jj", "splitUrl : " + splitUrl);
+                splitUrl = splitUrl.split("=")[1];
+//                Log.e("jj", "splitUrl : " + splitUrl);
+                mLandingUrl = splitUrl;
+            }
+//            Log.e("jj", "mLandingUrl : " + mLandingUrl);
 
             // permission 체크 - 최초실행
             if (HNSharedPreference.getSharedPreference(getApplicationContext(), "isPermissionCheck").equals("")) {
@@ -318,8 +327,8 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
-        mWebView.getSettings().setUserAgentString(mWebView.getSettings().getUserAgentString() + " NINTH"
-                + "&deviceId=" + HNApplication.mDeviceId);
+        String userAgentString = "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/97.0.4692.87 Mobile Safari/535.19 " + " NINTH" + "&deviceId=" + HNApplication.mDeviceId;
+        mWebView.getSettings().setUserAgentString(userAgentString);
         if (Build.VERSION.SDK_INT >= 21) {
             mWebView.getSettings().setMixedContentMode(0);
             this.mCookieManager = CookieManager.getInstance();
@@ -422,9 +431,14 @@ public class MainActivity extends AppCompatActivity {
 
                 // Continue only if the File was successfully created
                 if (photoFile != null) {
-                    mCameraPhotoPath = "file:"+photoFile.getAbsolutePath();
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                            Uri.fromFile(photoFile));
+                    // File 객체의 URI 를 얻는다.
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        mCapturedImageURI = FileProvider.getUriForFile(MainActivity.this, getPackageName() + ".fileprovider", photoFile);
+                    } else {
+                        mCameraPhotoPath = "file:"+photoFile.getAbsolutePath();
+                        mCapturedImageURI = Uri.fromFile(photoFile);
+                    }
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
                 } else {
                     takePictureIntent = null;
                 }
@@ -636,21 +650,28 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (url.startsWith("intent")) { //chrome πˆ¡Ø πÊΩƒ
-
-                        if (getPackageManager().resolveActivity(intent, 0) == null) {
-                            String packagename = intent.getPackage();
-                            if (packagename != null) {
-                                uri = Uri.parse("market://search?q=pname:" + packagename);
+                        if( Build.VERSION.SDK_INT < Build.VERSION_CODES.R ) {
+                            if( getPackageManager().resolveActivity(intent,0) == null ) {
+                                String pkgName = intent.getPackage();
+                                if( pkgName != null ) {
+                                    uri = Uri.parse("market://search?q=pname:" + pkgName);
+                                    intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    startActivity(intent);
+                                }
+                            } else {
+                                uri = Uri.parse(intent.getDataString());
                                 intent = new Intent(Intent.ACTION_VIEW, uri);
                                 startActivity(intent);
-                                return true;
+                            }
+                        } else {
+                            try {
+                                startActivity(intent);
+                            } catch (ActivityNotFoundException e) {
+                                uri = Uri.parse("market://search?q=pname:" + intent.getPackage());
+                                intent = new Intent(Intent.ACTION_VIEW, uri);
+                                startActivity(intent);
                             }
                         }
-
-                        uri = Uri.parse(intent.getDataString());
-                        intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-
                         return true;
                     } else { //±∏ πÊΩƒ
                         intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -1122,11 +1143,19 @@ public class MainActivity extends AppCompatActivity {
                 super.onActivityResult(requestCode, resultCode, data);
                 return;
             }
-            Log.e("SeongKwon", getResultUri(data).toString());
-            Uri[] results = new Uri[]{getResultUri(data)};
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (data == null)
+                    data = new Intent();
+                if (data.getData() == null)
+                    data.setData(mCapturedImageURI);
 
-            mFilePathCallback.onReceiveValue(results);
-            mFilePathCallback = null;
+                mFilePathCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+                mFilePathCallback = null;
+            } else {
+                Uri[] results = new Uri[]{getResultUri(data)};
+                mFilePathCallback.onReceiveValue(results);
+                mFilePathCallback = null;
+            }
         }
 
         if (data == null) return;

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "926779832120",
+    "project_id": "pandaya-a21cc",
+    "storage_bucket": "pandaya-a21cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:926779832120:android:212f6849ef1b98955df3cd",
+        "android_client_info": {
+          "package_name": "com.creator.pandaya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "926779832120-kkfh0dq27g17qskpn4a1ci0hbj4amg79.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzd7KnancacT2QPyUCOHf5uCd3ZAwtLVg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "926779832120-kkfh0dq27g17qskpn4a1ci0hbj4amg79.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

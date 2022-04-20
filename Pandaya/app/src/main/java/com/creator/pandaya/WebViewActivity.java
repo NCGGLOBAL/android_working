@@ -223,8 +223,8 @@ public class WebViewActivity extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
-        mWebView.getSettings().setUserAgentString(mWebView.getSettings().getUserAgentString() + " NINTH"
-                + "&deviceId=" + HNApplication.mDeviceId);
+        String userAgentString = "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/97.0.4692.87 Mobile Safari/535.19 " + "webview-type=sub";
+        mWebView.getSettings().setUserAgentString(userAgentString);
         if (Build.VERSION.SDK_INT >= 21) {
             mWebView.getSettings().setMixedContentMode(0);
             this.mCookieManager = CookieManager.getInstance();
@@ -257,7 +257,6 @@ public class WebViewActivity extends Activity {
         mWebView.getSettings().setAppCacheEnabled(true);
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         mWebView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
-        mWebView.getSettings().setUserAgentString(mWebView.getSettings().getUserAgentString() + "webview-type=sub");
 
         mWebView.addJavascriptInterface(new WebAppInterface(this, mWebView), "android");
 
@@ -530,21 +529,28 @@ public class WebViewActivity extends Activity {
                     }
 
                     if (url.startsWith("intent")) { //chrome πˆ¡Ø πÊΩƒ
-
-                        if (getPackageManager().resolveActivity(intent, 0) == null) {
-                            String packagename = intent.getPackage();
-                            if (packagename != null) {
-                                uri = Uri.parse("market://search?q=pname:" + packagename);
+                        if( Build.VERSION.SDK_INT < Build.VERSION_CODES.R ) {
+                            if( getPackageManager().resolveActivity(intent,0) == null ) {
+                                String pkgName = intent.getPackage();
+                                if( pkgName != null ) {
+                                    uri = Uri.parse("market://search?q=pname:" + pkgName);
+                                    intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    startActivity(intent);
+                                }
+                            } else {
+                                uri = Uri.parse(intent.getDataString());
                                 intent = new Intent(Intent.ACTION_VIEW, uri);
                                 startActivity(intent);
-                                return true;
+                            }
+                        } else {
+                            try {
+                                startActivity(intent);
+                            } catch (ActivityNotFoundException e) {
+                                uri = Uri.parse("market://search?q=pname:" + intent.getPackage());
+                                intent = new Intent(Intent.ACTION_VIEW, uri);
+                                startActivity(intent);
                             }
                         }
-
-                        uri = Uri.parse(intent.getDataString());
-                        intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-
                         return true;
                     } else { //±∏ πÊΩƒ
                         intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
