@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "538138018322",
+    "project_id": "livecross-9fe14",
+    "storage_bucket": "livecross-9fe14.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538138018322:android:c8f703a83cb5dfd1a4cecb",
+        "android_client_info": {
+          "package_name": "com.creator.livecross"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "538138018322-1g6s61jpmol5lt4p44kla5s4bn24fva4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClulIg8CQ_6RJGyPPd_9zOw1R_AeppILM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "538138018322-1g6s61jpmol5lt4p44kla5s4bn24fva4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
