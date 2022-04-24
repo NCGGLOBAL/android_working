@@ -22,7 +22,7 @@ public class HNApplication extends Application {
 
     public static boolean mSigned = false;
     public static String URL = "http://inspection.mallup.co.kr/addon/m_admin";
-    public static String PUSH_URL = URL + "/m/app/pushRegister.asp";
+    public static String PUSH_URL = URL + "http://inspection.mallup.co.kr/m/app/pushRegister.asp";
     public static boolean mIsFirstLoading = false;
     private static HNApplication mInstance;
     public static String mDeviceId = "";
