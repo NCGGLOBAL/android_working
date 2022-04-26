@@ -222,11 +222,11 @@ public class MainActivity extends AppCompatActivity {
 
             // token 생성
             String token = FirebaseInstanceId.getInstance().getToken();
-            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
+//            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
                 HNSharedPreference.putSharedPreference(this, "pushtoken", token);
 
                 sendRegistrationToServer(token);
-            }
+//            }
             LogUtil.e("push token : " + token);
 
             Intent intent = getIntent();
