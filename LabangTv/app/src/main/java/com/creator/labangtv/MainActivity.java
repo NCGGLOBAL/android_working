@@ -1351,7 +1351,7 @@ public class MainActivity extends AppCompatActivity {
                 + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 + ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+            LogUtil.e("checkPermission ContextCompat.checkSelfPermission");
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
@@ -1360,7 +1360,7 @@ public class MainActivity extends AppCompatActivity {
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)
                     || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-
+                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale");
                 Snackbar.make(this.findViewById(android.R.id.content),
                         "Please Grant Permissions to upload profile photo",
                         Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
@@ -1384,7 +1384,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }).show();
             } else {
+                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale else");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    LogUtil.e("Build.VERSION.SDK_INT >= Build.VERSION_CODES.M requestPermissions");
                     requestPermissions(
                             new String[]{
                                     Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -1400,6 +1402,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         } else {
+            LogUtil.e("checkPermission ContextCompat.checkSelfPermission else");
             // write your logic code if permission already granted
             if (mCameraType == 5) {
                 startActivity(new Intent(MainActivity.this, CameraActivity.class));
@@ -1409,40 +1412,46 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        LogUtil.e("onRequestPermissionsResult");
         switch (requestCode) {
             case Constants.PERMISSIONS_MULTIPLE_REQUEST:
+                LogUtil.e("Constants.PERMISSIONS_MULTIPLE_REQUEST");
                 if (grantResults.length > 0) {
+                    LogUtil.e("grantResults.length > 0");
                     boolean cameraPermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
                     boolean writeExternalFile = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     boolean readExternalFile = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean audioPermission = grantResults[5] == PackageManager.PERMISSION_GRANTED;
 
                     if (cameraPermission && audioPermission) {
+                        LogUtil.e("cameraPermission && audioPermission");
                         if (mCameraType == 5) {
                             startActivity(new Intent(MainActivity.this, CameraActivity.class));
                         }
                     } else if (cameraPermission && writeExternalFile && readExternalFile) {
+                        LogUtil.e("cameraPermission && writeExternalFile && readExternalFile");
                         if (mLlPermission == null) return;
                         mLlPermission.setVisibility(View.GONE);
                     } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            requestPermissions(
-                                    new String[]{
-                                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                            Manifest.permission.CAMERA,
-                                            Manifest.permission.CALL_PHONE,
-                                            Manifest.permission.GET_ACCOUNTS,
-                                            Manifest.permission.ACCESS_FINE_LOCATION,
-                                            Manifest.permission.RECORD_AUDIO,
-                                            Manifest.permission.ACCESS_COARSE_LOCATION
-                                    },
-                                    Constants.PERMISSIONS_MULTIPLE_REQUEST);
-                        }
-
+                        LogUtil.e("cameraPermission && audioPermission else requestPermissions");
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                            requestPermissions(
+//                                    new String[]{
+//                                            Manifest.permission.READ_EXTERNAL_STORAGE,
+//                                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                                            Manifest.permission.CAMERA,
+//                                            Manifest.permission.CALL_PHONE,
+//                                            Manifest.permission.GET_ACCOUNTS,
+//                                            Manifest.permission.ACCESS_FINE_LOCATION,
+//                                            Manifest.permission.RECORD_AUDIO,
+//                                            Manifest.permission.ACCESS_COARSE_LOCATION
+//                                    },
+//                                    Constants.PERMISSIONS_MULTIPLE_REQUEST);
+//                        }
+                        LogUtil.e("Snackbar.make");
                         Snackbar.make(this.findViewById(android.R.id.content),
                                 "Please Grant Permissions to upload profile photo",
-                                Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+                                Snackbar.LENGTH_SHORT).setAction("ENABLE",
                                 new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
