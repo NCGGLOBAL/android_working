@@ -2,6 +2,7 @@ package com.creator.thehana;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,7 +19,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -35,6 +35,7 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.creator.thehana.common.HNApplication;
+import com.creator.thehana.delegator.HNSharedPreference;
 import com.creator.thehana.helpers.Constants;
 import com.creator.thehana.models.Image;
 import com.creator.thehana.util.BitmapUtil;
@@ -383,8 +384,35 @@ public class CameraActivity extends Activity {
         }
 
         @Override
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-            handler.proceed();
+        public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
+            if (HNSharedPreference.getSharedPreference(CameraActivity.this, "isFirstLive").equals("")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
+
+                builder.setTitle("라이브방송으로 이동하시겠습니까?");
+
+                builder.setPositiveButton("예", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        handler.proceed();
+                    }
+                });
+
+                builder.setNegativeButton("아니요", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        handler.cancel();
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+                HNSharedPreference.putSharedPreference(CameraActivity.this, "isFirstLive", "Y");
+            } else  {
+                handler.proceed();
+            }
         }
 
         @Override

@@ -411,11 +411,6 @@ public class WebViewActivity extends Activity {
         }
 
         @Override
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-            handler.proceed();
-        }
-
-        @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // LogUtil.e("shouldOverrideUrlLoading : " + url);
 
