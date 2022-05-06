@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -731,6 +732,17 @@ public class CameraActivity extends Activity {
     public class HNWebChromeClient extends WebChromeClient {
 
         public HNWebChromeClient() {
+        }
+
+        @Override
+        public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
+            WebView newWebView = new WebView(view.getContext());
+            WebSettings webSettings = newWebView.getSettings();
+            webSettings.setJavaScriptEnabled(true);
+
+            ((WebView.WebViewTransport) resultMsg.obj).setWebView(newWebView);
+            resultMsg.sendToTarget();
+            return true;
         }
 
         // For Android Version < 3.0

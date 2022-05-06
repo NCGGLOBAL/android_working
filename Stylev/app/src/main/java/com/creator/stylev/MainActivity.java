@@ -381,6 +381,17 @@ public class MainActivity extends AppCompatActivity {
         public HNWebChromeClient() {
         }
 
+        @Override
+        public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
+            WebView newWebView = new WebView(view.getContext());
+            WebSettings webSettings = newWebView.getSettings();
+            webSettings.setJavaScriptEnabled(true);
+
+            ((WebView.WebViewTransport) resultMsg.obj).setWebView(newWebView);
+            resultMsg.sendToTarget();
+            return true;
+        }
+
         // For Android Version < 3.0
         public void openFileChooser(ValueCallback<Uri> uploadMsg) {
             //System.out.println("WebViewActivity OS Version : " + Build.VERSION.SDK_INT + "\t openFC(VCU), n=1");
