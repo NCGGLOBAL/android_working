@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -38,6 +39,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
+import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
@@ -383,13 +385,74 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
-            WebView newWebView = new WebView(view.getContext());
+            Log.i(getClass().getName(), "onCreateWindow");
+            final WebView newWebView = new WebView(view.getContext());
             WebSettings webSettings = newWebView.getSettings();
-            webSettings.setJavaScriptEnabled(true);
+            WebSettings settings = newWebView.getSettings();
+            settings.setJavaScriptEnabled(true);
+            settings.setJavaScriptCanOpenWindowsAutomatically(true);
+            settings.setSupportMultipleWindows(true);
 
-            ((WebView.WebViewTransport) resultMsg.obj).setWebView(newWebView);
+            // 다이얼로그창 형태인가 ? true (window.open 팝업창), false (href _blank 새창)
+            if (!isDialog) {
+                // 사용자가 웹뷰에서 클릭한 정보 취득
+                WebView.HitTestResult result = view.getHitTestResult();
+                String data = result.getExtra();
+
+                Context context = view.getContext();
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(data));
+                context.startActivity(browserIntent);
+            } else {
+                //final Dialog dialog = new Dialog(view.getContext(),R.style.Theme_DialogFullScreen);
+                final Dialog dialog = new Dialog(view.getContext());
+                dialog.setContentView(newWebView);
+                dialog.show();
+                dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            dialog.dismiss();
+                            newWebView.loadUrl("javascript:self.close();");
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+
+                newWebView.setWebViewClient(new HNWebViewClient());
+                newWebView.setWebChromeClient(new HNWebChromeClient() {
+                    @Override
+                    public void onCloseWindow(WebView window) {
+                        dialog.dismiss();
+                        window.destroy();
+                    }
+                });
+            } // end of if
+
+            newWebView.setDownloadListener(new DownloadListener() {
+                public void onDownloadStart(String url, String userAgent,
+                                            String contentDisposition, String mimetype,
+                                            long contentLength) {
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                }});
+
+            WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+            transport.setWebView(newWebView);
             resultMsg.sendToTarget();
+
             return true;
+        }
+
+        @Override
+        public void onCloseWindow(WebView window) {
+            Log.i(getClass().getName(), "onCloseWindow");
+            window.setVisibility(View.GONE);
+            window.destroy();
+            super.onCloseWindow(window);
         }
 
         // For Android Version < 3.0
