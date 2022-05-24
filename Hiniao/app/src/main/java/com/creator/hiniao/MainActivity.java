@@ -251,8 +251,7 @@ public class MainActivity extends AppCompatActivity {
                     mLlPermission = (LinearLayout)findViewById(R.id.ll_permission);
                     mLlPermission.setVisibility(View.VISIBLE);
 
-                    LinearLayout ll_permission_agree = (LinearLayout)findViewById(R.id.ll_permission_agree);
-                    ll_permission_agree.setOnClickListener(new View.OnClickListener() {
+                    mLlPermission.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             mLlPermission.setVisibility(View.GONE);
