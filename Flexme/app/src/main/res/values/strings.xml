@@ -11,8 +11,8 @@
     <string name="facebook_app_id">194886367799154</string>
     <string name="fb_login_protocol_scheme">fb194886367799154</string>
     <string name="kakao_app_key">6ffa37eeb133ae89995dbeb58824a868</string>
-    <string name="naver_client_id">mpLrVSaumgWVVWty0c42</string>
-    <string name="naver_client_secret">OCXBj9dWXd</string>
+    <string name="naver_client_id">ljVA324Rw_Dw3VO8sfn6</string>
+    <string name="naver_client_secret">B_oP3YSVrw</string>
 
     <!-- GCM -->
     <string name="registering_message_ready">InstanceID 토큰 가져오기</string>
