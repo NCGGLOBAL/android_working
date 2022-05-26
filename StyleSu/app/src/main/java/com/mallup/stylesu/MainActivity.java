@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -279,6 +280,8 @@ public class MainActivity extends AppCompatActivity {
                     mLoadingView.setVisibility(View.GONE);
                 }
             }, 3000);
+
+            resetBadgeCounterOfPushMessages();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -294,6 +297,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         mWebView.onPause();
+    }
+
+    private void resetBadgeCounterOfPushMessages() {
+        NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (notificationManager != null) {
+                notificationManager.cancelAll();
+            }
+        }
     }
 
     private void getHashKey(){
