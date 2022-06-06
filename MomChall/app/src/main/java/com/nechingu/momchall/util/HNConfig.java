@@ -2,7 +2,6 @@ package com.nechingu.momchall.util;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.provider.Settings;
 
 import com.nechingu.momchall.common.HNApplication;
 import com.nechingu.momchall.delegator.HNSharedPreference;
@@ -29,6 +28,7 @@ public class HNConfig {
     }
 
     public String getDeviceId() {
+        LogUtil.d("getDeviceId() : " + HNApplication.mDeviceId);
         return HNApplication.mDeviceId;
     }
 

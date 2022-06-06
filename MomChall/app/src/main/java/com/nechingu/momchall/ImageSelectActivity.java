@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nechingu.momchall.adapters.CustomImageSelectAdapter;
+import com.nechingu.momchall.common.HNApplication;
 import com.nechingu.momchall.helpers.Constants;
 import com.nechingu.momchall.models.Image;
 
@@ -106,7 +107,7 @@ public class ImageSelectActivity extends HelperActivity {
 //                if (countSelected == 0) {
 //                    actionMode.finish();
 //                }
-                imageCount.setText(countSelected + "/8");
+                imageCount.setText(countSelected + "/" + HNApplication.LIMIT_IMAGE_COUNT);
             }
         });
     }

@@ -4,12 +4,10 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationChannelGroup;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.StringDef;
-import android.widget.RemoteViews;
 
 import com.nechingu.momchall.util.LogUtil;
 
@@ -26,6 +24,7 @@ public class MyNotificationManager {
 
     public static void createChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LogUtil.e("================= Create Channel!!!!");
             NotificationChannelGroup group1 = new NotificationChannelGroup(GROUP_TED_PARK, GROUP_TED_PARK);
             getManager(context).createNotificationChannelGroup(group1);
 
@@ -81,7 +80,7 @@ public class MyNotificationManager {
 
             getManager(context).notify(id, builder.build());
         } else {
-            LogUtil.e("================= sendNotification false");
+            LogUtil.e("================= Test4");
         }
     }
 

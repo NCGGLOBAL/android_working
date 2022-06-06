@@ -49,8 +49,6 @@ public class UploadUtil {
             postDataBuilder.append(delimiter);
         }
 
-        Log.d("SeongKwon", postDataBuilder.toString());
-
         // 커넥션 생성 및 설정
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
         conn.setDoInput(true);
@@ -75,7 +73,7 @@ public class UploadUtil {
             out.writeBytes("\r\n");
 
             // 전송 작업 시작
-            Log.d("SeongKwon", "uploadUtil Path = " + images.get(idx).name);
+            Log.d("SeongKwon", "uploadUtil Path = " + images.get(idx).path);
             in = new FileInputStream(images.get(idx).path);
 
             // 파일 복사 작업 시작
@@ -108,8 +106,9 @@ public class UploadUtil {
         // 결과 반환 (HTTP RES CODE)
         if(conn.getResponseCode() == 200) {
             result = conn.getResponseMessage();
+            Log.e("SeongKwon", "result1 = " + result);
         } else {
-            result = readInputStreamToString(conn);
+            Log.e("SeongKwon", "result2 = " + conn.getResponseCode() + "//" + result);
         }
 
         // 무조건 서버응답 bypass
@@ -122,7 +121,6 @@ public class UploadUtil {
         }
         byteData = baos.toByteArray();
         result = new String(byteData);
-        Log.e("SeongKwon", result);
 
         conn.disconnect();
 
@@ -149,7 +147,6 @@ public class UploadUtil {
      */
     public static String setFile(String key, String fileName) {
         return "Content-Disposition: form-data; name=\"" + key + "\"; filename=\"" + fileName + "\"\r\nContent-Type: image/jpeg" + "\r\n";
-//        return "Content-Disposition: form-data; name=\"" + key + "\"; filename=\"" + fileName + "\"\r\nContent-Type: image/png" + "\r\n";
     }
 
     private static String readInputStreamToString(HttpURLConnection connection) {

@@ -43,6 +43,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private String mPushUid = "";
     private String mLandingUrl = "";
     private String mImgUrl = "";
+    private String mBadge = "0";
 
     /**
      * Called when message is received.
@@ -79,6 +80,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             if(remoteMessage.getData().containsKey("imgUrl")) {
                 mImgUrl = remoteMessage.getData().get("imgUrl");
+            }
+            if (remoteMessage.getData().containsKey("badge")) {
+                mBadge = remoteMessage.getData().get("badge");
             }
 
             if (/* Check if data needs to be processed by long running job */ true) {
@@ -198,6 +202,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             .setContentTitle(title)
                             .setContentText(message)
                             .setAutoCancel(true)
+                            .setBadgeIconType(1)
+                            .setNumber(Integer.parseInt(mBadge))
                             .setContentIntent(pendingIntent);
                     if (result != null) {
                         Notification.BigPictureStyle bigPictureStyle = new Notification.BigPictureStyle()
@@ -223,6 +229,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             .setContentText(message)
                             .setAutoCancel(true)
                             .setSound(defaultSoundUri)
+                            .setBadgeIconType(1)
+                            .setNumber(Integer.parseInt(mBadge))
                             .setContentIntent(pendingIntent);
                 }
                 getManager(ctx).notify(0 /* ID of notification */, notificationBuilder.build());

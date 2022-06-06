@@ -6,6 +6,11 @@
 
         <domain includeSubdomains="true">momchall.com</domain>
         <domain includeSubdomains="true">nid.naver.com</domain>
+        <domain includeSubdomains="true">livedemo.mallup.co.kr</domain>
+        <domain includeSubdomains="true">voddemo.mallup.co.kr</domain>
+        <domain includeSubdomains="true">ncg.codewiz.kr</domain>
+        <domain includeSubdomains="true">dthumb.phinf.naver.net</domain>
+        <domain includeSubdomains="true">wvy.me</domain>
 
     </domain-config>
 

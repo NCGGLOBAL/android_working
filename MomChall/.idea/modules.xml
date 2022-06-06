@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/MomChall.iml" filepath="$PROJECT_DIR$/.idea/modules/MomChall.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MomChall.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MomChall.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/liveVideoBroadcasterSDK/MomChall.liveVideoBroadcasterSDK.iml" filepath="$PROJECT_DIR$/.idea/modules/liveVideoBroadcasterSDK/MomChall.liveVideoBroadcasterSDK.iml" />
     </modules>
   </component>
 </project>

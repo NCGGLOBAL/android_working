@@ -1,1 +1,1 @@
-include ':app', ':liveVideoBroadcasterSDK'
+include ':app'

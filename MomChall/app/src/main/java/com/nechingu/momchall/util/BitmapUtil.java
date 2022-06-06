@@ -153,14 +153,14 @@ public class BitmapUtil extends BitmapTransformation {
 
     public static boolean saveImage(Context context, String preFilePath, String fileName, String sequence) {
         try {
-            Log.e("SeongKwon", "saveImage****************************************** " + preFilePath);
-            Log.e("SeongKwon", "saveImage****************************************** " + fileName);
-            Log.e("SeongKwon", "saveImage****************************************** " + GetExifOrientation(preFilePath));
+            Log.e("SeongKwon", "BitmapUtil saveImage@@@@@@@@@@@@ " + preFilePath);
+            Log.e("SeongKwon", "BitmapUtil saveImage@@@@@@@@@@@@ " + fileName);
+            Log.e("SeongKwon", "BitmapUtil saveImage@@@@@@@@@@@@ " + GetExifOrientation(preFilePath));
 
             File orignFile = new File(preFilePath);
             if(GetExifOrientation(preFilePath) == 0) {
                 File destFile = new File(context.getFilesDir() + "/" + fileName);
-
+                Log.e("SeongKwon", "BitmapUtil saveImage@@@@@@@@@@@@ destFile1 = " + destFile.getAbsolutePath());
                 copy(orignFile, destFile);
             } else {
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -168,6 +168,7 @@ public class BitmapUtil extends BitmapTransformation {
 
                 FileOutputStream out = null;
                 try {
+                    Log.e("SeongKwon", "BitmapUtil saveImage@@@@@@@@@@@@ destFile2 = " + context.getFilesDir() + "/" + fileName);
                     Bitmap bm = GetRotatedBitmap(bitmap, GetExifOrientation(preFilePath));
                     out = new FileOutputStream(context.getFilesDir() + "/" + fileName);
                     bm.compress(Bitmap.CompressFormat.JPEG, 100, out);

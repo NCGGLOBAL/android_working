@@ -3,7 +3,6 @@ package com.nechingu.momchall.delegator;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.nechingu.momchall.common.HNApplication;
 import com.nechingu.momchall.util.LogUtil;
@@ -32,7 +31,7 @@ public class HNCommTran {
     public void sendMsg(String tranCode, JSONObject jsonParam) {
         mTrCode = tranCode;
 
-        Log.d("SeongKwon", "tran input : " + jsonParam.toString());
+        System.out.println("tran input : " + jsonParam.toString());
 
         // TODO : 유효성 체크
         new sendMsgTask().execute(tranCode, jsonParam.toString());
@@ -60,8 +59,10 @@ public class HNCommTran {
 //                urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 //                urlConnection.setRequestProperty("Content-Type", "application/json");
                 urlConnection.setRequestProperty("Content-Type", "text/html");
-
                 urlConnection.setRequestProperty("Cookie", TextUtils.join(";", HNApplication.getCookieManager().getCookieStore().getCookies()));
+
+//                urlConnection.connect();
+//                LogUtil.d("urlConnection.getResponseCode() : " + urlConnection.getResponseCode());
 
                 try {
                     OutputStream os = urlConnection.getOutputStream();

@@ -29,8 +29,6 @@ public class Constants {
     public static final int REQUEST_EDIT_IMAGE = 5001;
     public static final int REQUEST_CROP_IMAGE = 5002;
 
-    public static final int REQUEST_YOUTUBE = 6001;
-
     /**
      * Request code for permission has to be < (1 << 8)
      * Otherwise throws java.lang.IllegalArgumentException: Can only use lower 8 bits for requestCode

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -60,7 +59,6 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by skcrackers on 9/22/17.
@@ -208,7 +206,7 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
             if (images == null) {
                 images = new ArrayList<Image>();
             }
-            savedImageSize = flist.length;
+            savedImageSize = mImgArr.length();
             // 이미지 존재여부 확인
             // [{"utype":"0","fileName":"Screenshot_2018-01-10-13-31-08-630_com.wavayo.soho.png","imgUrl":"http:\/\/osaka.wavayo.com\/data\/osaka\/goods\/mallshopping\/other\/201801\/Screenshot_2018-01-10-13-31-08-630_com.wavayo.soho.png","sort":"1"},{"utype":"0","fileName":"Screenshot_2017-11-23-15-11-37-635_com.miui.packageinstaller.png","imgUrl":"http:\/\/osaka.wavayo.com\/data\/osaka\/goods\/mallshopping\/other\/201801\/Screenshot_2017-11-23-15-11-37-635_com.miui.packageinstaller.png","sort":"2"},{"utype":"0","fileName":"Screenshot_2017-09-29-10-44-49-373_com.miui.gallery.png","imgUrl":"http:\/\/osaka.wavayo.com\/data\/osaka\/goods\/mallshopping\/other\/201801\/Screenshot_2017-09-29-10-44-49-373_com.miui.gallery.png","sort":"3"}]
             HNSharedPreference.putSharedPreference(this, "savedImage" , "");        // 초기화
@@ -249,7 +247,7 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
                     BitmapUtil.deleteImages(this, getFilesDir() + "/");
                 }
             }
-            imageCount.setText(savedImageSize + "/8");
+            imageCount.setText(savedImageSize + "/" + HNApplication.LIMIT_IMAGE_COUNT);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -260,10 +258,16 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
         try {
             switch (v.getId()) {
                 case R.id.cameraLayout:
+                    if (images.size() >= HNApplication.LIMIT_IMAGE_COUNT) {
+                        return;
+                    }
                     mCameraType = 3;
                     requestPermission(Constants.REQUEST_SELECT_IMAGE_CAMERA);
                     break;
                 case R.id.folderLayout:
+                    if (images.size() >= HNApplication.LIMIT_IMAGE_COUNT) {
+                        return;
+                    }
                     mCameraType = 4;
                     requestPermission(Constants.REQUEST_SELECT_IMAGE_ALBUM);
                     break;
@@ -337,7 +341,7 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
 //                                actionMode.setTitle("상품등록");
                             }
                         }
-                        imageCount.setText(savedImageSize + "/8");
+                        imageCount.setText(savedImageSize + "/" + HNApplication.LIMIT_IMAGE_COUNT);
                         break;
                     }
 
@@ -607,7 +611,7 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
                     images = new ArrayList<Image>();
                 }
                 images.clear();
-                savedImageSize = flist.length;
+                savedImageSize = mImgArr.length();
 
                 for (int i = 0; i < flist.length; i++) {
                     String fname = flist[i].getName();
@@ -1005,7 +1009,7 @@ public class SelectImageMethodActivity extends HelperActivity implements View.On
 //            sendMessage(Constants.FETCH_COMPLETED, countSelected);
             mProgressDialog.dismiss();
             savedImageSize = images.size();
-            imageCount.setText(savedImageSize + "/8");
+            imageCount.setText(savedImageSize + "/" + HNApplication.LIMIT_IMAGE_COUNT);
 
             // Close progressdialog
             mProgressDialog.dismiss();

@@ -2,17 +2,14 @@ package com.nechingu.momchall.common;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.igaworks.IgawCommon;
 import com.kakao.auth.KakaoSDK;
 import com.nechingu.momchall.MyNotificationManager;
-import com.nechingu.momchall.R;
 
 import java.net.CookieManager;
 
@@ -23,14 +20,16 @@ public class HNApplication extends Application {
     public static final String TAG = HNApplication.class.getSimpleName();
     private RequestQueue mRequestQueue;
 
+    public static boolean mSigned = false;
+    public static String URL = "https://www.momchall.com";
+    public static String PUSH_URL = URL + "/m/app/pushRegister.asp";
+    public static String UPLOAD_URL = URL + "/m/app/";
+    public static boolean mIsFirstLoading = false;
     private static HNApplication mInstance;
     public static String mDeviceId = "";
 
-    public static boolean mSigned = false;
-    public static String URL = "https://www.momchall.com";
-    public static boolean mIsFirstLoading = true;
-
     public static String mImgArrForReg = "";
+    public static final int LIMIT_IMAGE_COUNT = 10;
 
     public static CookieManager mCookieManager;
 
@@ -64,16 +63,9 @@ public class HNApplication extends Application {
 
         mInstance = this;
 
-        // 어플리케이션 클래스에서는 autoSessionTracking API 외의 어떤 애드브릭스 API도 호출해서는 안됩니다.
-        IgawCommon.autoSessionTracking(HNApplication.this);
-
         MyNotificationManager.createChannel(this);
-        KakaoSDK.init(new KakaoSDKAdapter());
 
-//        AbxActivityHelper.initializeSdk(HNApplication.this, getApplicationContext().getString(R.string.adbrix_remaster_app_key), getApplicationContext().getString(R.string.adbbix_remaster_secret_key));
-//        if (Build.VERSION.SDK_INT >= 14) {
-//            registerActivityLifecycleCallbacks(new AbxActivityLifecycleCallbacks());
-//        }
+        KakaoSDK.init(new KakaoSDKAdapter());
     }
 
     public static synchronized HNApplication getInstance() {

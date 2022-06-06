@@ -15,8 +15,6 @@
  */
 package com.nechingu.momchall;
 
-import android.provider.Settings;
-
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -93,12 +91,12 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
                     mHNCommTran = new HNCommTran(new HNCommTranInterface() {
                         @Override
                         public void recvMsg(String tranCode, String params) {
-                            if (tranCode.equals(HNApplication.URL + "/m/app/pushRegister.asp")) {
+                            if (tranCode.equals(HNApplication.PUSH_URL)) {
                                 LogUtil.e("recv pushRegister : " + tranCode + " : " + params);
                             }
                         }
                     });
-                    mHNCommTran.sendMsg(HNApplication.URL + "/m/app/pushRegister.asp", jObj);
+                    mHNCommTran.sendMsg(HNApplication.PUSH_URL, jObj);
                     return;
                 } catch (Exception localException) {
                     localException.printStackTrace();

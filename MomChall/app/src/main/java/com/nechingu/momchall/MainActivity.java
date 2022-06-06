@@ -2,17 +2,17 @@ package com.nechingu.momchall;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -24,9 +24,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -38,12 +36,12 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -51,31 +49,26 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.nechingu.momchall.live.CameraActivity;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.applinks.AppLinkData;
-import com.facebook.internal.CallbackManagerImpl;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
-import com.igaworks.IgawCommon;
-import com.igaworks.adbrix.IgawAdbrix;
 import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
-import com.kakao.usermgmt.callback.MeResponseCallback;
-import com.kakao.usermgmt.response.model.UserProfile;
+import com.kakao.usermgmt.callback.MeV2ResponseCallback;
+import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
-import com.nhn.android.naverlogin.OAuthLogin;
-import com.nhn.android.naverlogin.OAuthLoginHandler;
 import com.nechingu.momchall.common.BackPressCloseHandler;
 import com.nechingu.momchall.common.HNApplication;
 import com.nechingu.momchall.delegator.HNCommTran;
@@ -90,7 +83,8 @@ import com.nechingu.momchall.util.LogUtil;
 import com.nechingu.momchall.util.NicePayUtility;
 import com.nechingu.momchall.util.RealPathUtil;
 import com.nechingu.momchall.util.UploadUtil;
-import com.nechingu.momchall.youtube.YoutubeActivity;
+import com.nhn.android.naverlogin.OAuthLogin;
+import com.nhn.android.naverlogin.OAuthLoginHandler;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -98,6 +92,8 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -105,6 +101,8 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -115,7 +113,8 @@ import java.util.Map;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    private WebView wv;
+    private Context mContext;
+    private WebView mWebView;
     private CookieManager mCookieManager;
 
     private String mCallback;
@@ -124,8 +123,6 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseMessaging mFirebaseMessaging;
     private String mPushUid = "";
     private String mLandingUrl = "";
-    private String mYoutubeLinkUrl = "";
-    private String mSchemeUrl = "";
     private BackPressCloseHandler mBackPressCloseHandler;
     private IntentIntegrator mIntegrator;
     private int mCameraType = 0;
@@ -133,15 +130,13 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog mProgressDialog;  // 처리중
 
-    int PERMISSION_ALL = 1;
-    String[] PERMISSIONS = {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+    String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-//            Manifest.permission.CAMERA,
+            Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
-            // skcrackers - 내친구 요청 2018.06.01
-//            Manifest.permission.CALL_PHONE,
+//            Manifest.permission.CALL_PHONE
+            Manifest.permission.RECORD_AUDIO,
             Manifest.permission.GET_ACCOUNTS
     };
 
@@ -168,18 +163,12 @@ public class MainActivity extends AppCompatActivity {
     private String mCameraPhotoPath;
     private Uri mCapturedImageURI;
 
-    private BroadcastReceiver mReceiver;
-    public static final String BROADCAST_MESSAGE = "com.nechingu.momchall.broadcastreceiver.LIVE_URL";
-
     // SNS========================================================================= //
-    static final int SEND_NAVER_MESSAGE = 0;
-    static final int SEND_KAKAO_MESSAGE = 1;
-    static final int SEND_FACEBOOK_MESSAGE = 2;
+    private static final int SEND_NAVER_MESSAGE = 0;
+    private static final int SEND_KAKAO_MESSAGE = 1;
+    private static final int SEND_FACEBOOK_MESSAGE = 2;
 
-    private static Context mContext;
     private static OAuthLogin mOAuthLoginModule;
-    private final NaverOAuthHandler mNaverOAuthHandler = new NaverOAuthHandler();
-    public static SendMassgeHandler mMainHandler = null;
 
     private CallbackManager callbackManager;
 
@@ -188,10 +177,13 @@ public class MainActivity extends AppCompatActivity {
     private Button btnFacebookLogin;
     private Button btnKakaoLogin;
 
-    String mNaverMessage = "";
-    String mFacebookMessage = "";
-    String mKakaoMessage = "";
+    private String mNaverMessage = "";
+    private String mFacebookMessage = "";
+    private String mKakaoMessage = "";
     // SNS========================================================================= //
+
+    private View mLoadingView;
+
     public static MainActivity activity;
 
     public static MainActivity getInstance() {
@@ -200,13 +192,15 @@ public class MainActivity extends AppCompatActivity {
         }
         return activity;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        // Activity가 실행 될 때 항상 화면을 켜짐으로 유지한다.
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         try {
             setContentView(R.layout.activity_main);
-
+            mContext = MainActivity.this;
             if (HNSharedPreference.getSharedPreference(this, "deviceId").equals("")) {
                 HNApplication.mDeviceId = EtcUtil.getRandomKey(16);
 
@@ -227,6 +221,8 @@ public class MainActivity extends AppCompatActivity {
                 HNSharedPreference.putSharedPreference(this, "pushtopic", String.valueOf(topic));
             }
 
+            getHashKey();
+
             // token 생성
             String token = FirebaseInstanceId.getInstance().getToken();
             if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
@@ -234,65 +230,25 @@ public class MainActivity extends AppCompatActivity {
 
                 sendRegistrationToServer(token);
             }
+            LogUtil.e("push token : " + token);
 
-            // IGAWroks Facebook 연동
-            AppLinkData.fetchDeferredAppLinkData(MainActivity.this, new AppLinkData.CompletionHandler() {
-                public void onDeferredAppLinkDataFetched(AppLinkData appLinkData) {
-                    if (appLinkData != null) {
-                        try {
-                            Bundle bundle = appLinkData.getArgumentBundle();
-                            // Get deeplink from ApplinkData
-                            String deeplink = bundle.getString(AppLinkData.ARGUMENTS_NATIVE_URL);
-                            // Report deeplink for IgawCommon to get tracking parameters
-                            // IgawCommon.setReferralUrl(MainActivity.this, deeplink);
-                            // 4.2.5 버전부터 setReferralUrl 이 setReferralUrlForFacebook 으로 변경됩니다.
-                            IgawCommon.setReferralUrlForFacebook(MainActivity.this, deeplink);
-                            // Deeplinking
-                            Intent i = new Intent(Intent.ACTION_VIEW);
-                            i.addCategory(Intent.CATEGORY_BROWSABLE);
-                            i.setData(Uri.parse(deeplink));
-                            MainActivity.this.startActivity(i);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-
-            // 커머스 고급 분석 연동(홈화면 열기)
-            IgawAdbrix.Commerce.viewHome(this);
-
-            // 한번만 실행
-            if(HNSharedPreference.getSharedPreference(this, "pushtokenRefresh").equals("")) {
-                HNSharedPreference.putSharedPreference(this, "pushtokenRefresh", "1");
-
-                sendRegistrationToServer(token);
-            }
-
-            LogUtil.d("SeongKwon", "token = " + token);
             Intent intent = getIntent();
-            if (intent != null) {
-                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
-                    if (!intent.getStringExtra("url").equals("")) {
-                        mPushUid = intent.getStringExtra("pushUid");
-                        mLandingUrl = intent.getStringExtra("url");
-                        sendPushReceiveToServer(mPushUid);
-                    }
-                }
 
-                if(intent.hasExtra("youtubeLinkUrl")) {
-                    mYoutubeLinkUrl = intent.getStringExtra("youtubeLinkUrl");
-                    if(!mYoutubeLinkUrl.equals("")) {
-                        mLandingUrl = HNApplication.URL + "/addon/live/live_reg.asp?url=" + mYoutubeLinkUrl;
-                    }
-                }
-                if(intent.hasExtra("schemeUrl")) {
-                    mSchemeUrl = intent.getStringExtra("schemeUrl");
-                }
+            if (intent.hasExtra("pushUid")) {
+                mPushUid = intent.getStringExtra("pushUid");
+                sendPushReceiveToServer(mPushUid);
             }
-
-            // 메인 핸들러 생성
-            mMainHandler = new SendMassgeHandler();
+            if (intent.getDataString() != null && !intent.getDataString().isEmpty()) {
+                String landingUri = intent.getDataString();
+//                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
+//                Log.e("jj", "landingUri : " + landingUri);
+                String splitUrl = landingUri.split("\\?")[1];
+//                Log.e("jj", "splitUrl : " + splitUrl);
+                splitUrl = splitUrl.split("=")[1];
+//                Log.e("jj", "splitUrl : " + splitUrl);
+                mLandingUrl = splitUrl;
+            }
+//            Log.e("jj", "mLandingUrl : " + mLandingUrl);
 
             // permission 체크 - 최초실행
             if (HNSharedPreference.getSharedPreference(getApplicationContext(), "isPermissionCheck").equals("")) {
@@ -305,140 +261,123 @@ public class MainActivity extends AppCompatActivity {
                     ll_permission_agree.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            mLlPermission.setVisibility(View.GONE);
                             checkPermission();
                         }
                     });
+//                    checkPermission();
                 }
             }
 
             // WebView 초기화
             initWebView();
+
+            mLoadingView = findViewById(R.id.view_loading);
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mLoadingView.setVisibility(View.GONE);
+                }
+            }, 3000);
         } catch (Exception e) {
             e.printStackTrace();
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-            alertDialogBuilder.setTitle("Check");
-
-            // AlertDialog 셋팅
-            alertDialogBuilder
-                    .setMessage(e.getMessage())
-                    .setCancelable(false)
-                    .setPositiveButton("Confirm",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(
-                                        DialogInterface dialog, int id) {
-                                }
-                            });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        // 리시버 등록
-        registerReceiver();
+        mWebView.onResume();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        // 리시버 해제
-        unregisterReceiver();
+    protected void onPause() {
+        super.onPause();
+        mWebView.onPause();
     }
 
-    private void registerReceiver() {
-        if(mReceiver == null) {
-            final IntentFilter theFilter = new IntentFilter();
-            theFilter.addAction(BROADCAST_MESSAGE);
+    private void getHashKey(){
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (packageInfo == null)
+            Log.e("KeyHash", "KeyHash:null");
 
-            mReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    if (intent.hasExtra("liveUrl")) {
-                        try {
-                            JSONObject jsonObject = new JSONObject();
-                            jsonObject.put("liveUrl", intent.getStringExtra("liveUrl"));            // liveUrl : 라이브 URL
-                            jsonObject.put("liveStatus", intent.getStringExtra("liveStatus"));      // liveStatus : 방송상태 - 0 : 방송종료, 1 : 방송중
-
-                            executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            };
-
-            this.registerReceiver(this.mReceiver, theFilter);
+        for (Signature signature : packageInfo.signatures) {
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            } catch (NoSuchAlgorithmException e) {
+                Log.e("KeyHash", "Unable to get MessageDigest. signature=" + signature, e);
+            }
         }
     }
-
-    private void unregisterReceiver() {
-        if(mReceiver != null) {
-            this.unregisterReceiver(mReceiver);
-            mReceiver = null;
-        }
-    }
-
 
     @SuppressLint("JavascriptInterface")
     private void initWebView() {
-        this.wv = ((WebView) findViewById(R.id.webView));
-        this.wv.setWebViewClient(new HNWebViewClient());
-        this.wv.setWebChromeClient(new HNWebChromeClient());
-        this.wv.getSettings().setUserAgentString(this.wv.getSettings().getUserAgentString() + ";device=app;" + " NINTH");
+        mWebView = ((WebView) findViewById(R.id.webView));
+        mWebView.setWebViewClient(new HNWebViewClient());
+        mWebView.setWebChromeClient(new HNWebChromeClient());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
+        String userAgentString = "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/97.0.4692.87 Mobile Safari/535.19 " + " NINTH" + "&deviceId=" + HNApplication.mDeviceId;
+        mWebView.getSettings().setUserAgentString(userAgentString);
         if (Build.VERSION.SDK_INT >= 21) {
-            this.wv.getSettings().setMixedContentMode(0);
+            mWebView.getSettings().setMixedContentMode(0);
             this.mCookieManager = CookieManager.getInstance();
             this.mCookieManager.setAcceptCookie(true);
-            this.mCookieManager.setAcceptThirdPartyCookies(this.wv, true);
+            this.mCookieManager.setAcceptThirdPartyCookies(mWebView, true);
         } else {
             this.mCookieManager = CookieManager.getInstance();
             this.mCookieManager.setAcceptCookie(true);
         }
 
-        this.wv.getSettings().setSupportZoom(true);
-        this.wv.getSettings().setDisplayZoomControls(true);
-        this.wv.getSettings().setBuiltInZoomControls(true);
+        mWebView.getSettings().setSupportZoom(true);
+        mWebView.getSettings().setDisplayZoomControls(true);
+        mWebView.getSettings().setBuiltInZoomControls(true);
 
         // setSavePassword - default false in android 4.4 and above
         // setPluginState - use plugin deprecate
         // setAppCacheMaxSize - deprecate
-        this.wv.getSettings().setJavaScriptEnabled(true);
-        this.wv.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        this.wv.getSettings().setAllowFileAccess(true);
-        this.wv.getSettings().setAllowContentAccess(true);
-        this.wv.getSettings().setLoadsImagesAutomatically(true);
-        this.wv.getSettings().setLoadWithOverviewMode(true);
-        this.wv.getSettings().setSupportMultipleWindows(false);
-        this.wv.getSettings().setUseWideViewPort(true);
-        this.wv.getSettings().setDatabaseEnabled(true);
-        this.wv.getSettings().setDomStorageEnabled(true);
-        this.wv.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        this.wv.getSettings().setSupportMultipleWindows(true);
-        this.wv.getSettings().setAppCacheEnabled(true);
-        this.wv.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-        this.wv.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
-        this.wv.addJavascriptInterface(new WebAppInterface(this, this.wv), "android");
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        mWebView.getSettings().setAllowFileAccess(true);
+        mWebView.getSettings().setAllowContentAccess(true);
+        mWebView.getSettings().setLoadsImagesAutomatically(true);
+        mWebView.getSettings().setLoadWithOverviewMode(true);
+        mWebView.getSettings().setSupportMultipleWindows(false);
+        mWebView.getSettings().setUseWideViewPort(true);
+        mWebView.getSettings().setDatabaseEnabled(true);
+        mWebView.getSettings().setDomStorageEnabled(true);
+        mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        mWebView.getSettings().setSupportMultipleWindows(true);
+        mWebView.getSettings().setAppCacheEnabled(true);
+        mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        mWebView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
+        mWebView.addJavascriptInterface(new WebAppInterface(this, mWebView), "android");
 
-        this.wv.setDrawingCacheEnabled(true);
-        this.wv.buildDrawingCache();
+        mWebView.setDrawingCacheEnabled(true);
+        mWebView.buildDrawingCache();
 
         Map<String, String> extraHeaders = new HashMap<>();
         extraHeaders.put("webview-type", "main");
         if (!mLandingUrl.equals("")) {
-            this.wv.loadUrl(mLandingUrl, extraHeaders);
-        } else if (!mSchemeUrl.equals("")) {
-            this.wv.loadUrl("https://www.momchall.com", extraHeaders);
+            mWebView.loadUrl(mLandingUrl, extraHeaders);
         } else {
-            this.wv.loadUrl(HNApplication.URL, extraHeaders);
+            mWebView.loadUrl(HNApplication.URL, extraHeaders);
             mLandingUrl = "";
         }
     }
 
     public class HNWebChromeClient extends WebChromeClient {
+
         public HNWebChromeClient() {
         }
 
@@ -492,9 +431,14 @@ public class MainActivity extends AppCompatActivity {
 
                 // Continue only if the File was successfully created
                 if (photoFile != null) {
-                    mCameraPhotoPath = "file:"+photoFile.getAbsolutePath();
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                            Uri.fromFile(photoFile));
+                    // File 객체의 URI 를 얻는다.
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        mCapturedImageURI = FileProvider.getUriForFile(MainActivity.this, getPackageName() + ".fileprovider", photoFile);
+                    } else {
+                        mCameraPhotoPath = "file:"+photoFile.getAbsolutePath();
+                        mCapturedImageURI = Uri.fromFile(photoFile);
+                    }
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
                 } else {
                     takePictureIntent = null;
                 }
@@ -520,7 +464,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public boolean onJsAlert(WebView paramWebView, String paramString1, String paramString2, final JsResult paramJsResult) {
-            new AlertDialog.Builder(MainActivity.this)
+            new AlertDialog.Builder(mContext)
                     .setTitle(getResources().getString(R.string.alert_title))
                     .setMessage(paramString2)
                     .setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
@@ -532,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public boolean onJsConfirm(WebView paramWebView, String paramString1, String paramString2, final JsResult paramJsResult) {
-            new AlertDialog.Builder(MainActivity.this)
+            new AlertDialog.Builder(mContext)
                     .setTitle(getResources().getString(R.string.alert_title))
                     .setMessage(paramString2).setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface paramAnonymousDialogInterface, int paramAnonymousInt) {
@@ -559,48 +503,49 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-//            LogUtil.d("onPageLoadStopped : " + url);
+            // LogUtil.d("onPageLoadStopped : " + url);
+
+//            mProgressUtil.dismiss();
         }
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap paramBitmap) {
             super.onPageStarted(view, url, paramBitmap);
-//            LogUtil.d("onPageLoadStarted : " + url);
+            // LogUtil.d("onPageLoadStarted : " + url);
+
             executeJavascript("localStorage.setItem(\"dv_id\"," + "\"" + HNApplication.mDeviceId + "\")");
         }
 
-        @RequiresApi(Build.VERSION_CODES.N)
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            final Uri uri = request.getUrl();
-            return handleUri(view, uri);
-        };
-
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            final Uri uri = Uri.parse(url);
-            return handleUri(view, uri);
-        };
+            // LogUtil.e("shouldOverrideUrlLoading : " + url);
 
-        private boolean handleUri(WebView view, final Uri uri) {
-            final String host = uri.getHost();
-            final String scheme = uri.getScheme();
-            String url = uri.toString();
+            Uri uri = Uri.parse(url);
 
-            LogUtil.e("shouldOverrideUrlLoading : " + uri);
-            //=================================== Nice Pay ===================================
             Intent intent = null;
-            if (scheme.equals("sms") || scheme.equals("smsto")) {
-                Intent i = new Intent(Intent.ACTION_SENDTO, uri);
+
+            if (uri.getScheme().equals("ncglive")) {
+                if (!hasPermissions(mContext, PERMISSIONS)) {
+                    mCameraType = 5;
+                    ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, Constants.PERMISSIONS_MULTIPLE_REQUEST);
+                } else {
+                    startActivity(new Intent(MainActivity.this, CameraActivity.class));
+                }
+
+                return true;
+            }
+
+            if (url.startsWith("sms:") || url.startsWith("smsto:")) {
+                Intent i = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
                 startActivity(i);
                 return true;
-            } else if (scheme.equals("tel")) {
+            } else if (url.startsWith("tel:")) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     int permissionResult = checkSelfPermission(Manifest.permission.CALL_PHONE);
 
                     if (permissionResult == PackageManager.PERMISSION_DENIED) {
                         if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
-                            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
                             dialog.setTitle("권한이 필요합니다.")
                                     .setMessage("이 기능을 사용하기 위해서는 단말기의 \"전화걸기\" 권한이 필요합니다. 계속 하시겠습니까?")
                                     .setPositiveButton("네", new DialogInterface.OnClickListener() {
@@ -615,7 +560,7 @@ public class MainActivity extends AppCompatActivity {
                                     .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            Toast.makeText(MainActivity.this, "기능을 취소했습니다", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, "기능을 취소했습니다", Toast.LENGTH_SHORT).show();
                                         }
                                     }).create().show();
                         }
@@ -628,14 +573,16 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 return true;
-
             } else if (url.startsWith("mailto:")) {
                 intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
                 startActivity(intent);
                 return true;
             }
+
+            //=================================== Nice Pay ===================================
+
             // 웹뷰에서 ispmobile 실행한 경우...
-            else if (scheme.equals("ispmobile")) {
+            if (url.startsWith("ispmobile")) {
                 if (NicePayUtility.isPackageInstalled(getApplicationContext(), "kvp.jjy.MispAndroid320")) {
                     intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                     startActivity(intent);
@@ -646,7 +593,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             // 웹뷰에서 계좌이체를 실행한 경우...
-            else if (scheme.equals("kftc-bankpay")) {
+            else if (url.startsWith("kftc-bankpay")) {
                 if (NicePayUtility.isPackageInstalled(getApplicationContext(), "com.kftc.bankpay.android")) {
                     String sub_str_param = "kftc-bankpay://eftpay?";
                     String reqParam = url.substring(sub_str_param.length());
@@ -692,7 +639,6 @@ public class MainActivity extends AppCompatActivity {
                     || url.contains("kakaopay")
                     || url.contains("naversearchapp://")
                     || url.contains("http://m.ahnlab.com/kr/site/download"))) {
-
                 try {
                     try {
                         intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
@@ -702,27 +648,27 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("Browser", "Bad URI " + url + ":" + ex.getMessage());
                         return false;
                     }
-                    Uri curUri = uri;
+
                     if (url.startsWith("intent")) { //chrome πˆ¡Ø πÊΩƒ
                         if( Build.VERSION.SDK_INT < Build.VERSION_CODES.R ) {
                             if( getPackageManager().resolveActivity(intent,0) == null ) {
                                 String pkgName = intent.getPackage();
                                 if( pkgName != null ) {
-                                    curUri = Uri.parse("market://search?q=pname:" + pkgName);
-                                    intent = new Intent(Intent.ACTION_VIEW, curUri);
+                                    uri = Uri.parse("market://search?q=pname:" + pkgName);
+                                    intent = new Intent(Intent.ACTION_VIEW, uri);
                                     startActivity(intent);
                                 }
                             } else {
-                                curUri = Uri.parse(intent.getDataString());
-                                intent = new Intent(Intent.ACTION_VIEW, curUri);
+                                uri = Uri.parse(intent.getDataString());
+                                intent = new Intent(Intent.ACTION_VIEW, uri);
                                 startActivity(intent);
                             }
                         } else {
                             try {
                                 startActivity(intent);
                             } catch (ActivityNotFoundException e) {
-                                curUri = Uri.parse("market://search?q=pname:" + intent.getPackage());
-                                intent = new Intent(Intent.ACTION_VIEW, curUri);
+                                uri = Uri.parse("market://search?q=pname:" + intent.getPackage());
+                                intent = new Intent(Intent.ACTION_VIEW, uri);
                                 startActivity(intent);
                             }
                         }
@@ -797,7 +743,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class WebAppInterface {
         private Context context;
-        private WebView webview = MainActivity.this.wv;
+        private WebView webview;
 
         public WebAppInterface(Context c, WebView w) {
             context = c;
@@ -810,7 +756,7 @@ public class MainActivity extends AppCompatActivity {
             JSONObject jObj = null;
             JSONObject response = null;
             try {
-                Log.d("iwebaction", "inputJsonString.toString() = " + inputJsonString.toString().trim());
+                LogUtil.d("iwebaction", "inputJsonString.toString() = " + inputJsonString.toString().trim());
                 jObj = new JSONObject(inputJsonString.toString().trim());
 
                 String actionCode = jObj.getString("action_code");
@@ -829,6 +775,7 @@ public class MainActivity extends AppCompatActivity {
                     mCallback = jObj.getString("callBack");
                 }
 
+                // 앱 설치체크
                 if ("ACT0001".equals(actionCode)) {
                     LogUtil.d("ACT0001 - 앱 설치체크");
 
@@ -851,8 +798,9 @@ public class MainActivity extends AppCompatActivity {
 
                     executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
                 }
+
                 // 사진첩 or 카메라 호출
-                    if ("ACT1001".equals(actionCode)) {
+                if ("ACT1001".equals(actionCode)) {
                     LogUtil.d("ACT1001 - 앱 데이터 저장 (키체인 저장 및 파일저장)");
 
                     if (actionParamObj.has("key_type")) {
@@ -865,11 +813,16 @@ public class MainActivity extends AppCompatActivity {
                             mCameraType = 4;
 //                            requestPermission(Constants.REQUEST_SELECT_IMAGE_ALBUM);
                         }
-                        if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
-                            ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, PERMISSION_ALL);
+                        if (!hasPermissions(mContext, PERMISSIONS)) {
+                            ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS, Constants.PERMISSIONS_MULTIPLE_REQUEST);
                         } else {
-                            intent = new Intent(getApplicationContext(), SelectImageMethodActivity.class);
-                            startActivityForResult(intent, Constants.REQUEST_CODE);
+                            if (mCameraType == 3) {
+                                dispatchTakePictureIntent();
+                            } else {
+                                galleryAddPic();
+                            }
+//                            intent = new Intent(getApplicationContext(), SelectImageMethodActivity.class);
+//                            startActivityForResult(intent, Constants.REQUEST_CODE);
                         }
                     }
                 }
@@ -894,7 +847,7 @@ public class MainActivity extends AppCompatActivity {
                         String request_url = actionParamObj.getString("request_url");
                         LogUtil.d("request_url : " + request_url);
 
-                        MainActivity.this.wv.loadUrl(request_url);
+                        mWebView.loadUrl(request_url);
                     }
                 }
                 // Custom Native 카메라 및 사진 라이브러리 호출
@@ -910,7 +863,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("SeongKwon", "pageGbn : " + pageGbn);
 
                     // 신규
-                    intent = new Intent(MainActivity.this, SelectImageMethodActivity.class);
+                    intent = new Intent(mContext, SelectImageMethodActivity.class);
                     intent.putExtra("token", mToken);
                     intent.putExtra("imgArr", mImgArr.toString());
                     intent.putExtra("pageGbn", pageGbn);
@@ -935,20 +888,6 @@ public class MainActivity extends AppCompatActivity {
 
                     executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
                 }
-                // 앱호출
-                else if ("ACT1014".equals(actionCode)) {
-                    LogUtil.d("ACT1014 - 앱호출");
-
-                    if (actionParamObj.has("url")) {
-                        try {
-                            final String url = actionParamObj.getString("url");
-//                            String url = "vnd.youtube:lhrC0ndCfXY";
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                        } catch(ActivityNotFoundException e) {
-                            Toast.makeText(MainActivity.this, "Plase install Youtube app to see this video", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }
                 // 앱에서 웹뷰 새창
                 else if ("ACT1015".equals(actionCode)) {
                     LogUtil.d("ACT1015 - 웹뷰 새창");
@@ -956,21 +895,19 @@ public class MainActivity extends AppCompatActivity {
                     if (actionParamObj.has("url")) {
                         final String request_url = actionParamObj.getString("url");
                         LogUtil.d("url : " + request_url);
-                        intent = new Intent(MainActivity.this, WebViewActivity.class);
+                        intent = new Intent(mContext, WebViewActivity.class);
                         intent.putExtra("webviewUrl", request_url);
                         startActivity(intent);
                     }
                 }
-                // Youtube 실행
-                else if ("ACT1017".equals(actionCode)) {
-                    LogUtil.d("ACT1017 - Youtube 스트리밍 실행");
+                // 팝업을 닫은후(ACT1015)  호출할 function 이름
+                else if ("ACT1016".equals(actionCode)) {
+                    LogUtil.d("ACT1016 - 팝업을 닫은후(ACT1015)  호출할 function 이름");
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("callScript", "");   // 팝업을 닫은후(ACT1015)  호출할 function 이름
+                    jsonObject.put("callObj", "");      // 메인 web 페이지에 넘길 파라메터
 
-                    intent = new Intent(MainActivity.this, YoutubeActivity.class);
-                    if(actionParamObj.has("liveTitle") && actionParamObj.has("liveDesc")) {
-                        intent.putExtra("liveTitle", actionParamObj.getString("liveTitle"));        // 방송 타이틀
-                        intent.putExtra("liveDesc", actionParamObj.getString("liveDesc"));          // 방송 설명글
-                    }
-                    startActivityForResult(intent, Constants.REQUEST_YOUTUBE);
+                    executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
                 }
                 // 앱종료
                 else if ("ACT1018".equals(actionCode)) {
@@ -1014,30 +951,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        @JavascriptInterface
-        public void purchase(String orderId, String productId, String productName, double price, int quantity, String currencyCode, String category){
-
-//            try {
-//                ArrayList productModelArrayList = new ArrayList<>();
-//
-//                AdBrixRm.CommerceProductModel productModel =
-//                        new AdBrixRm.CommerceProductModel().setProductID(productId)
-//                                .setProductName(productName)
-//                                .setCategory(new AdBrixRm.CommerceCategoriesModel().setCategory(category))
-//                                .setPrice(price)
-//                                .setQuantity(quantity)
-//                                .setCurrency(AdBrixRm.Currency.getCurrencyByCurrencyCode(currencyCode));
-//
-//                productModelArrayList.add(productModel);
-//                AdBrixRm.Common.purchase(orderId, productModelArrayList, 0.00, 0.00, AdBrixRm.CommercePaymentMethod.CreditCard);
-//
-//            }catch (Exception e){
-//            }
         }
 
         @JavascriptInterface
@@ -1074,7 +991,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void executeJavascript(String script) {
-        if (this.wv == null) {
+        if (mWebView == null) {
             return;
         }
         final String excuteScript = EtcUtil.EscapeJavaScriptFunctionParameter(script);
@@ -1091,9 +1008,9 @@ public class MainActivity extends AppCompatActivity {
                 LogUtil.i("<<executeJavascript>>    " + formattedScript);
                 // Build.VERSION_CODES.KITKAT
                 if (Build.VERSION.SDK_INT < 19) {
-                    MainActivity.this.wv.loadUrl(formattedScript);
+                    mWebView.loadUrl(formattedScript);
                 } else {
-                    MainActivity.this.wv.evaluateJavascript(formattedScript, new ValueCallback<String>() {
+                    mWebView.evaluateJavascript(formattedScript, new ValueCallback<String>() {
                         @Override
                         public void onReceiveValue(String value) {
                             LogUtil.d("<<onReceiveValue>>    " + value);
@@ -1106,8 +1023,8 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (this.wv.canGoBack()) {
-                this.wv.goBack();
+            if (mWebView.canGoBack()) {
+                mWebView.goBack();
                 return true;
             }
         }
@@ -1120,7 +1037,10 @@ public class MainActivity extends AppCompatActivity {
         mBackPressCloseHandler.onBackPressed();
     }
 
-
+    /**
+     * For NicePay
+     * 계좌이체 결과값을 받아와 오류시 해당 메세지를, 성공시에는 결과 페이지를 호출한다.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -1128,7 +1048,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d("SeongKwon", "requestCode = " + requestCode);
         Log.d("SeongKwon", "resultCode = " + resultCode);
         Log.d("SeongKwon", "============================================");
-        if ((requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) && resultCode == RESULT_OK) {
+        if(Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+            return;
+        } else if ((requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) && resultCode == RESULT_OK) {
             String result = "";
             try {
                 JSONObject jObj = new JSONObject();
@@ -1138,7 +1060,6 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList<Image> selectedImages = (ArrayList<Image>) data.getExtras().get(Constants.INTENT_EXTRA_IMAGES);
                 for (int i = 0; i < selectedImages.size(); i++) {
                     JSONObject jObjItem = new JSONObject();
-                    Log.d("SeongKwon", selectedImages.get(i).path);
 
                     // 회전
                     Matrix matrix = new Matrix();
@@ -1170,6 +1091,7 @@ public class MainActivity extends AppCompatActivity {
             }
             executeJavascript(mCallback + "(" + result + ")");
         } else if (requestCode == Constants.REQUEST_ADD_IMAGE && resultCode == RESULT_OK) {
+            Log.d("SeongKwon", "!!!!!!!!!!!!!!!!!!! = Constants.REQUEST_ADD_IMAGE = " + Constants.REQUEST_ADD_IMAGE);
             try {
                 JSONObject jObj = new JSONObject();
                 jObj.put("resultcd", "0");              // 변경사항 있을경우 : 1, 없을경우 : 0 // 이전[0:성공. 1:실패]
@@ -1221,38 +1143,19 @@ public class MainActivity extends AppCompatActivity {
                 super.onActivityResult(requestCode, resultCode, data);
                 return;
             }
-            Log.e("SeongKwon", getResultUri(data).toString());
-            Uri[] results = new Uri[]{getResultUri(data)};
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (data == null)
+                    data = new Intent();
+                if (data.getData() == null)
+                    data.setData(mCapturedImageURI);
 
-            mFilePathCallback.onReceiveValue(results);
-            mFilePathCallback = null;
-        } else if(requestCode == Constants.REQUEST_YOUTUBE) {
-            if(data != null) {
-                String redirectUrl = "";
-                if(data.hasExtra("redirect")) {
-                    redirectUrl = data.getStringExtra("redirect");
-                }
-                if (!redirectUrl.equals("")) {
-                    this.wv.loadUrl(HNApplication.URL + redirectUrl);
-                } else {
-                    this.wv.loadUrl(HNApplication.URL);
-                }
-            }
-        } else if(requestCode == CallbackManagerImpl.RequestCodeOffset.Login.toRequestCode()) {
-            if (resultCode == RESULT_OK) {
-                callbackManager.onActivityResult(requestCode, resultCode, data);
+                mFilePathCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+                mFilePathCallback = null;
             } else {
-                // closeAndClearTokenInformation();
+                Uri[] results = new Uri[]{getResultUri(data)};
+                mFilePathCallback.onReceiveValue(results);
+                mFilePathCallback = null;
             }
-        } else {
-            // TODO 확인필요
-//            if (resultCode == RESULT_OK) {
-//                if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-//                    return;
-//                }
-//            } else {
-//
-//            }
         }
 
         if (data == null) return;
@@ -1265,25 +1168,25 @@ public class MainActivity extends AppCompatActivity {
 
             if ("091".equals(resCode)) {      //계좌이체 결제를 취소한 경우
                 AlertUtil.showConfirmDialog(this, "인증 오류", "계좌이체 결제를 취소하였습니다.");
-                this.wv.postUrl(MERCHANT_URL, null);
+                mWebView.postUrl(MERCHANT_URL, null);
             } else if ("060".equals(resCode)) {
                 AlertUtil.showConfirmDialog(this, "인증 오류", "타임아웃");
-                this.wv.postUrl(MERCHANT_URL, null);
+                mWebView.postUrl(MERCHANT_URL, null);
             } else if ("050".equals(resCode)) {
                 AlertUtil.showConfirmDialog(this, "인증 오류", "전자서명 실패");
-                this.wv.postUrl(MERCHANT_URL, null);
+                mWebView.postUrl(MERCHANT_URL, null);
             } else if ("040".equals(resCode)) {
                 AlertUtil.showConfirmDialog(this, "인증 오류", "OTP/보안카드 처리 실패");
-                this.wv.postUrl(MERCHANT_URL, null);
+                mWebView.postUrl(MERCHANT_URL, null);
             } else if ("030".equals(resCode)) {
                 AlertUtil.showConfirmDialog(this, "인증 오류", "인증모듈 초기화 오류");
-                this.wv.postUrl(MERCHANT_URL, null);
+                mWebView.postUrl(MERCHANT_URL, null);
             } else if ("000".equals(resCode)) { // 성공일 경우
                 String postData = "callbackparam2=" + BANK_TID + "&bankpay_code=" + resCode + "&bankpay_value=" + resVal;
                 // nice sample
-//                this.wv.postUrl(NICE_BANK_URL, EncodingUtils.getBytes(postData, "euc-kr"));
+//                mWebView.postUrl(NICE_BANK_URL, EncodingUtils.getBytes(postData, "euc-kr"));
                 try {
-                    this.wv.postUrl(NICE_BANK_URL, postData.getBytes("euc-kr"));
+                    mWebView.postUrl(NICE_BANK_URL, postData.getBytes("euc-kr"));
                 } catch (UnsupportedEncodingException e) {
                     System.out.println("Unsupported character set");
                 }
@@ -1348,7 +1251,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
                 //결제 초기 화면을 요청합니다.
-                MainActivity.this.wv.postUrl(MERCHANT_URL, null);
+                mWebView.postUrl(MERCHANT_URL, null);
 
             }
         });
@@ -1372,7 +1275,7 @@ public class MainActivity extends AppCompatActivity {
         d.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
-                MainActivity.this.wv.postUrl(MERCHANT_URL, null);
+                mWebView.postUrl(MERCHANT_URL, null);
             }
         });
         d.show();
@@ -1380,13 +1283,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void sendPushReceiveToServer(String pushUid) {
-        final String uid = pushUid;
-
         new Thread(new Runnable() {
             public void run() {
                 try {
                     JSONObject jObj = new JSONObject();
-                    jObj.put("pushUid", uid);
+                    jObj.put("pushUid", "");
                     mHNCommTran = new HNCommTran(new HNCommTranInterface() {
                         @Override
                         public void recvMsg(String tranCode, String params) {
@@ -1423,22 +1324,157 @@ public class MainActivity extends AppCompatActivity {
                     jObj.put("memberKey", HNSharedPreference.getSharedPreference(getApplicationContext(), "memberKey"));
                     jObj.put("pushKey", HNSharedPreference.getSharedPreference(getApplicationContext(), "pushtoken"));
                     jObj.put("deviceId", HNApplication.mDeviceId);
+
                     mHNCommTran = new HNCommTran(new HNCommTranInterface() {
                         @Override
                         public void recvMsg(String tranCode, String params) {
-                            if (tranCode.equals(HNApplication.URL + "/m/app/pushRegister.asp")) {
+                            if (tranCode.equals(HNApplication.PUSH_URL)) {
                                 LogUtil.e("recv pushRegister : " + tranCode + " : " + params);
                             }
                         }
                     });
-                    mHNCommTran.sendMsg(HNApplication.URL + "/m/app/pushRegister.asp", jObj);
-//                    mHNCommTran.sendMsg("http://www.momchall.com/m/app/pushRegister.asp", jObj);
+                    mHNCommTran.sendMsg(HNApplication.PUSH_URL, jObj);
                     return;
                 } catch (Exception localException) {
                     localException.printStackTrace();
                 }
             }
         }).start();
+    }
+
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+//                + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            LogUtil.e("checkPermission ContextCompat.checkSelfPermission");
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
+//                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.GET_ACCOUNTS)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale");
+                Snackbar.make(this.findViewById(android.R.id.content),
+                        "Please Grant Permissions to upload profile photo",
+                        Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    requestPermissions(
+                                            new String[]{
+                                                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                                    Manifest.permission.CAMERA,
+//                                                    Manifest.permission.CALL_PHONE,
+                                                    Manifest.permission.GET_ACCOUNTS,
+                                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                                    Manifest.permission.RECORD_AUDIO,
+                                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                            },
+                                            Constants.PERMISSIONS_MULTIPLE_REQUEST);
+                                }
+                            }
+                        }).show();
+            } else {
+                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale else");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    LogUtil.e("Build.VERSION.SDK_INT >= Build.VERSION_CODES.M requestPermissions");
+                    requestPermissions(
+                            new String[]{
+                                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.CAMERA,
+//                                    Manifest.permission.CALL_PHONE,
+                                    Manifest.permission.GET_ACCOUNTS,
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.RECORD_AUDIO,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                            },
+                            Constants.PERMISSIONS_MULTIPLE_REQUEST);
+                }
+            }
+        } else {
+            LogUtil.e("checkPermission ContextCompat.checkSelfPermission else");
+            // write your logic code if permission already granted
+            if (mCameraType == 5) {
+                startActivity(new Intent(MainActivity.this, CameraActivity.class));
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        LogUtil.e("onRequestPermissionsResult");
+        switch (requestCode) {
+            case Constants.PERMISSIONS_MULTIPLE_REQUEST:
+                LogUtil.e("Constants.PERMISSIONS_MULTIPLE_REQUEST");
+                if (grantResults.length > 0) {
+                    LogUtil.e("grantResults.length > 0");
+                    boolean cameraPermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeExternalFile = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean readExternalFile = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean audioPermission = grantResults[5] == PackageManager.PERMISSION_GRANTED;
+
+                    if (cameraPermission && audioPermission) {
+                        LogUtil.e("cameraPermission && audioPermission");
+                        if (mCameraType == 5) {
+                            startActivity(new Intent(MainActivity.this, CameraActivity.class));
+                        }
+                    } else if (cameraPermission && writeExternalFile && readExternalFile) {
+                        LogUtil.e("cameraPermission && writeExternalFile && readExternalFile");
+                        if (mLlPermission == null) return;
+                        mLlPermission.setVisibility(View.GONE);
+                    } else {
+                        LogUtil.e("cameraPermission && audioPermission else requestPermissions");
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                            requestPermissions(
+//                                    new String[]{
+//                                            Manifest.permission.READ_EXTERNAL_STORAGE,
+//                                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                                            Manifest.permission.CAMERA,
+//                                            Manifest.permission.CALL_PHONE,
+//                                            Manifest.permission.GET_ACCOUNTS,
+//                                            Manifest.permission.ACCESS_FINE_LOCATION,
+//                                            Manifest.permission.RECORD_AUDIO,
+//                                            Manifest.permission.ACCESS_COARSE_LOCATION
+//                                    },
+//                                    Constants.PERMISSIONS_MULTIPLE_REQUEST);
+//                        }
+                        LogUtil.e("Snackbar.make");
+                        Snackbar.make(this.findViewById(android.R.id.content),
+                                "Please Grant Permissions to upload profile photo",
+                                Snackbar.LENGTH_SHORT).setAction("ENABLE",
+                                new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                            requestPermissions(
+                                                    new String[]{
+                                                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                                                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                                            Manifest.permission.CAMERA,
+//                                                            Manifest.permission.CALL_PHONE,
+                                                            Manifest.permission.GET_ACCOUNTS,
+                                                            Manifest.permission.ACCESS_FINE_LOCATION,
+                                                            Manifest.permission.RECORD_AUDIO,
+                                                            Manifest.permission.ACCESS_COARSE_LOCATION
+                                                    },
+                                                    Constants.PERMISSIONS_MULTIPLE_REQUEST);
+                                        }
+                                    }
+                                }).show();
+                    }
+                }
+                break;
+        }
     }
 
     private void callQR() {
@@ -1457,6 +1493,8 @@ public class MainActivity extends AppCompatActivity {
         mIntegrator.initiateScan();
     }
 
+    ;
+
     // 사진촬영
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -1472,9 +1510,9 @@ public class MainActivity extends AppCompatActivity {
 
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this, "com.wavayo.soho.fileprovider", photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, Constants.REQUEST_SELECT_IMAGE_CAMERA);
+//                Uri providerURI = FileProvider.getUriForFile(this, getPackageName(), photoFile);
+//                takePictureIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, providerURI);
+//                startActivityForResult(takePictureIntent, Constants.REQUEST_SELECT_IMAGE_CAMERA);
             }
         }
     }
@@ -1500,12 +1538,50 @@ public class MainActivity extends AppCompatActivity {
                 storageDir      /* directory */
         );
 
+
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
 
-        Log.d("mCurrentPhotoPath", mCurrentPhotoPath);
+        Log.d("createImageFile()", "mCurrentPhotoPath = " + mCurrentPhotoPath);
+//        Toast.makeText(this, mCurrentPhotoPath, Toast.LENGTH_LONG).show();
 
         return image;
+    }
+
+    // 폴더삭제
+    private void deleteDir(String path) {
+        File file = new File(path);
+        File[] childFileList = file.listFiles();
+        for (File childFile : childFileList) {
+            if (childFile.isDirectory()) {
+                deleteDir(childFile.getAbsolutePath());    //하위 디렉토리 루프
+            } else {
+                childFile.delete();    //하위 파일삭제
+            }
+        }
+
+        file.delete();    //root 삭제
+    }
+
+    private String encodeImage(String path) {
+        File imagefile = new File(path);
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(imagefile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Bitmap bm = BitmapFactory.decodeStream(fis);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 75, baos);
+        byte[] b = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
+//        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+//        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+        //Base64.de
+        return encodedImage;
     }
 
     public boolean hasPermissions(Context context, String... permissions) {
@@ -1526,119 +1602,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                + ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                + ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-//                + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
-                + ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
-                + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
-//                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
-                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.GET_ACCOUNTS)
-                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-
-                Snackbar.make(this.findViewById(android.R.id.content),
-                        "Please Grant Permissions to upload profile photo",
-                        Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    requestPermissions(
-                                            new String[]{
-                                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                                                    Manifest.permission.CAMERA,
-//                                                    Manifest.permission.CALL_PHONE,
-                                                    Manifest.permission.GET_ACCOUNTS,
-                                                    Manifest.permission.ACCESS_FINE_LOCATION,
-                                                    Manifest.permission.ACCESS_COARSE_LOCATION
-                                            },
-                                            Constants.PERMISSIONS_MULTIPLE_REQUEST);
-                                }
-                            }
-                        }).show();
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(
-                            new String[]{
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                                    Manifest.permission.CAMERA,
-//                                    Manifest.permission.CALL_PHONE,
-                                    Manifest.permission.GET_ACCOUNTS,
-                                    Manifest.permission.ACCESS_FINE_LOCATION,
-                                    Manifest.permission.ACCESS_COARSE_LOCATION
-                            },
-                            Constants.PERMISSIONS_MULTIPLE_REQUEST);
-                }
-            }
-        } else {
-            // write your logic code if permission already granted
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case Constants.PERMISSIONS_MULTIPLE_REQUEST:
-                if (grantResults.length > 0) {
-                    boolean cameraPermission = grantResults[2] == PackageManager.PERMISSION_GRANTED;
-                    boolean writeExternalFile = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                    boolean readExternalFile = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-
-                    if (cameraPermission && writeExternalFile && readExternalFile) {
-                        // write your logic here
-                        mLlPermission.setVisibility(View.GONE);
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            requestPermissions(
-                                    new String[]{
-                                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                                            Manifest.permission.CAMERA,
-                                            Manifest.permission.CALL_PHONE,
-                                            Manifest.permission.GET_ACCOUNTS,
-                                            Manifest.permission.ACCESS_FINE_LOCATION,
-                                            Manifest.permission.ACCESS_COARSE_LOCATION
-                                    },
-                                    Constants.PERMISSIONS_MULTIPLE_REQUEST);
-                        }
-
-                        Snackbar.make(this.findViewById(android.R.id.content),
-                                "Please Grant Permissions to upload profile photo",
-                                Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
-                                new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                            requestPermissions(
-                                                    new String[]{
-                                                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                                                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                                                            Manifest.permission.CAMERA,
-//                                                            Manifest.permission.CALL_PHONE,
-                                                            Manifest.permission.GET_ACCOUNTS,
-                                                            Manifest.permission.ACCESS_FINE_LOCATION,
-                                                            Manifest.permission.ACCESS_COARSE_LOCATION
-                                                    },
-                                                    Constants.PERMISSIONS_MULTIPLE_REQUEST);
-                                        }
-                                    }
-                                }).show();
-                    }
-                }
-                break;
-        }
-    }
-
-    String getBase64String(Bitmap bitmap) {
+    private String getBase64String(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -1657,7 +1621,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            mProgressDialog = new ProgressDialog(MainActivity.this);
+            mProgressDialog = new ProgressDialog(mContext);
             mProgressDialog.setTitle("알림");
             mProgressDialog.setMessage("처리중입니다.\n잠시만 기다려 주세요.");
             mProgressDialog.show();
@@ -1693,13 +1657,14 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("SeongKwon", "isSelected = " + isSelected);
                     Log.d("SeongKwon", "=========================");
 
-                    if (file.exists()) {
+                    if (file.exists() && fname.contains(".jpg")) {
                         mSelectedImages.add(new Image(id, name, path, isSelected, -1));
                     }
                 }
 
                 try {
-                    result = UploadUtil.upload(MainActivity.this, HNApplication.URL + "/m/app/", mSelectedImages, param);
+                    result = UploadUtil.upload(mContext, HNApplication.UPLOAD_URL, mSelectedImages, param);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1722,7 +1687,7 @@ public class MainActivity extends AppCompatActivity {
             mProgressDialog.dismiss();
             Log.e("SeongKwon", s);
             if (s == null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
@@ -1737,7 +1702,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (s.equals("-1")) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
@@ -1753,7 +1718,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    Uri getResultUri(Intent data) {
+    private Uri getResultUri(Intent data) {
         Uri result = null;
         if(data == null || TextUtils.isEmpty(data.getDataString())) {
             // If there is not data, then we may have taken a photo
@@ -1773,6 +1738,17 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
+    public boolean isServiceRunningCheck(String serviceName) {
+        ActivityManager manager = (ActivityManager) this.getSystemService(Activity.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            Log.d("SeongKwon", service.service.getClassName());
+            if (serviceName.equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //// ====================================================================== ////
     //// ====================================================================== ////
     ////                               SNS LOGIN                                ////
@@ -1781,38 +1757,50 @@ public class MainActivity extends AppCompatActivity {
 
     // 네이버 로그인
     public void callNaverLogin() {
-        mContext = (Context)MainActivity.this;
         mOAuthLoginModule = OAuthLogin.getInstance();
         mOAuthLoginModule.init(
                 mContext
-                , "8PkjRxaddGMrOMk7V8dh"        // 애플리케이션 등록 후 발급받은 클라이언트 아이디
-                , "BE6VTYDPXp"              // 애플리케이션 등록 후 발급받은 클라이언트 시크릿
+                , getString(R.string.naver_client_id)        // 애플리케이션 등록 후 발급받은 클라이언트 아이디
+                , getString(R.string.naver_client_secret)    // 애플리케이션 등록 후 발급받은 클라이언트 시크릿
                 , mContext.getResources().getString(R.string.app_name)     // 네이버 앱의 로그인 화면에 표시할 애플리케이션 이름. 모바일 웹의 로그인 화면을 사용할 때는 서버에 저장된 애플리케이션 이름이 표시됩니다.
                 //,OAUTH_CALLBACK_INTENT
                 // SDK 4.1.4 버전부터는 OAUTH_CALLBACK_INTENT변수를 사용하지 않습니다.
         );
-        mOAuthLoginModule.startOauthLoginActivity(MainActivity.this, mNaverOAuthHandler);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable(){
+                    @Override
+                    public void run() {
+                        mOAuthLoginModule.startOauthLoginActivity(MainActivity.this, mOAuthLoginHandler);
+                    }
+                });
+            }
+        }).start();
     }
 
     /**
      * OAuthLoginHandler를 startOAuthLoginActivity() 메서드 호출 시 파라미터로 전달하거나 OAuthLoginButton
      객체에 등록하면 인증이 종료되는 것을 확인할 수 있습니다.
      */
-    private class NaverOAuthHandler extends OAuthLoginHandler {
+    private OAuthLoginHandler mOAuthLoginHandler = new OAuthLoginHandler() {
         @Override
-        public void run(boolean success) {
+        public void run(final boolean success) {
             if (success) {
-                String accessToken = mOAuthLoginModule.getAccessToken(mContext);
+                final String accessToken = mOAuthLoginModule.getAccessToken(mContext);
                 String refreshToken = mOAuthLoginModule.getRefreshToken(mContext);
                 long expiresAt = mOAuthLoginModule.getExpiresAt(mContext);
                 String tokenType = mOAuthLoginModule.getTokenType(mContext);
             } else {
                 String errorCode = mOAuthLoginModule.getLastErrorCode(mContext).getCode();
                 String errorDesc = mOAuthLoginModule.getLastErrorDesc(mContext);
+                Toast.makeText(mContext, "errorCode:" + errorCode + ", errorDesc:" + errorDesc, Toast.LENGTH_SHORT).show();
             }
+
+            SendMassgeHandler mMainHandler = new SendMassgeHandler();
             if(mMainHandler != null) {
                 Message msg = mMainHandler.obtainMessage();
-
                 msg.what = SEND_NAVER_MESSAGE;
                 if (success) {
                     msg.arg1 = 1;
@@ -1821,8 +1809,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 mMainHandler.sendMessage(msg);
             }
-        }
-    }
+        };
+    };
 
     private String NaverProfile(String accessToken) {
         String header = "Bearer " + accessToken; // Bearer 다음에 공백 추가
@@ -1886,6 +1874,7 @@ public class MainActivity extends AppCompatActivity {
 
                         try {
                             // 네이버 프로필 정보 요청
+//                            new NaverProfile().execute(accessToken);
                             new Thread() {
                                 public void run() {
                                     NaverProfile(accessToken);
@@ -1920,11 +1909,8 @@ public class MainActivity extends AppCompatActivity {
         // 로그인에 성공한 상태
         @Override
         public void onSessionOpened() {
-            // requestMe();
             try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("accessToken", Session.getCurrentSession().getAccessToken());      // getAccessToken
-                executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
+                requestMe();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1934,71 +1920,46 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onSessionOpenFailed(KakaoException exception) {
             Log.e("SessionCallback :: ", "onSessionOpenFailed : " + exception.getMessage());
+            Toast.makeText(MainActivity.this, "로그인 실패 원인 : " + exception.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         // 사용자 정보 요청
-
-        public void requestMe() {
+        private void requestMe() {
             // 사용자정보 요청 결과에 대한 Callback
-            UserManagement.getInstance().requestMe(new MeResponseCallback() {
-                // 세션 오픈 실패. 세션이 삭제된 경우,
+            UserManagement.getInstance().me(new MeV2ResponseCallback() {
                 @Override
                 public void onSessionClosed(ErrorResult errorResult) {
-                    Log.e("SeongKwon", "SessionCallback :: onSessionClosed : " + errorResult.getErrorMessage());
+                    Log.d("SeongKwon", "SessionCallback :: onSessionClosed : " + errorResult.getErrorMessage());
+                    Toast.makeText(MainActivity.this, "로그인 실패 원인 onSessionClosed : " + errorResult.getErrorMessage(), Toast.LENGTH_LONG).show();
                 }
 
-                // 회원이 아닌 경우,
                 @Override
-                public void onNotSignedUp() {
-                    Log.e("SessionCallback :: ", "onNotSignedUp");
-                }
+                public void onSuccess(MeV2Response result) {
+                    Log.d("SeongKwon", "SessionCallback :: onSuccess");
+                    Toast.makeText(MainActivity.this, "로그인 성공", Toast.LENGTH_LONG).show();
+                    try {
+                        String email = result.getKakaoAccount().getEmail();
+                        String nickname = result.getNickname();
+                        String profileImagePath = result.getProfileImagePath();
+                        String thumnailPath = result.getThumbnailImagePath();
+                        long id = result.getId();
 
-                // 사용자정보 요청에 성공한 경우,
-                @Override
-                public void onSuccess(UserProfile userProfile) {
-                    Log.e("SeongKwon", "SessionCallback :: onSuccess");
+                        JSONObject jsonAccount = new JSONObject();
+                        jsonAccount.put("email", email);
+                        jsonAccount.put("nickname", nickname);
+                        jsonAccount.put("profileImagePath", profileImagePath);
+                        jsonAccount.put("thumnailPath", thumnailPath);
+                        jsonAccount.put("id", id);
+                        Log.e("SeongKwon", "jsonAccount : " + jsonAccount.toString());
 
-                    String nickname = userProfile.getNickname();
-                    String email = userProfile.getEmail();
-                    String profileImagePath = userProfile.getProfileImagePath();
-                    String thumnailPath = userProfile.getThumbnailImagePath();
-                    String UUID = userProfile.getUUID();
-                    long id = userProfile.getId();
-
-                    Log.e("SeongKwon", "nickname : " + nickname);
-                    Log.e("SeongKwon", "email : " + email);
-                    Log.e("SeongKwon", "profileImagePath : " + profileImagePath);
-                    Log.e("SeongKwon", "thumnailPath : " + thumnailPath);
-                    Log.e("SeongKwon", "UUID : " + UUID);
-                    Log.e("SeongKwon", "id : " + id);
-
-                    mKakaoMessage = "nickname = " + nickname + "\n";
-                    mKakaoMessage += "email = " + email + "\n";
-                    mKakaoMessage += "profileImagePath = " + profileImagePath + "\n";
-                    mKakaoMessage += "thumnailPath = " + thumnailPath + "\n";
-                    mKakaoMessage += "UUID = " + UUID + "\n";
-                    mKakaoMessage += "id = " + id + "\n";
-
-                    (MainActivity.this).runOnUiThread(new Runnable(){
-                        @Override
-                        public void run() {
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                            alertDialogBuilder.setTitle("알림");
-                            alertDialogBuilder.setMessage(mKakaoMessage)
-                                    .setPositiveButton("확인" , new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {}
-                                    })
-                                    .setCancelable(false)
-                                    .create().show();
-                        }
-                    });
-                }
-
-                // 사용자 정보 요청 실패
-                @Override
-                public void onFailure(ErrorResult errorResult) {
-                    Log.e("SeongKwon", "SessionCallback :: onFailure : " + errorResult.getErrorMessage());
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("accessToken", Session.getCurrentSession().getAccessToken());      // getAccessToken
+                        jsonObject.put("userInfo", jsonAccount);      // 사용자정보
+                        executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
+                    } catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "로그인 성공했지만 파싱 실패 원인 : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }
                 }
             });
         }
@@ -2012,12 +1973,10 @@ public class MainActivity extends AppCompatActivity {
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d("SeongKwon", "====================================2");
                 Log.d("SeongKwon", "onSuccess - getAccessToken : " + loginResult.getAccessToken().getToken());
                 Log.d("SeongKwon", "onSuccess - getUserId : " + loginResult.getAccessToken().getUserId());
                 Log.d("SeongKwon", "onSuccess - getExpires : " + loginResult.getAccessToken().getExpires());
                 Log.d("SeongKwon", "onSuccess - getLastRefresh : " + loginResult.getAccessToken().getLastRefresh());
-                Log.d("SeongKwon", "====================================3");
 
                 // getFbInfo();
                 try {
@@ -2067,10 +2026,10 @@ public class MainActivity extends AppCompatActivity {
 
                             mFacebookMessage += "fb_json_object = " + object + "\n";
 
-                            (MainActivity.this).runOnUiThread(new Runnable(){
+                            runOnUiThread(new Runnable(){
                                 @Override
                                 public void run() {
-                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
                                     alertDialogBuilder.setTitle("알림");
                                     alertDialogBuilder.setMessage(mFacebookMessage)
                                             .setPositiveButton("확인" , new DialogInterface.OnClickListener() {
