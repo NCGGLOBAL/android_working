@@ -21,8 +21,8 @@ public class HNApplication extends Application {
     private RequestQueue mRequestQueue;
 
     public static boolean mSigned = false;
-    public static String URL = "https://metaceleb.com/default.asp";
-    public static String PUSH_URL = "https://metaceleb.mallup.co.kr/m/app/pushRegister.asp";
+    public static String URL = "https://metaceleb.com";
+    public static String PUSH_URL = URL + "/m/app/pushRegister.asp";
     public static String UPLOAD_URL = URL + "/m/app/";
     public static boolean mIsFirstLoading = false;
     private static HNApplication mInstance;
