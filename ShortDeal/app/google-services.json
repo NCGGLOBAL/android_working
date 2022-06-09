@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "947386890128",
+    "project_id": "shortdeal-bd3f7",
+    "storage_bucket": "shortdeal-bd3f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:947386890128:android:c771a6c68b35d85c6da515",
+        "android_client_info": {
+          "package_name": "com.creator.shortdeal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "947386890128-rv2j6fsc8k7tsnae6vo3i6th8i6uve9v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANheUupr9Z_m1YAxbV3z0eFu0N7SUfZGg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "947386890128-rv2j6fsc8k7tsnae6vo3i6th8i6uve9v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
