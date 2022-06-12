@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "311763945961",
+    "project_id": "podoalglobal",
+    "storage_bucket": "podoalglobal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311763945961:android:8b659cb759643e78ba2378",
+        "android_client_info": {
+          "package_name": "com.creator.podoalglobal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "311763945961-uiqkkbst77h55jf0jrrmc5bplmg3j5p7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0Q3Ift9K62sQ5WS5QSy_8sr6ox7Oi5NQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "311763945961-uiqkkbst77h55jf0jrrmc5bplmg3j5p7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
