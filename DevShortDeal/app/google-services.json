@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "678778767898",
+    "project_id": "devshortdeal",
+    "storage_bucket": "devshortdeal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:678778767898:android:180c0aa0c30ea6947d5fa3",
+        "android_client_info": {
+          "package_name": "com.creator.devshortdeal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "678778767898-6ccvigi19lfaao9epktcqd68oomsmdtq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_5-vpdUQWJP6L35DkxSASQTlrWWVxGGg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "678778767898-6ccvigi19lfaao9epktcqd68oomsmdtq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
