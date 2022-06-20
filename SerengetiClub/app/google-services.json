@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "879358894066",
+    "project_id": "serengeticlub-1c102",
+    "storage_bucket": "serengeticlub-1c102.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879358894066:android:1eaa3674022039a5ced56b",
+        "android_client_info": {
+          "package_name": "com.creator.serengeticlub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "879358894066-0f4hjl8t6cgf4dp1hqqri2a8gbd58i0l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYdg6Hvtc5dKx4qGgTaIb-3p7ZmT6xGko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "879358894066-0f4hjl8t6cgf4dp1hqqri2a8gbd58i0l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
