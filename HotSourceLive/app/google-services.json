@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "798917483836",
+    "project_id": "hotsourcelive",
+    "storage_bucket": "hotsourcelive.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798917483836:android:723f312f217408e33a5239",
+        "android_client_info": {
+          "package_name": "com.creator.hotsourcelive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798917483836-miipm235qbfd0euli3loi89hneblvip5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdEOL8d4mZ2TUCuUwl02NedvObqhGv72A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798917483836-miipm235qbfd0euli3loi89hneblvip5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
