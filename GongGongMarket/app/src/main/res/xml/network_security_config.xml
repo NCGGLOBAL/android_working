@@ -6,6 +6,7 @@
 
         <domain includeSubdomains="true">modookot.co.kr</domain>
         <domain includeSubdomains="true">kspay.ksnet.to</domain>
+        <domain includeSubdomains="true">mobile.vpay.co.kr</domain>
 
     </domain-config>
 
