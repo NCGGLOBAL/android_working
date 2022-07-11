@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "683086493186",
+    "project_id": "gachihomeshopping",
+    "storage_bucket": "gachihomeshopping.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:683086493186:android:8a8b12de072334c889d91b",
+        "android_client_info": {
+          "package_name": "com.creator.gachimoa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "683086493186-4jv6358o0emstrekbv5ihoa4oi0irdj6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXPCquyh-A_5B0JNskaaw_0Y67YzIDih0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "683086493186-4jv6358o0emstrekbv5ihoa4oi0irdj6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
