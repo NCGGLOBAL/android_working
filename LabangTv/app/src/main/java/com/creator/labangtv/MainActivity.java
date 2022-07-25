@@ -250,6 +250,16 @@ public class MainActivity extends AppCompatActivity {
             }
 //            Log.e("jj", "mLandingUrl : " + mLandingUrl);
 
+//            if (intent != null) {
+//                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
+//                    if (!intent.getStringExtra("url").equals("")) {
+//                        mPushUid = intent.getStringExtra("pushUid");
+//                        mLandingUrl = intent.getStringExtra("url");
+//                        sendPushReceiveToServer(mPushUid);
+//                    }
+//                }
+//            }
+
             // permission 체크 - 최초실행
             if (HNSharedPreference.getSharedPreference(getApplicationContext(), "isPermissionCheck").equals("")) {
                 HNSharedPreference.putSharedPreference(getApplicationContext(), "isPermissionCheck", "1");

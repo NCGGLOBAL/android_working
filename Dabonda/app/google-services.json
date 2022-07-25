@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "100532966563",
+    "project_id": "dabonda-3b727",
+    "storage_bucket": "dabonda-3b727.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100532966563:android:d2f31e3b6ee4ded4af9b16",
+        "android_client_info": {
+          "package_name": "com.creator.dabonda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "100532966563-ogbmd0ad0ldil436ma1v2r5c91h7o3ov.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoeXtZytXL7-99DDfQg45XAhvWcBBaBeQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "100532966563-ogbmd0ad0ldil436ma1v2r5c91h7o3ov.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
