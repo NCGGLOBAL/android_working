@@ -400,6 +400,7 @@ public class MainActivity extends AppCompatActivity {
         this.wv.getSettings().setSupportZoom(true);
         this.wv.getSettings().setDisplayZoomControls(true);
         this.wv.getSettings().setBuiltInZoomControls(true);
+        this.wv.getSettings().setTextZoom(100);
 
         // setSavePassword - default false in android 4.4 and above
         // setPluginState - use plugin deprecate
