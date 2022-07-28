@@ -429,8 +429,8 @@ public class MainActivity extends AppCompatActivity {
         extraHeaders.put("webview-type", "main");
         if (!mLandingUrl.equals("")) {
             this.wv.loadUrl(mLandingUrl, extraHeaders);
-        } else if (!mSchemeUrl.equals("")) {
-            this.wv.loadUrl("https://www.benecia.com", extraHeaders);
+//        } else if (!mSchemeUrl.equals("")) {
+//            this.wv.loadUrl("https://www.benecia.com", extraHeaders);
         } else {
             this.wv.loadUrl(HNApplication.URL, extraHeaders);
             mLandingUrl = "";
