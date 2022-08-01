@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -263,8 +264,18 @@ public class MainActivity extends AppCompatActivity {
             // WebView 초기화
             initWebView();
 
+            resetBadgeCounterOfPushMessages();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void resetBadgeCounterOfPushMessages() {
+        NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (notificationManager != null) {
+                notificationManager.cancelAll();
+            }
         }
     }
 
