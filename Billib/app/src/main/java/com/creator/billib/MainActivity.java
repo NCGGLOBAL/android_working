@@ -518,7 +518,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            // LogUtil.e("shouldOverrideUrlLoading : " + url);
+            LogUtil.e("shouldOverrideUrlLoading : " + url);
 
             Uri uri = Uri.parse(url);
 
@@ -638,6 +638,7 @@ public class MainActivity extends AppCompatActivity {
                     || url.contains("droidx3web://")
                     || url.contains("kakaopay")
                     || url.contains("naversearchapp://")
+                    || url.contains("kakaotalk://")
                     || url.contains("http://m.ahnlab.com/kr/site/download"))) {
                 try {
                     try {
