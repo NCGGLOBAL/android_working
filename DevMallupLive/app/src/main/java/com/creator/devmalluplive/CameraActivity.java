@@ -2,6 +2,7 @@ package com.creator.devmalluplive;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,7 +20,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -36,6 +36,7 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.creator.devmalluplive.common.HNApplication;
+import com.creator.devmalluplive.delegator.HNSharedPreference;
 import com.creator.devmalluplive.helpers.Constants;
 import com.creator.devmalluplive.models.Image;
 import com.creator.devmalluplive.util.BitmapUtil;
@@ -393,8 +394,37 @@ public class CameraActivity extends Activity {
         }
 
         @Override
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-            handler.proceed();
+        public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
+            if (HNSharedPreference.getSharedPreference(CameraActivity.this, "isFirstLive").equals("")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
+
+                builder.setTitle("라이브 방송을 시작 하시겠습니까?");
+
+                builder.setPositiveButton("예", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        handler.proceed();
+                        HNSharedPreference.putSharedPreference(CameraActivity.this, "isFirstLive", "Y");
+                    }
+                });
+
+                builder.setNegativeButton("아니오", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        handler.cancel();
+                        HNSharedPreference.putSharedPreference(CameraActivity.this, "isFirstLive", "");
+                        finish();
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+            } else  {
+                handler.proceed();
+            }
         }
 
         @Override

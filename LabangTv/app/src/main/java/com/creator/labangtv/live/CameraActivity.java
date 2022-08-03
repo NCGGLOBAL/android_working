@@ -432,28 +432,30 @@ public class CameraActivity extends Activity {
             if (HNSharedPreference.getSharedPreference(CameraActivity.this, "isFirstLive").equals("")) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
 
-                builder.setTitle("라이브방송으로 이동하시겠습니까?");
+                builder.setTitle("라이브 방송을 시작 하시겠습니까?");
 
                 builder.setPositiveButton("예", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int id)
                     {
                         handler.proceed();
+                        HNSharedPreference.putSharedPreference(CameraActivity.this, "isFirstLive", "Y");
                     }
                 });
 
-                builder.setNegativeButton("아니요", new DialogInterface.OnClickListener(){
+                builder.setNegativeButton("아니오", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int id)
                     {
                         handler.cancel();
+                        HNSharedPreference.putSharedPreference(CameraActivity.this, "isFirstLive", "");
+                        finish();
                     }
                 });
 
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
 
-                HNSharedPreference.putSharedPreference(CameraActivity.this, "isFirstLive", "Y");
             } else  {
                 handler.proceed();
             }
