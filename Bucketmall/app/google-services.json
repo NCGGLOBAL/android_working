@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "664757490334",
+    "project_id": "bucketmall",
+    "storage_bucket": "bucketmall.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664757490334:android:1eb967823c68820aef218f",
+        "android_client_info": {
+          "package_name": "com.creator.bucketmall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "664757490334-28bjm6jfgj33bi9tc0gpfs7hkppct23u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsTXHN9rklCC5Kkx_9UgxsEWJ3R4lRu9A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "664757490334-28bjm6jfgj33bi9tc0gpfs7hkppct23u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
