@@ -6,8 +6,8 @@ android {
         applicationId "com.creator.stylev"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 3
-        versionName "1.0.2"
+        versionCode 4
+        versionName "1.0.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -86,6 +86,10 @@ dependencies {
     implementation 'com.ksyun.media:libksylive-java:3.0.0'
     implementation 'com.ksyun.media:libksylive-armv7a:3.0.0'
     implementation 'com.ksyun.media:libksylive-arm64:3.0.0'
+
+    implementation 'com.google.android.gms:play-services:12.0.1'
+    implementation 'com.google.android.gms:play-services-location:12.0.1'
+    implementation 'com.google.android.gms:play-services-auth:12.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
