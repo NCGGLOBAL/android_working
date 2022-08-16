@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -43,6 +44,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private String mPushUid = "";
     private String mLandingUrl = "";
     private String mImgUrl = "";
+    private String mPushType = "default";
 
     /**
      * Called when message is received.
@@ -79,6 +81,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             if(remoteMessage.getData().containsKey("imgUrl")) {
                 mImgUrl = remoteMessage.getData().get("imgUrl");
+            }
+
+            if (remoteMessage.getData().containsKey("push_type")) {
+                mPushType = remoteMessage.getData().get("push_type");
             }
 
             if (/* Check if data needs to be processed by long running job */ true) {
@@ -188,6 +194,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 // Creates an explicit intent for an Activity in your app
                 Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                if (mPushType.equals("sushic")) {
+                    defaultSoundUri = Uri.parse("android.resource://"
+                            + ctx.getPackageName() + "/" + R.raw.push_sound);
+                }
                 Notification.Builder notificationBuilder = null;
                 LogUtil.d(TAG, "Message Notification 3");
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -197,6 +207,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             .setLargeIcon(BitmapFactory.decodeResource(ctx.getResources(), R.mipmap.ic_launcher))
                             .setContentTitle(title)
                             .setContentText(message)
+                            .setSound(defaultSoundUri)
                             .setAutoCancel(true)
                             .setContentIntent(pendingIntent);
                     if (result != null) {
@@ -225,6 +236,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             .setSound(defaultSoundUri)
                             .setContentIntent(pendingIntent);
                 }
+                Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), defaultSoundUri);
+                ringtone.play();
                 getManager(ctx).notify(0 /* ID of notification */, notificationBuilder.build());
             } catch (Exception e) {
                 e.printStackTrace();
