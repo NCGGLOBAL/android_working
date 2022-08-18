@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "980188893404",
+    "project_id": "officeroom-5b18e",
+    "storage_bucket": "officeroom-5b18e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:980188893404:android:eb44a4786321fd2b972419",
+        "android_client_info": {
+          "package_name": "com.mallup.officeroom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "980188893404-upofecusl68ba8cpsqt3m32h7ku154tf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_r7jZXUBBO0Xz6wMzrGu0GpOjV5Ij-6M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "980188893404-upofecusl68ba8cpsqt3m32h7ku154tf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
