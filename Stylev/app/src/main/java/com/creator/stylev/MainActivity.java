@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 Log.e(TAG, "퍼미션 체크 완료 상태");
-//                setLocation();
+                setLocation();
             }
 
             // WebView 초기화
