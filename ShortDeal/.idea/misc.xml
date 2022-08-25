@@ -4,10 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.17291666666666666" />
+        <entry key="app/src/main/res/drawable/ic_close.xml" value="0.2415" />
         <entry key="app/src/main/res/layout/activity_camera.xml" value="0.19655797101449277" />
+        <entry key="app/src/main/res/layout/activity_image_edit.xml" value="0.20625" />
         <entry key="app/src/main/res/layout/activity_image_select.xml" value="0.20606884057971014" />
+        <entry key="app/src/main/res/layout/activity_navi_webview.xml" value="0.20364583333333333" />
         <entry key="app/src/main/res/layout/activity_select_image_method.xml" value="0.20606884057971014" />
+        <entry key="app/src/main/res/layout/activity_webview.xml" value="0.20364583333333333" />
         <entry key="app/src/main/res/layout/toolbar.xml" value="0.20606884057971014" />
+        <entry key="app/src/main/res/menu/menu_contextual_action_bar.xml" value="0.20625" />
+        <entry key="app/src/main/res/menu/menu_nav_action_bar.xml" value="0.23541666666666666" />
       </map>
     </option>
   </component>
