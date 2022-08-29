@@ -11,6 +11,7 @@
         <domain includeSubdomains="true">ncg.codewiz.kr</domain>
         <domain includeSubdomains="true">dthumb.phinf.naver.net</domain>
         <domain includeSubdomains="true">wvy.me</domain>
+        <domain includeSubdomains="true">naver.com</domain>
 
     </domain-config>
 
