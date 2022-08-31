@@ -518,6 +518,7 @@ public class WebViewActivity extends Activity {
                     || url.contains("droidx3web://")
                     || url.contains("kakaopay")
                     || url.contains("naversearchapp://")
+                    || url.contains("ec.shopping7.com.tw")
                     || url.contains("http://m.ahnlab.com/kr/site/download"))) {
                 try {
                     try {
@@ -530,21 +531,28 @@ public class WebViewActivity extends Activity {
                     }
 
                     if (url.startsWith("intent")) { //chrome πˆ¡Ø πÊΩƒ
-
-                        if (getPackageManager().resolveActivity(intent, 0) == null) {
-                            String packagename = intent.getPackage();
-                            if (packagename != null) {
-                                uri = Uri.parse("market://search?q=pname:" + packagename);
+                        if( Build.VERSION.SDK_INT < Build.VERSION_CODES.R ) {
+                            if( getPackageManager().resolveActivity(intent,0) == null ) {
+                                String pkgName = intent.getPackage();
+                                if( pkgName != null ) {
+                                    uri = Uri.parse("market://search?q=pname:" + pkgName);
+                                    intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    startActivity(intent);
+                                }
+                            } else {
+                                uri = Uri.parse(intent.getDataString());
                                 intent = new Intent(Intent.ACTION_VIEW, uri);
                                 startActivity(intent);
-                                return true;
+                            }
+                        } else {
+                            try {
+                                startActivity(intent);
+                            } catch (ActivityNotFoundException e) {
+                                uri = Uri.parse("market://search?q=pname:" + intent.getPackage());
+                                intent = new Intent(Intent.ACTION_VIEW, uri);
+                                startActivity(intent);
                             }
                         }
-
-                        uri = Uri.parse(intent.getDataString());
-                        intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-
                         return true;
                     } else { //±∏ πÊΩƒ
                         intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
