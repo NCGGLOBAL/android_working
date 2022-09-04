@@ -21,7 +21,7 @@ public class HNApplication extends Application {
     private RequestQueue mRequestQueue;
 
     public static boolean mSigned = false;
-    public static String URL = "http://dalnarashop.wavayo.com/m";
+    public static String URL = "https://lunatv.com.tw/m";
     public static String PUSH_URL = URL + "/app/pushRegister.asp";
     public static String UPLOAD_URL = URL + "/app/";
     public static boolean mIsFirstLoading = false;
