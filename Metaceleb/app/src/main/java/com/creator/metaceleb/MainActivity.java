@@ -895,7 +895,12 @@ public class MainActivity extends AppCompatActivity {
                     if (actionParamObj.has("url")) {
                         final String request_url = actionParamObj.getString("url");
                         LogUtil.d("url : " + request_url);
-                        intent = new Intent(mContext, WebViewActivity.class);
+                        int isNavi = actionParamObj.getInt("isNavi");
+                        if (isNavi == 1) {
+                            intent = new Intent(mContext, NaviWebViewActivity.class);
+                        } else {
+                            intent = new Intent(mContext, WebViewActivity.class);
+                        }
                         intent.putExtra("webviewUrl", request_url);
                         startActivity(intent);
                     }

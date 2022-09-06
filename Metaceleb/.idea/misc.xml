@@ -6,8 +6,10 @@
         <entry key="../../../../../../layout/custom_preview.xml" value="0.17291666666666666" />
         <entry key="app/src/main/res/layout/activity_camera.xml" value="0.19655797101449277" />
         <entry key="app/src/main/res/layout/activity_image_select.xml" value="0.20606884057971014" />
+        <entry key="app/src/main/res/layout/activity_navi_webview.xml" value="0.15841584158415842" />
         <entry key="app/src/main/res/layout/activity_select_image_method.xml" value="0.20606884057971014" />
         <entry key="app/src/main/res/layout/toolbar.xml" value="0.20606884057971014" />
+        <entry key="app/src/main/res/menu/menu_nav_action_bar.xml" value="0.18697916666666667" />
       </map>
     </option>
   </component>

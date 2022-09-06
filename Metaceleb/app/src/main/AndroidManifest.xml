@@ -44,6 +44,10 @@
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"/>
 
+        <activity android:name="com.creator.metaceleb.NaviWebViewActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"/>
+
         <activity android:name="com.creator.metaceleb.AlbumSelectActivity"
             android:screenOrientation="portrait"/>
         <activity
