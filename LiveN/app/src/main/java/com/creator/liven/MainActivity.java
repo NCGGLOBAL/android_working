@@ -238,17 +238,15 @@ public class MainActivity extends AppCompatActivity {
                 mPushUid = intent.getStringExtra("pushUid");
                 sendPushReceiveToServer(mPushUid);
             }
-            if (intent.getDataString() != null && !intent.getDataString().isEmpty()) {
-                String landingUri = intent.getDataString();
-//                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
-//                Log.e("jj", "landingUri : " + landingUri);
-                String splitUrl = landingUri.split("\\?")[1];
-//                Log.e("jj", "splitUrl : " + splitUrl);
-                splitUrl = splitUrl.split("=")[1];
-//                Log.e("jj", "splitUrl : " + splitUrl);
-                mLandingUrl = splitUrl;
+            if (intent != null) {
+                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
+                    if (!intent.getStringExtra("url").equals("")) {
+                        mPushUid = intent.getStringExtra("pushUid");
+                        mLandingUrl = intent.getStringExtra("url");
+                        sendPushReceiveToServer(mPushUid);
+                    }
+                }
             }
-//            Log.e("jj", "mLandingUrl : " + mLandingUrl);
 
             // permission 체크 - 최초실행
             if (HNSharedPreference.getSharedPreference(getApplicationContext(), "isPermissionCheck").equals("")) {
