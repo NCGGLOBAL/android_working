@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseMessaging mFirebaseMessaging;
     private String mPushUid = "";
     private String mLandingUrl = "";
+    private String currentUrl = "";
     private BackPressCloseHandler mBackPressCloseHandler;
     private IntentIntegrator mIntegrator;
     private int mCameraType = 0;
@@ -370,9 +371,11 @@ public class MainActivity extends AppCompatActivity {
         extraHeaders.put("webview-type", "main");
         if (!mLandingUrl.equals("")) {
             mWebView.loadUrl(mLandingUrl, extraHeaders);
+            currentUrl = mLandingUrl;
         } else {
             mWebView.loadUrl(HNApplication.URL, extraHeaders);
             mLandingUrl = "";
+            currentUrl = HNApplication.URL;
         }
     }
 
@@ -519,7 +522,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // LogUtil.e("shouldOverrideUrlLoading : " + url);
-
+            currentUrl = url;
             Uri uri = Uri.parse(url);
 
             Intent intent = null;
@@ -1023,10 +1026,13 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mWebView.canGoBack()) {
-                mWebView.goBack();
-                return true;
+            if (!currentUrl.contains("https://xn--ok1b32kpzm4mb.com/default.asp")) {
+                if (mWebView.canGoBack()) {
+                    mWebView.goBack();
+                    return true;
+                }
             }
+
         }
         return super.onKeyDown(keyCode, event);
     }
