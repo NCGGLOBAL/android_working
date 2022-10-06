@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "608732624225",
+    "project_id": "gollala-5fc02",
+    "storage_bucket": "gollala-5fc02.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:608732624225:android:65e7b61b7ff2c06bb2c120",
+        "android_client_info": {
+          "package_name": "com.creator.gollala"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "608732624225-gdejn5qsn5gfoi27opcejk47uvvrnl6o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1NHWjQt-tpR3IAJ__cPZIijB8LxlnWkw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "608732624225-gdejn5qsn5gfoi27opcejk47uvvrnl6o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
