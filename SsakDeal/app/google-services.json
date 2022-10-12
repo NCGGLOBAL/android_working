@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "560180636575",
+    "project_id": "ssakdeal-27f60",
+    "storage_bucket": "ssakdeal-27f60.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:560180636575:android:0a45b16370a42a2c2aabaa",
+        "android_client_info": {
+          "package_name": "com.creator.ssakdeal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "560180636575-58amok5u30gfot4krkr21ahibp5olaou.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuRiGPTHDvmmKwk_0DGTfXCAaZMRb_SvU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "560180636575-58amok5u30gfot4krkr21ahibp5olaou.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
