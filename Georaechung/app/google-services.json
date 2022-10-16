@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "936712406531",
+    "project_id": "georaechung-a7a1e",
+    "storage_bucket": "georaechung-a7a1e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:936712406531:android:0e531d98b47ba51cb6f036",
+        "android_client_info": {
+          "package_name": "com.mallup.georaechung"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "936712406531-jj23j4rn6cq52jqsj0po2g4tpu2damn9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-uY105jb0ZMWibB6RATZGO8ODouKd-pg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "936712406531-jj23j4rn6cq52jqsj0po2g4tpu2damn9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
