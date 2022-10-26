@@ -184,7 +184,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 intent.putExtra("pushUid", mPushUid);
                 intent.putExtra("url", mLandingUrl);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
+                PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0 /* Request code */, intent, PendingIntent.FLAG_IMMUTABLE);
 
                 // Creates an explicit intent for an Activity in your app
                 Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
