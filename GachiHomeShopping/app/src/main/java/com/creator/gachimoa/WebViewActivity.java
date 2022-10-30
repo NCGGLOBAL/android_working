@@ -77,8 +77,8 @@ import com.creator.gachimoa.util.LogUtil;
 import com.creator.gachimoa.util.NicePayUtility;
 import com.creator.gachimoa.util.RealPathUtil;
 import com.creator.gachimoa.util.UploadUtil;
-import com.nhn.android.naverlogin.OAuthLogin;
-import com.nhn.android.naverlogin.OAuthLoginHandler;
+//import com.nhn.android.naverlogin.OAuthLogin;
+//import com.nhn.android.naverlogin.OAuthLoginHandler;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -159,7 +159,7 @@ public class WebViewActivity extends Activity {
     private static final int SEND_KAKAO_MESSAGE = 1;
     private static final int SEND_FACEBOOK_MESSAGE = 2;
 
-    private static OAuthLogin mOAuthLoginModule;
+//    private static OAuthLogin mOAuthLoginModule;
 
     private CallbackManager callbackManager;
 
@@ -1590,60 +1590,60 @@ public class WebViewActivity extends Activity {
 
     // 네이버 로그인
     public void callNaverLogin() {
-        mOAuthLoginModule = OAuthLogin.getInstance();
-        mOAuthLoginModule.init(
-                mContext
-                , getString(R.string.naver_client_id)        // 애플리케이션 등록 후 발급받은 클라이언트 아이디
-                , getString(R.string.naver_client_secret)    // 애플리케이션 등록 후 발급받은 클라이언트 시크릿
-                , mContext.getResources().getString(R.string.app_name)     // 네이버 앱의 로그인 화면에 표시할 애플리케이션 이름. 모바일 웹의 로그인 화면을 사용할 때는 서버에 저장된 애플리케이션 이름이 표시됩니다.
-                //,OAUTH_CALLBACK_INTENT
-                // SDK 4.1.4 버전부터는 OAUTH_CALLBACK_INTENT변수를 사용하지 않습니다.
-        );
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable(){
-                    @Override
-                    public void run() {
-                        mOAuthLoginModule.startOauthLoginActivity(WebViewActivity.this, mOAuthLoginHandler);
-                    }
-                });
-            }
-        }).start();
+//        mOAuthLoginModule = OAuthLogin.getInstance();
+//        mOAuthLoginModule.init(
+//                mContext
+//                , getString(R.string.naver_client_id)        // 애플리케이션 등록 후 발급받은 클라이언트 아이디
+//                , getString(R.string.naver_client_secret)    // 애플리케이션 등록 후 발급받은 클라이언트 시크릿
+//                , mContext.getResources().getString(R.string.app_name)     // 네이버 앱의 로그인 화면에 표시할 애플리케이션 이름. 모바일 웹의 로그인 화면을 사용할 때는 서버에 저장된 애플리케이션 이름이 표시됩니다.
+//                //,OAUTH_CALLBACK_INTENT
+//                // SDK 4.1.4 버전부터는 OAUTH_CALLBACK_INTENT변수를 사용하지 않습니다.
+//        );
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                runOnUiThread(new Runnable(){
+//                    @Override
+//                    public void run() {
+//                        mOAuthLoginModule.startOauthLoginActivity(WebViewActivity.this, mOAuthLoginHandler);
+//                    }
+//                });
+//            }
+//        }).start();
     }
 
     /**
      * OAuthLoginHandler를 startOAuthLoginActivity() 메서드 호출 시 파라미터로 전달하거나 OAuthLoginButton
      객체에 등록하면 인증이 종료되는 것을 확인할 수 있습니다.
      */
-    private OAuthLoginHandler mOAuthLoginHandler = new OAuthLoginHandler() {
-        @Override
-        public void run(final boolean success) {
-            if (success) {
-                final String accessToken = mOAuthLoginModule.getAccessToken(mContext);
-                String refreshToken = mOAuthLoginModule.getRefreshToken(mContext);
-                long expiresAt = mOAuthLoginModule.getExpiresAt(mContext);
-                String tokenType = mOAuthLoginModule.getTokenType(mContext);
-            } else {
-                String errorCode = mOAuthLoginModule.getLastErrorCode(mContext).getCode();
-                String errorDesc = mOAuthLoginModule.getLastErrorDesc(mContext);
-                Toast.makeText(mContext, "errorCode:" + errorCode + ", errorDesc:" + errorDesc, Toast.LENGTH_SHORT).show();
-            }
-
-            SendMassgeHandler mMainHandler = new SendMassgeHandler();
-            if(mMainHandler != null) {
-                Message msg = mMainHandler.obtainMessage();
-                msg.what = SEND_NAVER_MESSAGE;
-                if (success) {
-                    msg.arg1 = 1;
-                } else {
-                    msg.arg1 = 0;
-                }
-                mMainHandler.sendMessage(msg);
-            }
-        };
-    };
+//    private OAuthLoginHandler mOAuthLoginHandler = new OAuthLoginHandler() {
+//        @Override
+//        public void run(final boolean success) {
+//            if (success) {
+//                final String accessToken = mOAuthLoginModule.getAccessToken(mContext);
+//                String refreshToken = mOAuthLoginModule.getRefreshToken(mContext);
+//                long expiresAt = mOAuthLoginModule.getExpiresAt(mContext);
+//                String tokenType = mOAuthLoginModule.getTokenType(mContext);
+//            } else {
+//                String errorCode = mOAuthLoginModule.getLastErrorCode(mContext).getCode();
+//                String errorDesc = mOAuthLoginModule.getLastErrorDesc(mContext);
+//                Toast.makeText(mContext, "errorCode:" + errorCode + ", errorDesc:" + errorDesc, Toast.LENGTH_SHORT).show();
+//            }
+//
+//            SendMassgeHandler mMainHandler = new SendMassgeHandler();
+//            if(mMainHandler != null) {
+//                Message msg = mMainHandler.obtainMessage();
+//                msg.what = SEND_NAVER_MESSAGE;
+//                if (success) {
+//                    msg.arg1 = 1;
+//                } else {
+//                    msg.arg1 = 0;
+//                }
+//                mMainHandler.sendMessage(msg);
+//            }
+//        };
+//    };
 
     private String NaverProfile(String accessToken) {
         String header = "Bearer " + accessToken; // Bearer 다음에 공백 추가
@@ -1688,46 +1688,46 @@ public class WebViewActivity extends Activity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case SEND_NAVER_MESSAGE :
-                    if(msg.arg1 == 1) {
-                        final String accessToken = mOAuthLoginModule.getAccessToken(mContext);
-                        String refreshToken = mOAuthLoginModule.getRefreshToken(mContext);
-                        long expiresAt = mOAuthLoginModule.getExpiresAt(mContext);
-                        String tokenType = mOAuthLoginModule.getTokenType(mContext);
-                        Log.e("SeongKwon" , "accessToken = " + accessToken);
-                        Log.e("SeongKwon" , "refreshToken = " + refreshToken);
-                        Log.e("SeongKwon" , "expiresAt = " + String.valueOf(expiresAt));
-                        Log.e("SeongKwon" , "tokenType = " + tokenType);
-                        Log.e("SeongKwon" , "state = " + mOAuthLoginModule.getState(mContext).toString());
-
-                        mNaverMessage = "accessToken = " + accessToken + "\n";
-                        mNaverMessage += "refreshToken = " + refreshToken + "\n";
-                        mNaverMessage += "expiresAt = " + expiresAt + "\n";
-                        mNaverMessage += "tokenType = " + tokenType + "\n";
-                        mNaverMessage += "state = " + mOAuthLoginModule.getState(mContext).toString() + "\n";
-
-                        try {
-                            // 네이버 프로필 정보 요청
-//                            new NaverProfile().execute(accessToken);
-                            new Thread() {
-                                public void run() {
-                                    NaverProfile(accessToken);
-                                }
-                            }.start();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        String errorCode = mOAuthLoginModule.getLastErrorCode(mContext).getCode();
-                        String errorDesc = mOAuthLoginModule.getLastErrorDesc(mContext);
-                        Log.e("SeongKwon" , "errorCode = " + errorCode);
-                        Log.e("SeongKwon" , "errorDesc = " + errorDesc);
-
-                        mNaverMessage += "errorCode = " + errorCode + "\n";
-                        mNaverMessage += "errorDesc = " + errorDesc + "\n";
-                        // 취소시 : errorCode = user_cancel
-                        // 취소시 : errorDesc = user_cancel
-                    }
-                    break;
+//                    if(msg.arg1 == 1) {
+//                        final String accessToken = mOAuthLoginModule.getAccessToken(mContext);
+//                        String refreshToken = mOAuthLoginModule.getRefreshToken(mContext);
+//                        long expiresAt = mOAuthLoginModule.getExpiresAt(mContext);
+//                        String tokenType = mOAuthLoginModule.getTokenType(mContext);
+//                        Log.e("SeongKwon" , "accessToken = " + accessToken);
+//                        Log.e("SeongKwon" , "refreshToken = " + refreshToken);
+//                        Log.e("SeongKwon" , "expiresAt = " + String.valueOf(expiresAt));
+//                        Log.e("SeongKwon" , "tokenType = " + tokenType);
+//                        Log.e("SeongKwon" , "state = " + mOAuthLoginModule.getState(mContext).toString());
+//
+//                        mNaverMessage = "accessToken = " + accessToken + "\n";
+//                        mNaverMessage += "refreshToken = " + refreshToken + "\n";
+//                        mNaverMessage += "expiresAt = " + expiresAt + "\n";
+//                        mNaverMessage += "tokenType = " + tokenType + "\n";
+//                        mNaverMessage += "state = " + mOAuthLoginModule.getState(mContext).toString() + "\n";
+//
+//                        try {
+//                            // 네이버 프로필 정보 요청
+////                            new NaverProfile().execute(accessToken);
+//                            new Thread() {
+//                                public void run() {
+//                                    NaverProfile(accessToken);
+//                                }
+//                            }.start();
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    } else {
+//                        String errorCode = mOAuthLoginModule.getLastErrorCode(mContext).getCode();
+//                        String errorDesc = mOAuthLoginModule.getLastErrorDesc(mContext);
+//                        Log.e("SeongKwon" , "errorCode = " + errorCode);
+//                        Log.e("SeongKwon" , "errorDesc = " + errorDesc);
+//
+//                        mNaverMessage += "errorCode = " + errorCode + "\n";
+//                        mNaverMessage += "errorDesc = " + errorDesc + "\n";
+//                        // 취소시 : errorCode = user_cancel
+//                        // 취소시 : errorDesc = user_cancel
+//                    }
+//                    break;
                 case SEND_KAKAO_MESSAGE :
                     Log.d("SeongKwon", "msg = " + msg.toString());
                     break;
