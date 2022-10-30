@@ -1,34 +1,154 @@
 {
   "project_info": {
-    "project_number": "608732624225",
-    "project_id": "gollala-5fc02",
-    "storage_bucket": "gollala-5fc02.appspot.com"
+    "project_number": "223660325758",
+    "firebase_url": "https://wise-prod.firebaseio.com",
+    "project_id": "wise-prod",
+    "storage_bucket": "wise-prod.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:608732624225:android:65e7b61b7ff2c06bb2c120",
+        "mobilesdk_app_id": "1:223660325758:android:1a8f3dbf781c1c2879512f",
         "android_client_info": {
-          "package_name": "com.creator.gollala"
+          "package_name": "com.wisefashion.agency"
         }
       },
       "oauth_client": [
         {
-          "client_id": "608732624225-gdejn5qsn5gfoi27opcejk47uvvrnl6o.apps.googleusercontent.com",
+          "client_id": "223660325758-iboh42jg2um1dq3iiog5kfekf4i9jv51.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA1NHWjQt-tpR3IAJ__cPZIijB8LxlnWkw"
+          "current_key": "AIzaSyBE05YfYj2k5pWMSiUnROL-iuY5FPcDKkw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "608732624225-gdejn5qsn5gfoi27opcejk47uvvrnl6o.apps.googleusercontent.com",
+              "client_id": "223660325758-iboh42jg2um1dq3iiog5kfekf4i9jv51.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "223660325758-0nu6i2247ifdrl4hi42u0tsqvbnf965o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.wisefashion.agency",
+                "app_store_id": "1511872620"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223660325758:android:d6cca19a4231178279512f",
+        "android_client_info": {
+          "package_name": "com.wisefashion.dmlens"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223660325758-iboh42jg2um1dq3iiog5kfekf4i9jv51.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE05YfYj2k5pWMSiUnROL-iuY5FPcDKkw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223660325758-iboh42jg2um1dq3iiog5kfekf4i9jv51.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223660325758-0nu6i2247ifdrl4hi42u0tsqvbnf965o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.wisefashion.agency",
+                "app_store_id": "1511872620"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223660325758:android:726b95ee1bdcd9a979512f",
+        "android_client_info": {
+          "package_name": "com.wisefashion.mdlens"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223660325758-iboh42jg2um1dq3iiog5kfekf4i9jv51.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE05YfYj2k5pWMSiUnROL-iuY5FPcDKkw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223660325758-iboh42jg2um1dq3iiog5kfekf4i9jv51.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223660325758-0nu6i2247ifdrl4hi42u0tsqvbnf965o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.wisefashion.agency",
+                "app_store_id": "1511872620"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223660325758:android:0ac095d6537e0aba79512f",
+        "android_client_info": {
+          "package_name": "com.wisefashion.trend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223660325758-iboh42jg2um1dq3iiog5kfekf4i9jv51.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE05YfYj2k5pWMSiUnROL-iuY5FPcDKkw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223660325758-iboh42jg2um1dq3iiog5kfekf4i9jv51.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223660325758-0nu6i2247ifdrl4hi42u0tsqvbnf965o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.wisefashion.agency",
+                "app_store_id": "1511872620"
+              }
             }
           ]
         }
