@@ -1060,9 +1060,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("SeongKwon", "requestCode = " + requestCode);
         Log.d("SeongKwon", "resultCode = " + resultCode);
         Log.d("SeongKwon", "============================================");
-        if(Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-            return;
-        } else if ((requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) && resultCode == RESULT_OK) {
+        if ((requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) && resultCode == RESULT_OK) {
             String result = "";
             try {
                 JSONObject jObj = new JSONObject();
