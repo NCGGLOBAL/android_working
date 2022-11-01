@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
-import com.wisefashion.mdlens.delegator.HNSharedPreference;
+import com.wisefashion.trend.delegator.HNSharedPreference;
 
 import java.util.ArrayList;
 import java.util.List;

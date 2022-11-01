@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.wisefashion.mdlens.live.CameraHintView
+    <com.wisefashion.trend.live.CameraHintView
         android:id="@+id/camera_hint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

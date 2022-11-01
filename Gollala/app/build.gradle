@@ -3,11 +3,11 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 31
     defaultConfig {
-        applicationId "com.wisefashion.mdlens"
+        applicationId "com.wisefashion.trend"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 34
-        versionName "2.2.5"
+        versionCode 63
+        versionName "1.3.8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true

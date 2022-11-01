@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wisefashion.mdlens">
+    package="com.wisefashion.trend">
 
     <application
-        android:name="com.wisefashion.mdlens.common.HNApplication"
+        android:name="com.wisefashion.trend.common.HNApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,7 +21,7 @@
 
         <!-- ilikelux://pay? -->
         <activity
-            android:name="com.wisefashion.mdlens.MainActivity"
+            android:name="com.wisefashion.trend.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait">
@@ -41,14 +41,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.wisefashion.mdlens.WebViewActivity"
+        <activity android:name="com.wisefashion.trend.WebViewActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"/>
 
-        <activity android:name="com.wisefashion.mdlens.AlbumSelectActivity"
+        <activity android:name="com.wisefashion.trend.AlbumSelectActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name="com.wisefashion.mdlens.SelectImageMethodActivity"
+            android:name="com.wisefashion.trend.SelectImageMethodActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
@@ -59,7 +59,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.wisefashion.mdlens.ImageSelectActivity"
+            android:name="com.wisefashion.trend.ImageSelectActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -70,7 +70,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.wisefashion.mdlens.ImageEditChangeOrder"
+            android:name="com.wisefashion.trend.ImageEditChangeOrder"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -81,18 +81,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.wisefashion.mdlens.ImageEditActivity"
+            android:name="com.wisefashion.trend.ImageEditActivity"
             android:configChanges="orientation|screenSize" />
 
         <activity
-            android:name="com.wisefashion.mdlens.ImageCropActivity"
+            android:name="com.wisefashion.trend.ImageCropActivity"
             android:configChanges="orientation|screenSize" />
 
-        <activity android:name="com.wisefashion.mdlens.live.CameraActivity"
+        <activity android:name="com.wisefashion.trend.live.CameraActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"/>
 
-        <service android:name="com.wisefashion.mdlens.MyFirebaseMessagingService"
+        <service android:name="com.wisefashion.trend.MyFirebaseMessagingService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -100,7 +100,7 @@
         </service>
         <!-- [END firebase_service] -->
         <!-- [START firebase_iid_service] -->
-        <service android:name="com.wisefashion.mdlens.MyFirebaseInstanceIdService"
+        <service android:name="com.wisefashion.trend.MyFirebaseInstanceIdService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />

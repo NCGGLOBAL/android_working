@@ -13,7 +13,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.wisefashion.mdlens.R;
+import com.wisefashion.trend.R;
 
 import io.togoto.imagezoomcrop.cropoverlay.edge.Edge;
 import io.togoto.imagezoomcrop.cropoverlay.utils.PaintUtil;
