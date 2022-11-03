@@ -258,6 +258,7 @@ public class WebViewActivity extends Activity {
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         mWebView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
         mWebView.getSettings().setUserAgentString(mWebView.getSettings().getUserAgentString() + "webview-type=sub");
+        mWebView.getSettings().setTextZoom(100);
 
         mWebView.addJavascriptInterface(new WebAppInterface(this, mWebView), "android");
 
