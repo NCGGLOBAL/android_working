@@ -239,27 +239,27 @@ public class MainActivity extends AppCompatActivity {
                 mPushUid = intent.getStringExtra("pushUid");
                 sendPushReceiveToServer(mPushUid);
             }
-            if (intent.getDataString() != null && !intent.getDataString().isEmpty()) {
-                String landingUri = intent.getDataString();
-//                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
-//                Log.e("jj", "landingUri : " + landingUri);
-                String splitUrl = landingUri.split("\\?")[1];
-//                Log.e("jj", "splitUrl : " + splitUrl);
-                splitUrl = splitUrl.split("=")[1];
-//                Log.e("jj", "splitUrl : " + splitUrl);
-                mLandingUrl = splitUrl;
-            }
+//            if (intent.getDataString() != null && !intent.getDataString().isEmpty()) {
+//                String landingUri = intent.getDataString();
+////                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
+////                Log.e("jj", "landingUri : " + landingUri);
+//                String splitUrl = landingUri.split("\\?")[1];
+////                Log.e("jj", "splitUrl : " + splitUrl);
+//                splitUrl = splitUrl.split("=")[1];
+////                Log.e("jj", "splitUrl : " + splitUrl);
+//                mLandingUrl = splitUrl;
+//            }
 //            Log.e("jj", "mLandingUrl : " + mLandingUrl);
 
-//            if (intent != null) {
-//                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
-//                    if (!intent.getStringExtra("url").equals("")) {
-//                        mPushUid = intent.getStringExtra("pushUid");
-//                        mLandingUrl = intent.getStringExtra("url");
-//                        sendPushReceiveToServer(mPushUid);
-//                    }
-//                }
-//            }
+            if (intent != null) {
+                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
+                    if (!intent.getStringExtra("url").equals("")) {
+                        mPushUid = intent.getStringExtra("pushUid");
+                        mLandingUrl = intent.getStringExtra("url");
+                        sendPushReceiveToServer(mPushUid);
+                    }
+                }
+            }
 
             // permission 체크 - 최초실행
             if (HNSharedPreference.getSharedPreference(getApplicationContext(), "isPermissionCheck").equals("")) {
@@ -372,6 +372,7 @@ public class MainActivity extends AppCompatActivity {
         mWebView.getSettings().setAppCacheEnabled(true);
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         mWebView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
+        mWebView.getSettings().setTextZoom(100);
         mWebView.addJavascriptInterface(new WebAppInterface(this, mWebView), "android");
 
         mWebView.setDrawingCacheEnabled(true);
