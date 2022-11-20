@@ -64,8 +64,6 @@ public class HNApplication extends Application {
         mInstance = this;
 
         MyNotificationManager.createChannel(this);
-
-        KakaoSDK.init(new KakaoSDKAdapter());
     }
 
     public static synchronized HNApplication getInstance() {
