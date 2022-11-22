@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "726011932146",
+    "project_id": "cupidhour",
+    "storage_bucket": "cupidhour.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726011932146:android:f9eae1cf054e338dc74f6b",
+        "android_client_info": {
+          "package_name": "com.creator.cupidhour"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "726011932146-t1s5pcsdmdegajq7mh49ge29brst0p6m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-DhYsYuOVZYPeLd6XLTtmC4VxP-niohM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "726011932146-t1s5pcsdmdegajq7mh49ge29brst0p6m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
