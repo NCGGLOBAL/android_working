@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "703433104898",
+    "project_id": "talktalklive-b08f7",
+    "storage_bucket": "talktalklive-b08f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:703433104898:android:362180f56cb62b25f3911b",
+        "android_client_info": {
+          "package_name": "com.creator.talktalklive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "703433104898-lhd7ou26adf0c42g5isq9f2c38onpr3o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrchSht_I6b6V6Oa0ZQoUfKMYtiErzESo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "703433104898-lhd7ou26adf0c42g5isq9f2c38onpr3o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
