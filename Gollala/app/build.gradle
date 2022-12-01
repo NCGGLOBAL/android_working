@@ -6,8 +6,8 @@ android {
         applicationId "com.wisefashion.trend"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 64
-        versionName "1.3.9"
+        versionCode 65
+        versionName "1.4.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
