@@ -22,7 +22,7 @@ public class HNApplication extends Application {
 
 
     public static boolean mSigned = false;
-    public static String URL = "https://livecross.mallup.co.kr";
+    public static String URL = "https://livecross.live";
     public static String PUSH_URL = URL + "/m/app/pushRegister.asp";
     public static String UPLOAD_URL = URL + "/m/app/";
     public static boolean mIsFirstLoading = false;
