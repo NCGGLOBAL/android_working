@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -85,8 +86,6 @@ import com.mallup.modooticketapp.util.LogUtil;
 import com.mallup.modooticketapp.util.NicePayUtility;
 import com.mallup.modooticketapp.util.RealPathUtil;
 import com.mallup.modooticketapp.util.UploadUtil;
-import com.nhn.android.naverlogin.OAuthLogin;
-import com.nhn.android.naverlogin.OAuthLoginHandler;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -168,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int SEND_KAKAO_MESSAGE = 1;
     private static final int SEND_FACEBOOK_MESSAGE = 2;
 
-    private static OAuthLogin mOAuthLoginModule;
 
     private CallbackManager callbackManager;
 
@@ -329,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
         mWebView.getSettings().setDatabaseEnabled(true);
         mWebView.getSettings().setDomStorageEnabled(true);
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        mWebView.getSettings().setSupportMultipleWindows(false);
+        mWebView.getSettings().setSupportMultipleWindows(true);
         mWebView.getSettings().setAppCacheEnabled(true);
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         mWebView.getSettings().setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
@@ -457,6 +455,63 @@ public class MainActivity extends AppCompatActivity {
                 }
             }).setCancelable(false).create().show();
             return true;
+        }
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            super.onProgressChanged(view, newProgress);
+        }
+        @Override
+        public boolean onCreateWindow(final WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
+            final WebView newWebView = new WebView(view.getContext());
+            WebSettings webSettings = newWebView.getSettings();
+            WebSettings settings = newWebView.getSettings();
+            settings.setJavaScriptEnabled(true);
+            settings.setJavaScriptCanOpenWindowsAutomatically(true);
+            settings.setSupportMultipleWindows(true);
+
+            //final Dialog dialog = new Dialog(view.getContext(),R.style.Theme_DialogFullScreen);
+            final Dialog dialog = new Dialog(view.getContext());
+            dialog.setContentView(newWebView);
+            dialog.show();
+
+
+            dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                @Override
+                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+
+                    if(keyCode == KeyEvent.KEYCODE_BACK) {
+                        //MyLog.toastMakeTextShow(view.getContext(), "TAG", "KEYCODE_BACK");
+                        if(newWebView.canGoBack()){
+                            newWebView.goBack();
+                        }else{
+                            dialog.dismiss();
+                        }
+                        return true;
+                    }else{
+                        return false;
+                    }
+                }
+            });
+            newWebView.setWebViewClient(new HNWebViewClient());
+            newWebView.setWebChromeClient(new HNWebChromeClient() {
+                @Override
+                public void onCloseWindow(WebView window) {
+                    dialog.dismiss(); }
+            });
+
+
+            WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+            transport.setWebView(newWebView);
+            resultMsg.sendToTarget();
+            return true;
+        }
+        @Override
+        public void onCloseWindow(WebView window) {
+            window.setVisibility(View.GONE);
+            window.destroy();
+            //mWebViewSub=null;
+            super.onCloseWindow(window);
         }
     }
 
@@ -1022,9 +1077,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("SeongKwon", "requestCode = " + requestCode);
         Log.d("SeongKwon", "resultCode = " + resultCode);
         Log.d("SeongKwon", "============================================");
-        if(Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-            return;
-        } else if ((requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) && resultCode == RESULT_OK) {
+        if ((requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) && resultCode == RESULT_OK) {
             String result = "";
             try {
                 JSONObject jObj = new JSONObject();
@@ -1722,96 +1775,96 @@ public class MainActivity extends AppCompatActivity {
 
     // 네이버 로그인
     public void callNaverLogin() {
-        mOAuthLoginModule = OAuthLogin.getInstance();
-        mOAuthLoginModule.init(
-                mContext
-                , getString(R.string.naver_client_id)        // 애플리케이션 등록 후 발급받은 클라이언트 아이디
-                , getString(R.string.naver_client_secret)    // 애플리케이션 등록 후 발급받은 클라이언트 시크릿
-                , mContext.getResources().getString(R.string.app_name)     // 네이버 앱의 로그인 화면에 표시할 애플리케이션 이름. 모바일 웹의 로그인 화면을 사용할 때는 서버에 저장된 애플리케이션 이름이 표시됩니다.
-                //,OAUTH_CALLBACK_INTENT
-                // SDK 4.1.4 버전부터는 OAUTH_CALLBACK_INTENT변수를 사용하지 않습니다.
-        );
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable(){
-                    @Override
-                    public void run() {
-                        mOAuthLoginModule.startOauthLoginActivity(MainActivity.this, mOAuthLoginHandler);
-                    }
-                });
-            }
-        }).start();
+//        mOAuthLoginModule = OAuthLogin.getInstance();
+//        mOAuthLoginModule.init(
+//                mContext
+//                , getString(R.string.naver_client_id)        // 애플리케이션 등록 후 발급받은 클라이언트 아이디
+//                , getString(R.string.naver_client_secret)    // 애플리케이션 등록 후 발급받은 클라이언트 시크릿
+//                , mContext.getResources().getString(R.string.app_name)     // 네이버 앱의 로그인 화면에 표시할 애플리케이션 이름. 모바일 웹의 로그인 화면을 사용할 때는 서버에 저장된 애플리케이션 이름이 표시됩니다.
+//                //,OAUTH_CALLBACK_INTENT
+//                // SDK 4.1.4 버전부터는 OAUTH_CALLBACK_INTENT변수를 사용하지 않습니다.
+//        );
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                runOnUiThread(new Runnable(){
+//                    @Override
+//                    public void run() {
+//                        mOAuthLoginModule.startOauthLoginActivity(MainActivity.this, mOAuthLoginHandler);
+//                    }
+//                });
+//            }
+//        }).start();
     }
 
     /**
      * OAuthLoginHandler를 startOAuthLoginActivity() 메서드 호출 시 파라미터로 전달하거나 OAuthLoginButton
      객체에 등록하면 인증이 종료되는 것을 확인할 수 있습니다.
      */
-    private OAuthLoginHandler mOAuthLoginHandler = new OAuthLoginHandler() {
-        @Override
-        public void run(final boolean success) {
-            if (success) {
-                final String accessToken = mOAuthLoginModule.getAccessToken(mContext);
-                String refreshToken = mOAuthLoginModule.getRefreshToken(mContext);
-                long expiresAt = mOAuthLoginModule.getExpiresAt(mContext);
-                String tokenType = mOAuthLoginModule.getTokenType(mContext);
-            } else {
-                String errorCode = mOAuthLoginModule.getLastErrorCode(mContext).getCode();
-                String errorDesc = mOAuthLoginModule.getLastErrorDesc(mContext);
-                Toast.makeText(mContext, "errorCode:" + errorCode + ", errorDesc:" + errorDesc, Toast.LENGTH_SHORT).show();
-            }
+//    private OAuthLoginHandler mOAuthLoginHandler = new OAuthLoginHandler() {
+//        @Override
+//        public void run(final boolean success) {
+//            if (success) {
+//                final String accessToken = mOAuthLoginModule.getAccessToken(mContext);
+//                String refreshToken = mOAuthLoginModule.getRefreshToken(mContext);
+//                long expiresAt = mOAuthLoginModule.getExpiresAt(mContext);
+//                String tokenType = mOAuthLoginModule.getTokenType(mContext);
+//            } else {
+//                String errorCode = mOAuthLoginModule.getLastErrorCode(mContext).getCode();
+//                String errorDesc = mOAuthLoginModule.getLastErrorDesc(mContext);
+//                Toast.makeText(mContext, "errorCode:" + errorCode + ", errorDesc:" + errorDesc, Toast.LENGTH_SHORT).show();
+//            }
+//
+//            SendMassgeHandler mMainHandler = new SendMassgeHandler();
+//            if(mMainHandler != null) {
+//                Message msg = mMainHandler.obtainMessage();
+//                msg.what = SEND_NAVER_MESSAGE;
+//                if (success) {
+//                    msg.arg1 = 1;
+//                } else {
+//                    msg.arg1 = 0;
+//                }
+//                mMainHandler.sendMessage(msg);
+//            }
+//        };
+//    };
 
-            SendMassgeHandler mMainHandler = new SendMassgeHandler();
-            if(mMainHandler != null) {
-                Message msg = mMainHandler.obtainMessage();
-                msg.what = SEND_NAVER_MESSAGE;
-                if (success) {
-                    msg.arg1 = 1;
-                } else {
-                    msg.arg1 = 0;
-                }
-                mMainHandler.sendMessage(msg);
-            }
-        };
-    };
-
-    private String NaverProfile(String accessToken) {
-        String header = "Bearer " + accessToken; // Bearer 다음에 공백 추가
-        try {
-            String apiURL = "https://openapi.naver.com/v1/nid/me";
-            URL url = new URL(apiURL);
-
-            HttpURLConnection con = (HttpURLConnection)url.openConnection();
-
-            con.setRequestMethod("GET");
-            con.setRequestProperty("Authorization", header);
-            con.connect();
-
-            int responseCode = con.getResponseCode();
-            BufferedReader br;
-            if(responseCode == HttpURLConnection.HTTP_OK) { // 정상 호출
-                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            } else {  // 에러 발생
-                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
-            }
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-            while ((inputLine = br.readLine()) != null) {
-                response.append(inputLine);
-            }
-            br.close();
-
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("accessToken", accessToken);      // getAccessToken
-            jsonObject.put("userInfo", response.toString());      // 사용자정보
-            executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
+//    private String NaverProfile(String accessToken) {
+//        String header = "Bearer " + accessToken; // Bearer 다음에 공백 추가
+//        try {
+//            String apiURL = "https://openapi.naver.com/v1/nid/me";
+//            URL url = new URL(apiURL);
+//
+//            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+//
+//            con.setRequestMethod("GET");
+//            con.setRequestProperty("Authorization", header);
+//            con.connect();
+//
+//            int responseCode = con.getResponseCode();
+//            BufferedReader br;
+//            if(responseCode == HttpURLConnection.HTTP_OK) { // 정상 호출
+//                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//            } else {  // 에러 발생
+//                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+//            }
+//            String inputLine;
+//            StringBuffer response = new StringBuffer();
+//            while ((inputLine = br.readLine()) != null) {
+//                response.append(inputLine);
+//            }
+//            br.close();
+//
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("accessToken", accessToken);      // getAccessToken
+//            jsonObject.put("userInfo", response.toString());      // 사용자정보
+//            executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return "";
+//    }
 
     // Handler 클래스
     class SendMassgeHandler extends Handler {
@@ -1819,47 +1872,47 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case SEND_NAVER_MESSAGE :
-                    if(msg.arg1 == 1) {
-                        final String accessToken = mOAuthLoginModule.getAccessToken(mContext);
-                        String refreshToken = mOAuthLoginModule.getRefreshToken(mContext);
-                        long expiresAt = mOAuthLoginModule.getExpiresAt(mContext);
-                        String tokenType = mOAuthLoginModule.getTokenType(mContext);
-                        Log.e("SeongKwon" , "accessToken = " + accessToken);
-                        Log.e("SeongKwon" , "refreshToken = " + refreshToken);
-                        Log.e("SeongKwon" , "expiresAt = " + String.valueOf(expiresAt));
-                        Log.e("SeongKwon" , "tokenType = " + tokenType);
-                        Log.e("SeongKwon" , "state = " + mOAuthLoginModule.getState(mContext).toString());
-
-                        mNaverMessage = "accessToken = " + accessToken + "\n";
-                        mNaverMessage += "refreshToken = " + refreshToken + "\n";
-                        mNaverMessage += "expiresAt = " + expiresAt + "\n";
-                        mNaverMessage += "tokenType = " + tokenType + "\n";
-                        mNaverMessage += "state = " + mOAuthLoginModule.getState(mContext).toString() + "\n";
-
-                        try {
-                            // 네이버 프로필 정보 요청
-//                            new NaverProfile().execute(accessToken);
-                            new Thread() {
-                                public void run() {
-                                    NaverProfile(accessToken);
-                                }
-                            }.start();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        String errorCode = mOAuthLoginModule.getLastErrorCode(mContext).getCode();
-                        String errorDesc = mOAuthLoginModule.getLastErrorDesc(mContext);
-                        Log.e("SeongKwon" , "errorCode = " + errorCode);
-                        Log.e("SeongKwon" , "errorDesc = " + errorDesc);
-
-                        mNaverMessage += "errorCode = " + errorCode + "\n";
-                        mNaverMessage += "errorDesc = " + errorDesc + "\n";
-                        // 취소시 : errorCode = user_cancel
-                        // 취소시 : errorDesc = user_cancel
-                    }
-                    break;
+//                case SEND_NAVER_MESSAGE :
+//                    if(msg.arg1 == 1) {
+//                        final String accessToken = mOAuthLoginModule.getAccessToken(mContext);
+//                        String refreshToken = mOAuthLoginModule.getRefreshToken(mContext);
+//                        long expiresAt = mOAuthLoginModule.getExpiresAt(mContext);
+//                        String tokenType = mOAuthLoginModule.getTokenType(mContext);
+//                        Log.e("SeongKwon" , "accessToken = " + accessToken);
+//                        Log.e("SeongKwon" , "refreshToken = " + refreshToken);
+//                        Log.e("SeongKwon" , "expiresAt = " + String.valueOf(expiresAt));
+//                        Log.e("SeongKwon" , "tokenType = " + tokenType);
+//                        Log.e("SeongKwon" , "state = " + mOAuthLoginModule.getState(mContext).toString());
+//
+//                        mNaverMessage = "accessToken = " + accessToken + "\n";
+//                        mNaverMessage += "refreshToken = " + refreshToken + "\n";
+//                        mNaverMessage += "expiresAt = " + expiresAt + "\n";
+//                        mNaverMessage += "tokenType = " + tokenType + "\n";
+//                        mNaverMessage += "state = " + mOAuthLoginModule.getState(mContext).toString() + "\n";
+//
+//                        try {
+//                            // 네이버 프로필 정보 요청
+////                            new NaverProfile().execute(accessToken);
+//                            new Thread() {
+//                                public void run() {
+//                                    NaverProfile(accessToken);
+//                                }
+//                            }.start();
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    } else {
+//                        String errorCode = mOAuthLoginModule.getLastErrorCode(mContext).getCode();
+//                        String errorDesc = mOAuthLoginModule.getLastErrorDesc(mContext);
+//                        Log.e("SeongKwon" , "errorCode = " + errorCode);
+//                        Log.e("SeongKwon" , "errorDesc = " + errorDesc);
+//
+//                        mNaverMessage += "errorCode = " + errorCode + "\n";
+//                        mNaverMessage += "errorDesc = " + errorDesc + "\n";
+//                        // 취소시 : errorCode = user_cancel
+//                        // 취소시 : errorDesc = user_cancel
+//                    }
+//                    break;
                 case SEND_KAKAO_MESSAGE :
                     Log.d("SeongKwon", "msg = " + msg.toString());
                     break;
