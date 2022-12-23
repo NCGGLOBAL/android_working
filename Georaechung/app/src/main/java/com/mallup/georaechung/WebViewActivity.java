@@ -829,6 +829,59 @@ public class WebViewActivity extends Activity {
                     }
                 }
 
+                // 전화걸기	tel : 전화번호
+                else if ("ACT1022".equals(actionCode)) {
+                    LogUtil.d("ACT1022 - 전화걸기");
+
+                    if(actionParamObj.has("tel")) {
+                        String tel = actionParamObj.getString("tel");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            int permissionResult = checkSelfPermission(Manifest.permission.CALL_PHONE);
+
+                            if (permissionResult == PackageManager.PERMISSION_DENIED) {
+                                if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
+                                    AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+                                    dialog.setTitle("권한이 필요합니다.")
+                                            .setMessage("이 기능을 사용하기 위해서는 단말기의 \"전화걸기\" 권한이 필요합니다. 계속 하시겠습니까?")
+                                            .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                        // CALL_PHONE 권한을 Android OS에 요청한다.
+                                                        requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 1000);
+                                                    }
+                                                }
+                                            })
+                                            .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Toast.makeText(mContext, "기능을 취소했습니다", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }).create().show();
+                                } else {
+                                    requestPermissions(
+                                            new String[]{
+                                                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                                    Manifest.permission.CAMERA,
+                                                    Manifest.permission.CALL_PHONE,
+                                                    Manifest.permission.GET_ACCOUNTS,
+                                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                            },
+                                            Constants.PERMISSIONS_MULTIPLE_REQUEST);
+                                }
+                            } else {
+                                intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + tel));
+                                startActivity(intent);
+                            }
+                        } else {
+                            intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + tel));
+                            startActivity(intent);
+                        }
+                    }
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -909,9 +962,7 @@ public class WebViewActivity extends Activity {
         Log.d("SeongKwon", "requestCode = " + requestCode);
         Log.d("SeongKwon", "resultCode = " + resultCode);
         Log.d("SeongKwon", "============================================");
-        if(Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-            return;
-        } else if ((requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) && resultCode == RESULT_OK) {
+        if ((requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) && resultCode == RESULT_OK) {
             String result = "";
             try {
                 JSONObject jObj = new JSONObject();
