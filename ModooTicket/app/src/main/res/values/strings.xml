@@ -10,7 +10,7 @@
     <!-- SNS -->
     <string name="facebook_app_id">194886367799154</string>
     <string name="fb_login_protocol_scheme">fb194886367799154</string>
-    <string name="kakao_app_key">24b8f0a1f99824fdc33484911530efe4</string>
+    <string name="kakao_app_key">62ca6570cc5d52238b98aa4326b91ec2</string>
     <string name="naver_client_id">mpLrVSaumgWVVWty0c42</string>
     <string name="naver_client_secret">OCXBj9dWXd</string>
 
