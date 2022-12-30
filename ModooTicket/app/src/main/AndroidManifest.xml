@@ -38,7 +38,6 @@
         <!-- ilikelux://pay? -->
         <activity
             android:name="com.mallup.modooticketapp.MainActivity"
-            android:launchMode="singleTask"
             android:exported="true"
             android:configChanges="orientation|screenSize">
             <intent-filter>
