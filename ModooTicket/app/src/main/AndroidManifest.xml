@@ -54,6 +54,7 @@
         </activity>
 
         <activity android:name="com.mallup.modooticketapp.WebViewActivity"
+            android:launchMode="singleTask"
             android:configChanges="orientation|screenSize"/>
 
         <activity android:name="com.mallup.modooticketapp.AlbumSelectActivity" />
