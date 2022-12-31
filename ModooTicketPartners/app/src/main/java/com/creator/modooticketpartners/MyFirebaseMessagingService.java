@@ -43,6 +43,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private String mPushUid = "";
     private String mLandingUrl = "";
     private String mImgUrl = "";
+    private String mPushType = "default";
 
     /**
      * Called when message is received.
@@ -79,6 +80,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             if(remoteMessage.getData().containsKey("imgUrl")) {
                 mImgUrl = remoteMessage.getData().get("imgUrl");
+            }
+
+            if (remoteMessage.getData().containsKey("push_type")) {
+                mPushType = remoteMessage.getData().get("push_type");
             }
 
             if (/* Check if data needs to be processed by long running job */ true) {
@@ -188,6 +193,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 // Creates an explicit intent for an Activity in your app
                 Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                if (mPushType.equals("sangsang")) {
+                    defaultSoundUri = Uri.parse("android.resource://"
+                            + ctx.getPackageName() + "/" + R.raw.doorbell1);
+                }
                 Notification.Builder notificationBuilder = null;
                 LogUtil.d(TAG, "Message Notification 3");
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

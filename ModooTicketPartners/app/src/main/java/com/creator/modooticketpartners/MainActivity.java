@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
     private String mCallback;
     private String mCallbackParam;
 
-//    private FirebaseMessaging mFirebaseMessaging;
+    private FirebaseMessaging mFirebaseMessaging;
     private String mPushUid = "";
     private String mLandingUrl = "";
     private BackPressCloseHandler mBackPressCloseHandler;
@@ -214,24 +214,24 @@ public class MainActivity extends AppCompatActivity {
             mBackPressCloseHandler = new BackPressCloseHandler(this);
 
             // topic 생성
-//            mFirebaseMessaging = FirebaseMessaging.getInstance();
-//            if (HNSharedPreference.getSharedPreference(this, "pushtopic").equals("")) {
-//                int topic = (new Random()).nextInt(100) + 1;          // topic 1 ~ 100의 값으로 임의 지정
-//
-//                mFirebaseMessaging.subscribeToTopic(String.valueOf(topic));
-//                HNSharedPreference.putSharedPreference(this, "pushtopic", String.valueOf(topic));
-//            }
+            mFirebaseMessaging = FirebaseMessaging.getInstance();
+            if (HNSharedPreference.getSharedPreference(this, "pushtopic").equals("")) {
+                int topic = (new Random()).nextInt(100) + 1;          // topic 1 ~ 100의 값으로 임의 지정
+
+                mFirebaseMessaging.subscribeToTopic(String.valueOf(topic));
+                HNSharedPreference.putSharedPreference(this, "pushtopic", String.valueOf(topic));
+            }
 
             getHashKey();
 
             // token 생성
-//            String token = FirebaseInstanceId.getInstance().getToken();
-//            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
-//                HNSharedPreference.putSharedPreference(this, "pushtoken", token);
-//
-//                sendRegistrationToServer(token);
-//            }
-//            LogUtil.e("push token : " + token);
+            String token = FirebaseInstanceId.getInstance().getToken();
+            if (HNSharedPreference.getSharedPreference(this, "pushtoken").equals("") || !HNSharedPreference.getSharedPreference(this, "pushtoken").equals(token)) {
+                HNSharedPreference.putSharedPreference(this, "pushtoken", token);
+
+                sendRegistrationToServer(token);
+            }
+            LogUtil.e("push token : " + token);
 
             Intent intent = getIntent();
 
