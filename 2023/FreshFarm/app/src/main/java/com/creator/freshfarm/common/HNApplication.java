@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.FirebaseApp;
 import com.kakao.auth.KakaoSDK;
 import com.creator.freshfarm.MyNotificationManager;
 
@@ -62,7 +63,7 @@ public class HNApplication extends Application {
         super.onCreate();
 
         mInstance = this;
-
+        FirebaseApp.initializeApp(this);
         MyNotificationManager.createChannel(this);
 
 //        KakaoSDK.init(new KakaoSDKAdapter());

@@ -16,6 +16,7 @@ import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -58,6 +59,10 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -185,6 +190,10 @@ public class MainActivity extends AppCompatActivity {
 
     private View mLoadingView;
 
+    private FusedLocationProviderClient fusedLocationClient;
+    private Double mLatitude;
+    private Double mLongitude;
+
     public static MainActivity activity;
 
     public static MainActivity getInstance() {
@@ -212,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Back Handler
             mBackPressCloseHandler = new BackPressCloseHandler(this);
+
 
             // topic 생성
             mFirebaseMessaging = FirebaseMessaging.getInstance();
@@ -265,21 +275,22 @@ public class MainActivity extends AppCompatActivity {
             if (HNSharedPreference.getSharedPreference(getApplicationContext(), "isPermissionCheck").equals("")) {
                 HNSharedPreference.putSharedPreference(getApplicationContext(), "isPermissionCheck", "1");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    mLlPermission = (LinearLayout)findViewById(R.id.ll_permission);
+                    mLlPermission = (LinearLayout) findViewById(R.id.ll_permission);
                     mLlPermission.setVisibility(View.VISIBLE);
 
-                    LinearLayout ll_permission_agree = (LinearLayout)findViewById(R.id.ll_permission_agree);
+                    LinearLayout ll_permission_agree = (LinearLayout) findViewById(R.id.ll_permission_agree);
                     ll_permission_agree.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mLlPermission.setVisibility(View.GONE);
                             checkPermission();
                         }
                     });
 //                    checkPermission();
                 }
+            } else {
+                Log.e(TAG, "퍼미션 체크 완료 상태");
+                setLocation();
             }
-
             // WebView 초기화
             initWebView();
 
@@ -297,10 +308,43 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setLocation() {
+        Log.e(TAG, "setLocation");
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(MainActivity.this);
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                // Logic to handle location object
+                                Log.e(TAG, "location.getLatitude() : " + location.getLatitude());
+                                Log.e(TAG, "location.getLongitude() : " + location.getLongitude());
+                                mLatitude = location.getLatitude();
+                                mLongitude = location.getLongitude();
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        mWebView.onResume();
+//        mWebView.onResume();
     }
 
     @Override
@@ -962,6 +1006,39 @@ public class MainActivity extends AppCompatActivity {
                                 initFacebookLogin();
                             }
                         }
+                    }
+                } else if ("ACT1022".equals(actionCode)) {
+                    if(actionParamObj.has("tel")) {
+                        String tel = actionParamObj.getString("tel");
+                        if (tel != null && TextUtils.isEmpty(tel)) {
+                            intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + tel));
+                            startActivity(intent);
+                        }
+                    }
+                } else if ("ACT1026".equals(actionCode)) {
+                    // 위치 정보 조회
+                    LogUtil.d("ACT1026 - 위치 정보 조회");
+//                    setLocation();
+//                    JSONObject jsonObject = new JSONObject();
+//                    jsonObject.put("deviceId", HNApplication.mDeviceId);      // 디바이스 아이디
+//                    jsonObject.put("latitude", mLatitude);
+//                    jsonObject.put("longitude", mLongitude);
+//
+//                    Log.e(TAG, mCallback + "(" + jsonObject.toString() + ")");
+//                    executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                            + ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        setLocation();
+
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("deviceId", HNApplication.mDeviceId);      // 디바이스 아이디
+                        jsonObject.put("latitude", mLatitude);
+                        jsonObject.put("longitude", mLongitude);
+
+                        Log.e(TAG, mCallback + "(" + jsonObject.toString() + ")");
+                        executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
+                    } else  {
+                        checkPermission();
                     }
                 }
 

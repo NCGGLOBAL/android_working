@@ -125,7 +125,7 @@ public abstract class DNDAdapter extends ArrayAdapter {
                                 mChangedImageList += ",";
                             }
                         }
-                        HNSharedPreference.putSharedPreference(mContext, "savedImage", mChangedImageList);
+                        HNSharedPreference.INSTANCE.putSharedPreference(mContext, "savedImage", mChangedImageList);
                         DNDAdapter.this.notifyDataSetChanged();
                         break;
                     case DragEvent.ACTION_DRAG_ENTERED:
