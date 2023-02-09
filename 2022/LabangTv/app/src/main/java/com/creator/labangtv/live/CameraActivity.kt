@@ -371,10 +371,10 @@ class CameraActivity : Activity() {
 //            mProgressUtil.dismiss();
         }
 
-        override fun onPageStarted(view: WebView, url: String, paramBitmap: Bitmap) {
+        override fun onPageStarted(view: WebView, url: String, paramBitmap: Bitmap?) {
             super.onPageStarted(view, url, paramBitmap)
             // LogUtil.d("onPageLoadStarted : " + url);
-            executeJavascript("localStorage.setItem(\"dv_id\"," + "\"" + HNApplication.Companion.mDeviceId + "\")")
+            executeJavascript("localStorage.setItem(\"dv_id\"," + "\"" + HNApplication.mDeviceId + "\")")
         }
 
         override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {

@@ -159,14 +159,14 @@ class MainActivity : AppCompatActivity() {
             setContentView(R.layout.activity_main)
             mContext = this@MainActivity
             if (HNSharedPreference.getSharedPreference(this, "deviceId") == "") {
-                HNApplication.Companion.mDeviceId = EtcUtil.getRandomKey(16)
+                HNApplication.mDeviceId = EtcUtil.getRandomKey(16)
                 HNSharedPreference.putSharedPreference(
                     this,
                     "deviceId",
-                    HNApplication.Companion.mDeviceId
+                    HNApplication.mDeviceId
                 )
             } else {
-                HNApplication.Companion.mDeviceId =
+                HNApplication.mDeviceId =
                     HNSharedPreference.getSharedPreference(this, "deviceId")
             }
 
@@ -316,7 +316,7 @@ class MainActivity : AppCompatActivity() {
             WebView.setWebContentsDebuggingEnabled(true)
         }
         val userAgentString =
-            "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/97.0.4692.87 Mobile Safari/535.19 " + " NINTH" + "&deviceId=" + HNApplication.Companion.mDeviceId
+            "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/97.0.4692.87 Mobile Safari/535.19 " + " NINTH" + "&deviceId=" + HNApplication.mDeviceId
         mWebView!!.settings.setUserAgentString(userAgentString)
         if (Build.VERSION.SDK_INT >= 21) {
             mWebView!!.settings.mixedContentMode = 0
@@ -358,7 +358,7 @@ class MainActivity : AppCompatActivity() {
         if (mLandingUrl != "") {
             mWebView!!.loadUrl(mLandingUrl, extraHeaders)
         } else {
-            mWebView!!.loadUrl(HNApplication.Companion.URL, extraHeaders)
+            mWebView!!.loadUrl(HNApplication.URL, extraHeaders)
             mLandingUrl = ""
         }
     }
@@ -398,7 +398,7 @@ class MainActivity : AppCompatActivity() {
         ): Boolean {
             println("WebViewActivity A>5, OS Version : " + Build.VERSION.SDK_INT + "\t onSFC(WV,VCUB,FCP), n=3")
             if (mFilePathCallback != null) {
-                mFilePathCallback!!.onReceiveValue(null)
+                mFilePathCallback?.onReceiveValue(null)
             }
             mFilePathCallback = filePathCallback
             imageChooser()
@@ -956,7 +956,7 @@ class MainActivity : AppCompatActivity() {
 
         @get:JavascriptInterface
         val deviceId: String?
-            get() = HNApplication.Companion.mDeviceId
+            get() = HNApplication.mDeviceId
 
         @get:JavascriptInterface
         @set:JavascriptInterface
@@ -973,20 +973,24 @@ class MainActivity : AppCompatActivity() {
         }
         val excuteScript = EtcUtil.EscapeJavaScriptFunctionParameter(script)
         LogUtil.d("excuteScript() : $excuteScript")
-        val prefix = "javascript:"
-        var formattedScript = excuteScript
-        if (!excuteScript!!.startsWith(prefix)) {
-            formattedScript = prefix + excuteScript
-        }
-        LogUtil.i("<<executeJavascript>>    $formattedScript")
-        // Build.VERSION_CODES.KITKAT
-        if (Build.VERSION.SDK_INT < 19) {
-            mWebView!!.loadUrl(formattedScript!!)
-        } else {
-            mWebView?.evaluateJavascript(formattedScript) {
-                    value -> LogUtil.d("<<onReceiveValue>>    $value")
+
+        runOnUiThread {
+            val prefix = "javascript:"
+            var formattedScript = excuteScript
+            if (!excuteScript.startsWith(prefix)) {
+                formattedScript = prefix + excuteScript
+            }
+            LogUtil.i("<<executeJavascript>>    $formattedScript")
+            // Build.VERSION_CODES.KITKAT
+            if (Build.VERSION.SDK_INT < 19) {
+                mWebView!!.loadUrl(formattedScript!!)
+            } else {
+                mWebView?.evaluateJavascript(formattedScript) {
+                        value -> LogUtil.d("<<onReceiveValue>>    $value")
+                }
             }
         }
+
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -1085,7 +1089,7 @@ class MainActivity : AppCompatActivity() {
                 executeJavascript("$mCallback($jObj)")
 
                 // TODO 신규등록을 위한 임시저장
-                HNApplication.Companion.mImgArrForReg = mImgArr.toString()
+                HNApplication.mImgArrForReg = mImgArr.toString()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -1110,7 +1114,7 @@ class MainActivity : AppCompatActivity() {
             }
             val result = getResultUri(data)
             Log.d(javaClass.name, "openFileChooser : $result")
-            mUploadMessage!!.onReceiveValue(result)
+            mUploadMessage?.onReceiveValue(result)
             mUploadMessage = null
         } else if (requestCode == Constants.FILECHOOSER_LOLLIPOP_REQ_CODE) {
             if (mFilePathCallback == null) {
@@ -1120,11 +1124,11 @@ class MainActivity : AppCompatActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 if (data == null) data = Intent()
                 if (data.data == null) data.data = mCapturedImageURI
-                mFilePathCallback!!.onReceiveValue(FileChooserParams.parseResult(resultCode, data))
+                mFilePathCallback?.onReceiveValue(FileChooserParams.parseResult(resultCode, data))
                 mFilePathCallback = null
             } else {
                 val results = arrayOf(getResultUri(data))
-                mFilePathCallback!!.onReceiveValue(results)
+                mFilePathCallback?.onReceiveValue(results)
                 mFilePathCallback = null
             }
         }
@@ -1677,7 +1681,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     result = UploadUtil.upload(
                         mContext,
-                        HNApplication.Companion.UPLOAD_URL,
+                        HNApplication.UPLOAD_URL,
                         mSelectedImages!!,
                         param
                     )
