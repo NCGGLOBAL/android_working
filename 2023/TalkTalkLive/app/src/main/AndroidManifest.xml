@@ -37,7 +37,7 @@
 
                 <data
                     android:host="pay"
-                    android:scheme="labangtv" />
+                    android:scheme="talktalklive" />
             </intent-filter>
         </activity>
 
