@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1062547509703",
+    "project_id": "metaceleb-5c268",
+    "storage_bucket": "metaceleb-5c268.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062547509703:android:609436cde664b200b4c9e2",
+        "android_client_info": {
+          "package_name": "com.creator.metaceleb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1062547509703-i6io425fkh3d2m4ntd64jltnlkh6pimr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcDWMUgGXAtEmRDHjU6bfvBj8mdzmTmY4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1062547509703-i6io425fkh3d2m4ntd64jltnlkh6pimr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
