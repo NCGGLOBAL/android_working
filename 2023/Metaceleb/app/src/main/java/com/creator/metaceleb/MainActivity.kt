@@ -486,7 +486,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPageStarted(view: WebView, url: String, paramBitmap: Bitmap?) {
             super.onPageStarted(view, url, paramBitmap)
-            // LogUtil.d("onPageLoadStarted : " + url);
+            LogUtil.d("onPageLoadStarted : " + url);
             executeJavascript("localStorage.setItem(\"dv_id\"," + "\"" + HNApplication.mDeviceId + "\")")
         }
 
@@ -847,7 +847,7 @@ class MainActivity : AppCompatActivity() {
                     executeJavascript("$mCallback($jsonObject)")
                 } else if ("ACT1015" == actionCode) {
                     LogUtil.d("ACT1015 - 웹뷰 새창")
-                    if (actionParamObj!!.has("url")) {
+                    if (actionParamObj?.has("url") == true) {
                         val request_url = actionParamObj.getString("url")
                         LogUtil.d("url : $request_url")
                         intent = Intent(mContext, WebViewActivity::class.java)
