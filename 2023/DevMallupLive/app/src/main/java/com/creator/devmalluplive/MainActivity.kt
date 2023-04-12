@@ -385,7 +385,7 @@ class MainActivity : AppCompatActivity() {
             capture: String?
         ) {
             mUploadMessage = uploadFile
-            imageChooser()
+            imageChooser(acceptType)
         }
 
         // For Android Version 5.0+
@@ -399,51 +399,65 @@ class MainActivity : AppCompatActivity() {
                 mFilePathCallback?.onReceiveValue(null)
             }
             mFilePathCallback = filePathCallback
-            imageChooser()
+            imageChooser(fileChooserParams.acceptTypes[0])
             return true
         }
 
-        private fun imageChooser() {
-            var takePictureIntent: Intent? = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (takePictureIntent!!.resolveActivity(packageManager) != null) {
-                // Create the File where the photo should go
-                var photoFile: File? = null
-                try {
-                    photoFile = createImageFile()
-                    takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath)
-                } catch (ex: IOException) {
-                    // Error occurred while creating the File
-                    Log.e(javaClass.name, "Unable to create Image File", ex)
-                }
-
-                // Continue only if the File was successfully created
-                if (photoFile != null) {
-                    // File 객체의 URI 를 얻는다.
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        mCapturedImageURI = FileProvider.getUriForFile(
-                            this@MainActivity,
-                            "$packageName.fileprovider",
-                            photoFile
-                        )
-                    } else {
-                        mCameraPhotoPath = "file:" + photoFile.absolutePath
-                        mCapturedImageURI = Uri.fromFile(photoFile)
+        private fun imageChooser(acceptType: String?) {
+            if (acceptType.isNullOrEmpty()) {
+                // 파일만, 카메라 비노출
+                val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                contentSelectionIntent.type = "*/*"
+                val intentArray: Array<Intent?>
+                intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+            } else {
+                var takePictureIntent: Intent? = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (takePictureIntent!!.resolveActivity(packageManager) != null) {
+                    // Create the File where the photo should go
+                    var photoFile: File? = null
+                    try {
+                        photoFile = createImageFile()
+                        takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath)
+                    } catch (ex: IOException) {
+                        // Error occurred while creating the File
+                        Log.e(javaClass.name, "Unable to create Image File", ex)
                     }
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI)
-                } else {
-                    takePictureIntent = null
+
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        // File 객체의 URI 를 얻는다.
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            mCapturedImageURI = FileProvider.getUriForFile(
+                                this@MainActivity,
+                                "$packageName.fileprovider",
+                                photoFile
+                            )
+                        } else {
+                            mCameraPhotoPath = "file:" + photoFile.absolutePath
+                            mCapturedImageURI = Uri.fromFile(photoFile)
+                        }
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI)
+                    } else {
+                        takePictureIntent = null
+                    }
                 }
+                val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                contentSelectionIntent.type = acceptType
+                val intentArray: Array<Intent?>
+                intentArray = takePictureIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
             }
-            val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-            contentSelectionIntent.type = "image/*"
-            val intentArray: Array<Intent?>
-            intentArray = takePictureIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-            startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
         }
 
         override fun onJsAlert(
