@@ -19,6 +19,7 @@ import android.util.Base64
 import android.util.Log
 import android.view.*
 import android.webkit.*
+import android.webkit.CookieManager
 import android.webkit.WebChromeClient.FileChooserParams
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -55,14 +56,12 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
 import java.lang.Runnable
-import java.net.HttpURLConnection
-import java.net.URISyntaxException
-import java.net.URL
-import java.net.URLDecoder
+import java.net.*
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 //import com.nhn.android.naverlogin.OAuthLogin;
 //import com.nhn.android.naverlogin.OAuthLoginHandler;
@@ -942,6 +941,18 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         checkPermission()
                     }
+                } else if ("ACT1037" == actionCode) {
+                    LogUtil.d("ACT1037 - 파일 열기")
+                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                    contentSelectionIntent.type = "*/*"
+                    val intentArray: Array<Intent?>
+                    intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                    startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -1143,6 +1154,16 @@ class MainActivity : AppCompatActivity() {
                 mFilePathCallback?.onReceiveValue(results)
                 mFilePathCallback = null
             }
+        } else if (resultCode == RESULT_OK && requestCode == Constants.REQUEST_GET_FILE) {
+            data?.data?.let {
+                try {
+                    val bitmap = uriToBitmap(this, it)
+                    val result = getBase64String(bitmap!!)
+                    executeJavascript("$mCallback($result)")
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
         if (data == null) return
         if (data.hasExtra("bankpay_value")) {
@@ -1194,6 +1215,11 @@ class MainActivity : AppCompatActivity() {
             }
             executeJavascript("$mCallback($result)")
         }
+    }
+
+    fun uriToBitmap(context: Context, uri: Uri?): Bitmap? {
+        val bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri)
+        return bitmap
     }
 
     /**
