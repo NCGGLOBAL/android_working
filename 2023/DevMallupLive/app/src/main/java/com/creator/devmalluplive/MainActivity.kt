@@ -1158,8 +1158,14 @@ class MainActivity : AppCompatActivity() {
             data?.data?.let {
                 try {
                     val bitmap = uriToBitmap(this, it)
-                    val result = getBase64String(bitmap!!)
-                    executeJavascript("$mCallback($result)")
+                    val base64String = getBase64String(bitmap!!)
+
+                    val fileName = File(it.path).name
+                    val jObj = JSONObject()
+                    jObj.put("fName", fileName)
+                    jObj.put("fData", base64String)
+
+                    executeJavascript("$mCallback($jObj)")
                 } catch (e: java.lang.Exception) {
                     e.printStackTrace()
                 }
