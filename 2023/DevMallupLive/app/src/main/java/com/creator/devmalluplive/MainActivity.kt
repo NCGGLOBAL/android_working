@@ -1157,7 +1157,7 @@ class MainActivity : AppCompatActivity() {
         } else if (resultCode == RESULT_OK && requestCode == Constants.REQUEST_GET_FILE) {
             data?.data?.let {
                 try {
-                    val bitmap = uriToBitmap(this, it)
+                    val bitmap = BitmapUtil.uriToBitmap(this, it)
                     val base64String = getBase64String(bitmap!!)
 
                     val fileName = File(it.path).name
@@ -1221,11 +1221,6 @@ class MainActivity : AppCompatActivity() {
             }
             executeJavascript("$mCallback($result)")
         }
-    }
-
-    fun uriToBitmap(context: Context, uri: Uri?): Bitmap? {
-        val bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri)
-        return bitmap
     }
 
     /**

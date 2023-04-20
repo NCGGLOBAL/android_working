@@ -638,6 +638,8 @@ class CameraActivity : Activity() {
                         intent.putExtra("webviewUrl", request_url)
                         startActivity(intent)
                     }
+                } else if ("ACT1036" == actionCode) {
+                    LogUtil.d("ACT1036 - 스트리밍 화면 캡쳐")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
