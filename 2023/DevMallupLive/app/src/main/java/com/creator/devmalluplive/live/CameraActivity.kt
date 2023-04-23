@@ -640,6 +640,14 @@ class CameraActivity : Activity() {
                     }
                 } else if ("ACT1036" == actionCode) {
                     LogUtil.d("ACT1036 - 스트리밍 화면 캡쳐")
+                    mStreamer?.requestScreenShot {
+                        it?.let {
+                            val base64String = getBase64String(it)
+                            val jObj = JSONObject()
+                            jObj.put("fData", base64String)
+                            executeJavascript("$mCallback($jObj)")
+                        }
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
