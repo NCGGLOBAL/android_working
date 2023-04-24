@@ -310,5 +310,10 @@ class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransfor
                 `in`.close()
             }
         }
+
+        fun uriToBitmap(context: Context, uri: Uri?): Bitmap? {
+            val bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri)
+            return bitmap
+        }
     }
 }
