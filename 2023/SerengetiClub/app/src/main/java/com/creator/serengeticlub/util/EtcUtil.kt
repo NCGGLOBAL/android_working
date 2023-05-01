@@ -4,6 +4,7 @@ import android.content.*
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Build
 import android.telephony.TelephonyManager
 import android.webkit.WebView
@@ -363,5 +364,25 @@ object EtcUtil {
                 return buf.toString()
             }
         }
+    }
+
+    fun checkAppInstall(context: Context, packageName: String): Boolean {
+        val pm: PackageManager = context.packageManager
+        return try {
+            pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+            // 카카오톡이 설치되어 있음
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            // 카카오톡이 설치되어 있지 않음
+            false
+        }
+    }
+
+    fun moveToPlayStoreApp(context: Context, packageName: String) {
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("market://details?id=$packageName")
+        )
+        context.startActivity(intent)
     }
 }
