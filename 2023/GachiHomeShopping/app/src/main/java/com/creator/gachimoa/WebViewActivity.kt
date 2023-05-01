@@ -460,6 +460,22 @@ class WebViewActivity : Activity() {
                             }
                         }
                         true
+                    } else if (url.startsWith("kakaotalk://inappbrowser")) {
+                        if (EtcUtil.checkAppInstall(this@WebViewActivity, "com.kakao.talk")) {
+                            intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                            startActivity(intent)
+                        } else {
+                            try {
+                                EtcUtil.moveToPlayStoreApp(this@WebViewActivity, "com.kakao.talk")
+                            } catch (e: ActivityNotFoundException) {
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://play.google.com/store/apps/details?id=com.kakao.talk")
+                                )
+                                startActivity(intent)
+                            }
+                        }
+                        true
                     } else { //±∏ πÊΩƒ
                         intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                         startActivity(intent)
