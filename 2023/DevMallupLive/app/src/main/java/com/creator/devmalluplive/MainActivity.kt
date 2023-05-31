@@ -1036,8 +1036,8 @@ class MainActivity : AppCompatActivity() {
      * 계좌이체 결과값을 받아와 오류시 해당 메세지를, 성공시에는 결과 페이지를 호출한다.
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        var data = data
-        super.onActivityResult(requestCode, resultCode, data)
+        var resultData = data
+        super.onActivityResult(requestCode, resultCode, resultData)
         Log.d("SeongKwon", "============================================")
         Log.d("SeongKwon", "requestCode = $requestCode")
         Log.d("SeongKwon", "resultCode = $resultCode")
@@ -1052,7 +1052,7 @@ class MainActivity : AppCompatActivity() {
                 val jArray = JSONArray()
                 jObj.put("resultcd", "0") // 0:성공. 1:실패
                 val selectedImages =
-                    data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+                    resultData!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
                 for (i in selectedImages!!.indices) {
                     val jObjItem = JSONObject()
 
@@ -1097,18 +1097,18 @@ class MainActivity : AppCompatActivity() {
             try {
                 val jObj = JSONObject()
                 jObj.put("resultcd", "0") // 변경사항 있을경우 : 1, 없을경우 : 0 // 이전[0:성공. 1:실패]
-                if (data!!.hasExtra("isChanged")) {
-                    if (data.getBooleanExtra("isChanged", false)) {
+                if (resultData!!.hasExtra("isChanged")) {
+                    if (resultData.getBooleanExtra("isChanged", false)) {
                         jObj.put("resultcd", "1")
                     }
                 }
-                if (data.hasExtra("imgArr")) {
-                    mImgArr = JSONArray(data.getStringExtra("imgArr"))
+                if (resultData.hasExtra("imgArr")) {
+                    mImgArr = JSONArray(resultData.getStringExtra("imgArr"))
                 }
                 jObj.put("imgArr", mImgArr)
-                jObj.put("token", data.getStringExtra("token"))
-                jObj.put("pageGbn", data.getStringExtra("pageGbn"))
-                jObj.put("cnt", data.getStringExtra("cnt"))
+                jObj.put("token", resultData.getStringExtra("token"))
+                jObj.put("pageGbn", resultData.getStringExtra("pageGbn"))
+                jObj.put("cnt", resultData.getStringExtra("cnt"))
                 executeJavascript("$mCallback($jObj)")
 
                 // TODO 신규등록을 위한 임시저장
@@ -1118,44 +1118,44 @@ class MainActivity : AppCompatActivity() {
             }
         } else if (requestCode == Constants.REQUEST_EDIT_IMAGE && resultCode == RESULT_OK) {
             try {
-                if (data!!.hasExtra("imgArr")) {
-                    mImgArr = JSONArray(data.getStringExtra("imgArr"))
+                if (resultData!!.hasExtra("imgArr")) {
+                    mImgArr = JSONArray(resultData.getStringExtra("imgArr"))
                 }
                 val jObj = JSONObject()
                 jObj.put("imgArr", mImgArr)
-                jObj.put("token", data.getStringExtra("token"))
-                jObj.put("pageGbn", data.getStringExtra("pageGbn"))
-                jObj.put("cnt", data.getStringExtra("cnt"))
+                jObj.put("token", resultData.getStringExtra("token"))
+                jObj.put("pageGbn", resultData.getStringExtra("pageGbn"))
+                jObj.put("cnt", resultData.getStringExtra("cnt"))
                 executeJavascript("$mCallback($jObj)")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         } else if (requestCode == Constants.FILECHOOSER_NORMAL_REQ_CODE) {
             if (mUploadMessage == null) {
-                super.onActivityResult(requestCode, resultCode, data)
+                super.onActivityResult(requestCode, resultCode, resultData)
                 return
             }
-            val result = getResultUri(data)
+            val result = getResultUri(resultData)
             Log.d(javaClass.name, "openFileChooser : $result")
             mUploadMessage?.onReceiveValue(result)
             mUploadMessage = null
         } else if (requestCode == Constants.FILECHOOSER_LOLLIPOP_REQ_CODE) {
             if (mFilePathCallback == null) {
-                super.onActivityResult(requestCode, resultCode, data)
+                super.onActivityResult(requestCode, resultCode, resultData)
                 return
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                if (data == null) data = Intent()
-                if (data.data == null) data.data = mCapturedImageURI
-                mFilePathCallback?.onReceiveValue(FileChooserParams.parseResult(resultCode, data))
+                if (resultData == null) resultData = Intent()
+                if (resultData.data == null) resultData.data = mCapturedImageURI
+                mFilePathCallback?.onReceiveValue(FileChooserParams.parseResult(resultCode, resultData))
                 mFilePathCallback = null
             } else {
-                val results = arrayOf(getResultUri(data))
+                val results = arrayOf(getResultUri(resultData))
                 mFilePathCallback?.onReceiveValue(results)
                 mFilePathCallback = null
             }
         } else if (resultCode == RESULT_OK && requestCode == Constants.REQUEST_GET_FILE) {
-            data?.data?.let {
+            resultData?.data?.let {
                 try {
                     val bitmap = BitmapUtil.uriToBitmap(this, it)
                     val base64String = getBase64String(bitmap!!)
@@ -1171,10 +1171,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        if (data == null) return
-        if (data.hasExtra("bankpay_value")) {
-            val resVal = data.extras!!.getString("bankpay_value")
-            val resCode = data.extras!!.getString("bankpay_code")
+        if (resultData == null) return
+        if (resultData.hasExtra("bankpay_value")) {
+            val resVal = resultData.extras!!.getString("bankpay_value")
+            val resCode = resultData.extras!!.getString("bankpay_code")
             Log.i("NICE", "resCode : $resCode")
             Log.i("NICE", "resVal : $resVal")
             if ("091" == resCode) {      //계좌이체 결제를 취소한 경우
@@ -1203,18 +1203,18 @@ class MainActivity : AppCompatActivity() {
                     println("Unsupported character set")
                 }
             }
-        } else if (data.hasExtra("SCAN_RESULT") && data.hasExtra("SCAN_RESULT_FORMAT")) {
+        } else if (resultData.hasExtra("SCAN_RESULT") && resultData.hasExtra("SCAN_RESULT_FORMAT")) {
             Toast.makeText(
                 this, """
-     [SCAN_RESULT]${data.getStringExtra("SCAN_RESULT")}
-     [SCAN_RESULT_FORMAT]${data.getStringExtra("SCAN_RESULT_FORMAT")}
+     [SCAN_RESULT]${resultData.getStringExtra("SCAN_RESULT")}
+     [SCAN_RESULT_FORMAT]${resultData.getStringExtra("SCAN_RESULT_FORMAT")}
      """.trimIndent(), Toast.LENGTH_LONG
             ).show()
             var result = ""
             try {
                 val jObj = JSONObject()
                 jObj.put("resultcd", "0") // 0:성공. 1:실패
-                jObj.put("returnCode", data.getStringExtra("SCAN_RESULT"))
+                jObj.put("returnCode", resultData.getStringExtra("SCAN_RESULT"))
                 result = jObj.toString()
             } catch (e: Exception) {
                 e.printStackTrace()
