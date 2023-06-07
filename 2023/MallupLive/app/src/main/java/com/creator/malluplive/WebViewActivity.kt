@@ -729,6 +729,18 @@ class WebViewActivity : Activity() {
                             }
                         }
                     }
+                } else if ("ACT1037" == actionCode) {
+                    LogUtil.d("ACT1037 - 파일 열기")
+                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                    contentSelectionIntent.type = "*/*"
+                    val intentArray: Array<Intent?>
+                    intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                    startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -793,14 +805,12 @@ class WebViewActivity : Activity() {
      * 계좌이체 결과값을 받아와 오류시 해당 메세지를, 성공시에는 결과 페이지를 호출한다.
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        var data: Intent? = data
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("SeongKwon", "============================================")
         Log.d("SeongKwon", "requestCode = $requestCode")
         Log.d("SeongKwon", "resultCode = $resultCode")
         Log.d("SeongKwon", "============================================")
-//        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-//            return
-//        } else
         if ((requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) && resultCode == RESULT_OK) {
             var result = ""
             try {
@@ -808,7 +818,7 @@ class WebViewActivity : Activity() {
                 val jArray = JSONArray()
                 jObj.put("resultcd", "0") // 0:성공. 1:실패
                 val selectedImages =
-                    data.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+                    data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
                 for (i in selectedImages!!.indices) {
                     val jObjItem = JSONObject()
 
@@ -853,7 +863,7 @@ class WebViewActivity : Activity() {
             try {
                 val jObj = JSONObject()
                 jObj.put("resultcd", "0") // 변경사항 있을경우 : 1, 없을경우 : 0 // 이전[0:성공. 1:실패]
-                if (data.hasExtra("isChanged")) {
+                if (data!!.hasExtra("isChanged")) {
                     if (data.getBooleanExtra("isChanged", false)) {
                         jObj.put("resultcd", "1")
                     }
@@ -874,7 +884,7 @@ class WebViewActivity : Activity() {
             }
         } else if (requestCode == Constants.REQUEST_EDIT_IMAGE && resultCode == RESULT_OK) {
             try {
-                if (data.hasExtra("imgArr")) {
+                if (data!!.hasExtra("imgArr")) {
                     mImgArr = JSONArray(data.getStringExtra("imgArr"))
                 }
                 val jObj = JSONObject()
@@ -900,59 +910,32 @@ class WebViewActivity : Activity() {
                 super.onActivityResult(requestCode, resultCode, data)
                 return
             }
-            Log.e("SeongKwon", getResultUri(data).toString())
-            val results = arrayOf(getResultUri(data))
-            mFilePathCallback!!.onReceiveValue(results)
-            mFilePathCallback = null
-        }
-        if (data == null) return
-        if (data.hasExtra("bankpay_value")) {
-            val resVal = data.extras!!.getString("bankpay_value")
-            val resCode = data.extras!!.getString("bankpay_code")
-            Log.i("NICE", "resCode : $resCode")
-            Log.i("NICE", "resVal : $resVal")
-            if ("091" == resCode) {      //계좌이체 결제를 취소한 경우
-                AlertUtil.showConfirmDialog(this, "인증 오류", "계좌이체 결제를 취소하였습니다.")
-                mWebView?.loadUrl(MERCHANT_URL)
-            } else if ("060" == resCode) {
-                AlertUtil.showConfirmDialog(this, "인증 오류", "타임아웃")
-                mWebView?.loadUrl(MERCHANT_URL)
-            } else if ("050" == resCode) {
-                mWebView?.loadUrl(MERCHANT_URL)
-            } else if ("040" == resCode) {
-                AlertUtil.showConfirmDialog(this, "인증 오류", "OTP/보안카드 처리 실패")
-                mWebView?.loadUrl(MERCHANT_URL)
-            } else if ("030" == resCode) {
-                AlertUtil.showConfirmDialog(this, "인증 오류", "인증모듈 초기화 오류")
-                mWebView?.loadUrl(MERCHANT_URL)
-            } else if ("000" == resCode) { // 성공일 경우
-                val postData =
-                    "callbackparam2=$BANK_TID&bankpay_code=$resCode&bankpay_value=$resVal"
-                // nice sample
-//                mWebView.postUrl(NICE_BANK_URL, EncodingUtils.getBytes(postData, "euc-kr"));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (data == null) data = Intent()
+                if (data.data == null) data.data = mCapturedImageURI
+                mFilePathCallback!!.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data))
+                mFilePathCallback = null
+            } else {
+                val results = arrayOf(getResultUri(data))
+                mFilePathCallback!!.onReceiveValue(results)
+                mFilePathCallback = null
+            }
+        } else if (resultCode == RESULT_OK && requestCode == Constants.REQUEST_GET_FILE) {
+            data?.data?.let {
                 try {
-                    mWebView!!.postUrl(NICE_BANK_URL!!, postData.toByteArray(charset("euc-kr")))
-                } catch (e: UnsupportedEncodingException) {
-                    println("Unsupported character set")
+                    val bitmap = BitmapUtil.uriToBitmap(this, it)
+                    val base64String = getBase64String(bitmap!!)
+
+                    val fileName = File(it.path).name
+                    val jObj = JSONObject()
+                    jObj.put("fName", fileName)
+                    jObj.put("fData", base64String)
+
+                    executeJavascript("$mCallback($jObj)")
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
                 }
             }
-        } else if (data.hasExtra("SCAN_RESULT") && data.hasExtra("SCAN_RESULT_FORMAT")) {
-            Toast.makeText(
-                this, """
-     [SCAN_RESULT]${data.getStringExtra("SCAN_RESULT")}
-     [SCAN_RESULT_FORMAT]${data.getStringExtra("SCAN_RESULT_FORMAT")}
-     """.trimIndent(), Toast.LENGTH_LONG
-            ).show()
-            var result = ""
-            try {
-                val jObj = JSONObject()
-                jObj.put("resultcd", "0") // 0:성공. 1:실패
-                jObj.put("returnCode", data.getStringExtra("SCAN_RESULT"))
-                result = jObj.toString()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            executeJavascript("$mCallback($result)")
         }
     }
 
