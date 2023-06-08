@@ -804,7 +804,7 @@ class WebViewActivity : Activity() {
      * For NicePay
      * 계좌이체 결과값을 받아와 오류시 해당 메세지를, 성공시에는 결과 페이지를 호출한다.
      */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var data: Intent? = data
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("SeongKwon", "============================================")

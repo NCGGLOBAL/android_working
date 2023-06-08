@@ -76,7 +76,7 @@ class CameraActivity : Activity() {
         initCamera()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var data: Intent? = data
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("SeongKwon", "============================================")
