@@ -822,7 +822,7 @@ class WebViewActivity : Activity() {
      * For NicePay
      * 계좌이체 결과값을 받아와 오류시 해당 메세지를, 성공시에는 결과 페이지를 호출한다.
      */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var data = data
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("SeongKwon", "============================================")
@@ -839,7 +839,7 @@ class WebViewActivity : Activity() {
                 val jArray = JSONArray()
                 jObj.put("resultcd", "0") // 0:성공. 1:실패
                 val selectedImages =
-                    data.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+                    data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
                 for (i in selectedImages!!.indices) {
                     val jObjItem = JSONObject()
 
@@ -884,7 +884,7 @@ class WebViewActivity : Activity() {
             try {
                 val jObj = JSONObject()
                 jObj.put("resultcd", "0") // 변경사항 있을경우 : 1, 없을경우 : 0 // 이전[0:성공. 1:실패]
-                if (data.hasExtra("isChanged")) {
+                if (data!!.hasExtra("isChanged")) {
                     if (data.getBooleanExtra("isChanged", false)) {
                         jObj.put("resultcd", "1")
                     }
@@ -899,13 +899,13 @@ class WebViewActivity : Activity() {
                 executeJavascript("$mCallback($jObj)")
 
                 // TODO 신규등록을 위한 임시저장
-                HNApplication.Companion.mImgArrForReg = mImgArr.toString()
+                HNApplication.mImgArrForReg = mImgArr.toString()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         } else if (requestCode == Constants.REQUEST_EDIT_IMAGE && resultCode == RESULT_OK) {
             try {
-                if (data.hasExtra("imgArr")) {
+                if (data!!.hasExtra("imgArr")) {
                     mImgArr = JSONArray(data.getStringExtra("imgArr"))
                 }
                 val jObj = JSONObject()
@@ -924,7 +924,7 @@ class WebViewActivity : Activity() {
             }
             val result = getResultUri(data)
             Log.d(javaClass.name, "openFileChooser : $result")
-            mUploadMessage!!.onReceiveValue(result)
+            mUploadMessage?.onReceiveValue(result)
             mUploadMessage = null
         } else if (requestCode == Constants.FILECHOOSER_LOLLIPOP_REQ_CODE) {
             if (mFilePathCallback == null) {
@@ -966,18 +966,19 @@ class WebViewActivity : Activity() {
             Log.i("NICE", "resVal : $resVal")
             if ("091" == resCode) {      //계좌이체 결제를 취소한 경우
                 AlertUtil.showConfirmDialog(this, "인증 오류", "계좌이체 결제를 취소하였습니다.")
-                mWebView?.loadUrl(MERCHANT_URL)
+//                mWebView!!.postUrl(MERCHANT_URL, null)
             } else if ("060" == resCode) {
                 AlertUtil.showConfirmDialog(this, "인증 오류", "타임아웃")
-                mWebView?.loadUrl(MERCHANT_URL)
+//                mWebView!!.postUrl(MERCHANT_URL, null)
             } else if ("050" == resCode) {
-                mWebView?.loadUrl(MERCHANT_URL)
+                AlertUtil.showConfirmDialog(this, "인증 오류", "전자서명 실패")
+//                mWebView!!.postUrl(MERCHANT_URL, null)
             } else if ("040" == resCode) {
                 AlertUtil.showConfirmDialog(this, "인증 오류", "OTP/보안카드 처리 실패")
-                mWebView?.loadUrl(MERCHANT_URL)
+//                mWebView!!.postUrl(MERCHANT_URL, null)
             } else if ("030" == resCode) {
                 AlertUtil.showConfirmDialog(this, "인증 오류", "인증모듈 초기화 오류")
-                mWebView?.loadUrl(MERCHANT_URL)
+//                mWebView!!.postUrl(MERCHANT_URL, null)
             } else if ("000" == resCode) { // 성공일 경우
                 val postData =
                     "callbackparam2=$BANK_TID&bankpay_code=$resCode&bankpay_value=$resVal"
