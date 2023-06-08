@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "711405401610",
+    "project_id": "domelive-cc655",
+    "storage_bucket": "domelive-cc655.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711405401610:android:4d3dd0b1ab24019d85d1f3",
+        "android_client_info": {
+          "package_name": "com.creator.domelive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711405401610-2gs9q1d0u5516k15adpqn59peat7229r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfohSuQG97QVBtR7KHwY3_tUsWCN5UllQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711405401610-2gs9q1d0u5516k15adpqn59peat7229r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
