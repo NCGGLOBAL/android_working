@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "159548155790",
+    "project_id": "banhal",
+    "storage_bucket": "banhal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159548155790:android:502f38a507c2794a5fa6df",
+        "android_client_info": {
+          "package_name": "com.creator.banhal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159548155790-i53iiiqtk2bn2h0et092vdt6adcae2r3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBt7kUXK35Y3lK5DtR5p1mJQ56kHtwiODw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159548155790-i53iiiqtk2bn2h0et092vdt6adcae2r3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "159548155790-n361hfhd9vt4057a2mifdjauij9k74ap.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.creator.banhal"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
