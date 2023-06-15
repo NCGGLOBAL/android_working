@@ -320,10 +320,10 @@ class WebViewActivity : Activity() {
         }
     }
 
-    inner class HNWebViewClient : WebViewClient() {
+    inner class HNWebViewClient : WebViewClient(), DownloadListener {
         override fun onPageFinished(view: WebView, url: String) {
             super.onPageFinished(view, url)
-            // LogUtil.d("onPageLoadStopped : " + url);
+             LogUtil.d("onPageLoadStopped : " + url);
 
 //            mProgressUtil.dismiss();
         }
@@ -335,7 +335,7 @@ class WebViewActivity : Activity() {
         }
 
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            // LogUtil.e("shouldOverrideUrlLoading : " + url);
+             LogUtil.e("shouldOverrideUrlLoading : " + url);
             var uri = Uri.parse(url)
             var intent: Intent? = null
             if (url.startsWith("sms:") || url.startsWith("smsto:")) {
@@ -551,6 +551,23 @@ class WebViewActivity : Activity() {
             }
             view.loadUrl(url)
             return false // webview replace
+        }
+
+        override fun onDownloadStart(
+            url: String?,
+            userAgent: String?,
+            contentDisposition: String?,
+            mimetype: String?,
+            contentLength: Long
+        ) {
+            LogUtil.e("onDownloadStart : " + url);
+            Toast.makeText(this@WebViewActivity, "onDownloadStart 다운로드를 시작합니다.", Toast.LENGTH_LONG).show()
+            Log.d("JJ", "***** onDownloadStart()");
+
+            Log.d("JJ","***** onDownloadStart() - url : "+url);
+            Log.d("JJ","***** onDownloadStart() - userAgent : "+userAgent);
+            Log.d("JJ","***** onDownloadStart() - contentDisposition : "+contentDisposition);
+            Log.d("JJ","***** onDownloadStart() - mimeType : "+mimetype);
         }
     }
 
