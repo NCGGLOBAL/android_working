@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.creator.wanpantv">
 
+    <queries>
+        <package android:name="com.kakao.talk" />
+    </queries>
+
     <application
         android:name="com.creator.wanpantv.common.HNApplication"
         android:allowBackup="true"

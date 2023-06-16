@@ -23,6 +23,7 @@ import android.webkit.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import androidx.core.content.FileProvider
 import com.creator.wanpantv.common.BackPressCloseHandler
 import com.creator.wanpantv.common.HNApplication
 import com.creator.wanpantv.delegator.HNCommTran
@@ -96,7 +97,7 @@ class WebViewActivity : Activity() {
     private var mUploadMessage: ValueCallback<Uri?>? = null
     private var mFilePathCallback: ValueCallback<Array<Uri>>? = null
     private var mCameraPhotoPath: String? = null
-    private val mCapturedImageURI: Uri? = null
+    private var mCapturedImageURI: Uri? = null
 
     //    private static OAuthLogin mOAuthLoginModule;
     private var callbackManager: CallbackManager? = null
@@ -213,7 +214,7 @@ class WebViewActivity : Activity() {
             capture: String?
         ) {
             mUploadMessage = uploadFile
-            imageChooser()
+            imageChooser(acceptType)
         }
 
         // For Android Version 5.0+
@@ -227,44 +228,65 @@ class WebViewActivity : Activity() {
                 mFilePathCallback!!.onReceiveValue(null)
             }
             mFilePathCallback = filePathCallback
-            imageChooser()
+            imageChooser(fileChooserParams.acceptTypes[0])
             return true
         }
 
-        private fun imageChooser() {
-            var takePictureIntent: Intent? = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (takePictureIntent!!.resolveActivity(packageManager) != null) {
-                // Create the File where the photo should go
-                var photoFile: File? = null
-                try {
-                    photoFile = createImageFile()
-                    takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath)
-                } catch (ex: IOException) {
-                    // Error occurred while creating the File
-                    Log.e(javaClass.name, "Unable to create Image File", ex)
-                }
+        private fun imageChooser(acceptType: String?) {
+            if (acceptType.isNullOrEmpty()) {
+                // 파일만, 카메라 비노출
+                val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                contentSelectionIntent.type = "*/*"
+                val intentArray: Array<Intent?>
+                intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+            } else {
+                var takePictureIntent: Intent? = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (takePictureIntent!!.resolveActivity(packageManager) != null) {
+                    // Create the File where the photo should go
+                    var photoFile: File? = null
+                    try {
+                        photoFile = createImageFile()
+                        takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath)
+                    } catch (ex: IOException) {
+                        // Error occurred while creating the File
+                        Log.e(javaClass.name, "Unable to create Image File", ex)
+                    }
 
-                // Continue only if the File was successfully created
-                if (photoFile != null) {
-                    mCameraPhotoPath = "file:" + photoFile.absolutePath
-                    takePictureIntent.putExtra(
-                        MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(photoFile)
-                    )
-                } else {
-                    takePictureIntent = null
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        // File 객체의 URI 를 얻는다.
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            mCapturedImageURI = FileProvider.getUriForFile(
+                                this@WebViewActivity,
+                                "$packageName.fileprovider",
+                                photoFile
+                            )
+                        } else {
+                            mCameraPhotoPath = "file:" + photoFile.absolutePath
+                            mCapturedImageURI = Uri.fromFile(photoFile)
+                        }
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI)
+                    } else {
+                        takePictureIntent = null
+                    }
                 }
+                val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                contentSelectionIntent.type = acceptType
+                val intentArray: Array<Intent?>
+                intentArray = takePictureIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
             }
-            val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-            contentSelectionIntent.type = "image/*"
-            val intentArray: Array<Intent?>
-            intentArray = takePictureIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-            startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
         }
 
         override fun onJsAlert(
@@ -456,6 +478,22 @@ class WebViewActivity : Activity() {
                             } catch (e: ActivityNotFoundException) {
                                 uri = Uri.parse("market://search?q=pname:" + intent.getPackage())
                                 intent = Intent(Intent.ACTION_VIEW, uri)
+                                startActivity(intent)
+                            }
+                        }
+                        true
+                    } else if (url.startsWith("kakaotalk://inappbrowser")) {
+                        if (EtcUtil.checkAppInstall(this@WebViewActivity, "com.kakao.talk")) {
+                            intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                            startActivity(intent)
+                        } else {
+                            try {
+                                EtcUtil.moveToPlayStoreApp(this@WebViewActivity, "com.kakao.talk")
+                            } catch (e: ActivityNotFoundException) {
+                                val intent = Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("https://play.google.com/store/apps/details?id=com.kakao.talk")
+                                )
                                 startActivity(intent)
                             }
                         }
@@ -707,6 +745,18 @@ class WebViewActivity : Activity() {
                             }
                         }
                     }
+                } else if ("ACT1037" == actionCode) {
+                    LogUtil.d("ACT1037 - 파일 열기")
+                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                    contentSelectionIntent.type = "*/*"
+                    val intentArray: Array<Intent?>
+                    intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                    startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -770,7 +820,8 @@ class WebViewActivity : Activity() {
      * For NicePay
      * 계좌이체 결과값을 받아와 오류시 해당 메세지를, 성공시에는 결과 페이지를 호출한다.
      */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        var data = data
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("SeongKwon", "============================================")
         Log.d("SeongKwon", "requestCode = $requestCode")
@@ -786,7 +837,7 @@ class WebViewActivity : Activity() {
                 val jArray = JSONArray()
                 jObj.put("resultcd", "0") // 0:성공. 1:실패
                 val selectedImages =
-                    data.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+                    data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
                 for (i in selectedImages!!.indices) {
                     val jObjItem = JSONObject()
 
@@ -831,7 +882,7 @@ class WebViewActivity : Activity() {
             try {
                 val jObj = JSONObject()
                 jObj.put("resultcd", "0") // 변경사항 있을경우 : 1, 없을경우 : 0 // 이전[0:성공. 1:실패]
-                if (data.hasExtra("isChanged")) {
+                if (data!!.hasExtra("isChanged")) {
                     if (data.getBooleanExtra("isChanged", false)) {
                         jObj.put("resultcd", "1")
                     }
@@ -846,13 +897,13 @@ class WebViewActivity : Activity() {
                 executeJavascript("$mCallback($jObj)")
 
                 // TODO 신규등록을 위한 임시저장
-                HNApplication.Companion.mImgArrForReg = mImgArr.toString()
+                HNApplication.mImgArrForReg = mImgArr.toString()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         } else if (requestCode == Constants.REQUEST_EDIT_IMAGE && resultCode == RESULT_OK) {
             try {
-                if (data.hasExtra("imgArr")) {
+                if (data!!.hasExtra("imgArr")) {
                     mImgArr = JSONArray(data.getStringExtra("imgArr"))
                 }
                 val jObj = JSONObject()
@@ -871,17 +922,39 @@ class WebViewActivity : Activity() {
             }
             val result = getResultUri(data)
             Log.d(javaClass.name, "openFileChooser : $result")
-            mUploadMessage!!.onReceiveValue(result)
+            mUploadMessage?.onReceiveValue(result)
             mUploadMessage = null
         } else if (requestCode == Constants.FILECHOOSER_LOLLIPOP_REQ_CODE) {
             if (mFilePathCallback == null) {
                 super.onActivityResult(requestCode, resultCode, data)
                 return
             }
-            Log.e("SeongKwon", getResultUri(data).toString())
-            val results = arrayOf(getResultUri(data))
-            mFilePathCallback!!.onReceiveValue(results)
-            mFilePathCallback = null
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (data == null) data = Intent()
+                if (data.data == null) data.data = mCapturedImageURI
+                mFilePathCallback?.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data))
+                mFilePathCallback = null
+            } else {
+                val results = arrayOf(getResultUri(data))
+                mFilePathCallback?.onReceiveValue(results)
+                mFilePathCallback = null
+            }
+        } else if (resultCode == RESULT_OK && requestCode == Constants.REQUEST_GET_FILE) {
+            data?.data?.let {
+                try {
+                    val bitmap = BitmapUtil.uriToBitmap(this, it)
+                    val base64String = getBase64String(bitmap!!)
+
+                    val fileName = File(it.path).name
+                    val jObj = JSONObject()
+                    jObj.put("fName", fileName)
+                    jObj.put("fData", base64String)
+
+                    executeJavascript("$mCallback($jObj)")
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
         if (data == null) return
         if (data.hasExtra("bankpay_value")) {
@@ -891,18 +964,19 @@ class WebViewActivity : Activity() {
             Log.i("NICE", "resVal : $resVal")
             if ("091" == resCode) {      //계좌이체 결제를 취소한 경우
                 AlertUtil.showConfirmDialog(this, "인증 오류", "계좌이체 결제를 취소하였습니다.")
-                mWebView?.loadUrl(MERCHANT_URL)
+//                mWebView!!.postUrl(MERCHANT_URL, null)
             } else if ("060" == resCode) {
                 AlertUtil.showConfirmDialog(this, "인증 오류", "타임아웃")
-                mWebView?.loadUrl(MERCHANT_URL)
+//                mWebView!!.postUrl(MERCHANT_URL, null)
             } else if ("050" == resCode) {
-                mWebView?.loadUrl(MERCHANT_URL)
+                AlertUtil.showConfirmDialog(this, "인증 오류", "전자서명 실패")
+//                mWebView!!.postUrl(MERCHANT_URL, null)
             } else if ("040" == resCode) {
                 AlertUtil.showConfirmDialog(this, "인증 오류", "OTP/보안카드 처리 실패")
-                mWebView?.loadUrl(MERCHANT_URL)
+//                mWebView!!.postUrl(MERCHANT_URL, null)
             } else if ("030" == resCode) {
                 AlertUtil.showConfirmDialog(this, "인증 오류", "인증모듈 초기화 오류")
-                mWebView?.loadUrl(MERCHANT_URL)
+//                mWebView!!.postUrl(MERCHANT_URL, null)
             } else if ("000" == resCode) { // 성공일 경우
                 val postData =
                     "callbackparam2=$BANK_TID&bankpay_code=$resCode&bankpay_value=$resVal"

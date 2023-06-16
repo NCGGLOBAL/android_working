@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "23241974867",
+    "project_id": "wanpantv-2d660",
+    "storage_bucket": "wanpantv-2d660.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:23241974867:android:d55a6d8fce372768d012a6",
+        "android_client_info": {
+          "package_name": "com.creator.wanpantv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "23241974867-on2j3m6gsghfme8jb9rjh8dhqo431us8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdVA5dCSgRGUn3K1RtF-RNrV8pHBaY9ho"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "23241974867-on2j3m6gsghfme8jb9rjh8dhqo431us8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

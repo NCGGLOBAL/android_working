@@ -23,7 +23,7 @@ class CustomAlbumSelectAdapter(
         count = albumCount
     }
 
-    override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         var convertView = convertView
         val viewHolder: ViewHolder
         if (convertView == null) {
