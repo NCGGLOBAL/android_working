@@ -3,6 +3,7 @@ package com.creator.devmalluplive
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.ActivityManager
+import android.app.DownloadManager
 import android.app.ProgressDialog
 import android.content.*
 import android.content.pm.PackageInfo
@@ -489,7 +490,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    inner class HNWebViewClient : WebViewClient() {
+    inner class HNWebViewClient : WebViewClient(), DownloadListener {
         override fun onPageFinished(view: WebView, url: String) {
             super.onPageFinished(view, url)
             // LogUtil.d("onPageLoadStopped : " + url);
@@ -732,7 +733,19 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             view.loadUrl(url)
+            view.setDownloadListener(this)
             return false // webview replace
+        }
+
+        override fun onDownloadStart(
+            url: String?,
+            userAgent: String?,
+            contentDisposition: String?,
+            mimeType: String?,
+            contentLength: Long
+        ) {
+            LogUtil.e("onDownloadStart : " + url);
+            EtcUtil.downloadFile(url, userAgent, contentDisposition, mimeType, this@MainActivity)
         }
     }
 

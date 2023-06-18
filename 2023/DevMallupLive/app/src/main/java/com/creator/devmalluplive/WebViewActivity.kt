@@ -1,9 +1,11 @@
 package com.creator.devmalluplive
 
 import android.Manifest
+import android.R.attr.mimeType
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
+import android.app.DownloadManager
 import android.app.ProgressDialog
 import android.content.*
 import android.content.pm.PackageInfo
@@ -51,6 +53,7 @@ import java.net.URISyntaxException
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 //import com.nhn.android.naverlogin.OAuthLogin;
 //import com.nhn.android.naverlogin.OAuthLoginHandler;
@@ -550,6 +553,7 @@ class WebViewActivity : Activity() {
                 }
             }
             view.loadUrl(url)
+            view.setDownloadListener(this)
             return false // webview replace
         }
 
@@ -557,17 +561,11 @@ class WebViewActivity : Activity() {
             url: String?,
             userAgent: String?,
             contentDisposition: String?,
-            mimetype: String?,
+            mimeType: String?,
             contentLength: Long
         ) {
             LogUtil.e("onDownloadStart : " + url);
-            Toast.makeText(this@WebViewActivity, "onDownloadStart 다운로드를 시작합니다.", Toast.LENGTH_LONG).show()
-            Log.d("JJ", "***** onDownloadStart()");
-
-            Log.d("JJ","***** onDownloadStart() - url : "+url);
-            Log.d("JJ","***** onDownloadStart() - userAgent : "+userAgent);
-            Log.d("JJ","***** onDownloadStart() - contentDisposition : "+contentDisposition);
-            Log.d("JJ","***** onDownloadStart() - mimeType : "+mimetype);
+            EtcUtil.downloadFile(url, userAgent, contentDisposition, mimeType, this@WebViewActivity)
         }
     }
 

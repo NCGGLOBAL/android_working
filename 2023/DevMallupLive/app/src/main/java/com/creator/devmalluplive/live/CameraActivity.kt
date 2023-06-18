@@ -379,7 +379,7 @@ class CameraActivity : Activity() {
         super.onDestroy()
     }
 
-    inner class HNWebViewClient : WebViewClient() {
+    inner class HNWebViewClient : WebViewClient(), DownloadListener {
         override fun onPageFinished(view: WebView, url: String) {
             super.onPageFinished(view, url)
             // LogUtil.d("onPageLoadStopped : " + url);
@@ -512,7 +512,19 @@ class CameraActivity : Activity() {
                     true
                 }
             }
+            view.setDownloadListener(this)
             return false // webview replace
+        }
+
+        override fun onDownloadStart(
+            url: String?,
+            userAgent: String?,
+            contentDisposition: String?,
+            mimeType: String?,
+            contentLength: Long
+        ) {
+            LogUtil.e("onDownloadStart : " + url);
+            EtcUtil.downloadFile(url, userAgent, contentDisposition, mimeType, this@CameraActivity)
         }
     }
 
