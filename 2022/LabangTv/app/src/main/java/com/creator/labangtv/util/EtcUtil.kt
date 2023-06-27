@@ -14,7 +14,13 @@ import android.webkit.CookieManager
 import android.webkit.URLUtil
 import android.webkit.WebView
 import android.widget.Toast
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
 import java.io.*
+import java.net.HttpURLConnection
+import java.net.URL
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.security.MessageDigest
@@ -22,6 +28,8 @@ import java.security.NoSuchAlgorithmException
 import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
+
+
 
 /**
  * Created by skcrackers on 10/17/16.
@@ -424,5 +432,66 @@ object EtcUtil {
         )
         val dm = context.getSystemService(Activity.DOWNLOAD_SERVICE) as DownloadManager
         dm.enqueue(request)
+    }
+
+    fun getMarketVersion(packageName: String): String? {
+        try {
+            val doc: Document = Jsoup.connect(
+                "https://play.google.com/store/apps/details?id="
+                        + packageName
+            ).get()
+            val Version: Elements = doc.select(".content")
+            for (mElement: Element in Version) {
+                if (mElement.attr("itemprop").equals("softwareVersion")) {
+                    return mElement.text().trim()
+                }
+            }
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+        }
+        return null
+    }
+
+    fun getMarketVersionFast(packageName: String): String? {
+        var mData = ""
+        var mVer: String? = null
+        try {
+            val mUrl = URL(
+                "https://play.google.com/store/apps/details?id="
+                        + packageName
+            )
+            val mConnection: HttpURLConnection? = mUrl
+                .openConnection() as HttpURLConnection ?: return null
+            mConnection?.setConnectTimeout(5000)
+            mConnection?.setUseCaches(false)
+            mConnection?.setDoOutput(true)
+            if (mConnection?.getResponseCode() === HttpURLConnection.HTTP_OK) {
+                val mReader = BufferedReader(
+                    InputStreamReader(mConnection.getInputStream())
+                )
+                while (true) {
+                    val line = mReader.readLine() ?: break
+                    mData += line
+                }
+                mReader.close()
+            }
+            mConnection?.disconnect()
+        } catch (ex: java.lang.Exception) {
+            ex.printStackTrace()
+            return null
+        }
+        val startToken = "softwareVersion\">"
+        val endToken = "<"
+        val index = mData.indexOf(startToken)
+        if (index == -1) {
+            mVer = null
+        } else {
+            mVer = mData.substring(
+                index + startToken.length, (index
+                        + startToken.length + 100)
+            )
+            mVer = mVer.substring(0, mVer.indexOf(endToken)).trim { it <= ' ' }
+        }
+        return mVer
     }
 }

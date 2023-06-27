@@ -42,6 +42,10 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
@@ -157,6 +161,29 @@ class MainActivity : AppCompatActivity() {
         try {
             setContentView(R.layout.activity_main)
             mContext = this@MainActivity
+
+            val appUpdateManager = AppUpdateManagerFactory.create(this)
+
+// Returns an intent object that you use to check for an update.
+            val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+
+// Checks that the platform will allow the specified type of update.
+            appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    // This example applies an immediate update. To apply a flexible update
+                    // instead, pass in AppUpdateType.FLEXIBLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+                ) {
+                    // Request the update.
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        IMMEDIATE,
+                        this,
+                        Constants.REQUEST_CODE_UPDATE
+                    )
+                }
+            }
+
             if (HNSharedPreference.getSharedPreference(this, "deviceId") == "") {
                 HNApplication.mDeviceId = EtcUtil.getRandomKey(16)
                 HNSharedPreference.putSharedPreference(
@@ -256,12 +283,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        mWebView!!.onResume()
+        mWebView?.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        mWebView!!.onPause()
+        mWebView?.onPause()
     }
 
     private val hashKey: Unit
