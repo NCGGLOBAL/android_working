@@ -272,10 +272,9 @@ class MainActivity : AppCompatActivity() {
             // WebView 초기화
             initWebView()
             mLoadingView = findViewById(R.id.view_loading)
-            runBlocking {
-                delay(3000)
+            Handler().postDelayed(Runnable {
                 mLoadingView?.visibility = View.GONE
-            }
+            }, 3000)
         } catch (e: Exception) {
             e.printStackTrace()
         }
