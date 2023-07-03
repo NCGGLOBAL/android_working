@@ -713,6 +713,7 @@ class WebViewActivity : Activity() {
                     mCameraType = 0
                     //                    requestPermission(Constants.REQUEST_CAMERA);
 //                    executeJavascript(mCallback + "()");
+                    callQR()
                 } else if ("ACT1003" == actionCode) {
                     LogUtil.d("ACT1003 - 위쳇페이")
                     if (actionParamObj!!.has("request_url")) {
