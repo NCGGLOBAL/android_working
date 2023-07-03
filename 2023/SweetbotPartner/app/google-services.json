@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "515888618725",
+    "project_id": "sweetbotpartner",
+    "storage_bucket": "sweetbotpartner.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:515888618725:android:77ab3d5746390a69f2480c",
+        "android_client_info": {
+          "package_name": "com.creator.sweetbotpartner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "515888618725-87175a5dru4mgsjrcpfmptq7oc59gamc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6O2ZPGOFE79MYHaxmbRUQXGXE8NHvQDs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "515888618725-87175a5dru4mgsjrcpfmptq7oc59gamc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
