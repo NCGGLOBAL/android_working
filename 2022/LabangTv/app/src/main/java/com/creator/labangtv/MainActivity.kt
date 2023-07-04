@@ -387,7 +387,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    var dialog: Dialog? = null
     inner class HNWebChromeClient : WebChromeClient() {
         // For Android Version < 3.0
         fun openFileChooser(uploadMsg: ValueCallback<Uri?>?) {
@@ -530,7 +529,7 @@ class MainActivity : AppCompatActivity() {
                 javaScriptCanOpenWindowsAutomatically = true
             }
 
-            dialog = Dialog(this@MainActivity).apply {
+            val windowDialog = Dialog(this@MainActivity).apply {
 
                 setContentView(windowWebview)
                 val params = window?.attributes?.apply {
@@ -544,17 +543,17 @@ class MainActivity : AppCompatActivity() {
             windowWebview.webChromeClient = object : WebChromeClient() {
 
                 override fun onCloseWindow(window: WebView?) {
-                    dialog?.dismiss()
+                    windowDialog.dismiss()
                     windowWebview.destroy()
                     window?.destroy()
                 }
             }
 
-            dialog?.setOnDismissListener {
+            windowDialog.setOnDismissListener {
                 windowWebview.destroy()
             }
 
-            dialog?.show()
+            windowDialog.show()
 
             (resultMsg?.obj as WebView.WebViewTransport).webView = windowWebview
             resultMsg.sendToTarget()

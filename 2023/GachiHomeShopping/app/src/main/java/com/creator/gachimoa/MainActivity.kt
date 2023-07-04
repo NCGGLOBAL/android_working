@@ -3,6 +3,7 @@ package com.creator.gachimoa
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.ActivityManager
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.*
 import android.content.pm.PackageInfo
@@ -244,10 +245,9 @@ class MainActivity : AppCompatActivity() {
             // WebView 초기화
             initWebView()
             mLoadingView = findViewById(R.id.view_loading)
-            runBlocking {
-                delay(3000)
+            Handler().postDelayed(Runnable {
                 mLoadingView?.visibility = View.GONE
-            }
+            }, 3000)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -474,9 +474,55 @@ class MainActivity : AppCompatActivity() {
                 .setCancelable(false).create().show()
             return true
         }
+
+        override fun onCreateWindow(
+            view: WebView?,
+            isDialog: Boolean,
+            isUserGesture: Boolean,
+            resultMsg: Message?
+        ): Boolean {
+
+            val windowWebview = WebView(this@MainActivity)
+            windowWebview.settings.run {
+                javaScriptEnabled = true                        // 자바 스크립트 사용 여부
+                setSupportMultipleWindows(true)                 //여러개의 윈도우 사용 여부
+                javaScriptCanOpenWindowsAutomatically = true
+            }
+
+            val windowDialog = Dialog(this@MainActivity).apply {
+
+                setContentView(windowWebview)
+                val params = window?.attributes?.apply {
+                    width = ViewGroup.LayoutParams.MATCH_PARENT
+                    height = ViewGroup.LayoutParams.MATCH_PARENT
+                }
+
+                window?.attributes = params
+            }
+
+            windowWebview.webChromeClient = object : WebChromeClient() {
+
+                override fun onCloseWindow(window: WebView?) {
+                    windowDialog.dismiss()
+                    windowWebview.destroy()
+                    window?.destroy()
+                }
+            }
+
+            windowDialog.setOnDismissListener {
+                windowWebview.destroy()
+            }
+
+            windowDialog.show()
+
+            (resultMsg?.obj as WebView.WebViewTransport).webView = windowWebview
+            resultMsg.sendToTarget()
+
+            return true
+        }
     }
 
-    inner class HNWebViewClient : WebViewClient() {
+    inner class HNWebViewClient : WebViewClient(), DownloadListener {
         override fun onPageFinished(view: WebView, url: String) {
             super.onPageFinished(view, url)
             // LogUtil.d("onPageLoadStopped : " + url);
@@ -735,7 +781,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             view.loadUrl(url)
+            view.setDownloadListener(this)
             return false // webview replace
+        }
+
+        override fun onDownloadStart(
+            url: String?,
+            userAgent: String?,
+            contentDisposition: String?,
+            mimeType: String?,
+            contentLength: Long
+        ) {
+            EtcUtil.downloadFile(url, userAgent, contentDisposition, mimeType, this@MainActivity)
         }
     }
 
@@ -944,6 +1001,18 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         checkPermission()
                     }
+                } else if ("ACT1037" == actionCode) {
+                    LogUtil.d("ACT1037 - 파일 열기")
+                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                    contentSelectionIntent.type = "*/*"
+                    val intentArray: Array<Intent?>
+                    intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                    startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -1144,6 +1213,22 @@ class MainActivity : AppCompatActivity() {
                 val results = arrayOf(getResultUri(data))
                 mFilePathCallback?.onReceiveValue(results)
                 mFilePathCallback = null
+            }
+        } else if (resultCode == RESULT_OK && requestCode == Constants.REQUEST_GET_FILE) {
+            data?.data?.let {
+                try {
+                    val bitmap = BitmapUtil.uriToBitmap(this, it)
+                    val base64String = getBase64String(bitmap!!)
+
+                    val fileName = File(it.path).name
+                    val jObj = JSONObject()
+                    jObj.put("fName", fileName)
+                    jObj.put("fData", base64String)
+
+                    executeJavascript("$mCallback($jObj)")
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
             }
         }
         if (data == null) return

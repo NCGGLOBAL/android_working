@@ -624,7 +624,6 @@ class WebViewActivity : Activity() {
             mimeType: String?,
             contentLength: Long
         ) {
-            LogUtil.e("onDownloadStart : " + url);
             EtcUtil.downloadFile(url, userAgent, contentDisposition, mimeType, this@WebViewActivity)
         }
     }

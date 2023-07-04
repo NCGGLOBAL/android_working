@@ -522,7 +522,6 @@ class CameraActivity : Activity() {
             mimeType: String?,
             contentLength: Long
         ) {
-            LogUtil.e("onDownloadStart : " + url);
             EtcUtil.downloadFile(url, userAgent, contentDisposition, mimeType, this@CameraActivity)
         }
     }

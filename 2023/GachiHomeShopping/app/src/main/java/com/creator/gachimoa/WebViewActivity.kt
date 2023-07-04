@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.*
 import android.content.pm.PackageInfo
@@ -295,9 +296,55 @@ class WebViewActivity : Activity() {
                 .setCancelable(false).create().show()
             return true
         }
+
+        override fun onCreateWindow(
+            view: WebView?,
+            isDialog: Boolean,
+            isUserGesture: Boolean,
+            resultMsg: Message?
+        ): Boolean {
+
+            val windowWebview = WebView(this@WebViewActivity)
+            windowWebview.settings.run {
+                javaScriptEnabled = true                        // 자바 스크립트 사용 여부
+                setSupportMultipleWindows(true)                 //여러개의 윈도우 사용 여부
+                javaScriptCanOpenWindowsAutomatically = true
+            }
+
+            val windowDialog = Dialog(this@WebViewActivity).apply {
+
+                setContentView(windowWebview)
+                val params = window?.attributes?.apply {
+                    width = ViewGroup.LayoutParams.MATCH_PARENT
+                    height = ViewGroup.LayoutParams.MATCH_PARENT
+                }
+
+                window?.attributes = params
+            }
+
+            windowWebview.webChromeClient = object : WebChromeClient() {
+
+                override fun onCloseWindow(window: WebView?) {
+                    windowDialog.dismiss()
+                    windowWebview.destroy()
+                    window?.destroy()
+                }
+            }
+
+            windowDialog.setOnDismissListener {
+                windowWebview.destroy()
+            }
+
+            windowDialog.show()
+
+            (resultMsg?.obj as WebView.WebViewTransport).webView = windowWebview
+            resultMsg.sendToTarget()
+
+            return true
+        }
     }
 
-    inner class HNWebViewClient : WebViewClient() {
+    inner class HNWebViewClient : WebViewClient(), DownloadListener {
         override fun onPageFinished(view: WebView, url: String) {
             super.onPageFinished(view, url)
             // LogUtil.d("onPageLoadStopped : " + url);
@@ -543,7 +590,18 @@ class WebViewActivity : Activity() {
                 }
             }
             view.loadUrl(url)
+            view.setDownloadListener(this)
             return false // webview replace
+        }
+
+        override fun onDownloadStart(
+            url: String?,
+            userAgent: String?,
+            contentDisposition: String?,
+            mimeType: String?,
+            contentLength: Long
+        ) {
+            EtcUtil.downloadFile(url, userAgent, contentDisposition, mimeType, this@WebViewActivity)
         }
     }
 
