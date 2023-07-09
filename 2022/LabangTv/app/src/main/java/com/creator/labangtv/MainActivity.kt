@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
     private val mCallbackParam: String? = null
     private var mFirebaseMessaging: FirebaseMessaging? = null
     private var mPushUid: String? = ""
-    private var mLandingUrl = ""
+    private var mLandingUrl: String? = ""
     private var mBackPressCloseHandler: BackPressCloseHandler? = null
     private var mIntegrator: IntentIntegrator? = null
     private var mCameraType = 0
@@ -239,9 +239,9 @@ class MainActivity : AppCompatActivity() {
 //            if (intent != null) {
 //                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
 //                    if (!intent.getStringExtra("url").equals("")) {
-//                        mPushUid = intent.getStringExtra("pushUid");
-//                        mLandingUrl = intent.getStringExtra("url");
-//                        sendPushReceiveToServer(mPushUid);
+//                        mPushUid = intent.getStringExtra("pushUid")
+//                        mLandingUrl = intent.getStringExtra("url")
+//                        sendPushReceiveToServer(mPushUid)
 //                    }
 //                }
 //            }
@@ -380,7 +380,7 @@ class MainActivity : AppCompatActivity() {
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
         if (mLandingUrl != "") {
-            mWebView!!.loadUrl(mLandingUrl, extraHeaders)
+            mWebView!!.loadUrl(mLandingUrl ?: "", extraHeaders)
         } else {
             mWebView!!.loadUrl(HNApplication.URL, extraHeaders)
             mLandingUrl = ""
