@@ -1309,7 +1309,7 @@ class WebViewActivity : Activity() {
     }
 
     inner class uploadImagesAsyncTask : AsyncTask<String?, Void?, String?>() {
-        var result: String? = ""
+        var result: String? = null
         override fun onPreExecute() {
             super.onPreExecute()
             mProgressDialog = ProgressDialog(mContext)
@@ -1392,7 +1392,10 @@ class WebViewActivity : Activity() {
                 val dialog = builder.create()
                 dialog.show()
             } else {
-                executeJavascript("$mCallback($s)")
+                val jsonObject = JSONObject()
+                jsonObject.put("resCode", "0000")
+                jsonObject.put("resMsg", "정상적으로 등록 되었습니다.")
+                executeJavascript("$mCallback($jsonObject)")
             }
         }
     }
