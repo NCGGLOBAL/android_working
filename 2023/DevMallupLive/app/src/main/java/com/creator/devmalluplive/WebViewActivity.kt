@@ -1295,7 +1295,7 @@ class WebViewActivity : Activity() {
                 try {
                     result = UploadUtil.upload(
                         mContext,
-                        "http://laos.mallshopping.co.kr/m/app/",
+                        HNApplication.UPLOAD_URL,
                         mSelectedImages!!,
                         param
                     )
@@ -1321,6 +1321,8 @@ class WebViewActivity : Activity() {
                 builder.setMessage("사진 등록 중 오류가 발생했습니다.\n다시 시도해 주세요.")
                 val dialog = builder.create()
                 dialog.show()
+
+                executeJavascript("$mCallback($s)")
                 return
             }
             if (s == "-1") {
@@ -1333,10 +1335,7 @@ class WebViewActivity : Activity() {
                 val dialog = builder.create()
                 dialog.show()
             } else {
-                val jsonObject = JSONObject()
-                jsonObject.put("resCode", "0000")
-                jsonObject.put("resMsg", "정상적으로 등록 되었습니다.")
-                executeJavascript("$mCallback($jsonObject)")
+                executeJavascript("$mCallback($s)")
             }
         }
     }
