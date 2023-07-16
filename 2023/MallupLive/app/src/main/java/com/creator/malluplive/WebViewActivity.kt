@@ -1227,7 +1227,7 @@ class WebViewActivity : Activity() {
                 try {
                     result = UploadUtil.upload(
                         mContext,
-                        "http://laos.mallshopping.co.kr/m/app/",
+                        HNApplication.UPLOAD_URL,
                         mSelectedImages!!,
                         param
                     )
