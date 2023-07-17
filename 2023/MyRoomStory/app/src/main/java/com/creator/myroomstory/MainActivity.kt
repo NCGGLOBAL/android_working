@@ -42,10 +42,6 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
-import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
@@ -69,8 +65,6 @@ import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.util.*
 
-//import com.nhn.android.naverlogin.OAuthLogin;
-//import com.nhn.android.naverlogin.OAuthLoginHandler;
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     private var mContext: Context? = null
@@ -161,28 +155,6 @@ class MainActivity : AppCompatActivity() {
         try {
             setContentView(R.layout.activity_main)
             mContext = this@MainActivity
-
-            val appUpdateManager = AppUpdateManagerFactory.create(this)
-
-// Returns an intent object that you use to check for an update.
-            val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-
-// Checks that the platform will allow the specified type of update.
-            appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                    // This example applies an immediate update. To apply a flexible update
-                    // instead, pass in AppUpdateType.FLEXIBLE
-                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
-                ) {
-                    // Request the update.
-                    appUpdateManager.startUpdateFlowForResult(
-                        appUpdateInfo,
-                        IMMEDIATE,
-                        this,
-                        Constants.REQUEST_CODE_UPDATE
-                    )
-                }
-            }
 
             if (HNSharedPreference.getSharedPreference(this, "deviceId") == "") {
                 HNApplication.mDeviceId = EtcUtil.getRandomKey(16)
@@ -1770,6 +1742,8 @@ class MainActivity : AppCompatActivity() {
                 builder.setMessage("사진 등록 중 오류가 발생했습니다.\n다시 시도해 주세요.")
                 val dialog = builder.create()
                 dialog.show()
+
+                executeJavascript("$mCallback($s)")
                 return
             }
             if (s == "-1") {
