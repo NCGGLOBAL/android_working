@@ -244,10 +244,9 @@ class MainActivity : AppCompatActivity() {
             // WebView 초기화
             initWebView()
             mLoadingView = findViewById(R.id.view_loading)
-            runBlocking {
-                delay(3000)
+            Handler().postDelayed(Runnable {
                 mLoadingView?.visibility = View.GONE
-            }
+            }, 3000)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -1708,8 +1707,10 @@ class MainActivity : AppCompatActivity() {
                     Log.d("SeongKwon", "path = $path")
                     Log.d("SeongKwon", "isSelected = $isSelected")
                     Log.d("SeongKwon", "=========================")
-                    if (file.exists() && fname.contains(".jpg")) {
-                        mSelectedImages!!.add(
+                    if (file.exists() && fname.contains(".jpg")
+                        || fname.contains(".png")
+                        || fname.contains(".gif")) {
+                        mSelectedImages?.add(
                             Image(
                                 id,
                                 fname,
