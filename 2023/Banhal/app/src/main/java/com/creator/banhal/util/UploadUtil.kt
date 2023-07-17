@@ -24,11 +24,7 @@ object UploadUtil {
         var result = ""
 
         // 데이터 경계선
-        val delimiter = """
-            
-            $TWOHYPEN$boundary
-            
-            """.trimIndent()
+        val delimiter = LINE_END + TWOHYPEN + boundary + LINE_END;
         val postDataBuilder = StringBuffer()
         postDataBuilder.append(TWOHYPEN + boundary + LINE_END)
 
@@ -49,59 +45,47 @@ object UploadUtil {
         conn.requestMethod = "POST"
         conn.setRequestProperty("Connection", "Keep-Alive")
         conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary)
-        var `in`: FileInputStream? = null
-        var out: DataOutputStream? = null
+        var filInputStream: FileInputStream? = null
+        var dataOutputStream: DataOutputStream? = null
 
         // 전송 작업 시작
-        out = DataOutputStream(BufferedOutputStream(conn.outputStream))
+        dataOutputStream = DataOutputStream(BufferedOutputStream(conn.outputStream))
         // 위에서 작성한 메타데이터를 먼저 전송한다. (한글이 포함되어 있으므로 UTF-8 메소드 사용)
-        out.writeBytes(postDataBuilder.toString())
+        dataOutputStream.writeBytes(postDataBuilder.toString())
         for (idx in images.indices) {
             Log.d("SeongKwon", "uploadUtil Name = " + images[idx].name)
-            out.writeBytes(setFile("imgFile", images[idx].name))
-            out.writeBytes("\r\n")
+            dataOutputStream.writeBytes(setFile("imgFile", images[idx].name))
+            dataOutputStream.writeBytes(LINE_END)
 
             // 전송 작업 시작
             Log.d("SeongKwon", "uploadUtil Path = " + images[idx].path)
-            `in` = FileInputStream(images[idx].path)
+            filInputStream = FileInputStream(images[idx].path)
 
             // 파일 복사 작업 시작
             val maxBufferSize = 4096
-            var bufferSize = Math.min(`in`.available(), maxBufferSize)
+            var bufferSize = Math.min(filInputStream.available(), maxBufferSize)
             val buffer = ByteArray(bufferSize)
 
             // 버퍼 크기만큼 파일로부터 바이트 데이터를 읽는다.
-            var byteRead = `in`.read(buffer, 0, bufferSize)
+            var byteRead = filInputStream.read(buffer, 0, bufferSize)
 
             // 전송
             while (byteRead > 0) {
-                out.write(buffer)
-                bufferSize = Math.min(`in`.available(), maxBufferSize)
-                byteRead = `in`.read(buffer, 0, bufferSize)
+                dataOutputStream.write(buffer)
+                bufferSize = Math.min(filInputStream.available(), maxBufferSize)
+                byteRead = filInputStream.read(buffer, 0, bufferSize)
             }
 
             // content wrapper종료
-            if (idx == images.size - 1) {
-                out.writeBytes(
-                    """
-                        
-                        $TWOHYPEN$boundary--
-                        
-                        """.trimIndent()
-                ) // 반드시 작성해야 한다.
+            if(idx == images.size - 1) {
+                dataOutputStream.writeBytes(LINE_END + TWOHYPEN + boundary + "--" + LINE_END); // 반드시 작성해야 한다.
             } else {
-                out.writeBytes(
-                    """
-                        
-                        $TWOHYPEN$boundary
-                        
-                        """.trimIndent()
-                ) // 반드시 작성해야 한다.
+                dataOutputStream.writeBytes(LINE_END + TWOHYPEN + boundary + LINE_END); // 반드시 작성해야 한다.
             }
         }
-        out.flush()
-        out.close()
-        `in`!!.close()
+        dataOutputStream.flush()
+        dataOutputStream.close()
+        filInputStream?.close()
 
         // 결과 반환 (HTTP RES CODE)
         if (conn.responseCode == 200) {

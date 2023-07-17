@@ -1296,7 +1296,7 @@ class WebViewActivity : Activity() {
                 try {
                     result = UploadUtil.upload(
                         mContext,
-                        "http://laos.mallshopping.co.kr/m/app/",
+                        HNApplication.UPLOAD_URL,
                         mSelectedImages!!,
                         param
                     )
@@ -1322,6 +1322,8 @@ class WebViewActivity : Activity() {
                 builder.setMessage("사진 등록 중 오류가 발생했습니다.\n다시 시도해 주세요.")
                 val dialog = builder.create()
                 dialog.show()
+
+                executeJavascript("$mCallback($s)")
                 return
             }
             if (s == "-1") {
