@@ -1280,8 +1280,10 @@ class WebViewActivity : Activity() {
                     Log.d("SeongKwon", "path = $path")
                     Log.d("SeongKwon", "isSelected = $isSelected")
                     Log.d("SeongKwon", "=========================")
-                    if (file.exists() && fname.contains(".jpg")) {
-                        mSelectedImages!!.add(
+                    if (file.exists() && fname.contains(".jpg")
+                        || fname.contains(".png")
+                        || fname.contains(".gif")) {
+                        mSelectedImages?.add(
                             Image(
                                 id,
                                 fname,

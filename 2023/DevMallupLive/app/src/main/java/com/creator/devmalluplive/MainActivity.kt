@@ -1721,8 +1721,8 @@ class MainActivity : AppCompatActivity() {
                     Log.d("SeongKwon", "isSelected = $isSelected")
                     Log.d("SeongKwon", "=========================")
                     if (file.exists() && fname.contains(".jpg")
-                        && fname.contains(".png")
-                        && fname.contains(".gif")) {
+                        || fname.contains(".png")
+                        || fname.contains(".gif")) {
                         mSelectedImages?.add(
                             Image(
                                 id,
