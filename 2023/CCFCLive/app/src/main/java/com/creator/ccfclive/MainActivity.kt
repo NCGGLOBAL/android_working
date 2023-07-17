@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
     private val mCallbackParam: String? = null
     private var mFirebaseMessaging: FirebaseMessaging? = null
     private var mPushUid: String? = ""
-    private var mLandingUrl = ""
+    private var mLandingUrl: String? = ""
     private var mBackPressCloseHandler: BackPressCloseHandler? = null
     private var mIntegrator: IntentIntegrator? = null
     private var mCameraType = 0
@@ -196,27 +196,27 @@ class MainActivity : AppCompatActivity() {
                 mPushUid = intent.getStringExtra("pushUid")
                 sendPushReceiveToServer(mPushUid)
             }
-            if (intent.dataString != null && !intent.dataString!!.isEmpty()) {
-                val landingUri = intent.dataString
-                //                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
-//                Log.e("jj", "landingUri : " + landingUri);
-                var splitUrl = landingUri!!.split("\\?").toTypedArray()[1]
-                //                Log.e("jj", "splitUrl : " + splitUrl);
-                splitUrl = splitUrl.split("=").toTypedArray()[1]
-                //                Log.e("jj", "splitUrl : " + splitUrl);
-                mLandingUrl = splitUrl
-            }
+//            if (intent.dataString != null && !intent.dataString!!.isEmpty()) {
+//                val landingUri = intent.dataString
+//                //                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
+////                Log.e("jj", "landingUri : " + landingUri);
+//                var splitUrl = landingUri!!.split("\\?").toTypedArray()[1]
+//                //                Log.e("jj", "splitUrl : " + splitUrl);
+//                splitUrl = splitUrl.split("=").toTypedArray()[1]
+//                //                Log.e("jj", "splitUrl : " + splitUrl);
+//                mLandingUrl = splitUrl
+//            }
             //            Log.e("jj", "mLandingUrl : " + mLandingUrl);
 
-//            if (intent != null) {
-//                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
-//                    if (!intent.getStringExtra("url").equals("")) {
-//                        mPushUid = intent.getStringExtra("pushUid");
-//                        mLandingUrl = intent.getStringExtra("url");
-//                        sendPushReceiveToServer(mPushUid);
-//                    }
-//                }
-//            }
+            if (intent != null) {
+                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
+                    if (!intent.getStringExtra("url").equals("")) {
+                        mPushUid = intent.getStringExtra("pushUid");
+                        mLandingUrl = intent.getStringExtra("url");
+                        sendPushReceiveToServer(mPushUid);
+                    }
+                }
+            }
 
             // permission 체크 - 최초실행
             if (HNSharedPreference.getSharedPreference(
@@ -244,10 +244,9 @@ class MainActivity : AppCompatActivity() {
             // WebView 초기화
             initWebView()
             mLoadingView = findViewById(R.id.view_loading)
-            runBlocking {
-                delay(3000)
+            Handler().postDelayed(Runnable {
                 mLoadingView?.visibility = View.GONE
-            }
+            }, 3000)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -354,7 +353,7 @@ class MainActivity : AppCompatActivity() {
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
         if (mLandingUrl != "") {
-            mWebView!!.loadUrl(mLandingUrl, extraHeaders)
+            mWebView!!.loadUrl(mLandingUrl ?: "", extraHeaders)
         } else {
             mWebView!!.loadUrl(HNApplication.URL, extraHeaders)
             mLandingUrl = ""
@@ -1685,6 +1684,8 @@ class MainActivity : AppCompatActivity() {
                 builder.setMessage("사진 등록 중 오류가 발생했습니다.\n다시 시도해 주세요.")
                 val dialog = builder.create()
                 dialog.show()
+
+                executeJavascript("$mCallback($s)")
                 return
             }
             if (s == "-1") {
