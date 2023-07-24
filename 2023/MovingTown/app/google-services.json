@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "597215874259",
+    "project_id": "movingtown-566fa",
+    "storage_bucket": "movingtown-566fa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597215874259:android:b5f04ac3d084c9c0035826",
+        "android_client_info": {
+          "package_name": "com.creator.movingtown"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "597215874259-52omad73fpgojdvkm9altl3nkjbr6ik7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDx6bP84zBQjo4OWZ1qmoDvoMJnc2ftgtg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "597215874259-52omad73fpgojdvkm9altl3nkjbr6ik7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
