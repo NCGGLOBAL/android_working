@@ -55,7 +55,7 @@ class HNApplication : Application() {
     companion object {
         val TAG = HNApplication::class.java.simpleName
         var mSigned = false
-        var URL = "http://movingtown.co.kr"
+        var URL = "https://tmove.clinkers.io/agency/_idx/login.php"
         var PUSH_URL = URL + "/m/app/pushRegister.asp"
         var UPLOAD_URL = URL + "/m/app/"
         var mIsFirstLoading = false
