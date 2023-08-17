@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "659138007302",
+    "project_id": "midmeal-1ad54",
+    "storage_bucket": "midmeal-1ad54.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:659138007302:android:e40d6513285ba4c0314e87",
+        "android_client_info": {
+          "package_name": "com.creator.midmeal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "659138007302-9g12apvs60cbpro62rqdap6rn4gbm7vt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEXxwoaN5R1Uk0fx67gs1l-PVGw5lYXsA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "659138007302-9g12apvs60cbpro62rqdap6rn4gbm7vt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
