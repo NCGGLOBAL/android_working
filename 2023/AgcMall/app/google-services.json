@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "139247890276",
-    "project_id": "labangtv",
-    "storage_bucket": "labangtv.appspot.com"
+    "project_number": "293097030921",
+    "project_id": "agc-mall",
+    "storage_bucket": "agc-mall.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:139247890276:android:4c10d614d8b150ef289471",
+        "mobilesdk_app_id": "1:293097030921:android:235d447020e931df67ffd8",
         "android_client_info": {
-          "package_name": "com.creator.labangtv"
+          "package_name": "com.aidapps.agcmall"
         }
       },
       "oauth_client": [
         {
-          "client_id": "139247890276-9ketp20ol9lc0ka2crlq501ridseo3f5.apps.googleusercontent.com",
+          "client_id": "293097030921-1669qi6qq80qtreaucmmee0i4cn24kn6.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCOv6dfzRWw8TsT_RppbNbpu0NPqtF1LxY"
+          "current_key": "AIzaSyA7e5c3olXYCLMrlGUkAeIIVV9c4pPd__s"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "139247890276-9ketp20ol9lc0ka2crlq501ridseo3f5.apps.googleusercontent.com",
+              "client_id": "293097030921-1669qi6qq80qtreaucmmee0i4cn24kn6.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
