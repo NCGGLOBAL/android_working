@@ -380,7 +380,7 @@ class WebViewActivity : Activity() {
         }
 
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            // LogUtil.e("shouldOverrideUrlLoading : " + url);
+            LogUtil.e("shouldOverrideUrlLoading : " + url);
             var uri = Uri.parse(url)
             var intent: Intent? = null
             if (url.startsWith("sms:") || url.startsWith("smsto:")) {
