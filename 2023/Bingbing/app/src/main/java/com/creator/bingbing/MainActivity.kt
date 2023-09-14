@@ -344,9 +344,7 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.settings.domStorageEnabled = true
         mWebView!!.settings.javaScriptCanOpenWindowsAutomatically = true
         mWebView!!.settings.setSupportMultipleWindows(true)
-        mWebView!!.settings.setAppCacheEnabled(true)
         mWebView!!.settings.cacheMode = WebSettings.LOAD_DEFAULT
-        mWebView!!.settings.setAppCachePath(applicationContext.cacheDir.absolutePath)
         mWebView!!.settings.textZoom = 100
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
         mWebView!!.isDrawingCacheEnabled = true
