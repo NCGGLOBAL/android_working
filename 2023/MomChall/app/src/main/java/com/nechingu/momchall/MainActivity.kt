@@ -243,13 +243,25 @@ class MainActivity : AppCompatActivity() {
 
             // WebView 초기화
             initWebView()
+
             mLoadingView = findViewById(R.id.view_loading)
-            Handler().postDelayed(Runnable {
-                mLoadingView?.visibility = View.GONE
-            }, 3000)
+            setLandomSplash()
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun setLandomSplash() {
+        // 랜덤 스플래시
+        val random = Random()
+        when (random.nextInt(3)) {
+            0 -> mLoadingView?.setBackgroundResource(R.drawable.intro1)
+            1 -> mLoadingView?.setBackgroundResource(R.drawable.intro2)
+            else -> mLoadingView?.setBackgroundResource(R.drawable.intro3)
+        }
+        Handler().postDelayed(Runnable {
+            mLoadingView?.visibility = View.GONE
+        }, 3000)
     }
 
     override fun onResume() {
@@ -337,15 +349,12 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.settings.allowContentAccess = true
         mWebView!!.settings.loadsImagesAutomatically = true
         mWebView!!.settings.loadWithOverviewMode = true
-        mWebView!!.settings.setSupportMultipleWindows(false)
         mWebView!!.settings.useWideViewPort = true
         mWebView!!.settings.databaseEnabled = true
         mWebView!!.settings.domStorageEnabled = true
         mWebView!!.settings.javaScriptCanOpenWindowsAutomatically = true
         mWebView!!.settings.setSupportMultipleWindows(true)
-        mWebView!!.settings.setAppCacheEnabled(true)
         mWebView!!.settings.cacheMode = WebSettings.LOAD_DEFAULT
-        mWebView!!.settings.setAppCachePath(applicationContext.cacheDir.absolutePath)
         mWebView!!.settings.textZoom = 100
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
         mWebView!!.isDrawingCacheEnabled = true
