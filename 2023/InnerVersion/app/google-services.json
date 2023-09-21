@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "444516382866",
+    "project_id": "inner-version",
+    "storage_bucket": "inner-version.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444516382866:android:b6ef1a2829be32bc050e4b",
+        "android_client_info": {
+          "package_name": "com.creator.innerversion"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDybb_2vLWgizcEYbVfr48b25Y25R0BnwA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
