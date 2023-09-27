@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1066031588911",
+    "project_id": "allpick-fc88d",
+    "storage_bucket": "allpick-fc88d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1066031588911:android:9ab2981b441f795b2908da",
+        "android_client_info": {
+          "package_name": "com.creator.allpick"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDibWx11p6fVMdtfSGu4u95E4a2I3btNAs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

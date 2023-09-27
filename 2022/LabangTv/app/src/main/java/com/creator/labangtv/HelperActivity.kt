@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -22,30 +23,39 @@ open class HelperActivity : AppCompatActivity() {
 
     //    Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA
     protected fun checkPermission() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            permissionGranted()
+        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
+                permissionGranted()
+            } else {
+                ActivityCompat.requestPermissions(this, permissions, Constants.PERMISSION_REQUEST_CODE)
+            }
         } else {
-            ActivityCompat.requestPermissions(this, permissions, Constants.PERMISSION_REQUEST_CODE)
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
+                permissionGranted()
+            } else {
+                ActivityCompat.requestPermissions(this, permissions, Constants.PERMISSION_REQUEST_CODE)
+            }
         }
     }
 
     private fun requestPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-        ) {
-            showRequestPermissionRationale()
+        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_IMAGES)) {
+                showRequestPermissionRationale()
+            } else {
+                showAppPermissionSettings()
+            }
         } else {
-            showAppPermissionSettings()
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                showRequestPermissionRationale()
+            } else {
+                showAppPermissionSettings()
+            }
         }
     }
 
     private fun showRequestPermissionRationale() {
+        if (view == null) return
         val snackbar = Snackbar.make(
             view!!,
             getString(R.string.permission_info),
@@ -64,6 +74,7 @@ open class HelperActivity : AppCompatActivity() {
     }
 
     private fun showAppPermissionSettings() {
+        if (view == null) return
         val snackbar = Snackbar.make(
             view!!,
             getString(R.string.permission_force),
