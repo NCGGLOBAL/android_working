@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "946340903693",
+    "project_id": "jejugage-c1dca",
+    "storage_bucket": "jejugage-c1dca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:946340903693:android:01b9f7474dab670c4b0e44",
+        "android_client_info": {
+          "package_name": "com.creator.jejugage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQNmfoGBt0x81zmMd7tfWIQd6aBoIGP4c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
