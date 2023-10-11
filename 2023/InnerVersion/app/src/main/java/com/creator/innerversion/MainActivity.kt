@@ -196,27 +196,27 @@ class MainActivity : AppCompatActivity() {
                 mPushUid = intent.getStringExtra("pushUid")
                 sendPushReceiveToServer(mPushUid)
             }
-            if (intent.dataString != null && !intent.dataString!!.isEmpty()) {
-                val landingUri = intent.dataString
-                //                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
-//                Log.e("jj", "landingUri : " + landingUri);
-                var splitUrl = landingUri!!.split("\\?").toTypedArray()[1]
-                //                Log.e("jj", "splitUrl : " + splitUrl);
-                splitUrl = splitUrl.split("=").toTypedArray()[1]
-                //                Log.e("jj", "splitUrl : " + splitUrl);
-                mLandingUrl = splitUrl
-            }
+//            if (intent.dataString != null && !intent.dataString!!.isEmpty()) {
+//                val landingUri = intent.dataString
+//                //                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
+////                Log.e("jj", "landingUri : " + landingUri);
+//                var splitUrl = landingUri!!.split("\\?").toTypedArray()[1]
+//                //                Log.e("jj", "splitUrl : " + splitUrl);
+//                splitUrl = splitUrl.split("=").toTypedArray()[1]
+//                //                Log.e("jj", "splitUrl : " + splitUrl);
+//                mLandingUrl = splitUrl
+//            }
             //            Log.e("jj", "mLandingUrl : " + mLandingUrl);
 
-//            if (intent != null) {
-//                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
-//                    if (!intent.getStringExtra("url").equals("")) {
-//                        mPushUid = intent.getStringExtra("pushUid")
-//                        mLandingUrl = intent.getStringExtra("url")
-//                        sendPushReceiveToServer(mPushUid)
-//                    }
-//                }
-//            }
+            if (intent != null) {
+                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
+                    if (!intent.getStringExtra("url").equals("")) {
+                        mPushUid = intent.getStringExtra("pushUid")
+                        mLandingUrl = intent.getStringExtra("url")
+                        sendPushReceiveToServer(mPushUid)
+                    }
+                }
+            }
 
             // permission 체크 - 최초실행
             if (HNSharedPreference.getSharedPreference(
@@ -246,7 +246,7 @@ class MainActivity : AppCompatActivity() {
             mLoadingView = findViewById(R.id.view_loading)
             Handler().postDelayed(Runnable {
                 mLoadingView?.visibility = View.GONE
-            }, 3000)
+            }, 2000)
         } catch (e: Exception) {
             e.printStackTrace()
         }
