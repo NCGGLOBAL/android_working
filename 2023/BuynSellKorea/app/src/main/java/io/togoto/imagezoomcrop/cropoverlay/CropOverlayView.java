@@ -13,7 +13,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.creator.buynsellkorea.R;
+import com.creator.buynsellkoreaapp.R;
 
 import io.togoto.imagezoomcrop.cropoverlay.edge.Edge;
 import io.togoto.imagezoomcrop.cropoverlay.utils.PaintUtil;
