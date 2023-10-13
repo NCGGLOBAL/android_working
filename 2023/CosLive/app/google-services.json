@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "756966841802",
+    "project_id": "coslive-929cb",
+    "storage_bucket": "coslive-929cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756966841802:android:277d14ef31034275e30333",
+        "android_client_info": {
+          "package_name": "com.creator.coslive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKQlhN9x9B6qQQK1w6ziyeoGDqNwpvvwY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
