@@ -493,6 +493,7 @@ class WebViewActivity : Activity() {
                         || url.contains("kakaopay")
                         || url.contains("naversearchapp://")
                         || url.contains("kakaotalk://")
+                        || url.contains("nidlogin://")
                         || url.contains("http://m.ahnlab.com/kr/site/download"))
             ) {
                 return try {

@@ -317,7 +317,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             false,
             observer!!
         )
-        checkPermission()
+//        checkPermission()
     }
 
     override fun onStop() {
@@ -486,8 +486,8 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                 if (images!![i].isSelected) {
                     path = """
                          $path${images!![i].sequence - 1}//${images!![i].path}
-                         
-                         
+
+
                          """.trimIndent()
                     Log.e("SeongKwon", "selected path = " + images!![i].path)
                     Log.e(
@@ -940,7 +940,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             Log.e("SeongKwon", "//// saveImagesAsyncTask onPreExecute")
         }
 
-        override fun doInBackground(vararg params: Any?): ArrayList<Image> {
+        override fun doInBackground(vararg params: Any?): ArrayList<Image>? {
 //            ArrayList<Image> selectedImages = (ArrayList<Image>) params[0];
             return selected
         }
@@ -949,9 +949,12 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
 //            super.onProgressUpdate(*values)
 //        }
 
-        override fun onPostExecute(img: ArrayList<Image>) {
+        override fun onPostExecute(img: ArrayList<Image>?) {
 //            images = img;
-
+            if (img.isNullOrEmpty()) {
+                mProgressDialog!!.dismiss()
+                return
+            }
             // 화면 그리기
             Log.e("SeongKwon", "//// saveImagesAsyncTask onPostExecute")
             //            sendMessage(Constants.FETCH_COMPLETED, countSelected);
@@ -960,6 +963,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             imageCount!!.text =
                 savedImageSize.toString() + "/" + HNApplication.Companion.LIMIT_IMAGE_COUNT
 
+            loadImages()
             // Close progressdialog
             mProgressDialog!!.dismiss()
         }
