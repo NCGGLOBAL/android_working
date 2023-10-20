@@ -210,6 +210,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             }
             imageCount!!.text =
                 savedImageSize.toString() + "/" + HNApplication.Companion.LIMIT_IMAGE_COUNT
+            loadImages()
         } catch (e: Exception) {
             e.printStackTrace()
         }
