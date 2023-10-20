@@ -1615,17 +1615,7 @@ class WebViewActivity : Activity() {
                         "onSuccess - getLastRefresh : " + loginResult.accessToken.lastRefresh
                     )
 
-                    // getFbInfo();
-                    try {
-                        val jsonObject = JSONObject()
-                        jsonObject.put(
-                            "accessToken",
-                            loginResult.accessToken.token
-                        ) // getAccessToken
-                        executeJavascript("$mCallback($jsonObject)")
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+                    fbInfo
                 }
 
                 override fun onCancel() {
@@ -1639,39 +1629,39 @@ class WebViewActivity : Activity() {
     }
 
     // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-//    private val fbInfo: Unit
-//        private get() {
-//            val accessToken = AccessToken.getCurrentAccessToken()
-//            Log.d("SeongKwon", "====================================0")
-//            Log.d("SeongKwon", "onSuccess - getToken : " + accessToken.token)
-//            Log.d("SeongKwon", "onSuccess - getUserId : " + accessToken.userId)
-//            Log.d("SeongKwon", "onSuccess - isExpired : " + accessToken.isExpired)
-//            Log.d("SeongKwon", "onSuccess - getExpires : " + accessToken.expires)
-//            Log.d("SeongKwon", "onSuccess - getLastRefresh : " + accessToken.lastRefresh)
-//            Log.d("SeongKwon", "====================================1")
+    private val fbInfo: Unit
+        private get() {
+            val accessToken = AccessToken.getCurrentAccessToken()
+            Log.d("SeongKwon", "====================================0")
+            Log.d("SeongKwon", "onSuccess - getToken : " + accessToken?.token)
+            Log.d("SeongKwon", "onSuccess - getUserId : " + accessToken?.userId)
+            Log.d("SeongKwon", "onSuccess - isExpired : " + accessToken?.isExpired)
+            Log.d("SeongKwon", "onSuccess - getExpires : " + accessToken?.expires)
+            Log.d("SeongKwon", "onSuccess - getLastRefresh : " + accessToken?.lastRefresh)
+            Log.d("SeongKwon", "====================================1")
 //            mFacebookMessage = """
-//                 Token = ${accessToken.token}
+//                 Token = ${accessToken?.token}
 //
 //                 """.trimIndent()
 //            mFacebookMessage += """
-//                 UserId = ${accessToken.userId}
+//                 UserId = ${accessToken?.userId}
 //
 //                 """.trimIndent()
 //            mFacebookMessage += """
-//                 Expires = ${accessToken.expires}
+//                 Expires = ${accessToken?.expires}
 //
 //                 """.trimIndent()
 //            mFacebookMessage += """
-//                 LastRefresh = ${accessToken.lastRefresh}
+//                 LastRefresh = ${accessToken?.lastRefresh}
 //
 //                 """.trimIndent()
-//            val request = GraphRequest.newMeRequest(
-//                AccessToken.getCurrentAccessToken()
-//            ) { `object`, response ->
-//                try {
-//                    Log.d("SeongKwon", "fb json object: $`object`")
-//                    Log.d("SeongKwon", "fb graph response: $response")
-//                    mFacebookMessage += "fb_json_object = $`object`\n"
+            val request = GraphRequest.newMeRequest(
+                AccessToken.getCurrentAccessToken()
+            ) { result, response ->
+                try {
+                    Log.d("SeongKwon", "fb json object: $result")
+                    Log.d("SeongKwon", "fb graph response: $response")
+//                    mFacebookMessage += "fb_json_object = $result\n"
 //                    runOnUiThread {
 //                        val alertDialogBuilder = AlertDialog.Builder(
 //                            mContext!!
@@ -1682,18 +1672,25 @@ class WebViewActivity : Activity() {
 //                            .setCancelable(false)
 //                            .create().show()
 //                    }
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
-//            }
-//            val parameters = Bundle()
-//            parameters.putString(
-//                "fields",
-//                "id,first_name,last_name,email,gender,birthday"
-//            ) // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-//            request.parameters = parameters
-//            request.executeAsync()
-//        }
+                    val jsonObject = JSONObject()
+                    jsonObject.put(
+                        "accessToken",
+                        accessToken?.token
+                    ) // getAccessToken
+                    jsonObject.put("userInfo", result) // 사용자정보
+                    executeJavascript("$mCallback($jsonObject)")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            val parameters = Bundle()
+            parameters.putString(
+                "fields",
+                "id,first_name,last_name,email,gender,birthday"
+            ) // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
+            request.parameters = parameters
+            request.executeAsync()
+        }
 
     companion object {
         // SNS========================================================================= //
