@@ -973,20 +973,8 @@ class MainActivity : AppCompatActivity() {
 //                            }
                         } else if (actionParamObj.getString("snsType") == "3") {
                             // 페이스북 로그인
-                            if (AccessToken.isCurrentAccessTokenActive()) {
-                                try {
-                                    val jsonObject = JSONObject()
-                                    jsonObject.put(
-                                        "accessToken",
-                                        AccessToken.getCurrentAccessToken()
-                                    ) // getAccessToken
-                                    executeJavascript("$mCallback($jsonObject)")
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-                            } else {
-                                initFacebookLogin()
-                            }
+                            FacebookSdk.sdkInitialize(context)
+                            initFacebookLogin()
                         }
                     }
                 } else if ("ACT1026" == actionCode) {
@@ -1115,6 +1103,7 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var data = data
+        callbackManager?.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("SeongKwon", "============================================")
         Log.d("SeongKwon", "requestCode = $requestCode")
@@ -2006,31 +1995,38 @@ class MainActivity : AppCompatActivity() {
         LoginManager.getInstance()
             .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
                 override fun onSuccess(loginResult: LoginResult) {
-                    Log.d(
-                        "SeongKwon",
-                        "onSuccess - getAccessToken : " + loginResult.accessToken.token
-                    )
-                    Log.d("SeongKwon", "onSuccess - getUserId : " + loginResult.accessToken.userId)
-                    Log.d(
-                        "SeongKwon",
-                        "onSuccess - getExpires : " + loginResult.accessToken.expires
-                    )
-                    Log.d(
-                        "SeongKwon",
-                        "onSuccess - getLastRefresh : " + loginResult.accessToken.lastRefresh
-                    )
-
-                    // getFbInfo();
-                    try {
-                        val jsonObject = JSONObject()
-                        jsonObject.put(
-                            "accessToken",
-                            loginResult.accessToken.token
-                        ) // getAccessToken
-                        executeJavascript("$mCallback($jsonObject)")
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                    val accessToken = AccessToken.getCurrentAccessToken()
+                    Log.d("SeongKwon", "====================================0")
+                    Log.d("SeongKwon", "onSuccess - getToken : " + accessToken?.token)
+                    Log.d("SeongKwon", "onSuccess - getUserId : " + accessToken?.userId)
+                    Log.d("SeongKwon", "onSuccess - isExpired : " + accessToken?.isExpired)
+                    Log.d("SeongKwon", "onSuccess - getExpires : " + accessToken?.expires)
+                    Log.d("SeongKwon", "onSuccess - getLastRefresh : " + accessToken?.lastRefresh)
+                    Log.d("SeongKwon", "====================================1")
+                    val request = GraphRequest.newMeRequest(
+                        AccessToken.getCurrentAccessToken()
+                    ) { result, response ->
+                        try {
+                            Log.d("SeongKwon", "fb json object: $result")
+                            Log.d("SeongKwon", "fb graph response: $response")
+                            val jsonObject = JSONObject()
+                            jsonObject.put(
+                                "accessToken",
+                                accessToken?.token
+                            ) // getAccessToken
+                            jsonObject.put("userInfo", result) // 사용자정보
+                            executeJavascript("$mCallback($jsonObject)")
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
+                    val parameters = Bundle()
+                    parameters.putString(
+                        "fields",
+                        "id,first_name,last_name,email,gender,birthday"
+                    ) // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
+                    request.parameters = parameters
+                    request.executeAsync()
                 }
 
                 override fun onCancel() {
@@ -2042,61 +2038,4 @@ class MainActivity : AppCompatActivity() {
                 }
             })
     }
-
-    // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-    private val fbInfo: Unit
-        private get() {
-            val accessToken = AccessToken.getCurrentAccessToken()
-            Log.d("SeongKwon", "====================================0")
-            Log.d("SeongKwon", "onSuccess - getToken : " + accessToken.token)
-            Log.d("SeongKwon", "onSuccess - getUserId : " + accessToken.userId)
-            Log.d("SeongKwon", "onSuccess - isExpired : " + accessToken.isExpired)
-            Log.d("SeongKwon", "onSuccess - getExpires : " + accessToken.expires)
-            Log.d("SeongKwon", "onSuccess - getLastRefresh : " + accessToken.lastRefresh)
-            Log.d("SeongKwon", "====================================1")
-            mFacebookMessage = """
-                 Token = ${accessToken.token}
-                 
-                 """.trimIndent()
-            mFacebookMessage += """
-                 UserId = ${accessToken.userId}
-                 
-                 """.trimIndent()
-            mFacebookMessage += """
-                 Expires = ${accessToken.expires}
-                 
-                 """.trimIndent()
-            mFacebookMessage += """
-                 LastRefresh = ${accessToken.lastRefresh}
-                 
-                 """.trimIndent()
-            val request = GraphRequest.newMeRequest(
-                AccessToken.getCurrentAccessToken()
-            ) { `object`, response ->
-                try {
-                    Log.d("SeongKwon", "fb json object: $`object`")
-                    Log.d("SeongKwon", "fb graph response: $response")
-                    mFacebookMessage += "fb_json_object = $`object`\n"
-                    runOnUiThread {
-                        val alertDialogBuilder = AlertDialog.Builder(
-                            mContext!!
-                        )
-                        alertDialogBuilder.setTitle("알림")
-                        alertDialogBuilder.setMessage(mFacebookMessage)
-                            .setPositiveButton("확인") { dialogInterface, i -> }
-                            .setCancelable(false)
-                            .create().show()
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            val parameters = Bundle()
-            parameters.putString(
-                "fields",
-                "id,first_name,last_name,email,gender,birthday"
-            ) // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-            request.parameters = parameters
-            request.executeAsync()
-        }
 }

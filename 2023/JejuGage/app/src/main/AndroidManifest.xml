@@ -6,6 +6,14 @@
         <package android:name="com.kakao.talk" />
     </queries>
 
+    <!-- 화면 지원 설정 -->
+    <supports-screens
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"
+        android:anyDensity="true" />
+
     <application
         android:name="com.creator.jejugage.common.HNApplication"
         android:allowBackup="true"
