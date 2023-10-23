@@ -318,7 +318,9 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             false,
             observer!!
         )
-//        checkPermission()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            checkPermission()
+        }
     }
 
     override fun onStop() {
