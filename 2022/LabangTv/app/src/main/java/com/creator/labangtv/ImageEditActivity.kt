@@ -134,7 +134,7 @@ class ImageEditActivity : HelperActivity(), View.OnClickListener {
             R.id.btn_register_gallery_delete -> {
                 val builder = AlertDialog.Builder(this@ImageEditActivity)
                 builder.setPositiveButton(R.string.confirm) { dialog, id ->
-                    if (BitmapUtil.Companion.deleteImage(
+                    if (BitmapUtil.deleteImage(
                             this@ImageEditActivity,
                             mSelectedImages!![mCurrnetPage].name
                         )

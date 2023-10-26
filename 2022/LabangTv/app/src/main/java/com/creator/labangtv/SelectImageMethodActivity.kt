@@ -208,8 +208,8 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                     BitmapUtil.Companion.deleteImages(this, "$filesDir/")
                 }
             }
-            imageCount!!.text =
-                savedImageSize.toString() + "/" + HNApplication.Companion.LIMIT_IMAGE_COUNT
+            imageCount?.text =
+                savedImageSize.toString() + "/" + HNApplication.LIMIT_IMAGE_COUNT
             loadImages()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -920,6 +920,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                     "SeongKwon",
                     "Constants.REQUEST_EDIT_IMAGE ******************************************* adapter.notifyDataSetChanged();"
                 )
+                imageCount?.text = images?.size.toString() + "/" + HNApplication.LIMIT_IMAGE_COUNT
             }
             //            }
         }

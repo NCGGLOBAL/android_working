@@ -244,20 +244,18 @@ class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransfor
                     val imageItem = savedImageArray[i]
                     Log.d("SeongKwon", "imageItem = $imageItem")
                     val delemeter = imageItem.indexOf("&")
-                    Log.d("SeongKwon", "imageArray[0] = " + imageItem.substring(0, delemeter))
-                    Log.d(
-                        "SeongKwon",
-                        "imageArray[1] = " + imageItem.substring(delemeter + 1, imageItem.length)
-                    )
-                    val name = imageItem.substring(0, delemeter)
-                    Log.d("SeongKwon", "$name//$fileName")
-                    if (name != fileName) {
-                        tmp += "$imageItem,"
+                    if (imageItem.isNotEmpty()) {
+                        val name = imageItem.substring(0, delemeter)
+                        Log.d("SeongKwon", "$name//$fileName")
+                        if (name != fileName) {
+                            tmp += "$imageItem,"
+                        }
                     }
                 }
                 HNSharedPreference.putSharedPreference(context, "savedImage", tmp)
             } catch (e: Exception) {
                 Toast.makeText(context, "파일 삭제 실패 ", Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
                 return false
             }
             return true

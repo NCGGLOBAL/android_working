@@ -208,7 +208,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                     BitmapUtil.Companion.deleteImages(this, "$filesDir/")
                 }
             }
-            imageCount!!.text =
+            imageCount?.text =
                 savedImageSize.toString() + "/" + HNApplication.Companion.LIMIT_IMAGE_COUNT
             loadImages()
         } catch (e: Exception) {
@@ -919,7 +919,9 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                         }
                     }
                 }
+
                 images!!.clear()
+
                 images!!.addAll(tempArray)
 
                 // 파일내용 변경
@@ -928,6 +930,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                     "SeongKwon",
                     "Constants.REQUEST_EDIT_IMAGE ******************************************* adapter.notifyDataSetChanged();"
                 )
+                imageCount?.text = images?.size.toString() + "/" + HNApplication.LIMIT_IMAGE_COUNT
             }
             //            }
         }
