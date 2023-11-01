@@ -16,6 +16,7 @@
 package com.creator.bingbing
 
 import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -26,6 +27,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
+import androidx.core.app.NotificationCompat
 import com.creator.bingbing.util.LogUtil
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -162,6 +164,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     PendingIntent.FLAG_IMMUTABLE
                 )
 
+                val channelId = getString(R.string.default_notification_channel_id)
+
                 // Creates an explicit intent for an Activity in your app
                 var defaultSoundUri =
                     RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -171,57 +175,47 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                                 + ctx.packageName + "/" + R.raw.custom_push
                     )
                 }
-                var notificationBuilder: Notification.Builder? = null
-                LogUtil.d(TAG, "Message Notification 3")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    LogUtil.d(TAG, "Message Notification 4")
-                    notificationBuilder = Notification.Builder(
-                        ctx,
-                        MyNotificationManager.Channel.Companion.MESSAGE
-                    ) // round Image
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .setLargeIcon(
-                            BitmapFactory.decodeResource(
-                                ctx.resources,
-                                R.mipmap.ic_launcher
-                            )
+                val notificationBuilder: NotificationCompat.Builder = NotificationCompat.Builder(
+                    ctx,
+                    channelId
+                )
+                notificationBuilder
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setLargeIcon(
+                        BitmapFactory.decodeResource(
+                            ctx.resources,
+                            R.mipmap.ic_launcher
                         )
-                        .setContentTitle(title)
-                        .setContentText(message)
-                        .setAutoCancel(true)
-                        .setContentIntent(pendingIntent)
-                    if (result != null) {
-                        val bigPictureStyle = Notification.BigPictureStyle()
+                    )
+                    .setContentTitle(title)
+                    .setContentText(message)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent)
+                if (result != null) {
+                    notificationBuilder.setStyle(
+                        NotificationCompat.BigPictureStyle()
                             .bigPicture(result)
-                            .setBigContentTitle(title)
-                            .setSummaryText(message)
-                        notificationBuilder.style = bigPictureStyle
-                    } else {
-                        notificationBuilder.style = Notification.BigTextStyle().bigText(message)
-                    }
+                            .bigLargeIcon(null)) // Large icon shown in expanded notification
                 } else {
-                    LogUtil.d(TAG, "Message Notification 5")
-                    notificationBuilder = Notification.Builder(ctx)
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .setLargeIcon(
-                            BitmapFactory.decodeResource(
-                                ctx.resources,
-                                R.mipmap.ic_launcher
-                            )
-                        )
-                        .setStyle(
-                            Notification.BigPictureStyle()
-                                .bigPicture(result)
-                                .setBigContentTitle(title)
-                                .setSummaryText(message)
-                        )
-                        .setContentTitle(resources.getString(R.string.app_name))
-                        .setContentText(message)
-                        .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
-                        .setContentIntent(pendingIntent)
+                    notificationBuilder.setStyle(
+                        NotificationCompat.BigTextStyle()
+                            .bigText(message))
                 }
-                getManager(ctx).notify(0 /* ID of notification */, notificationBuilder.build())
+
+                val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val channel = NotificationChannel(
+                        channelId,
+                        getString(R.string.app_name),
+                        NotificationManager.IMPORTANCE_DEFAULT
+                    )
+                    notificationManager.createNotificationChannel(channel)
+                }
+
+                val notificationId = System.currentTimeMillis().toInt()
+
+                notificationManager.notify(notificationId, notificationBuilder.build())
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -232,6 +226,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             title = params[0]
             message = params[1]
             try {
+                if (params[2].isNullOrEmpty()) return null
                 val url = URL(params[2])
                 val connection =
                     url.openConnection() as HttpURLConnection
