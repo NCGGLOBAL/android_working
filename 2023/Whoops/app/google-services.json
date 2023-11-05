@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1046991121724",
+    "project_id": "whoops-a8870",
+    "storage_bucket": "whoops-a8870.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046991121724:android:e05ae5ffc725a5141fc239",
+        "android_client_info": {
+          "package_name": "com.creator.whoops"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDaDtzGNC2-22LFW74K1jP05myCA6YkqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
