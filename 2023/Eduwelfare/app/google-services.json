@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "517803670861",
+    "project_id": "eduwelfare-a36f7",
+    "storage_bucket": "eduwelfare-a36f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:517803670861:android:680131bfc0b55b2fa74b04",
+        "android_client_info": {
+          "package_name": "com.mallup.eduwelfare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "517803670861-otjpmgnc1k1vgj7qjs4r7cob65ea14ff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9a8UGr1v9tBTkAXCnZyge_L8PzmuF7C4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "517803670861-otjpmgnc1k1vgj7qjs4r7cob65ea14ff.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "517803670861-febaah1pu46m2bospt5s2crhdbh3fhpt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mallup.eduwelfare"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
