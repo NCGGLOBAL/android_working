@@ -86,7 +86,8 @@ class MainActivity : AppCompatActivity() {
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.CAMERA,
         Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION,  //            Manifest.permission.CALL_PHONE
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.CALL_PHONE,
         Manifest.permission.RECORD_AUDIO,
         Manifest.permission.GET_ACCOUNTS,
         Manifest.permission.READ_MEDIA_AUDIO,
@@ -1424,6 +1425,7 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.CAMERA,
+            Manifest.permission.CALL_PHONE,
             Manifest.permission.GET_ACCOUNTS,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.READ_MEDIA_AUDIO,
@@ -1434,7 +1436,8 @@ class MainActivity : AppCompatActivity() {
         arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA,  //                                                    Manifest.permission.CALL_PHONE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.CALL_PHONE,
             Manifest.permission.GET_ACCOUNTS,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.RECORD_AUDIO,
@@ -1445,7 +1448,8 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermission() {
         if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     + ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) //                + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
+                    + ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                    + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
                     + ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
                     + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     + ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
@@ -1458,7 +1462,8 @@ class MainActivity : AppCompatActivity() {
             LogUtil.e("checkPermission ContextCompat.checkSelfPermission")
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) //                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
+                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) //
+                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.GET_ACCOUNTS)
                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)
@@ -1554,7 +1559,8 @@ class MainActivity : AppCompatActivity() {
                                     arrayOf(
                                         Manifest.permission.READ_EXTERNAL_STORAGE,
                                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                        Manifest.permission.CAMERA,  //                                                            Manifest.permission.CALL_PHONE,
+                                        Manifest.permission.CAMERA,
+                                        Manifest.permission.CALL_PHONE,
                                         Manifest.permission.GET_ACCOUNTS,
                                         Manifest.permission.ACCESS_FINE_LOCATION,
                                         Manifest.permission.RECORD_AUDIO,
