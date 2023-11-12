@@ -168,10 +168,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 // Creates an explicit intent for an Activity in your app
                 var defaultSoundUri =
                     RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-                if (mPushType == "custom_push") {
+                if (mPushType == "allpick") {
                     defaultSoundUri = Uri.parse(
                         "android.resource://"
-                                + ctx.packageName + "/" + R.raw.custom_push
+                                + ctx.packageName + "/" + R.raw.allpick
+                    )
+                } else if ((mPushType == "allpickorder")) {
+                    defaultSoundUri = Uri.parse(
+                        ("android.resource://"
+                                + ctx.packageName + "/" + R.raw.allpickorder)
                     )
                 }
                 val notificationBuilder: NotificationCompat.Builder = NotificationCompat.Builder(
