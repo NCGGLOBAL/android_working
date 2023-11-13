@@ -91,7 +91,8 @@ class MainActivity : AppCompatActivity() {
         Manifest.permission.GET_ACCOUNTS,
         Manifest.permission.READ_MEDIA_AUDIO,
         Manifest.permission.READ_MEDIA_IMAGES,
-        Manifest.permission.READ_MEDIA_VIDEO
+        Manifest.permission.READ_MEDIA_VIDEO,
+        Manifest.permission.POST_NOTIFICATIONS
     )
 
     // NICE 연동 가이드
@@ -199,27 +200,27 @@ class MainActivity : AppCompatActivity() {
                 mPushUid = intent.getStringExtra("pushUid")
                 sendPushReceiveToServer(mPushUid)
             }
-            if (intent.dataString != null && !intent.dataString!!.isEmpty()) {
-                val landingUri = intent.dataString
-                //                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
-//                Log.e("jj", "landingUri : " + landingUri);
-                var splitUrl = landingUri!!.split("\\?").toTypedArray()[1]
-                //                Log.e("jj", "splitUrl : " + splitUrl);
-                splitUrl = splitUrl.split("=").toTypedArray()[1]
-                //                Log.e("jj", "splitUrl : " + splitUrl);
-                mLandingUrl = splitUrl
-            }
+//            if (intent.dataString != null && !intent.dataString!!.isEmpty()) {
+//                val landingUri = intent.dataString
+//                //                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
+////                Log.e("jj", "landingUri : " + landingUri);
+//                var splitUrl = landingUri!!.split("\\?").toTypedArray()[1]
+//                //                Log.e("jj", "splitUrl : " + splitUrl);
+//                splitUrl = splitUrl.split("=").toTypedArray()[1]
+//                //                Log.e("jj", "splitUrl : " + splitUrl);
+//                mLandingUrl = splitUrl
+//            }
             //            Log.e("jj", "mLandingUrl : " + mLandingUrl);
 
-//            if (intent != null) {
-//                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
-//                    if (!intent.getStringExtra("url").equals("")) {
-//                        mPushUid = intent.getStringExtra("pushUid")
-//                        mLandingUrl = intent.getStringExtra("url")
-//                        sendPushReceiveToServer(mPushUid)
-//                    }
-//                }
-//            }
+            if (intent != null) {
+                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
+                    if (!intent.getStringExtra("url").equals("")) {
+                        mPushUid = intent.getStringExtra("pushUid")
+                        mLandingUrl = intent.getStringExtra("url")
+                        sendPushReceiveToServer(mPushUid)
+                    }
+                }
+            }
 
             // permission 체크 - 최초실행
             if (HNSharedPreference.getSharedPreference(
@@ -1417,7 +1418,8 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.READ_MEDIA_AUDIO,
             Manifest.permission.READ_MEDIA_IMAGES,
-            Manifest.permission.READ_MEDIA_VIDEO
+            Manifest.permission.READ_MEDIA_VIDEO,
+            Manifest.permission.POST_NOTIFICATIONS
         )
     } else {
         arrayOf(
@@ -1442,6 +1444,7 @@ class MainActivity : AppCompatActivity() {
                     + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO)
                     + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
                     + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO)
+                    + ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     ) != PackageManager.PERMISSION_GRANTED
         ) {
             LogUtil.e("checkPermission ContextCompat.checkSelfPermission")
@@ -1455,6 +1458,7 @@ class MainActivity : AppCompatActivity() {
                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_AUDIO)
                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_IMAGES)
                 || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_VIDEO)
+                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)
             ) {
                 LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale")
                 Snackbar.make(
@@ -1547,7 +1551,8 @@ class MainActivity : AppCompatActivity() {
                                         Manifest.permission.GET_ACCOUNTS,
                                         Manifest.permission.ACCESS_FINE_LOCATION,
                                         Manifest.permission.RECORD_AUDIO,
-                                        Manifest.permission.ACCESS_COARSE_LOCATION
+                                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                                        Manifest.permission.POST_NOTIFICATIONS
                                     ),
                                     Constants.PERMISSIONS_MULTIPLE_REQUEST
                                 )
