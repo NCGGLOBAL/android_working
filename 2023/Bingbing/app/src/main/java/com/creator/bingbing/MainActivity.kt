@@ -1475,7 +1475,8 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.GET_ACCOUNTS,
                 Manifest.permission.READ_MEDIA_AUDIO,
                 Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.READ_MEDIA_VIDEO
+                Manifest.permission.READ_MEDIA_VIDEO,
+                Manifest.permission.POST_NOTIFICATIONS
             )// 얻으려는 권한(여러개 가능)
             .check()
 //        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
