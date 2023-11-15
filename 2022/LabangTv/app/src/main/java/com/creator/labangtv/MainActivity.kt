@@ -1456,6 +1456,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermission() {
+        val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(  //필요한 권한들
+                Manifest.permission.CAMERA,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.GET_ACCOUNTS,
+                Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO,
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+        } else {
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA,
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.GET_ACCOUNTS,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        }
+
         TedPermission.create()
             .setPermissionListener(object : PermissionListener {
 
@@ -1472,18 +1498,7 @@ class MainActivity : AppCompatActivity() {
             })
             .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
             .setPermissions(
-//                Manifest.permission.READ_EXTERNAL_STORAGE,
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.CALL_PHONE,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.GET_ACCOUNTS,
-                Manifest.permission.READ_MEDIA_AUDIO,
-                Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.READ_MEDIA_VIDEO,
-                Manifest.permission.POST_NOTIFICATIONS
+                *requiredPermissionList
             )// 얻으려는 권한(여러개 가능)
             .check()
 //        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)

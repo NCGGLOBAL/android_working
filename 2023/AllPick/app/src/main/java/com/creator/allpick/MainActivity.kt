@@ -45,6 +45,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import com.kakao.auth.*
 import com.kakao.network.ErrorResult
 import com.kakao.usermgmt.UserManagement
@@ -222,28 +224,29 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            checkPermission()
             // permission 체크 - 최초실행
-            if (HNSharedPreference.getSharedPreference(
-                    applicationContext,
-                    "isPermissionCheck"
-                ) == ""
-            ) {
-                HNSharedPreference.putSharedPreference(applicationContext, "isPermissionCheck", "1")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    mLlPermission = findViewById<View>(R.id.ll_permission) as LinearLayout
-                    mLlPermission!!.visibility = View.VISIBLE
-                    val ll_permission_agree =
-                        findViewById<View>(R.id.ll_permission_agree) as LinearLayout
-                    ll_permission_agree.setOnClickListener {
-                        mLlPermission!!.visibility = View.GONE
-                        checkPermission()
-                    }
-                    //                    checkPermission();
-                }
-            } else {
-                Log.e(TAG, "퍼미션 체크 완료 상태")
-                setLocation()
-            }
+//            if (HNSharedPreference.getSharedPreference(
+//                    applicationContext,
+//                    "isPermissionCheck"
+//                ) == ""
+//            ) {
+//                HNSharedPreference.putSharedPreference(applicationContext, "isPermissionCheck", "1")
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    mLlPermission = findViewById<View>(R.id.ll_permission) as LinearLayout
+//                    mLlPermission!!.visibility = View.VISIBLE
+//                    val ll_permission_agree =
+//                        findViewById<View>(R.id.ll_permission_agree) as LinearLayout
+//                    ll_permission_agree.setOnClickListener {
+//                        mLlPermission!!.visibility = View.GONE
+//                        checkPermission()
+//                    }
+//                    //                    checkPermission();
+//                }
+//            } else {
+//                Log.e(TAG, "퍼미션 체크 완료 상태")
+//                setLocation()
+//            }
 
             // WebView 초기화
             initWebView()
@@ -1422,15 +1425,16 @@ class MainActivity : AppCompatActivity() {
 
     val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         arrayOf(  //필요한 권한들
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.CALL_PHONE,
-            Manifest.permission.GET_ACCOUNTS,
             Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.GET_ACCOUNTS,
             Manifest.permission.READ_MEDIA_AUDIO,
             Manifest.permission.READ_MEDIA_IMAGES,
-            Manifest.permission.READ_MEDIA_VIDEO
+            Manifest.permission.READ_MEDIA_VIDEO,
+            Manifest.permission.POST_NOTIFICATIONS
         )
     } else {
         arrayOf(
@@ -1446,64 +1450,83 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermission() {
-        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO)
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO)
-                    ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            LogUtil.e("checkPermission ContextCompat.checkSelfPermission")
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) //
-                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
-                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.GET_ACCOUNTS)
-                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)
-                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_AUDIO)
-                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_IMAGES)
-                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_VIDEO)
-            ) {
-                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale")
-                Snackbar.make(
-                    findViewById(android.R.id.content),
-                    "Please Grant Permissions to upload profile photo",
-                    Snackbar.LENGTH_INDEFINITE
-                ).setAction(
-                    "ENABLE"
-                ) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(
-                            requiredPermissionList,
-                            Constants.PERMISSIONS_MULTIPLE_REQUEST
-                        )
-                    }
-                }.show()
-            } else {
-                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale else")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    LogUtil.e("Build.VERSION.SDK_INT >= Build.VERSION_CODES.M requestPermissions")
-                    requestPermissions(
-                        requiredPermissionList,
-                        Constants.PERMISSIONS_MULTIPLE_REQUEST
-                    )
+        TedPermission.create()
+            .setPermissionListener(object : PermissionListener {
+
+                //권한이 허용됐을 때
+                override fun onPermissionGranted() {
+//                    startProcess()
+//                    Toast.makeText(this@MainActivity, "카메라 기능 권한 획득", Toast.LENGTH_SHORT).show()
                 }
-            }
-        } else {
-            LogUtil.e("checkPermission ContextCompat.checkSelfPermission else")
-            // write your logic code if permission already granted
-            if (mCameraType == 5) {
-                startActivity(Intent(this@MainActivity, CameraActivity::class.java))
-            }
-        }
+
+                //권한이 거부됐을 때
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+            })
+            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+            .setPermissions(
+                *requiredPermissionList
+            )// 얻으려는 권한(여러개 가능)
+            .check()
+//        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO)
+//                    ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            LogUtil.e("checkPermission ContextCompat.checkSelfPermission")
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) //
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.GET_ACCOUNTS)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_AUDIO)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_IMAGES)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_VIDEO)
+//            ) {
+//                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale")
+//                Snackbar.make(
+//                    findViewById(android.R.id.content),
+//                    "Please Grant Permissions to upload profile photo",
+//                    Snackbar.LENGTH_INDEFINITE
+//                ).setAction(
+//                    "ENABLE"
+//                ) {
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        requestPermissions(
+//                            requiredPermissionList,
+//                            Constants.PERMISSIONS_MULTIPLE_REQUEST
+//                        )
+//                    }
+//                }.show()
+//            } else {
+//                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale else")
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    LogUtil.e("Build.VERSION.SDK_INT >= Build.VERSION_CODES.M requestPermissions")
+//                    requestPermissions(
+//                        requiredPermissionList,
+//                        Constants.PERMISSIONS_MULTIPLE_REQUEST
+//                    )
+//                }
+//            }
+//        } else {
+//            LogUtil.e("checkPermission ContextCompat.checkSelfPermission else")
+//            // write your logic code if permission already granted
+//            if (mCameraType == 5) {
+//                startActivity(Intent(this@MainActivity, CameraActivity::class.java))
+//            }
+//        }
     }
 
     override fun onRequestPermissionsResult(
