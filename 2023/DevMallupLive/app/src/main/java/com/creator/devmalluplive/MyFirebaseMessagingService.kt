@@ -190,6 +190,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         .setContentText(message)
                         .setAutoCancel(true)
                         .setContentIntent(pendingIntent)
+                        .setShowWhen(true)
                     if (result != null) {
                         val bigPictureStyle = Notification.BigPictureStyle()
                             .bigPicture(result)
@@ -219,6 +220,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         .setContentText(message)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
+                        .setShowWhen(true)
                         .setContentIntent(pendingIntent)
                 }
                 getManager(ctx).notify(0 /* ID of notification */, notificationBuilder.build())
