@@ -9,8 +9,8 @@ android {
         applicationId "com.creator.malluplive"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 16
-        versionName "1.1.6"
+        versionCode 17
+        versionName "1.1.7"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
