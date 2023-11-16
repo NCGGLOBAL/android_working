@@ -390,6 +390,8 @@ class MainActivity : AppCompatActivity() {
             intent = Intent(mContext, WebViewActivity::class.java)
             intent.putExtra("webviewUrl", it)
             startActivity(intent)
+
+            mLandingUrl = null
         }
 
 //        if (mLandingUrl != "") {
