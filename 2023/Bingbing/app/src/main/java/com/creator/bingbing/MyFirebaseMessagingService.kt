@@ -192,6 +192,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     .setAutoCancel(true)
                     .setSound(defaultSoundUri)
                     .setContentIntent(pendingIntent)
+                    .setShowWhen(true)
                 if (result != null) {
                     notificationBuilder.setStyle(
                         NotificationCompat.BigPictureStyle()
