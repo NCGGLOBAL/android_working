@@ -208,8 +208,9 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                     BitmapUtil.Companion.deleteImages(this, "$filesDir/")
                 }
             }
-            imageCount!!.text =
-                savedImageSize.toString() + "/" + HNApplication.Companion.LIMIT_IMAGE_COUNT
+            imageCount?.text =
+                savedImageSize.toString() + "/" + HNApplication.LIMIT_IMAGE_COUNT
+            loadImages()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -317,7 +318,9 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             false,
             observer!!
         )
-        checkPermission()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            checkPermission()
+        }
     }
 
     override fun onStop() {
@@ -917,6 +920,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                     "SeongKwon",
                     "Constants.REQUEST_EDIT_IMAGE ******************************************* adapter.notifyDataSetChanged();"
                 )
+                imageCount?.text = images?.size.toString() + "/" + HNApplication.LIMIT_IMAGE_COUNT
             }
             //            }
         }
@@ -952,6 +956,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             imageCount!!.text =
                 savedImageSize.toString() + "/" + HNApplication.Companion.LIMIT_IMAGE_COUNT
 
+            loadImages()
             // Close progressdialog
             mProgressDialog!!.dismiss()
         }
