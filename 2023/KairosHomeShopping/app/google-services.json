@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "436933391752",
+    "project_id": "kairoshomeshopping-629d4",
+    "storage_bucket": "kairoshomeshopping-629d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436933391752:android:c66e2b2c95d1892631763d",
+        "android_client_info": {
+          "package_name": "com.creator.kairoshomeshopping"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7VDqxjGZIUoDKkwEC-N0U2ZU4wNgex4Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
