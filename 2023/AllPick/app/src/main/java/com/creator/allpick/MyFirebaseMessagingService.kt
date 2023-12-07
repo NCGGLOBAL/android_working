@@ -230,6 +230,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             title = params[0]
             message = params[1]
             try {
+                if (params[2].isNullOrEmpty()) return null
                 val url = URL(params[2])
                 val connection =
                     url.openConnection() as HttpURLConnection
