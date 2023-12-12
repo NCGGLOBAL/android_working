@@ -208,8 +208,9 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                     BitmapUtil.Companion.deleteImages(this, "$filesDir/")
                 }
             }
-            imageCount!!.text =
-                savedImageSize.toString() + "/" + HNApplication.Companion.LIMIT_IMAGE_COUNT
+            imageCount?.text =
+                savedImageSize.toString() + "/" + HNApplication.LIMIT_IMAGE_COUNT
+            loadImages()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -317,7 +318,9 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             false,
             observer!!
         )
-        checkPermission()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            checkPermission()
+        }
     }
 
     override fun onStop() {
@@ -457,7 +460,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                 //                Log.d("update===============", "idx = " + idx + " // sequence = " + images.get(idx).sequence);
             }
         }
-        adapter!!.notifyDataSetChanged()
+        adapter?.notifyDataSetChanged()
     }
 
     private fun deselectAll() {
@@ -468,7 +471,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             i++
         }
         countSelected = 0
-        adapter!!.notifyDataSetChanged()
+        adapter?.notifyDataSetChanged()
     }// ACT1011 CALLBACK
 
     // utype =  0: 기존이미지, 1: 신규, 2: 수정
@@ -742,13 +745,8 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             }
         } else if (requestCode == Constants.REQUEST_WRITE_EXTERNAL_STORAGE || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) {
             LogUtil.i("Received response for getting Location Info permission request.")
-            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (mCameraType == 4) {
-                    galleryAddPic()
-                }
-                LogUtil.i("ACCESS_FINE_LOCATION permission has now been granted. Showing preview.")
-            } else {
-                LogUtil.i("ACCESS_FINE_LOCATION permission was NOT granted.")
+            if (mCameraType == 4) {
+                galleryAddPic()
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -922,6 +920,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                     "SeongKwon",
                     "Constants.REQUEST_EDIT_IMAGE ******************************************* adapter.notifyDataSetChanged();"
                 )
+                imageCount?.text = images?.size.toString() + "/" + HNApplication.LIMIT_IMAGE_COUNT
             }
             //            }
         }
@@ -957,6 +956,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             imageCount!!.text =
                 savedImageSize.toString() + "/" + HNApplication.Companion.LIMIT_IMAGE_COUNT
 
+            loadImages()
             // Close progressdialog
             mProgressDialog!!.dismiss()
         }

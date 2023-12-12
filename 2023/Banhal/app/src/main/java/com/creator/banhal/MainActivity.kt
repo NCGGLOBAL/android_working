@@ -3,6 +3,7 @@ package com.creator.banhal
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.ActivityManager
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.*
 import android.content.pm.PackageInfo
@@ -44,6 +45,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import com.kakao.auth.*
 import com.kakao.network.ErrorResult
 import com.kakao.usermgmt.UserManagement
@@ -75,7 +78,7 @@ class MainActivity : AppCompatActivity() {
     private val mCallbackParam: String? = null
     private var mFirebaseMessaging: FirebaseMessaging? = null
     private var mPushUid: String? = ""
-    private var mLandingUrl: String? = ""
+    private var mLandingUrl: String? = null
     private var mBackPressCloseHandler: BackPressCloseHandler? = null
     private var mIntegrator: IntentIntegrator? = null
     private var mCameraType = 0
@@ -87,10 +90,41 @@ class MainActivity : AppCompatActivity() {
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.CAMERA,
         Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION,  //            Manifest.permission.CALL_PHONE
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.CALL_PHONE,
         Manifest.permission.RECORD_AUDIO,
-        Manifest.permission.GET_ACCOUNTS
+        Manifest.permission.GET_ACCOUNTS,
+        Manifest.permission.READ_MEDIA_AUDIO,
+        Manifest.permission.READ_MEDIA_IMAGES,
+        Manifest.permission.READ_MEDIA_VIDEO,
+        Manifest.permission.POST_NOTIFICATIONS
     )
+
+    val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(  //필요한 권한들
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.CAMERA,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.GET_ACCOUNTS,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_MEDIA_AUDIO,
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VIDEO,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+    } else {
+        arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.GET_ACCOUNTS,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    }
 
     // NICE 연동 가이드
     val ISP_LINK = "market://details?id=kvp.jjy.MispAndroid320" // ISP 설치 링크
@@ -156,6 +190,7 @@ class MainActivity : AppCompatActivity() {
         try {
             setContentView(R.layout.activity_main)
             mContext = this@MainActivity
+
             if (HNSharedPreference.getSharedPreference(this, "deviceId") == "") {
                 HNApplication.mDeviceId = EtcUtil.getRandomKey(16)
                 HNSharedPreference.putSharedPreference(
@@ -211,35 +246,15 @@ class MainActivity : AppCompatActivity() {
             if (intent != null) {
                 if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
                     if (!intent.getStringExtra("url").equals("")) {
-                        mPushUid = intent.getStringExtra("pushUid");
-                        mLandingUrl = intent.getStringExtra("url");
-                        sendPushReceiveToServer(mPushUid);
+                        mPushUid = intent.getStringExtra("pushUid")
+                        mLandingUrl = intent.getStringExtra("url")
+                        sendPushReceiveToServer(mPushUid)
                     }
                 }
             }
 
             // permission 체크 - 최초실행
-            if (HNSharedPreference.getSharedPreference(
-                    applicationContext,
-                    "isPermissionCheck"
-                ) == ""
-            ) {
-                HNSharedPreference.putSharedPreference(applicationContext, "isPermissionCheck", "1")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    mLlPermission = findViewById<View>(R.id.ll_permission) as LinearLayout
-                    mLlPermission!!.visibility = View.VISIBLE
-                    val ll_permission_agree =
-                        findViewById<View>(R.id.ll_permission_agree) as LinearLayout
-                    ll_permission_agree.setOnClickListener {
-                        mLlPermission!!.visibility = View.GONE
-                        checkPermission()
-                    }
-                    //                    checkPermission();
-                }
-            } else {
-                Log.e(TAG, "퍼미션 체크 완료 상태")
-                setLocation()
-            }
+            checkPermission()
 
             // WebView 초기화
             initWebView()
@@ -254,12 +269,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        mWebView!!.onResume()
+        mWebView?.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        mWebView!!.onPause()
+        mWebView?.onPause()
     }
 
     private val hashKey: Unit
@@ -288,17 +303,17 @@ class MainActivity : AppCompatActivity() {
         try {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@MainActivity)
             fusedLocationClient?.lastLocation?.addOnSuccessListener(
-                    this
-                ) { location ->
-                    // Got last known location. In some rare situations this can be null.
-                    if (location != null) {
-                        // Logic to handle location object
-                        Log.e(TAG, "location.getLatitude() : " + location.latitude)
-                        Log.e(TAG, "location.getLongitude() : " + location.longitude)
-                        mLatitude = location.latitude
-                        mLongitude = location.longitude
-                    }
+                this
+            ) { location ->
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    // Logic to handle location object
+                    Log.e(TAG, "location.getLatitude() : " + location.latitude)
+                    Log.e(TAG, "location.getLongitude() : " + location.longitude)
+                    mLatitude = location.latitude
+                    mLongitude = location.longitude
                 }
+            }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
@@ -337,27 +352,35 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.settings.allowContentAccess = true
         mWebView!!.settings.loadsImagesAutomatically = true
         mWebView!!.settings.loadWithOverviewMode = true
-        mWebView!!.settings.setSupportMultipleWindows(false)
         mWebView!!.settings.useWideViewPort = true
         mWebView!!.settings.databaseEnabled = true
         mWebView!!.settings.domStorageEnabled = true
         mWebView!!.settings.javaScriptCanOpenWindowsAutomatically = true
         mWebView!!.settings.setSupportMultipleWindows(true)
-        mWebView!!.settings.setAppCacheEnabled(true)
+//        mWebView!!.settings.setAppCacheEnabled(true)
         mWebView!!.settings.cacheMode = WebSettings.LOAD_DEFAULT
-        mWebView!!.settings.setAppCachePath(applicationContext.cacheDir.absolutePath)
+//        mWebView!!.settings.setAppCachePath(applicationContext.cacheDir.absolutePath)
         mWebView!!.settings.textZoom = 100
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
         mWebView!!.isDrawingCacheEnabled = true
         mWebView!!.buildDrawingCache()
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
-        if (mLandingUrl != "") {
-            mWebView!!.loadUrl(mLandingUrl ?: "", extraHeaders)
-        } else {
-            mWebView!!.loadUrl(HNApplication.URL, extraHeaders)
-            mLandingUrl = ""
+        mWebView!!.loadUrl(HNApplication.URL, extraHeaders)
+        mLandingUrl?.let {
+            intent = Intent(mContext, WebViewActivity::class.java)
+            intent.putExtra("webviewUrl", it)
+            startActivity(intent)
+
+            mLandingUrl = null
         }
+
+//        if (mLandingUrl != "") {
+//            mWebView!!.loadUrl(mLandingUrl ?: "", extraHeaders)
+//        } else {
+//            mWebView!!.loadUrl(HNApplication.URL, extraHeaders)
+//            mLandingUrl = ""
+//        }
     }
 
     inner class HNWebChromeClient : WebChromeClient() {
@@ -487,9 +510,55 @@ class MainActivity : AppCompatActivity() {
                 .setCancelable(false).create().show()
             return true
         }
+
+        override fun onCreateWindow(
+            view: WebView?,
+            isDialog: Boolean,
+            isUserGesture: Boolean,
+            resultMsg: Message?
+        ): Boolean {
+
+            val windowWebview = WebView(this@MainActivity)
+            windowWebview.settings.run {
+                javaScriptEnabled = true                        // 자바 스크립트 사용 여부
+                setSupportMultipleWindows(true)                 //여러개의 윈도우 사용 여부
+                javaScriptCanOpenWindowsAutomatically = true
+            }
+
+            val windowDialog = Dialog(this@MainActivity).apply {
+
+                setContentView(windowWebview)
+                val params = window?.attributes?.apply {
+                    width = ViewGroup.LayoutParams.MATCH_PARENT
+                    height = ViewGroup.LayoutParams.MATCH_PARENT
+                }
+
+                window?.attributes = params
+            }
+
+            windowWebview.webChromeClient = object : WebChromeClient() {
+
+                override fun onCloseWindow(window: WebView?) {
+                    windowDialog.dismiss()
+                    windowWebview.destroy()
+                    window?.destroy()
+                }
+            }
+
+            windowDialog.setOnDismissListener {
+                windowWebview.destroy()
+            }
+
+            windowDialog.show()
+
+            (resultMsg?.obj as WebView.WebViewTransport).webView = windowWebview
+            resultMsg.sendToTarget()
+
+            return true
+        }
     }
 
-    inner class HNWebViewClient : WebViewClient() {
+    inner class HNWebViewClient : WebViewClient(), DownloadListener {
         override fun onPageFinished(view: WebView, url: String) {
             super.onPageFinished(view, url)
             // LogUtil.d("onPageLoadStopped : " + url);
@@ -504,20 +573,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            // LogUtil.e("shouldOverrideUrlLoading : " + url);
+            LogUtil.e("shouldOverrideUrlLoading : " + url);
             var uri = Uri.parse(url)
             var intent: Intent? = null
             if (uri.scheme == "ncglive") {
-                if (!hasPermissions(mContext, *PERMISSIONS)) {
-                    mCameraType = 5
-                    ActivityCompat.requestPermissions(
-                        this@MainActivity,
-                        PERMISSIONS,
-                        Constants.PERMISSIONS_MULTIPLE_REQUEST
-                    )
-                } else {
-                    startActivity(Intent(this@MainActivity, CameraActivity::class.java))
-                }
+                startActivity(Intent(this@MainActivity, CameraActivity::class.java))
                 return true
             }
             if (url.startsWith("sms:") || url.startsWith("smsto:")) {
@@ -525,41 +585,43 @@ class MainActivity : AppCompatActivity() {
                 startActivity(i)
                 return true
             } else if (url.startsWith("tel:")) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    val permissionResult = checkSelfPermission(Manifest.permission.CALL_PHONE)
-                    if (permissionResult == PackageManager.PERMISSION_DENIED) {
-                        if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
-                            val dialog = AlertDialog.Builder(
-                                mContext!!
-                            )
-                            dialog.setTitle("권한이 필요합니다.")
-                                .setMessage("이 기능을 사용하기 위해서는 단말기의 \"전화걸기\" 권한이 필요합니다. 계속 하시겠습니까?")
-                                .setPositiveButton("네") { dialog, which ->
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        // CALL_PHONE 권한을 Android OS에 요청한다.
-                                        requestPermissions(
-                                            arrayOf(Manifest.permission.CALL_PHONE),
-                                            1000
-                                        )
-                                    }
-                                }
-                                .setNegativeButton("아니요") { dialog, which ->
-                                    Toast.makeText(
-                                        mContext,
-                                        "기능을 취소했습니다",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                .create().show()
-                        }
-                    } else {
-                        intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
-                        startActivity(intent)
-                    }
-                } else {
-                    intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
-                    startActivity(intent)
-                }
+                intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
+                startActivity(intent)
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    val permissionResult = checkSelfPermission(Manifest.permission.CALL_PHONE)
+//                    if (permissionResult == PackageManager.PERMISSION_DENIED) {
+//                        if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
+//                            val dialog = AlertDialog.Builder(
+//                                mContext!!
+//                            )
+//                            dialog.setTitle("권한이 필요합니다.")
+//                                .setMessage("이 기능을 사용하기 위해서는 단말기의 \"전화걸기\" 권한이 필요합니다. 계속 하시겠습니까?")
+//                                .setPositiveButton("네") { dialog, which ->
+//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                                        // CALL_PHONE 권한을 Android OS에 요청한다.
+//                                        requestPermissions(
+//                                            arrayOf(Manifest.permission.CALL_PHONE),
+//                                            1000
+//                                        )
+//                                    }
+//                                }
+//                                .setNegativeButton("아니요") { dialog, which ->
+//                                    Toast.makeText(
+//                                        mContext,
+//                                        "기능을 취소했습니다",
+//                                        Toast.LENGTH_SHORT
+//                                    ).show()
+//                                }
+//                                .create().show()
+//                        }
+//                    } else {
+//                        intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
+//                        startActivity(intent)
+//                    }
+//                } else {
+//                    intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
+//                    startActivity(intent)
+//                }
                 return true
             } else if (url.startsWith("mailto:")) {
                 intent = Intent(Intent.ACTION_SENDTO, Uri.parse(url))
@@ -749,7 +811,19 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             view.loadUrl(url)
+            view.setDownloadListener(this)
             return false // webview replace
+        }
+
+        override fun onDownloadStart(
+            url: String?,
+            userAgent: String?,
+            contentDisposition: String?,
+            mimeType: String?,
+            contentLength: Long
+        ) {
+            LogUtil.e("onDownloadStart : " + url);
+            EtcUtil.downloadFile(url, userAgent, contentDisposition, mimeType, this@MainActivity)
         }
     }
 
@@ -814,21 +888,26 @@ class MainActivity : AppCompatActivity() {
                             4
                             //                            requestPermission(Constants.REQUEST_SELECT_IMAGE_ALBUM);
                         }
-                        if (!hasPermissions(mContext, *PERMISSIONS)) {
-                            ActivityCompat.requestPermissions(
-                                this@MainActivity,
-                                PERMISSIONS,
-                                Constants.PERMISSIONS_MULTIPLE_REQUEST
-                            )
+                        if (mCameraType == 3) {
+                            dispatchTakePictureIntent()
                         } else {
-                            if (mCameraType == 3) {
-                                dispatchTakePictureIntent()
-                            } else {
-                                galleryAddPic()
-                            }
-                            //                            intent = new Intent(getApplicationContext(), SelectImageMethodActivity.class);
-//                            startActivityForResult(intent, Constants.REQUEST_CODE);
+                            galleryAddPic()
                         }
+//                        if (!hasPermissions(mContext, *PERMISSIONS)) {
+//                            ActivityCompat.requestPermissions(
+//                                this@MainActivity,
+//                                PERMISSIONS,
+//                                Constants.PERMISSIONS_MULTIPLE_REQUEST
+//                            )
+//                        } else {
+//                            if (mCameraType == 3) {
+//                                dispatchTakePictureIntent()
+//                            } else {
+//                                galleryAddPic()
+//                            }
+//                            //                            intent = new Intent(getApplicationContext(), SelectImageMethodActivity.class);
+////                            startActivityForResult(intent, Constants.REQUEST_CODE);
+//                        }
                     }
                 } else if ("ACT1002" == actionCode) {
                     LogUtil.d("ACT1002 - 앱 데이터 가져오기 (키체인 및 파일에 있는 정보 가져오기)")
@@ -839,6 +918,7 @@ class MainActivity : AppCompatActivity() {
                     mCameraType = 0
                     //                    requestPermission(Constants.REQUEST_CAMERA);
 //                    executeJavascript(mCallback + "()");
+                    callQR()
                 } else if ("ACT1003" == actionCode) {
                     LogUtil.d("ACT1003 - 위쳇페이")
                     if (actionParamObj!!.has("request_url")) {
@@ -912,21 +992,16 @@ class MainActivity : AppCompatActivity() {
 //                            }
                         } else if (actionParamObj.getString("snsType") == "3") {
                             // 페이스북 로그인
-                            if (AccessToken.isCurrentAccessTokenActive()) {
-                                try {
-                                    val jsonObject = JSONObject()
-                                    jsonObject.put(
-                                        "accessToken",
-                                        AccessToken.getCurrentAccessToken()
-                                    ) // getAccessToken
-                                    executeJavascript("$mCallback($jsonObject)")
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-                            } else {
-                                initFacebookLogin()
-                            }
+                            FacebookSdk.sdkInitialize(context)
+                            initFacebookLogin()
                         }
+                    }
+                } else if ("ACT1022" == actionCode) {
+                    LogUtil.d("ACT1022 - 전화 걸기")
+                    val tel = actionParamObj?.getString("tel")
+                    tel?.let {
+                        intent = Intent(Intent.ACTION_CALL, Uri.parse(it))
+                        startActivity(intent)
                     }
                 } else if ("ACT1026" == actionCode) {
                     // 위치 정보 조회
@@ -939,14 +1014,8 @@ class MainActivity : AppCompatActivity() {
 //
 //                    Log.e(TAG, mCallback + "(" + jsonObject.toString() + ")");
 //                    executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
-                    if (ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        )
-                        + ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                        ) === PackageManager.PERMISSION_GRANTED
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                        + ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) === PackageManager.PERMISSION_GRANTED
                     ) {
                         setLocation()
                         val jsonObject = JSONObject()
@@ -1054,6 +1123,7 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var data = data
+        callbackManager?.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("SeongKwon", "============================================")
         Log.d("SeongKwon", "requestCode = $requestCode")
@@ -1359,173 +1429,109 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermission() {
-        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    + ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(  //필요한 권한들
+                Manifest.permission.CAMERA,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.GET_ACCOUNTS,
+                Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO,
+                Manifest.permission.POST_NOTIFICATIONS
             )
-                    + ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.CAMERA
-            ) //                + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
-                    + ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                    + ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )) != PackageManager.PERMISSION_GRANTED
-        ) {
-            LogUtil.e("checkPermission ContextCompat.checkSelfPermission")
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-                || ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-                || ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.CAMERA
-                ) //                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
-                || ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.GET_ACCOUNTS
-                )
-                || ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-                || ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.RECORD_AUDIO
-                )
-                || ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            ) {
-                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale")
-                Snackbar.make(
-                    findViewById(android.R.id.content),
-                    "Please Grant Permissions to upload profile photo",
-                    Snackbar.LENGTH_INDEFINITE
-                ).setAction(
-                    "ENABLE"
-                ) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(
-                            arrayOf(
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.CAMERA,  //                                                    Manifest.permission.CALL_PHONE,
-                                Manifest.permission.GET_ACCOUNTS,
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.RECORD_AUDIO,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                            ),
-                            Constants.PERMISSIONS_MULTIPLE_REQUEST
-                        )
-                    }
-                }.show()
-            } else {
-                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale else")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    LogUtil.e("Build.VERSION.SDK_INT >= Build.VERSION_CODES.M requestPermissions")
-                    requestPermissions(
-                        arrayOf(
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.CAMERA,  //                                    Manifest.permission.CALL_PHONE,
-                            Manifest.permission.GET_ACCOUNTS,
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.RECORD_AUDIO,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                        ),
-                        Constants.PERMISSIONS_MULTIPLE_REQUEST
-                    )
-                }
-            }
         } else {
-            LogUtil.e("checkPermission ContextCompat.checkSelfPermission else")
-            // write your logic code if permission already granted
-            if (mCameraType == 5) {
-                startActivity(Intent(this@MainActivity, CameraActivity::class.java))
-            }
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA,
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.GET_ACCOUNTS,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
         }
-    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        LogUtil.e("onRequestPermissionsResult")
-        when (requestCode) {
-            Constants.PERMISSIONS_MULTIPLE_REQUEST -> {
-                LogUtil.e("Constants.PERMISSIONS_MULTIPLE_REQUEST")
-                if (grantResults.size > 0) {
-                    LogUtil.e("grantResults.length > 0")
-                    val cameraPermission = grantResults[2] == PackageManager.PERMISSION_GRANTED
-                    val writeExternalFile = grantResults[1] == PackageManager.PERMISSION_GRANTED
-                    val readExternalFile = grantResults[0] == PackageManager.PERMISSION_GRANTED
-                    val audioPermission = grantResults[5] == PackageManager.PERMISSION_GRANTED
-                    if (cameraPermission && audioPermission) {
-                        LogUtil.e("cameraPermission && audioPermission")
-                        if (mCameraType == 5) {
-                            startActivity(Intent(this@MainActivity, CameraActivity::class.java))
-                        }
-                    } else if (cameraPermission && writeExternalFile && readExternalFile) {
-                        LogUtil.e("cameraPermission && writeExternalFile && readExternalFile")
-                        if (mLlPermission == null) return
-                        mLlPermission!!.visibility = View.GONE
-                    } else {
-                        LogUtil.e("cameraPermission && audioPermission else requestPermissions")
-                        //                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                            requestPermissions(
-//                                    new String[]{
-//                                            Manifest.permission.READ_EXTERNAL_STORAGE,
-//                                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                                            Manifest.permission.CAMERA,
-//                                            Manifest.permission.CALL_PHONE,
-//                                            Manifest.permission.GET_ACCOUNTS,
-//                                            Manifest.permission.ACCESS_FINE_LOCATION,
-//                                            Manifest.permission.RECORD_AUDIO,
-//                                            Manifest.permission.ACCESS_COARSE_LOCATION
-//                                    },
-//                                    Constants.PERMISSIONS_MULTIPLE_REQUEST);
-//                        }
-                        LogUtil.e("Snackbar.make")
-                        Snackbar.make(
-                            findViewById(android.R.id.content),
-                            "Please Grant Permissions to upload profile photo",
-                            Snackbar.LENGTH_SHORT
-                        ).setAction(
-                            "ENABLE"
-                        ) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                requestPermissions(
-                                    arrayOf(
-                                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                        Manifest.permission.CAMERA,  //                                                            Manifest.permission.CALL_PHONE,
-                                        Manifest.permission.GET_ACCOUNTS,
-                                        Manifest.permission.ACCESS_FINE_LOCATION,
-                                        Manifest.permission.RECORD_AUDIO,
-                                        Manifest.permission.ACCESS_COARSE_LOCATION
-                                    ),
-                                    Constants.PERMISSIONS_MULTIPLE_REQUEST
-                                )
-                            }
-                        }.show()
-                    }
+        TedPermission.create()
+            .setPermissionListener(object : PermissionListener {
+
+                //권한이 허용됐을 때
+                override fun onPermissionGranted() {
+//                    startProcess()
+//                    Toast.makeText(this@MainActivity, "카메라 기능 권한 획득", Toast.LENGTH_SHORT).show()
                 }
-            }
-        }
+
+                //권한이 거부됐을 때
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+            })
+            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+            .setPermissions(
+                *requiredPermissionList
+            )// 얻으려는 권한(여러개 가능)
+            .check()
+//        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
+//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO)
+//                    ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            LogUtil.e("checkPermission ContextCompat.checkSelfPermission")
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.GET_ACCOUNTS)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_AUDIO)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_IMAGES)
+//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_VIDEO)
+//            ) {
+//                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale")
+//                Snackbar.make(
+//                    findViewById(android.R.id.content),
+//                    "Please Grant Permissions to upload profile photo",
+//                    Snackbar.LENGTH_INDEFINITE
+//                ).setAction(
+//                    "ENABLE"
+//                ) {
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        requestPermissions(
+//                            requiredPermissionList,
+//                            Constants.PERMISSIONS_MULTIPLE_REQUEST
+//                        )
+//                    }
+//                }.show()
+//            } else {
+//                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale else")
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    LogUtil.e("Build.VERSION.SDK_INT >= Build.VERSION_CODES.M requestPermissions")
+//                    requestPermissions(
+//                        requiredPermissionList,
+//                        Constants.PERMISSIONS_MULTIPLE_REQUEST
+//                    )
+//                }
+//            }
+//        } else {
+//            LogUtil.e("checkPermission ContextCompat.checkSelfPermission else")
+//            // write your logic code if permission already granted
+//            if (mCameraType == 5) {
+//                startActivity(Intent(this@MainActivity, CameraActivity::class.java))
+//            }
+//        }
     }
 
     private fun callQR() {
@@ -1629,27 +1635,27 @@ class MainActivity : AppCompatActivity() {
         return Base64.encodeToString(b, Base64.DEFAULT)
     }
 
-    fun hasPermissions(context: Context?, vararg permissions: String?): Boolean {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
-                for (permission in permissions) {
-                    if (ActivityCompat.checkSelfPermission(
-                            context,
-                            permission!!
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        return false
-                    }
-                }
-            } else {
-                val intent = Intent(applicationContext, SelectImageMethodActivity::class.java)
-                startActivityForResult(intent, Constants.REQUEST_CODE)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return true
-    }
+//    fun hasPermissions(context: Context?, vararg permissions: String?): Boolean {
+//        try {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+//                for (permission in permissions) {
+//                    if (ActivityCompat.checkSelfPermission(
+//                            context,
+//                            permission!!
+//                        ) != PackageManager.PERMISSION_GRANTED
+//                    ) {
+//                        return false
+//                    }
+//                }
+//            } else {
+//                val intent = Intent(applicationContext, SelectImageMethodActivity::class.java)
+//                startActivityForResult(intent, Constants.REQUEST_CODE)
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+//        return true
+//    }
 
     private fun getBase64String(bitmap: Bitmap): String {
         val baos = ByteArrayOutputStream()
@@ -1659,7 +1665,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class uploadImagesAsyncTask : AsyncTask<String?, Void?, String?>() {
-        var result: String? = ""
+        var result: String? = null
         override fun onPreExecute() {
             super.onPreExecute()
             mProgressDialog = ProgressDialog(mContext)
@@ -1964,31 +1970,38 @@ class MainActivity : AppCompatActivity() {
         LoginManager.getInstance()
             .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
                 override fun onSuccess(loginResult: LoginResult) {
-                    Log.d(
-                        "SeongKwon",
-                        "onSuccess - getAccessToken : " + loginResult.accessToken.token
-                    )
-                    Log.d("SeongKwon", "onSuccess - getUserId : " + loginResult.accessToken.userId)
-                    Log.d(
-                        "SeongKwon",
-                        "onSuccess - getExpires : " + loginResult.accessToken.expires
-                    )
-                    Log.d(
-                        "SeongKwon",
-                        "onSuccess - getLastRefresh : " + loginResult.accessToken.lastRefresh
-                    )
-
-                    // getFbInfo();
-                    try {
-                        val jsonObject = JSONObject()
-                        jsonObject.put(
-                            "accessToken",
-                            loginResult.accessToken.token
-                        ) // getAccessToken
-                        executeJavascript("$mCallback($jsonObject)")
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                    val accessToken = AccessToken.getCurrentAccessToken()
+                    Log.d("SeongKwon", "====================================0")
+                    Log.d("SeongKwon", "onSuccess - getToken : " + accessToken?.token)
+                    Log.d("SeongKwon", "onSuccess - getUserId : " + accessToken?.userId)
+                    Log.d("SeongKwon", "onSuccess - isExpired : " + accessToken?.isExpired)
+                    Log.d("SeongKwon", "onSuccess - getExpires : " + accessToken?.expires)
+                    Log.d("SeongKwon", "onSuccess - getLastRefresh : " + accessToken?.lastRefresh)
+                    Log.d("SeongKwon", "====================================1")
+                    val request = GraphRequest.newMeRequest(
+                        AccessToken.getCurrentAccessToken()
+                    ) { result, response ->
+                        try {
+                            Log.d("SeongKwon", "fb json object: $result")
+                            Log.d("SeongKwon", "fb graph response: $response")
+                            val jsonObject = JSONObject()
+                            jsonObject.put(
+                                "accessToken",
+                                accessToken?.token
+                            ) // getAccessToken
+                            jsonObject.put("userInfo", result) // 사용자정보
+                            executeJavascript("$mCallback($jsonObject)")
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
+                    val parameters = Bundle()
+                    parameters.putString(
+                        "fields",
+                        "id,first_name,last_name,email,gender,birthday"
+                    ) // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
+                    request.parameters = parameters
+                    request.executeAsync()
                 }
 
                 override fun onCancel() {
@@ -2000,61 +2013,4 @@ class MainActivity : AppCompatActivity() {
                 }
             })
     }
-
-    // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-    private val fbInfo: Unit
-        private get() {
-            val accessToken = AccessToken.getCurrentAccessToken()
-            Log.d("SeongKwon", "====================================0")
-            Log.d("SeongKwon", "onSuccess - getToken : " + accessToken.token)
-            Log.d("SeongKwon", "onSuccess - getUserId : " + accessToken.userId)
-            Log.d("SeongKwon", "onSuccess - isExpired : " + accessToken.isExpired)
-            Log.d("SeongKwon", "onSuccess - getExpires : " + accessToken.expires)
-            Log.d("SeongKwon", "onSuccess - getLastRefresh : " + accessToken.lastRefresh)
-            Log.d("SeongKwon", "====================================1")
-            mFacebookMessage = """
-                 Token = ${accessToken.token}
-                 
-                 """.trimIndent()
-            mFacebookMessage += """
-                 UserId = ${accessToken.userId}
-                 
-                 """.trimIndent()
-            mFacebookMessage += """
-                 Expires = ${accessToken.expires}
-                 
-                 """.trimIndent()
-            mFacebookMessage += """
-                 LastRefresh = ${accessToken.lastRefresh}
-                 
-                 """.trimIndent()
-            val request = GraphRequest.newMeRequest(
-                AccessToken.getCurrentAccessToken()
-            ) { `object`, response ->
-                try {
-                    Log.d("SeongKwon", "fb json object: $`object`")
-                    Log.d("SeongKwon", "fb graph response: $response")
-                    mFacebookMessage += "fb_json_object = $`object`\n"
-                    runOnUiThread {
-                        val alertDialogBuilder = AlertDialog.Builder(
-                            mContext!!
-                        )
-                        alertDialogBuilder.setTitle("알림")
-                        alertDialogBuilder.setMessage(mFacebookMessage)
-                            .setPositiveButton("확인") { dialogInterface, i -> }
-                            .setCancelable(false)
-                            .create().show()
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            val parameters = Bundle()
-            parameters.putString(
-                "fields",
-                "id,first_name,last_name,email,gender,birthday"
-            ) // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-            request.parameters = parameters
-            request.executeAsync()
-        }
 }
