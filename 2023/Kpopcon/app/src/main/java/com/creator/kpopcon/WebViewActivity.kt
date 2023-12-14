@@ -710,10 +710,14 @@ class WebViewActivity : Activity() {
                         mCameraType = actionParamObj.getInt("key_type")
                         LogUtil.d("mCameraType : $mCameraType")
                     }
+
                     mCameraType = 0
+
+                    intent = Intent(context, QRCodeActivity::class.java)
+                    startActivity(intent)
+//                    requestPermission(Constants.REQUEST_CAMERA);
                     //                    requestPermission(Constants.REQUEST_CAMERA);
-//                    executeJavascript(mCallback + "()");
-                    callQR()
+                    executeJavascript("$mCallback()")
                 } else if ("ACT1003" == actionCode) {
                     LogUtil.d("ACT1003 - 위쳇페이")
                     if (actionParamObj!!.has("request_url")) {

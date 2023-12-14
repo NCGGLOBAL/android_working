@@ -40,7 +40,6 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
 import com.gun0912.tedpermission.PermissionListener
@@ -292,6 +291,19 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         mWebView?.onPause()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent != null) {
+            mLandingUrl = intent.getStringExtra("webviewUrl")
+            Log.e(TAG, "mLandingUrl : $mLandingUrl")
+            val extraHeaders: MutableMap<String, String> = HashMap()
+            extraHeaders["webview-type"] = "main"
+            if (mLandingUrl != "") {
+                mWebView?.loadUrl(mLandingUrl!!, extraHeaders)
+            }
+        }
     }
 
     private val hashKey: Unit
@@ -939,14 +951,19 @@ class MainActivity : AppCompatActivity() {
                     }
                 } else if ("ACT1002" == actionCode) {
                     LogUtil.d("ACT1002 - 앱 데이터 가져오기 (키체인 및 파일에 있는 정보 가져오기)")
+
                     if (actionParamObj!!.has("key_type")) {
                         mCameraType = actionParamObj.getInt("key_type")
                         LogUtil.d("mCameraType : $mCameraType")
                     }
+
                     mCameraType = 0
+
+                    intent = Intent(context, QRCodeActivity::class.java)
+                    startActivity(intent)
+//                    requestPermission(Constants.REQUEST_CAMERA);
                     //                    requestPermission(Constants.REQUEST_CAMERA);
-//                    executeJavascript(mCallback + "()");
-                    callQR()
+                    executeJavascript("$mCallback()")
                 } else if ("ACT1003" == actionCode) {
                     LogUtil.d("ACT1003 - 위쳇페이")
                     if (actionParamObj!!.has("request_url")) {
