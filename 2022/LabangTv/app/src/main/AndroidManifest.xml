@@ -28,6 +28,7 @@
             android:name="com.creator.labangtv.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -95,6 +96,12 @@
         <activity android:name="com.creator.labangtv.live.CameraActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"/>
+
+        <activity android:name=".QRCodeActivity"
+            android:screenOrientation="fullSensor"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <service android:name="com.creator.labangtv.MyFirebaseMessagingService"
             android:exported="true">

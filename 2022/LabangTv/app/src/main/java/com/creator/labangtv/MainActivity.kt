@@ -83,46 +83,6 @@ class MainActivity : AppCompatActivity() {
     private var mHNCommTran: HNCommTran? = null
     private var mProgressDialog // 처리중
             : ProgressDialog? = null
-    var PERMISSIONS = arrayOf(
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.CAMERA,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.CALL_PHONE,
-        Manifest.permission.RECORD_AUDIO,
-        Manifest.permission.GET_ACCOUNTS,
-        Manifest.permission.READ_MEDIA_AUDIO,
-        Manifest.permission.READ_MEDIA_IMAGES,
-        Manifest.permission.READ_MEDIA_VIDEO,
-        Manifest.permission.POST_NOTIFICATIONS
-    )
-
-    val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arrayOf(  //필요한 권한들
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.CAMERA,
-            Manifest.permission.CALL_PHONE,
-            Manifest.permission.GET_ACCOUNTS,
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.READ_MEDIA_AUDIO,
-            Manifest.permission.READ_MEDIA_IMAGES,
-            Manifest.permission.READ_MEDIA_VIDEO,
-            Manifest.permission.POST_NOTIFICATIONS
-        )
-    } else {
-        arrayOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA,
-            Manifest.permission.CALL_PHONE,
-            Manifest.permission.GET_ACCOUNTS,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-    }
 
     // NICE 연동 가이드
     val ISP_LINK = "market://details?id=kvp.jjy.MispAndroid320" // ISP 설치 링크
@@ -229,17 +189,6 @@ class MainActivity : AppCompatActivity() {
                 mPushUid = intent.getStringExtra("pushUid")
                 sendPushReceiveToServer(mPushUid)
             }
-//            if (intent.dataString != null && !intent.dataString!!.isEmpty()) {
-//                val landingUri = intent.dataString
-//                //                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
-////                Log.e("jj", "landingUri : " + landingUri);
-//                var splitUrl = landingUri!!.split("\\?").toTypedArray()[1]
-//                //                Log.e("jj", "splitUrl : " + splitUrl);
-//                splitUrl = splitUrl.split("=").toTypedArray()[1]
-//                //                Log.e("jj", "splitUrl : " + splitUrl);
-//                mLandingUrl = splitUrl
-//            }
-            //            Log.e("jj", "mLandingUrl : " + mLandingUrl);
 
             if (intent != null) {
                 if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
@@ -253,27 +202,6 @@ class MainActivity : AppCompatActivity() {
 
             // permission 체크 - 최초실행
             checkPermission()
-//            if (HNSharedPreference.getSharedPreference(
-//                    applicationContext,
-//                    "isPermissionCheck"
-//                ) == ""
-//            ) {
-//                HNSharedPreference.putSharedPreference(applicationContext, "isPermissionCheck", "1")
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    mLlPermission = findViewById<View>(R.id.ll_permission) as LinearLayout
-//                    mLlPermission!!.visibility = View.VISIBLE
-//                    val ll_permission_agree =
-//                        findViewById<View>(R.id.ll_permission_agree) as LinearLayout
-//                    ll_permission_agree.setOnClickListener {
-//                        mLlPermission!!.visibility = View.GONE
-//                        checkPermission()
-//                    }
-//                    //                    checkPermission();
-//                }
-//            } else {
-//                Log.e(TAG, "퍼미션 체크 완료 상태")
-//                setLocation()
-//            }
 
             // WebView 초기화
             initWebView()
@@ -295,6 +223,20 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         mWebView?.onPause()
     }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent != null) {
+            mLandingUrl = intent.getStringExtra("webviewUrl")
+            Log.e(TAG, "mLandingUrl : $mLandingUrl")
+            val extraHeaders: MutableMap<String, String> = HashMap()
+            extraHeaders["webview-type"] = "main"
+            if (mLandingUrl != "") {
+                mWebView?.loadUrl(mLandingUrl!!, extraHeaders)
+            }
+        }
+    }
+
 
     private val hashKey: Unit
         private get() {
@@ -596,16 +538,6 @@ class MainActivity : AppCompatActivity() {
             var uri = Uri.parse(url)
             var intent: Intent? = null
             if (uri.scheme == "ncglive") {
-//                if (!hasPermissions(mContext, *PERMISSIONS)) {
-//                    mCameraType = 5
-//                    ActivityCompat.requestPermissions(
-//                        this@MainActivity,
-//                        PERMISSIONS,
-//                        Constants.PERMISSIONS_MULTIPLE_REQUEST
-//                    )
-//                } else {
-//                    startActivity(Intent(this@MainActivity, CameraActivity::class.java))
-//                }
                 startActivity(Intent(this@MainActivity, CameraActivity::class.java))
                 return true
             }
@@ -944,10 +876,14 @@ class MainActivity : AppCompatActivity() {
                         mCameraType = actionParamObj.getInt("key_type")
                         LogUtil.d("mCameraType : $mCameraType")
                     }
+
                     mCameraType = 0
+
+                    intent = Intent(context, QRCodeActivity::class.java)
+                    startActivity(intent)
+//                    requestPermission(Constants.REQUEST_CAMERA);
                     //                    requestPermission(Constants.REQUEST_CAMERA);
-//                    executeJavascript(mCallback + "()");
-                    callQR()
+                    executeJavascript("$mCallback()")
                 } else if ("ACT1003" == actionCode) {
                     LogUtil.d("ACT1003 - 위쳇페이")
                     if (actionParamObj!!.has("request_url")) {
@@ -1503,135 +1439,7 @@ class MainActivity : AppCompatActivity() {
                 *requiredPermissionList
             )// 얻으려는 권한(여러개 가능)
             .check()
-//        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
-//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
-//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO)
-//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
-//                    + ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO)
-//                    ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            LogUtil.e("checkPermission ContextCompat.checkSelfPermission")
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
-//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
-//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.GET_ACCOUNTS)
-//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)
-//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)
-//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_AUDIO)
-//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_IMAGES)
-//                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_VIDEO)
-//            ) {
-//                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale")
-//                Snackbar.make(
-//                    findViewById(android.R.id.content),
-//                    "Please Grant Permissions to upload profile photo",
-//                    Snackbar.LENGTH_INDEFINITE
-//                ).setAction(
-//                    "ENABLE"
-//                ) {
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                        requestPermissions(
-//                            requiredPermissionList,
-//                            Constants.PERMISSIONS_MULTIPLE_REQUEST
-//                        )
-//                    }
-//                }.show()
-//            } else {
-//                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale else")
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    LogUtil.e("Build.VERSION.SDK_INT >= Build.VERSION_CODES.M requestPermissions")
-//                    requestPermissions(
-//                        requiredPermissionList,
-//                        Constants.PERMISSIONS_MULTIPLE_REQUEST
-//                    )
-//                }
-//            }
-//        } else {
-//            LogUtil.e("checkPermission ContextCompat.checkSelfPermission else")
-//            // write your logic code if permission already granted
-//            if (mCameraType == 5) {
-//                startActivity(Intent(this@MainActivity, CameraActivity::class.java))
-//            }
-//        }
     }
-
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<String>,
-//        grantResults: IntArray
-//    ) {
-//        LogUtil.e("onRequestPermissionsResult")
-//        when (requestCode) {
-//            Constants.PERMISSIONS_MULTIPLE_REQUEST -> {
-//                LogUtil.e("Constants.PERMISSIONS_MULTIPLE_REQUEST")
-//                if (grantResults.size > 0) {
-//                    LogUtil.e("grantResults.length > 0")
-//                    val cameraPermission = grantResults[2] == PackageManager.PERMISSION_GRANTED
-//                    val writeExternalFile = grantResults[1] == PackageManager.PERMISSION_GRANTED
-//                    val readExternalFile = grantResults[0] == PackageManager.PERMISSION_GRANTED
-//                    val audioPermission = grantResults[5] == PackageManager.PERMISSION_GRANTED
-//                    if (cameraPermission && audioPermission) {
-//                        LogUtil.e("cameraPermission && audioPermission")
-//                        if (mCameraType == 5) {
-//                            startActivity(Intent(this@MainActivity, CameraActivity::class.java))
-//                        }
-//                    } else if (cameraPermission && writeExternalFile && readExternalFile) {
-//                        LogUtil.e("cameraPermission && writeExternalFile && readExternalFile")
-//                        if (mLlPermission == null) return
-//                        mLlPermission!!.visibility = View.GONE
-//                    } else {
-//                        LogUtil.e("cameraPermission && audioPermission else requestPermissions")
-//                        //                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-////                            requestPermissions(
-////                                    new String[]{
-////                                            Manifest.permission.READ_EXTERNAL_STORAGE,
-////                                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-////                                            Manifest.permission.CAMERA,
-////                                            Manifest.permission.CALL_PHONE,
-////                                            Manifest.permission.GET_ACCOUNTS,
-////                                            Manifest.permission.ACCESS_FINE_LOCATION,
-////                                            Manifest.permission.RECORD_AUDIO,
-////                                            Manifest.permission.ACCESS_COARSE_LOCATION
-////                                    },
-////                                    Constants.PERMISSIONS_MULTIPLE_REQUEST);
-////                        }
-//                        LogUtil.e("Snackbar.make")
-//                        Snackbar.make(
-//                            findViewById(android.R.id.content),
-//                            "Please Grant Permissions to upload profile photo",
-//                            Snackbar.LENGTH_SHORT
-//                        ).setAction(
-//                            "ENABLE"
-//                        ) {
-//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                                requestPermissions(
-//                                    arrayOf(
-//                                        Manifest.permission.READ_EXTERNAL_STORAGE,
-//                                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                                        Manifest.permission.CAMERA,
-//                                        Manifest.permission.CALL_PHONE,
-//                                        Manifest.permission.GET_ACCOUNTS,
-//                                        Manifest.permission.ACCESS_FINE_LOCATION,
-//                                        Manifest.permission.RECORD_AUDIO,
-//                                        Manifest.permission.ACCESS_COARSE_LOCATION
-//                                    ),
-//                                    Constants.PERMISSIONS_MULTIPLE_REQUEST
-//                                )
-//                            }
-//                        }.show()
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     private fun callQR() {
         // zxing init
