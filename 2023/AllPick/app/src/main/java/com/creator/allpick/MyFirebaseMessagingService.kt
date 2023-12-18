@@ -22,7 +22,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.AsyncTask
@@ -182,7 +181,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     .setContentTitle(title)
                     .setContentText(message)
                     .setAutoCancel(true)
-                    .setSound(getCustomSoundUri()?.first)
+                    .setSound(getCustomSoundUri())
                     .setContentIntent(pendingIntent)
                 if (result != null) {
                     notificationBuilder.setStyle(
@@ -207,9 +206,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 }
 
                 val notificationId = System.currentTimeMillis().toInt()
-                getCustomSoundUri()?.second?.let {
-                    val mp: MediaPlayer = MediaPlayer.create(applicationContext,it)
-                    mp.start()
+                getCustomSoundUri()?.let {
+                    notificationBuilder.setSilent(true)
+                    val ringtone = RingtoneManager.getRingtone(applicationContext, it)
+                    ringtone.play()
                 }
                 notificationManager.notify(notificationId, notificationBuilder.build())
             } catch (e: Exception) {
@@ -239,19 +239,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    private fun getCustomSoundUri(): Pair<Uri, Int>? {
+    private fun getCustomSoundUri(): Uri? {
         return when (mPushType) {
             "allpick" -> {
-                Pair(Uri.parse(
+                Uri.parse(
                     "android.resource://"
                             + applicationContext.packageName + "/" + R.raw.allpick
-                ), R.raw.allpick)
+                )
             }
             "allpickorder" -> {
-                Pair(Uri.parse(
+                Uri.parse(
                     "android.resource://"
                             + applicationContext.packageName + "/" + R.raw.allpickorder
-                ), R.raw.allpickorder)
+                )
             }
             else -> {
                 return null
