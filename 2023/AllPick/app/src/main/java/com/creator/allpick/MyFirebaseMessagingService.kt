@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.AsyncTask
@@ -166,19 +167,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 val channelId = getString(R.string.default_notification_channel_id)
 
                 // Creates an explicit intent for an Activity in your app
-                var defaultSoundUri =
-                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-                if (mPushType == "allpick") {
-                    defaultSoundUri = Uri.parse(
-                        "android.resource://"
-                                + ctx.packageName + "/" + R.raw.allpick
-                    )
-                } else if ((mPushType == "allpickorder")) {
-                    defaultSoundUri = Uri.parse(
-                        ("android.resource://"
-                                + ctx.packageName + "/" + R.raw.allpickorder)
-                    )
-                }
                 val notificationBuilder: NotificationCompat.Builder = NotificationCompat.Builder(
                     ctx,
                     channelId
@@ -194,7 +182,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     .setContentTitle(title)
                     .setContentText(message)
                     .setAutoCancel(true)
-                    .setSound(defaultSoundUri)
+                    .setSound(getCustomSoundUri()?.first)
                     .setContentIntent(pendingIntent)
                 if (result != null) {
                     notificationBuilder.setStyle(
@@ -214,11 +202,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         getString(R.string.app_name),
                         NotificationManager.IMPORTANCE_DEFAULT
                     )
+                    channel.setSound(null, null)
                     notificationManager.createNotificationChannel(channel)
                 }
 
                 val notificationId = System.currentTimeMillis().toInt()
-
+                getCustomSoundUri()?.second?.let {
+                    val mp: MediaPlayer = MediaPlayer.create(applicationContext,it)
+                    mp.start()
+                }
                 notificationManager.notify(notificationId, notificationBuilder.build())
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -244,6 +236,26 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 e.printStackTrace()
             }
             return null
+        }
+    }
+
+    private fun getCustomSoundUri(): Pair<Uri, Int>? {
+        return when (mPushType) {
+            "allpick" -> {
+                Pair(Uri.parse(
+                    "android.resource://"
+                            + applicationContext.packageName + "/" + R.raw.allpick
+                ), R.raw.allpick)
+            }
+            "allpickorder" -> {
+                Pair(Uri.parse(
+                    "android.resource://"
+                            + applicationContext.packageName + "/" + R.raw.allpickorder
+                ), R.raw.allpickorder)
+            }
+            else -> {
+                return null
+            }
         }
     }
 
