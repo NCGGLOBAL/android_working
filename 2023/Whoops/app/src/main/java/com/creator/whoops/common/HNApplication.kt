@@ -55,9 +55,9 @@ class HNApplication : Application() {
     companion object {
         val TAG = HNApplication::class.java.simpleName
         var mSigned = false
-        var URL = "https://whoops.kr/m"
-        var PUSH_URL = URL + "/app/pushRegister.asp"
-        var UPLOAD_URL = URL + "/app/"
+        var URL = "https://whoops.kr"
+        var PUSH_URL = URL + "/m/app/pushRegister.asp"
+        var UPLOAD_URL = URL + "/m/app/"
         var mIsFirstLoading = false
 
         @get:Synchronized
