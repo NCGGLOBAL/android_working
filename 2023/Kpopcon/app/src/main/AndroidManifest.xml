@@ -45,7 +45,8 @@
         </activity>
 
         <activity android:name="com.creator.kpopcon.WebViewActivity"
-            android:configChanges="orientation|screenSize"/>
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"/>
 
         <activity android:name="com.creator.kpopcon.AlbumSelectActivity" />
         <activity
@@ -87,7 +88,8 @@
             android:configChanges="orientation|screenSize" />
 
         <activity android:name="com.creator.kpopcon.live.CameraActivity"
-            android:configChanges="orientation|screenSize"/>
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"/>
 
         <activity android:name=".QRCodeActivity"
             android:screenOrientation="fullSensor"

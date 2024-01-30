@@ -6,6 +6,7 @@ import android.app.ActivityManager
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.*
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -63,6 +64,7 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
@@ -226,17 +228,6 @@ class MainActivity : AppCompatActivity() {
                 mPushUid = intent.getStringExtra("pushUid")
                 sendPushReceiveToServer(mPushUid)
             }
-//            if (intent.dataString != null && !intent.dataString!!.isEmpty()) {
-//                val landingUri = intent.dataString
-//                //                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
-////                Log.e("jj", "landingUri : " + landingUri);
-//                var splitUrl = landingUri!!.split("\\?").toTypedArray()[1]
-//                //                Log.e("jj", "splitUrl : " + splitUrl);
-//                splitUrl = splitUrl.split("=").toTypedArray()[1]
-//                //                Log.e("jj", "splitUrl : " + splitUrl);
-//                mLandingUrl = splitUrl
-//            }
-            //            Log.e("jj", "mLandingUrl : " + mLandingUrl);
 
             if (intent != null) {
                 if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
@@ -250,27 +241,6 @@ class MainActivity : AppCompatActivity() {
 
             // permission 체크 - 최초실행
             checkPermission()
-//            if (HNSharedPreference.getSharedPreference(
-//                    applicationContext,
-//                    "isPermissionCheck"
-//                ) == ""
-//            ) {
-//                HNSharedPreference.putSharedPreference(applicationContext, "isPermissionCheck", "1")
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    mLlPermission = findViewById<View>(R.id.ll_permission) as LinearLayout
-//                    mLlPermission!!.visibility = View.VISIBLE
-//                    val ll_permission_agree =
-//                        findViewById<View>(R.id.ll_permission_agree) as LinearLayout
-//                    ll_permission_agree.setOnClickListener {
-//                        mLlPermission!!.visibility = View.GONE
-//                        checkPermission()
-//                    }
-//                    //                    checkPermission();
-//                }
-//            } else {
-//                Log.e(TAG, "퍼미션 체크 완료 상태")
-//                setLocation()
-//            }
 
             // WebView 초기화
             initWebView()
@@ -1084,6 +1054,17 @@ class MainActivity : AppCompatActivity() {
                     chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
                     chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
                     startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
+                } else if ("ACT1038" == actionCode) {
+                    LogUtil.d("ACT1038 - 화면 가로보기 또는 세로보기 모드")
+                    actionParamObj?.getString("key_type")?.let {
+                        requestedOrientation = if (it == "0") {
+                            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                        } else {
+                            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                        }
+                    }
+
+                    executeJavascript("$mCallback")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

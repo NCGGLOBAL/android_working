@@ -3,6 +3,7 @@ package com.creator.kpopcon.live
 import android.Manifest
 import android.app.*
 import android.content.*
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
@@ -686,6 +687,16 @@ class CameraActivity : Activity() {
                     chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
                     chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
                     startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
+                } else if ("ACT1038" == actionCode) {
+                    LogUtil.d("ACT1038 - 화면 가로보기 또는 세로보기 모드")
+                    actionParamObj?.getString("key_type")?.let {
+                        requestedOrientation = if (it == "0") {
+                            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                        } else {
+                            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                        }
+                    }
+                    executeJavascript("$mCallback")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
