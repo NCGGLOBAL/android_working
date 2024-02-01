@@ -15,7 +15,6 @@
  */
 package com.creator.labangtv
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -158,9 +157,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 intent.putExtra("pushUid", mPushUid)
                 intent.putExtra("url", mLandingUrl)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                val requestCode = System.currentTimeMillis().toInt()
                 val pendingIntent = PendingIntent.getActivity(
                     ctx,
-                    0 /* Request code */,
+                    requestCode /* Request code */,
                     intent,
                     PendingIntent.FLAG_IMMUTABLE
                 )

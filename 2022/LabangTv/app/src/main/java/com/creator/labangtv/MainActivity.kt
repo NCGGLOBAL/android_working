@@ -24,7 +24,6 @@ import android.webkit.WebChromeClient.FileChooserParams
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.creator.labangtv.common.BackPressCloseHandler
@@ -41,7 +40,6 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
@@ -184,21 +182,11 @@ class MainActivity : AppCompatActivity() {
                 sendRegistrationToServer(token)
             }
             LogUtil.e("push token : $token")
-            val intent = intent
-            if (intent.hasExtra("pushUid")) {
-                mPushUid = intent.getStringExtra("pushUid")
-                sendPushReceiveToServer(mPushUid)
-            }
 
-            if (intent != null) {
-                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
-                    if (!intent.getStringExtra("url").equals("")) {
-                        mPushUid = intent.getStringExtra("pushUid")
-                        mLandingUrl = intent.getStringExtra("url")
-                        sendPushReceiveToServer(mPushUid)
-                    }
-                }
-            }
+            mPushUid = intent.getStringExtra("pushUid")
+            mLandingUrl = intent.getStringExtra("url")
+            LogUtil.e("mPushUid : $mPushUid")
+            LogUtil.e("mLandingUrl : $mLandingUrl")
 
             // permission 체크 - 최초실행
             checkPermission()
@@ -227,12 +215,12 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent != null) {
-            mLandingUrl = intent.getStringExtra("webviewUrl")
+            mLandingUrl = intent.getStringExtra("url")
             Log.e(TAG, "mLandingUrl : $mLandingUrl")
             val extraHeaders: MutableMap<String, String> = HashMap()
             extraHeaders["webview-type"] = "main"
-            if (mLandingUrl != "") {
-                mWebView?.loadUrl(mLandingUrl!!, extraHeaders)
+            mLandingUrl?.let {
+                mWebView?.loadUrl(it, extraHeaders)
             }
         }
     }
