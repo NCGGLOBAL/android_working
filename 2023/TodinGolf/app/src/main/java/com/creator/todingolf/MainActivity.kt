@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
     private val mCallbackParam: String? = null
     private var mFirebaseMessaging: FirebaseMessaging? = null
     private var mPushUid: String? = ""
-    private var mLandingUrl: String? = ""
+    private var mLandingUrl: String? = null
     private var mBackPressCloseHandler: BackPressCloseHandler? = null
     private var mIntegrator: IntentIntegrator? = null
     private var mCameraType = 0
@@ -219,55 +219,13 @@ class MainActivity : AppCompatActivity() {
                 sendRegistrationToServer(token)
             }
             LogUtil.e("push token : $token")
-            val intent = intent
-            if (intent.hasExtra("pushUid")) {
-                mPushUid = intent.getStringExtra("pushUid")
-                sendPushReceiveToServer(mPushUid)
-            }
-//            if (intent.dataString != null && !intent.dataString!!.isEmpty()) {
-//                val landingUri = intent.dataString
-//                //                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
-////                Log.e("jj", "landingUri : " + landingUri);
-//                var splitUrl = landingUri!!.split("\\?").toTypedArray()[1]
-//                //                Log.e("jj", "splitUrl : " + splitUrl);
-//                splitUrl = splitUrl.split("=").toTypedArray()[1]
-//                //                Log.e("jj", "splitUrl : " + splitUrl);
-//                mLandingUrl = splitUrl
-//            }
-            //            Log.e("jj", "mLandingUrl : " + mLandingUrl);
-
-            if (intent != null) {
-                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
-                    if (!intent.getStringExtra("url").equals("")) {
-                        mPushUid = intent.getStringExtra("pushUid")
-                        mLandingUrl = intent.getStringExtra("url")
-                        sendPushReceiveToServer(mPushUid)
-                    }
-                }
-            }
+            mPushUid = intent.getStringExtra("pushUid")
+            mLandingUrl = intent.getStringExtra("url")
+            LogUtil.e("mPushUid : $mPushUid")
+            LogUtil.e("mLandingUrl : $mLandingUrl")
 
             // permission 체크 - 최초실행
-            if (HNSharedPreference.getSharedPreference(
-                    applicationContext,
-                    "isPermissionCheck"
-                ) == ""
-            ) {
-                HNSharedPreference.putSharedPreference(applicationContext, "isPermissionCheck", "1")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    mLlPermission = findViewById<View>(R.id.ll_permission) as LinearLayout
-                    mLlPermission!!.visibility = View.VISIBLE
-                    val ll_permission_agree =
-                        findViewById<View>(R.id.ll_permission_agree) as LinearLayout
-                    ll_permission_agree.setOnClickListener {
-                        mLlPermission!!.visibility = View.GONE
-                        checkPermission()
-                    }
-                    //                    checkPermission();
-                }
-            } else {
-                Log.e(TAG, "퍼미션 체크 완료 상태")
-                setLocation()
-            }
+            checkPermission()
 
             // WebView 초기화
             initWebView()
@@ -288,6 +246,19 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         mWebView?.onPause()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent != null) {
+            mLandingUrl = intent.getStringExtra("url")
+            Log.e(TAG, "mLandingUrl : $mLandingUrl")
+            val extraHeaders: MutableMap<String, String> = HashMap()
+            extraHeaders["webview-type"] = "main"
+            mLandingUrl?.let {
+                mWebView?.loadUrl(it, extraHeaders)
+            }
+        }
     }
 
     private val hashKey: Unit
@@ -370,20 +341,20 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.settings.domStorageEnabled = true
         mWebView!!.settings.javaScriptCanOpenWindowsAutomatically = true
         mWebView!!.settings.setSupportMultipleWindows(true)
-        mWebView!!.settings.setAppCacheEnabled(true)
         mWebView!!.settings.cacheMode = WebSettings.LOAD_DEFAULT
-        mWebView!!.settings.setAppCachePath(applicationContext.cacheDir.absolutePath)
         mWebView!!.settings.textZoom = 100
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
         mWebView!!.isDrawingCacheEnabled = true
         mWebView!!.buildDrawingCache()
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
-        if (mLandingUrl != "") {
-            mWebView!!.loadUrl(mLandingUrl ?: "", extraHeaders)
-        } else {
-            mWebView!!.loadUrl(HNApplication.URL, extraHeaders)
-            mLandingUrl = ""
+        mWebView?.loadUrl(HNApplication.URL, extraHeaders)
+        mLandingUrl?.let {
+            intent = Intent(mContext, WebViewActivity::class.java)
+            intent.putExtra("webviewUrl", it)
+            startActivity(intent)
+
+            mLandingUrl = null
         }
     }
 
