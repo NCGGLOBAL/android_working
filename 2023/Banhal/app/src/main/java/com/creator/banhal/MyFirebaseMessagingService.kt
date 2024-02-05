@@ -157,9 +157,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 intent.putExtra("pushUid", mPushUid)
                 intent.putExtra("url", mLandingUrl)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                val requestCode = System.currentTimeMillis().toInt()
                 val pendingIntent = PendingIntent.getActivity(
                     ctx,
-                    0 /* Request code */,
+                    requestCode /* Request code */,
                     intent,
                     PendingIntent.FLAG_IMMUTABLE
                 )
@@ -227,6 +228,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             title = params[0]
             message = params[1]
             try {
+                if (params[2].isNullOrEmpty()) return null
                 val url = URL(params[2])
                 val connection =
                     url.openConnection() as HttpURLConnection
