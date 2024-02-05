@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
     private val mCallbackParam: String? = null
     private var mFirebaseMessaging: FirebaseMessaging? = null
     private var mPushUid: String? = ""
-    private var mLandingUrl: String? = ""
+    private var mLandingUrl: String? = null
     private var mBackPressCloseHandler: BackPressCloseHandler? = null
     private var mIntegrator: IntentIntegrator? = null
     private var mCameraType = 0
@@ -324,6 +324,7 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.buildDrawingCache()
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
+        mWebView?.loadUrl(HNApplication.URL, extraHeaders)
         mLandingUrl?.let {
             intent = Intent(mContext, WebViewActivity::class.java)
             intent.putExtra("webviewUrl", it)

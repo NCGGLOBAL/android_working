@@ -28,6 +28,7 @@
             android:name="com.creator.wanpantv.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
