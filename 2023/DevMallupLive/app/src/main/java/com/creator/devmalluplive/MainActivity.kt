@@ -324,6 +324,7 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.buildDrawingCache()
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
+        mWebView?.loadUrl(HNApplication.URL, extraHeaders)
         mLandingUrl?.let {
             intent = Intent(mContext, WebViewActivity::class.java)
             intent.putExtra("webviewUrl", it)
