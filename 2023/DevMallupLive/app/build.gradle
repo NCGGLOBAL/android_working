@@ -4,13 +4,13 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     defaultConfig {
         applicationId "com.creator.devmalluplive"
         minSdkVersion 21
-        targetSdkVersion 31
-        versionCode 17
-        versionName "1.1.7"
+        targetSdkVersion 33
+        versionCode 18
+        versionName "1.1.8"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
@@ -102,7 +102,7 @@ dependencies {
     implementation 'com.ksyun.media:libksylive-armv7a:3.0.0'
     implementation 'com.ksyun.media:libksylive-arm64:3.0.0'
 
-    implementation 'gun0912.ted:tedpermission:1.0.0'
+    implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9'
 }

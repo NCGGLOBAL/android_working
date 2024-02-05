@@ -46,6 +46,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import com.kakao.auth.*
 import com.kakao.network.ErrorResult
 import com.kakao.usermgmt.UserManagement
@@ -75,7 +77,7 @@ class MainActivity : AppCompatActivity() {
     private val mCallbackParam: String? = null
     private var mFirebaseMessaging: FirebaseMessaging? = null
     private var mPushUid: String? = ""
-    private var mLandingUrl = ""
+    private var mLandingUrl: String? = null
     private var mBackPressCloseHandler: BackPressCloseHandler? = null
     private var mIntegrator: IntentIntegrator? = null
     private var mCameraType = 0
@@ -191,55 +193,14 @@ class MainActivity : AppCompatActivity() {
                 sendRegistrationToServer(token)
             }
             LogUtil.e("push token : $token")
-            val intent = intent
-            if (intent.hasExtra("pushUid")) {
-                mPushUid = intent.getStringExtra("pushUid")
-                sendPushReceiveToServer(mPushUid)
-            }
-            if (intent.dataString != null && !intent.dataString!!.isEmpty()) {
-                val landingUri = intent.dataString
-                //                Toast.makeText(this, landingUri, Toast.LENGTH_LONG).show();
-//                Log.e("jj", "landingUri : " + landingUri);
-                var splitUrl = landingUri!!.split("\\?").toTypedArray()[1]
-                //                Log.e("jj", "splitUrl : " + splitUrl);
-                splitUrl = splitUrl.split("=").toTypedArray()[1]
-                //                Log.e("jj", "splitUrl : " + splitUrl);
-                mLandingUrl = splitUrl
-            }
-            //            Log.e("jj", "mLandingUrl : " + mLandingUrl);
 
-//            if (intent != null) {
-//                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
-//                    if (!intent.getStringExtra("url").equals("")) {
-//                        mPushUid = intent.getStringExtra("pushUid");
-//                        mLandingUrl = intent.getStringExtra("url");
-//                        sendPushReceiveToServer(mPushUid);
-//                    }
-//                }
-//            }
+            mPushUid = intent.getStringExtra("pushUid")
+            mLandingUrl = intent.getStringExtra("url")
+            LogUtil.e("mPushUid : $mPushUid")
+            LogUtil.e("mLandingUrl : $mLandingUrl")
 
             // permission 체크 - 최초실행
-            if (HNSharedPreference.getSharedPreference(
-                    applicationContext,
-                    "isPermissionCheck"
-                ) == ""
-            ) {
-                HNSharedPreference.putSharedPreference(applicationContext, "isPermissionCheck", "1")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    mLlPermission = findViewById<View>(R.id.ll_permission) as LinearLayout
-                    mLlPermission!!.visibility = View.VISIBLE
-                    val ll_permission_agree =
-                        findViewById<View>(R.id.ll_permission_agree) as LinearLayout
-                    ll_permission_agree.setOnClickListener {
-                        mLlPermission!!.visibility = View.GONE
-                        checkPermission()
-                    }
-                    //                    checkPermission();
-                }
-            } else {
-                Log.e(TAG, "퍼미션 체크 완료 상태")
-                setLocation()
-            }
+            checkPermission()
 
             // WebView 초기화
             initWebView()
@@ -260,6 +221,19 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         mWebView!!.onPause()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent != null) {
+            mLandingUrl = intent.getStringExtra("url")
+            Log.e(TAG, "mLandingUrl : $mLandingUrl")
+            val extraHeaders: MutableMap<String, String> = HashMap()
+            extraHeaders["webview-type"] = "main"
+            mLandingUrl?.let {
+                mWebView?.loadUrl(it, extraHeaders)
+            }
+        }
     }
 
     private val hashKey: Unit
@@ -343,20 +317,19 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.settings.domStorageEnabled = true
         mWebView!!.settings.javaScriptCanOpenWindowsAutomatically = true
         mWebView!!.settings.setSupportMultipleWindows(true)
-        mWebView!!.settings.setAppCacheEnabled(true)
         mWebView!!.settings.cacheMode = WebSettings.LOAD_DEFAULT
-        mWebView!!.settings.setAppCachePath(applicationContext.cacheDir.absolutePath)
         mWebView!!.settings.textZoom = 100
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
         mWebView!!.isDrawingCacheEnabled = true
         mWebView!!.buildDrawingCache()
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
-        if (mLandingUrl != "") {
-            mWebView!!.loadUrl(mLandingUrl, extraHeaders)
-        } else {
-            mWebView!!.loadUrl(HNApplication.URL, extraHeaders)
-            mLandingUrl = ""
+        mLandingUrl?.let {
+            intent = Intent(mContext, WebViewActivity::class.java)
+            intent.putExtra("webviewUrl", it)
+            startActivity(intent)
+
+            mLandingUrl = null
         }
     }
 
@@ -1354,104 +1327,51 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermission() {
-        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                    + ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(  //필요한 권한들
+                Manifest.permission.CAMERA,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.GET_ACCOUNTS,
+                Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO,
+                Manifest.permission.POST_NOTIFICATIONS
             )
-                    + ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.CAMERA
-            ) //                + ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
-                    + ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-                    + ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                    + ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )) != PackageManager.PERMISSION_GRANTED
-        ) {
-            LogUtil.e("checkPermission ContextCompat.checkSelfPermission")
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-                || ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-                || ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.CAMERA
-                ) //                    || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)
-                || ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.GET_ACCOUNTS
-                )
-                || ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-                || ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.RECORD_AUDIO
-                )
-                || ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            ) {
-                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale")
-                Snackbar.make(
-                    findViewById(android.R.id.content),
-                    "Please Grant Permissions to upload profile photo",
-                    Snackbar.LENGTH_INDEFINITE
-                ).setAction(
-                    "ENABLE"
-                ) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(
-                            arrayOf(
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.CAMERA,  //                                                    Manifest.permission.CALL_PHONE,
-                                Manifest.permission.GET_ACCOUNTS,
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.RECORD_AUDIO,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                            ),
-                            Constants.PERMISSIONS_MULTIPLE_REQUEST
-                        )
-                    }
-                }.show()
-            } else {
-                LogUtil.e("ActivityCompat.shouldShowRequestPermissionRationale else")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    LogUtil.e("Build.VERSION.SDK_INT >= Build.VERSION_CODES.M requestPermissions")
-                    requestPermissions(
-                        arrayOf(
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.CAMERA,  //                                    Manifest.permission.CALL_PHONE,
-                            Manifest.permission.GET_ACCOUNTS,
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.RECORD_AUDIO,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                        ),
-                        Constants.PERMISSIONS_MULTIPLE_REQUEST
-                    )
-                }
-            }
         } else {
-            LogUtil.e("checkPermission ContextCompat.checkSelfPermission else")
-            // write your logic code if permission already granted
-            if (mCameraType == 5) {
-                startActivity(Intent(this@MainActivity, CameraActivity::class.java))
-            }
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA,
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.GET_ACCOUNTS,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
         }
+
+        TedPermission.create()
+            .setPermissionListener(object : PermissionListener {
+
+                //권한이 허용됐을 때
+                override fun onPermissionGranted() {
+//                    startProcess()
+//                    Toast.makeText(this@MainActivity, "카메라 기능 권한 획득", Toast.LENGTH_SHORT).show()
+                }
+
+                //권한이 거부됐을 때
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+            })
+            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+            .setPermissions(
+                *requiredPermissionList
+            )// 얻으려는 권한(여러개 가능)
+            .check()
     }
 
     override fun onRequestPermissionsResult(
