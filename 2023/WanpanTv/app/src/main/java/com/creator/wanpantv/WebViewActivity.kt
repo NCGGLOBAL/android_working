@@ -14,6 +14,7 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.net.http.SslError
 import android.os.*
 import android.provider.MediaStore
 import android.text.TextUtils
@@ -376,6 +377,31 @@ class WebViewActivity : Activity() {
             super.onPageStarted(view, url, paramBitmap)
             // LogUtil.d("onPageLoadStarted : " + url);
             executeJavascript("localStorage.setItem(\"dv_id\"," + "\"" + HNApplication.mDeviceId + "\")")
+        }
+
+        override fun onReceivedSslError(
+            view: WebView?,
+            handler: SslErrorHandler,
+            error: SslError?) {
+            LogUtil.e("onReceivedSslError : " + error)
+            if (HNSharedPreference.getSharedPreference(this@WebViewActivity, "isFirstLive") == "") {
+                val builder = android.app.AlertDialog.Builder(this@WebViewActivity)
+                builder.setTitle("라이브 방송을 시청 하시겠습니까?")
+                builder.setPositiveButton("예") { dialog, id ->
+                    handler.proceed()
+                    HNSharedPreference.putSharedPreference(this@WebViewActivity, "isFirstLive", "Y")
+                    dialog.dismiss()
+                }
+                builder.setNegativeButton("아니오") { dialog, id ->
+                    handler.cancel()
+                    HNSharedPreference.putSharedPreference(this@WebViewActivity, "isFirstLive", "")
+                    finish()
+                }
+                val alertDialog = builder.create()
+                alertDialog.show()
+            } else {
+                handler.proceed()
+            }
         }
 
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
