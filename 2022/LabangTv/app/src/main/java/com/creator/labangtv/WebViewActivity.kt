@@ -14,6 +14,7 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.net.http.SslError
 import android.os.*
 import android.provider.MediaStore
 import android.text.TextUtils
@@ -24,7 +25,6 @@ import android.webkit.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.creator.labangtv.WebViewActivity
 import com.creator.labangtv.common.BackPressCloseHandler
@@ -53,6 +53,7 @@ import java.net.URISyntaxException
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 //import com.nhn.android.naverlogin.OAuthLogin;
 //import com.nhn.android.naverlogin.OAuthLoginHandler;
@@ -381,8 +382,32 @@ class WebViewActivity : Activity() {
             executeJavascript("localStorage.setItem(\"dv_id\"," + "\"" + HNApplication.mDeviceId + "\")")
         }
 
+        override fun onReceivedSslError(
+            view: WebView?,
+            handler: SslErrorHandler,
+            error: SslError?) {
+            LogUtil.e("onReceivedSslError : " + error)
+            if (HNSharedPreference.getSharedPreference(this@WebViewActivity, "isFirstLive") == "") {
+                val builder = android.app.AlertDialog.Builder(this@WebViewActivity)
+                builder.setTitle("라이브 방송을 시청 하시겠습니까?")
+                builder.setPositiveButton("예") { dialog, id ->
+                    handler.proceed()
+                    HNSharedPreference.putSharedPreference(this@WebViewActivity, "isFirstLive", "Y")
+                }
+                builder.setNegativeButton("아니오") { dialog, id ->
+                    handler.cancel()
+                    HNSharedPreference.putSharedPreference(this@WebViewActivity, "isFirstLive", "")
+                    finish()
+                }
+                val alertDialog = builder.create()
+                alertDialog.show()
+            } else {
+                handler.proceed()
+            }
+        }
+
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            // LogUtil.e("shouldOverrideUrlLoading : " + url);
+            LogUtil.e("shouldOverrideUrlLoading : " + url)
             var uri = Uri.parse(url)
             var intent: Intent? = null
             if (url.startsWith("sms:") || url.startsWith("smsto:")) {
