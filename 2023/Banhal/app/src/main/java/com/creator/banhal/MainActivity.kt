@@ -13,6 +13,7 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.net.http.SslError
 import android.os.*
 import android.provider.MediaStore
 import android.text.TextUtils
@@ -355,15 +356,13 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
         mWebView!!.isDrawingCacheEnabled = true
         mWebView!!.buildDrawingCache()
+
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
-        mWebView?.loadUrl(HNApplication.URL, extraHeaders)
         mLandingUrl?.let {
-            intent = Intent(mContext, WebViewActivity::class.java)
-            intent.putExtra("webviewUrl", it)
-            startActivity(intent)
-
-            mLandingUrl = null
+            mWebView?.loadUrl(it, extraHeaders)
+        } ?: run {
+            mWebView?.loadUrl(HNApplication.URL, extraHeaders)
         }
     }
 
@@ -554,6 +553,36 @@ class MainActivity : AppCompatActivity() {
             super.onPageStarted(view, url, paramBitmap)
             // LogUtil.d("onPageLoadStarted : " + url);
             executeJavascript("localStorage.setItem(\"dv_id\"," + "\"" + HNApplication.mDeviceId + "\")")
+        }
+
+        override fun onReceivedSslError(
+            view: WebView?,
+            handler: SslErrorHandler,
+            error: SslError?) {
+            LogUtil.e("onReceivedSslError : " + error)
+            if (HNSharedPreference.getSharedPreference(this@MainActivity, "isFirstLive") == "") {
+                val builder = android.app.AlertDialog.Builder(this@MainActivity)
+                builder.setTitle("라이브 방송을 시청 하시겠습니까?")
+                builder.setPositiveButton("예") { dialog, id ->
+                    handler.proceed()
+                    HNSharedPreference.putSharedPreference(this@MainActivity, "isFirstLive", "Y")
+                    dialog.dismiss()
+                }
+                builder.setNegativeButton("아니오") { dialog, id ->
+                    handler.cancel()
+                    HNSharedPreference.putSharedPreference(this@MainActivity, "isFirstLive", "")
+
+                    val extraHeaders: MutableMap<String, String> = HashMap()
+                    extraHeaders["webview-type"] = "main"
+                    mWebView?.loadUrl(HNApplication.URL, extraHeaders)
+
+                    dialog.dismiss()
+                }
+                val alertDialog = builder.create()
+                alertDialog.show()
+            } else {
+                handler.proceed()
+            }
         }
 
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
