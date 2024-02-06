@@ -521,11 +521,17 @@ class MainActivity : AppCompatActivity() {
                 builder.setPositiveButton("예") { dialog, id ->
                     handler.proceed()
                     HNSharedPreference.putSharedPreference(this@MainActivity, "isFirstLive", "Y")
+                    dialog.dismiss()
                 }
                 builder.setNegativeButton("아니오") { dialog, id ->
                     handler.cancel()
                     HNSharedPreference.putSharedPreference(this@MainActivity, "isFirstLive", "")
-                    finish()
+
+                    val extraHeaders: MutableMap<String, String> = HashMap()
+                    extraHeaders["webview-type"] = "main"
+                    mWebView?.loadUrl(HNApplication.URL, extraHeaders)
+
+                    dialog.dismiss()
                 }
                 val alertDialog = builder.create()
                 alertDialog.show()
