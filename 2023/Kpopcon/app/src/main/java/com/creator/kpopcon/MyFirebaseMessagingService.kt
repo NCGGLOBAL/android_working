@@ -156,9 +156,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 intent.putExtra("pushUid", mPushUid)
                 intent.putExtra("url", mLandingUrl)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                val requestCode = System.currentTimeMillis().toInt()
                 val pendingIntent = PendingIntent.getActivity(
                     ctx,
-                    0 /* Request code */,
+                    requestCode /* Request code */,
                     intent,
                     PendingIntent.FLAG_IMMUTABLE
                 )
@@ -195,12 +196,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 if (result != null) {
                     notificationBuilder.setStyle(
                         NotificationCompat.BigPictureStyle()
-                        .bigPicture(result)
-                        .bigLargeIcon(null)) // Large icon shown in expanded notification
+                            .bigPicture(result)
+                            .bigLargeIcon(null)) // Large icon shown in expanded notification
                 } else {
                     notificationBuilder.setStyle(
                         NotificationCompat.BigTextStyle()
-                        .bigText(message))
+                            .bigText(message))
                 }
 
                 val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager

@@ -14,6 +14,7 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.net.http.SslError
 import android.os.*
 import android.provider.MediaStore
 import android.text.TextUtils
@@ -41,6 +42,7 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
 import com.gun0912.tedpermission.PermissionListener
@@ -204,40 +206,30 @@ class MainActivity : AppCompatActivity() {
             mBackPressCloseHandler = BackPressCloseHandler(this)
 
             // topic 생성
-//            mFirebaseMessaging = FirebaseMessaging.getInstance()
-//            if (HNSharedPreference.getSharedPreference(this, "pushtopic") == "") {
-//                val topic = Random().nextInt(100) + 1 // topic 1 ~ 100의 값으로 임의 지정
-//                mFirebaseMessaging?.subscribeToTopic(topic.toString())
-//                HNSharedPreference.putSharedPreference(this, "pushtopic", topic.toString())
-//            }
+            mFirebaseMessaging = FirebaseMessaging.getInstance()
+            if (HNSharedPreference.getSharedPreference(this, "pushtopic") == "") {
+                val topic = Random().nextInt(100) + 1 // topic 1 ~ 100의 값으로 임의 지정
+                mFirebaseMessaging?.subscribeToTopic(topic.toString())
+                HNSharedPreference.putSharedPreference(this, "pushtopic", topic.toString())
+            }
             hashKey
 
             // token 생성
-//            val token = FirebaseInstanceId.getInstance().token
-//            if (HNSharedPreference.getSharedPreference(
-//                    this,
-//                    "pushtoken"
-//                ) == "" || HNSharedPreference.getSharedPreference(this, "pushtoken") != token
-//            ) {
-//                HNSharedPreference.putSharedPreference(this, "pushtoken", token)
-//                sendRegistrationToServer(token)
-//            }
-//            LogUtil.e("push token : $token")
-            val intent = intent
-            if (intent.hasExtra("pushUid")) {
-                mPushUid = intent.getStringExtra("pushUid")
-                sendPushReceiveToServer(mPushUid)
+            val token = FirebaseInstanceId.getInstance().token
+            if (HNSharedPreference.getSharedPreference(
+                    this,
+                    "pushtoken"
+                ) == "" || HNSharedPreference.getSharedPreference(this, "pushtoken") != token
+            ) {
+                HNSharedPreference.putSharedPreference(this, "pushtoken", token)
+                sendRegistrationToServer(token)
             }
+            LogUtil.e("push token : $token")
 
-            if (intent != null) {
-                if (intent.hasExtra("pushUid") && intent.hasExtra("url")) {
-                    if (!intent.getStringExtra("url").equals("")) {
-                        mPushUid = intent.getStringExtra("pushUid")
-                        mLandingUrl = intent.getStringExtra("url")
-                        sendPushReceiveToServer(mPushUid)
-                    }
-                }
-            }
+            mPushUid = intent.getStringExtra("pushUid")
+            mLandingUrl = intent.getStringExtra("url")
+            LogUtil.e("mPushUid : $mPushUid")
+            LogUtil.e("mLandingUrl : $mLandingUrl")
 
             // permission 체크 - 최초실행
             checkPermission()
@@ -266,12 +258,12 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent != null) {
-            mLandingUrl = intent.getStringExtra("webviewUrl")
+            mLandingUrl = intent.getStringExtra("url")
             Log.e(TAG, "mLandingUrl : $mLandingUrl")
             val extraHeaders: MutableMap<String, String> = HashMap()
             extraHeaders["webview-type"] = "main"
-            if (mLandingUrl != "") {
-                mWebView?.loadUrl(mLandingUrl!!, extraHeaders)
+            mLandingUrl?.let {
+                mWebView?.loadUrl(it, extraHeaders)
             }
         }
     }
@@ -363,24 +355,14 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
         mWebView!!.isDrawingCacheEnabled = true
         mWebView!!.buildDrawingCache()
+
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
-        mWebView!!.loadUrl(HNApplication.URL, extraHeaders)
-
         mLandingUrl?.let {
-            intent = Intent(mContext, WebViewActivity::class.java)
-            intent.putExtra("webviewUrl", it)
-            startActivity(intent)
-
-            mLandingUrl = null
+            mWebView?.loadUrl(it, extraHeaders)
+        } ?: run {
+            mWebView?.loadUrl(HNApplication.URL, extraHeaders)
         }
-
-//        if (mLandingUrl != "") {
-//            mWebView!!.loadUrl(mLandingUrl ?: "", extraHeaders)
-//        } else {
-//            mWebView!!.loadUrl(HNApplication.URL, extraHeaders)
-//            mLandingUrl = ""
-//        }
     }
 
     inner class HNWebChromeClient : WebChromeClient() {
@@ -570,6 +552,36 @@ class MainActivity : AppCompatActivity() {
             super.onPageStarted(view, url, paramBitmap)
             // LogUtil.d("onPageLoadStarted : " + url);
             executeJavascript("localStorage.setItem(\"dv_id\"," + "\"" + HNApplication.mDeviceId + "\")")
+        }
+
+        override fun onReceivedSslError(
+            view: WebView?,
+            handler: SslErrorHandler,
+            error: SslError?) {
+            LogUtil.e("onReceivedSslError : " + error)
+            if (HNSharedPreference.getSharedPreference(this@MainActivity, "isFirstLive") == "") {
+                val builder = android.app.AlertDialog.Builder(this@MainActivity)
+                builder.setTitle("라이브 방송을 시청 하시겠습니까?")
+                builder.setPositiveButton("예") { dialog, id ->
+                    handler.proceed()
+                    HNSharedPreference.putSharedPreference(this@MainActivity, "isFirstLive", "Y")
+                    dialog.dismiss()
+                }
+                builder.setNegativeButton("아니오") { dialog, id ->
+                    handler.cancel()
+                    HNSharedPreference.putSharedPreference(this@MainActivity, "isFirstLive", "")
+
+                    val extraHeaders: MutableMap<String, String> = HashMap()
+                    extraHeaders["webview-type"] = "main"
+                    mWebView?.loadUrl(HNApplication.URL, extraHeaders)
+
+                    dialog.dismiss()
+                }
+                val alertDialog = builder.create()
+                alertDialog.show()
+            } else {
+                handler.proceed()
+            }
         }
 
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
@@ -1065,6 +1077,16 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     executeJavascript("$mCallback")
+//                } else if ("ACT1039" == actionCode) {
+//                    LogUtil.d("ACT1039 - 영상 선택후 압축, 썸네일 이미지 전달")
+//                // 비디오 파일 선택을 위한 인텐트 실행
+//                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+//                    intent.type = "video/*"
+//
+//                    startActivityForResult(intent, Constants.FILECHOOSER_LOLLIPOP_REQ_VEDIO_CODE)
+//                } else if ("ACT1040" == actionCode) {
+//                    LogUtil.d("ACT1040 - ACT1039 영상 파일 업로드")
+
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
