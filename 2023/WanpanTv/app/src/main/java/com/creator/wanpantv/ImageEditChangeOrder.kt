@@ -287,25 +287,22 @@ class ImageEditChangeOrder : HelperActivity() {
                 val imageItem = savedImageArray[i]
                 Log.d("SeongKwon", "imageItem = $imageItem")
                 val delemeter = imageItem.indexOf("&")
-                Log.d("SeongKwon", "imageArray[0] = " + imageItem.substring(0, delemeter))
-                Log.d(
-                    "SeongKwon",
-                    "imageArray[1] = " + imageItem.substring(delemeter + 1, imageItem.length)
-                )
-                val id: Long = -1
-                val name = imageItem.substring(0, delemeter)
-                val path = file.absolutePath + "/" + name
-                val isSelected = false
-                val sequence = imageItem.substring(delemeter + 1, imageItem.length).toInt()
-                Log.d("SeongKwon", "=========================")
-                Log.d("SeongKwon", "id = $id")
-                Log.d("SeongKwon", "name = $name")
-                Log.d("SeongKwon", "path = $path")
-                Log.d("SeongKwon", "isSelected = $isSelected")
-                Log.d("SeongKwon", "sequencesequence = $sequence")
-                Log.d("SeongKwon", "=========================")
-                if (file.exists()) {
-                    temp[sequence - 1] = Image(id, name, path, isSelected, sequence)
+                if (imageItem.isNotEmpty()) {
+                    val id: Long = -1
+                    val name = imageItem.substring(0, delemeter)
+                    val path = file.absolutePath + "/" + name
+                    val isSelected = false
+                    val sequence = imageItem.substring(delemeter + 1, imageItem.length).toInt()
+                    Log.d("SeongKwon", "=========================")
+                    Log.d("SeongKwon", "id = $id")
+                    Log.d("SeongKwon", "name = $name")
+                    Log.d("SeongKwon", "path = $path")
+                    Log.d("SeongKwon", "isSelected = $isSelected")
+                    Log.d("SeongKwon", "sequencesequence = $sequence")
+                    Log.d("SeongKwon", "=========================")
+                    if (file.exists()) {
+                        temp[sequence - 1] = Image(id, name, path, isSelected, sequence)
+                    }
                 }
             }
             Log.d("SeongKwon", "*************************************************")
