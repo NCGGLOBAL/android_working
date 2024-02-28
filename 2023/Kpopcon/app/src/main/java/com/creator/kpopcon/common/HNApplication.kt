@@ -23,6 +23,7 @@ class HNApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+
         MyNotificationManager.createChannel(this)
 
 //        KakaoSDK.init(new KakaoSDKAdapter());
@@ -56,8 +57,10 @@ class HNApplication : Application() {
         val TAG = HNApplication::class.java.simpleName
         var mSigned = false
         var URL = "https://kpopcon.net"
+//        var URL = "https://kpopcon.net/m/explore/file_capture.asp"
         var PUSH_URL = URL + "/m/app/pushRegister.asp"
         var UPLOAD_URL = URL + "/m/app/"
+        var VOD_UPLOAD_URL = URL + "https://livedemo-vod.mallup.co.kr/"
         var mIsFirstLoading = false
 
         @get:Synchronized

@@ -8,14 +8,23 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.media.ExifInterface
+import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.*
+import androidx.annotation.RequiresApi
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.creator.kpopcon.delegator.HNSharedPreference
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.*
+import java.nio.file.FileSystems
+import java.nio.file.Path
+import java.util.*
+import android.util.Base64
 
 /**
  * Created by skcrackers on 10/16/17.
@@ -312,6 +321,86 @@ class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransfor
         fun uriToBitmap(context: Context, uri: Uri?): Bitmap? {
             val bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri)
             return bitmap
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun filePathToUri(filePath: String): Uri {
+            val path: Path = FileSystems.getDefault().getPath(filePath)
+            var result = path.toUri().toString()
+            return Uri.parse(result)
+        }
+
+        fun getVideoThumbnail(context: Context, uri : Uri) : Bitmap? {
+            val retriever = MediaMetadataRetriever()
+
+            try {
+                retriever.setDataSource(context, uri)
+                return retriever.getFrameAtTime((1 * 1000000).toLong(), MediaMetadataRetriever.OPTION_CLOSEST)
+            } catch (e : IllegalArgumentException){
+                e.printStackTrace()
+            } catch (e : RuntimeException){
+                e.printStackTrace()
+            } finally {
+                try {
+                    retriever.release()
+                } catch (e : RuntimeException){
+                    e.printStackTrace()
+                }
+            }
+            return null
+        }
+
+//        @RequiresApi(Build.VERSION_CODES.O)
+//        fun bitmapToString(bitmap: Bitmap): String {
+//            val stream = ByteArrayOutputStream()
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+//
+//            val bytes = stream.toByteArray()
+//
+//            return Base64.getEncoder().encodeToString(bytes)
+//        }
+
+        fun bitmapToFile(bitmap: Bitmap , saveDir: String?, saveName: String): File {
+            val file = File(saveDir)
+            if (!file.exists()) file.mkdirs()
+
+            val fileName = "$saveName.jpg"
+            val tempFile = File(saveDir, fileName)
+
+            var out: OutputStream? = null
+            try {
+                if (tempFile.createNewFile()) {
+                    out = FileOutputStream(tempFile)
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                }
+            } finally {
+                out?.close()
+            }
+            return tempFile
+        }
+
+        suspend fun getFileImageDataUrl(imagePath: String): String = withContext(Dispatchers.IO) {
+            val bitmap = BitmapFactory.decodeFile(imagePath)
+
+            // Bitmap을 Base64 인코딩
+            val baos = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val imageBytes = baos.toByteArray()
+
+            // Base64로 인코딩된 데이터를 Data URL 타입으로 변환
+            "data:image/jpeg;base64,${Base64.encodeToString(imageBytes, Base64.DEFAULT)}"
+//            "${Base64.encodeToString(imageBytes, Base64.DEFAULT)}"
+        }
+
+        fun deleteFile(filePath: String) {
+            val file = File(filePath)
+
+            val result = file.delete()
+            if (result) {
+                println("Deletion succeeded.")
+            } else {
+                println("Deletion failed.")
+            }
         }
     }
 }

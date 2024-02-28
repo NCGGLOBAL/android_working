@@ -97,6 +97,10 @@
             android:theme="@style/zxing_CaptureTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
+        <activity android:name=".VideoThumbActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"/>
+
         <service android:name="com.creator.kpopcon.MyFirebaseMessagingService"
             android:exported="true">
             <intent-filter>
