@@ -402,5 +402,27 @@ class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransfor
                 println("Deletion failed.")
             }
         }
+
+        fun getFileSizeMB(filePath: String?): Long? {
+            filePath?.let {
+                val file = File(it)
+                if (file.exists()) {
+                    val fileSizeInBytes = file.length()
+                    val fileSizeInKB = fileSizeInBytes / 1024
+                    val fileSizeInMB = fileSizeInKB / 1024
+//                val fileSizeInGB = fileSizeInMB / 1024
+
+                    println("파일 크기: $fileSizeInBytes 바이트")
+                    println("파일 크기: $fileSizeInKB KB")
+                    println("파일 크기: $fileSizeInMB MB")
+//                println("파일 크기: $fileSizeInGB GB")
+                    return fileSizeInMB
+                } else {
+                    println("파일이 존재하지 않습니다.")
+                }
+            }
+
+            return 0
+        }
     }
 }

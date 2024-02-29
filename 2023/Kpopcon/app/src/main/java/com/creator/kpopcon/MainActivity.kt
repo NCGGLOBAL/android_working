@@ -71,6 +71,7 @@ import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.roundToInt
 
 
 class MainActivity : AppCompatActivity() {
@@ -205,17 +206,40 @@ class MainActivity : AppCompatActivity() {
                         jsonObject.put("type", "0")
                         jsonObject.put("thumbData", dataUrl)
                         executeJavascript("$mCallback($jsonObject)")
-//                        videoBitrate = 1024
+
+                        // 압축여부 체크
+                        jsonObject.remove("thumbData")
+                        jsonObject.put("type", "1")
+                        if (videoWidth > videoHeight) { // 가로영상
+                            if (videoHeight > 720) {
+                                videoWidth = videoWidth * 720 / videoHeight
+                                videoHeight = 720
+                            } else {
+                                executeJavascript("$mCallback($jsonObject)")
+                                return@launch
+                            }
+                        } else {    // 세로영상
+                            if (videoWidth > 720) {
+                                videoHeight = videoHeight * 720 / videoWidth
+                                videoWidth = 720
+                            } else {
+                                executeJavascript("$mCallback($jsonObject)")
+                                return@launch
+                            }
+                        }
+
                         videoArchiveFilePath = SiliCompressor.with(this@MainActivity)
                             .compressVideo(selectedVideoPath,
                                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).absolutePath,
-                                videoWidth?.toInt() ?: 406,
-                                videoHeight?.toInt() ?: 720,
+                                videoWidth,
+                                videoHeight,
                                 videoBitrate ?: 2067102
                             )
                         Log.e(TAG, "videoWidth: ${videoWidth}")
                         Log.e(TAG, "videoHeight: ${videoHeight}")
-                        Log.e(TAG, "videoBitrate: ${videoBitrate}")
+                        val videoFileSize = BitmapUtil.getFileSizeMB(videoArchiveFilePath)
+                        Log.d(TAG, "videoArchiveFilePath FileSize: $videoFileSize MB")
+//                        Log.e(TAG, "videoBitrate: ${videoBitrate}")
                         Log.e(TAG, "archiveFilePath: ${videoArchiveFilePath}")
                         Log.e(TAG, "selectedVideoPath: ${selectedVideoPath}")
                         jsonObject.remove("thumbData")
@@ -1218,8 +1242,8 @@ class MainActivity : AppCompatActivity() {
         mBackPressCloseHandler!!.onBackPressed()
     }
 
-    var videoWidth: String? = null
-    var videoHeight: String? = null
+    var videoWidth: Int = 0
+    var videoHeight: Int = 0
     var videoBitrate: Int? = null
 
     /**
@@ -1347,11 +1371,6 @@ class MainActivity : AppCompatActivity() {
                 mFilePathCallback = null
             }
         } else if (requestCode == Constants.FILECHOOSER_LOLLIPOP_REQ_VEDIO_CODE) {
-//            if (mFilePathCallback == null) {
-//                super.onActivityResult(requestCode, resultCode, data)
-//                return
-//            }
-
             val selectedVideoUri: Uri? = data?.data
 
             if (selectedVideoUri != null) {
@@ -1377,10 +1396,16 @@ class MainActivity : AppCompatActivity() {
                             Toast.makeText(this@MainActivity, "영상시간을 2분이내로 줄여주세요", Toast.LENGTH_SHORT).show()
                             return
                         }
-
+                        // 100MB 이상이면 리턴
+                        val videoFileSize = BitmapUtil.getFileSizeMB(selectedVideoPath)
+                        Log.d(TAG, "videoFileSize: $videoFileSize MB")
+                        if (videoFileSize ?: 0 > 100) {
+                            Toast.makeText(this@MainActivity, "영상 용량은 100M미만으로 등록해 주세요.", Toast.LENGTH_SHORT).show()
+                            return
+                        }
                         // 비디오의 해상도 가져오기
-                        videoWidth = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
-                        videoHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
+                        videoWidth = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toInt() ?: 0
+                        videoHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toInt() ?: 0
                         val rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
 
 //                        if (rotation == "90") {
@@ -1389,7 +1414,21 @@ class MainActivity : AppCompatActivity() {
 //                                videoHeight = this
 //                            }
 //                        }
-                        Log.d(TAG, "Resolution : $videoWidth x $videoHeight")
+//                        Log.d(TAG, "before Resolution : $videoWidth x $videoHeight")
+//                        if (videoWidth > videoHeight){   //가로 영상
+//                            if (videoHeight > 720) {
+//                                videoWidth = videoWidth * 720 / videoHeight
+//                                videoHeight = 720
+//                            }
+//                        } else {   //세로 영상
+//                            if (videoWidth > 720) {
+//                                videoHeight = videoHeight * 720 / videoWidth
+//                                videoWidth = 720
+//                            }
+//                        }
+//                        Log.d(TAG, "after Resolution : $videoWidth x $videoHeight")
+                        Log.d(TAG, "video videoWidth : $videoWidth")
+                        Log.d(TAG, "video videoHeight : $videoHeight")
                         Log.d(TAG, "video rotation : $rotation")
                         // 비트레이트 가져오기
 //                        videoBitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)
@@ -2267,18 +2306,17 @@ class MainActivity : AppCompatActivity() {
         token: String?
     ) {
         if (uploadUrl.isNullOrEmpty()) return
-        videoArchiveFilePath?.let {
-            Log.e(TAG, "uploadUrl: ${uploadUrl}")
-            videoParam = HashMap<String, String?>()
-            videoParam!!["token"] = token
-            videoParam!!["key"] = key
-
-            uploadVideoUrl = uploadUrl
-            val videoData = Image(0, "uploadVideo.mp4", it, true, 0)
-            videoList = ArrayList<Image>()
-            videoList?.add(videoData)
-            uploadVideoAsyncTask().execute()
+        Log.e(TAG, "uploadUrl: ${uploadUrl}")
+        videoParam = HashMap<String, String?>().apply {
+            this["token"] = token
+            this["key"] = key
         }
+
+        uploadVideoUrl = uploadUrl
+        val videoData = Image(0, "uploadVideo.mp4", videoArchiveFilePath ?: selectedVideoPath, true, 0)
+        videoList = ArrayList<Image>()
+        videoList?.add(videoData)
+        uploadVideoAsyncTask().execute()
     }
 
     inner class uploadVideoAsyncTask : AsyncTask<String?, Void?, String?>() {
