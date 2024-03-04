@@ -412,8 +412,8 @@ class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransfor
                     val fileSizeInMB = fileSizeInKB / 1024
 //                val fileSizeInGB = fileSizeInMB / 1024
 
-                    println("파일 크기: $fileSizeInBytes 바이트")
-                    println("파일 크기: $fileSizeInKB KB")
+//                    println("파일 크기: $fileSizeInBytes 바이트")
+//                    println("파일 크기: $fileSizeInKB KB")
                     println("파일 크기: $fileSizeInMB MB")
 //                println("파일 크기: $fileSizeInGB GB")
                     return fileSizeInMB
