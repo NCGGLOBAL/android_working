@@ -18,8 +18,8 @@ class VideoThumbActivity: AppCompatActivity() {
 
     var selectedVideoPath: String? = null
     var outputVideoPath: String? = null
-    var width: String? = null
-    var height: String? = null
+//    var width: String? = null
+//    var height: String? = null
     var thumbnailPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,8 +41,9 @@ class VideoThumbActivity: AppCompatActivity() {
     private fun initIntent() {
         selectedVideoPath = intent.getStringExtra("selectedVideoPath")
         outputVideoPath = intent.getStringExtra("outputVideoPath")
-        width = intent.getStringExtra("width")
-        height = intent.getStringExtra("height")
+        thumbnailPath = intent.getStringExtra("thumbnailPath")
+//        width = intent.getStringExtra("width")
+//        height = intent.getStringExtra("height")
     }
 
     private fun initVideoThumbnailView() {

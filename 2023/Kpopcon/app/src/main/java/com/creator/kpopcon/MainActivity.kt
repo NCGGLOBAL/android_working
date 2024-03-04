@@ -201,6 +201,12 @@ class MainActivity : AppCompatActivity() {
                 result.data?.getStringExtra("thumbnailPath")?.let {
                     CoroutineScope(Dispatchers.IO).launch {
                         videoThumnailPath = it
+
+                        HNSharedPreference.putSharedPreference(
+                            this@MainActivity,
+                            "videoThumnailPath",
+                            it
+                        )
                         val dataUrl = BitmapUtil.getFileImageDataUrl(it)
                         val jsonObject = JSONObject()
                         jsonObject.put("type", "0")
@@ -228,6 +234,14 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
 
+                        // 해상도가 홀수일경우 강제로 짝수로 변경
+                        if (videoWidth % 2 == 1) {
+                            videoWidth -= 1
+                        }
+                        if (videoHeight % 2 == 1) {
+                            videoHeight -= 1
+                        }
+
                         videoArchiveFilePath = SiliCompressor.with(this@MainActivity)
                             .compressVideo(selectedVideoPath,
                                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).absolutePath,
@@ -242,6 +256,12 @@ class MainActivity : AppCompatActivity() {
 //                        Log.e(TAG, "videoBitrate: ${videoBitrate}")
                         Log.e(TAG, "archiveFilePath: ${videoArchiveFilePath}")
                         Log.e(TAG, "selectedVideoPath: ${selectedVideoPath}")
+
+                        HNSharedPreference.putSharedPreference(
+                            this@MainActivity,
+                            "videoArchiveFilePath",
+                            videoArchiveFilePath
+                        )
                         jsonObject.remove("thumbData")
                         jsonObject.put("type", "1")
                         executeJavascript("$mCallback($jsonObject)")
@@ -1149,6 +1169,11 @@ class MainActivity : AppCompatActivity() {
                 } else if ("ACT1039" == actionCode) {
                     LogUtil.d("ACT1039 - 영상 선택후 압축, 썸네일 이미지 전달")
                     videoBitrate = actionParamObj?.getInt("bitrate")
+
+                    videoThumnailPath = HNSharedPreference.getSharedPreference(this@MainActivity, "videoThumnailPath")
+                    videoArchiveFilePath = HNSharedPreference.getSharedPreference(this@MainActivity, "videoArchiveFilePath")
+                    LogUtil.e("ACT1038 - videoThumnailPath : " + videoThumnailPath)
+                    LogUtil.e("ACT1038 - videoArchiveFilePath : " + videoArchiveFilePath)
                     // 기존 파일 삭제
                     deleteVideoFile()
 
@@ -1398,7 +1423,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         // 100MB 이상이면 리턴
                         val videoFileSize = BitmapUtil.getFileSizeMB(selectedVideoPath)
-                        Log.d(TAG, "videoFileSize: $videoFileSize MB")
+                        Log.d(TAG, "origin videoFileSize: $videoFileSize MB")
                         if (videoFileSize ?: 0 > 100) {
                             Toast.makeText(this@MainActivity, "영상 용량은 100M미만으로 등록해 주세요.", Toast.LENGTH_SHORT).show()
                             return
@@ -1408,25 +1433,6 @@ class MainActivity : AppCompatActivity() {
                         videoHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toInt() ?: 0
                         val rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
 
-//                        if (rotation == "90") {
-//                            with(videoWidth) {
-//                                videoWidth = videoHeight
-//                                videoHeight = this
-//                            }
-//                        }
-//                        Log.d(TAG, "before Resolution : $videoWidth x $videoHeight")
-//                        if (videoWidth > videoHeight){   //가로 영상
-//                            if (videoHeight > 720) {
-//                                videoWidth = videoWidth * 720 / videoHeight
-//                                videoHeight = 720
-//                            }
-//                        } else {   //세로 영상
-//                            if (videoWidth > 720) {
-//                                videoHeight = videoHeight * 720 / videoWidth
-//                                videoWidth = 720
-//                            }
-//                        }
-//                        Log.d(TAG, "after Resolution : $videoWidth x $videoHeight")
                         Log.d(TAG, "video videoWidth : $videoWidth")
                         Log.d(TAG, "video videoHeight : $videoHeight")
                         Log.d(TAG, "video rotation : $rotation")
