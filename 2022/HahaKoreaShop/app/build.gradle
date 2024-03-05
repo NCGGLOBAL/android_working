@@ -1,17 +1,24 @@
 apply plugin: 'com.android.application'
 // 华为代理配置
 apply plugin: 'com.huawei.agconnect'
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+//apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 33
     defaultConfig {
         applicationId "com.ncggloval.hahakoreashop"
-        minSdkVersion 19
-        targetSdkVersion 29
-        versionCode 8
-        versionName "1.0.7"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 9
+        versionName "1.0.9"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+        multiDexEnabled true
+
+        ndk.abiFilters 'armeabi-v7a','arm64-v8a','x86','x86_64'
     }
     buildTypes {
         release {
@@ -35,15 +42,24 @@ android {
             dirs 'libs'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:28.0.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'androidx.appcompat:appcompat:1.0.0'
+    compile 'androidx.constraintlayout:constraintlayout:1.1.3'
     testCompile 'junit:junit:4.12'
     // VIVO厂商最新推送sdk
     implementation(name: 'vivo_pushsdk-v2.9.0.0', ext: 'aar')
