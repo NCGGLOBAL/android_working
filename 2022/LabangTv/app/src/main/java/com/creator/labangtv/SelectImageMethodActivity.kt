@@ -953,7 +953,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             //            sendMessage(Constants.FETCH_COMPLETED, countSelected);
             mProgressDialog!!.dismiss()
             savedImageSize = images!!.size
-            imageCount!!.text =
+            imageCount?.text =
                 savedImageSize.toString() + "/" + HNApplication.Companion.LIMIT_IMAGE_COUNT
 
             loadImages()

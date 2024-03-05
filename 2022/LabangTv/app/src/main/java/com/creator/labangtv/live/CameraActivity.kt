@@ -399,6 +399,7 @@ class CameraActivity : Activity() {
                 builder.setPositiveButton("예") { dialog, id ->
                     handler.proceed()
                     HNSharedPreference.putSharedPreference(this@CameraActivity, "isFirstLive", "Y")
+                    dialog.dismiss()
                 }
                 builder.setNegativeButton("아니오") { dialog, id ->
                     handler.cancel()
