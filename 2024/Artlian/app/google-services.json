@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1096374398399",
+    "project_id": "artlian-caf86",
+    "storage_bucket": "artlian-caf86.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096374398399:android:56d60452c7635087cc450a",
+        "android_client_info": {
+          "package_name": "com.creator.artlian"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq_ayJGN2zAUc1cNOSOGx9SeHD1DraGpU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
