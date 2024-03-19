@@ -335,7 +335,7 @@ class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransfor
 
             try {
                 retriever.setDataSource(context, uri)
-                return retriever.getFrameAtTime((1 * 1000000).toLong(), MediaMetadataRetriever.OPTION_CLOSEST)
+                return retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST)
             } catch (e : IllegalArgumentException){
                 e.printStackTrace()
             } catch (e : RuntimeException){
