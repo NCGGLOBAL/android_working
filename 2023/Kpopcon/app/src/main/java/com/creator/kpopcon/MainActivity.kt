@@ -1444,8 +1444,8 @@ class MainActivity : AppCompatActivity() {
                         Intent(this@MainActivity, VideoThumbActivity::class.java).apply {
                             putExtra("selectedVideoPath", selectedVideoPath)
                             putExtra("outputVideoPath", outputVideoPath)
-                            putExtra("width", videoWidth)
-                            putExtra("height", videoHeight)
+//                            putExtra("width", videoWidth)
+//                            putExtra("height", videoHeight)
 
                             resultLauncher.launch(this)
                         }

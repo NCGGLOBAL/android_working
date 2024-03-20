@@ -1,5 +1,6 @@
 package com.creator.kpopcon
 
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -9,9 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.creator.kpopcon.common.HNApplication
 import com.creator.kpopcon.helpers.Constants
 import com.creator.kpopcon.util.BitmapUtil
+import com.creator.kpopcon.util.LogUtil
 import kotlinx.android.synthetic.main.activity_video_thumb.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 class VideoThumbActivity: AppCompatActivity() {
     private val TAG = "VideoArchiveActivity"
@@ -50,13 +53,23 @@ class VideoThumbActivity: AppCompatActivity() {
         selectedVideoPath?.let {
             BitmapUtil.getVideoThumbnail(this, Uri.parse(it))?.let { bitmap ->
                 thumbImageView.setImageBitmap(bitmap)
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                    stringBitmap = BitmapUtil.bitmapToString(bitmap)
-                    val fileName = "videothumb"
-                    val saveDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.absolutePath + "/" + fileName
-                    thumbnailPath = BitmapUtil.bitmapToFile(bitmap, saveDir, fileName).absolutePath
-                    Log.e(TAG, "initVideoThumbnailView thumbnailPath : ${thumbnailPath}")
-//                }
+
+                val resizeRate = if (bitmap.width > bitmap.height) {   //가로모드
+                    (720F / bitmap.height.toFloat())
+                } else {   //세로 또는 정사각형
+                    (720F / bitmap.width.toFloat())
+                }
+                LogUtil.e("resizeRate : " + resizeRate)
+
+                val resizedBitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.width * resizeRate).roundToInt(), (bitmap.height * resizeRate).roundToInt(), false)
+
+                LogUtil.e("resizedBitmap width : " + resizedBitmap.width)
+                LogUtil.e("resizedBitmap height : " + resizedBitmap.height)
+
+                val fileName = "videothumb"
+                val saveDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.absolutePath + "/" + fileName
+                thumbnailPath = BitmapUtil.bitmapToFile(resizedBitmap, saveDir, fileName).absolutePath
+                Log.e(TAG, "initVideoThumbnailView thumbnailPath : ${thumbnailPath}")
             }
         }
     }
