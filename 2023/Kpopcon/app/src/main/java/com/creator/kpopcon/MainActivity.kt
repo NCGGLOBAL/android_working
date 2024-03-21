@@ -222,6 +222,7 @@ class MainActivity : AppCompatActivity() {
                                 videoHeight = 720
                             } else {
                                 executeJavascript("$mCallback($jsonObject)")
+                                videoArchiveFilePath = null
                                 return@launch
                             }
                         } else {    // 세로영상
@@ -230,6 +231,7 @@ class MainActivity : AppCompatActivity() {
                                 videoWidth = 720
                             } else {
                                 executeJavascript("$mCallback($jsonObject)")
+                                videoArchiveFilePath = null
                                 return@launch
                             }
                         }
