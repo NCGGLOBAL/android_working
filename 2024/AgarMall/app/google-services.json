@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "35903142417",
+    "project_id": "agarmall",
+    "storage_bucket": "agarmall.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35903142417:android:6031bece8578570fb74fb0",
+        "android_client_info": {
+          "package_name": "com.creator.agarmall"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhroDdvoizlSo0wNo4_Rum31yFiwLF9SA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
