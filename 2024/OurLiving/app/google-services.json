@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "191328786577",
+    "project_id": "ourliving-6d9b4",
+    "storage_bucket": "ourliving-6d9b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191328786577:android:1e7f99f2afb3c5048d0730",
+        "android_client_info": {
+          "package_name": "com.creator.ourliving"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAstBmSSJb_ht96VSNLoQ9vHbai6COOGF8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
