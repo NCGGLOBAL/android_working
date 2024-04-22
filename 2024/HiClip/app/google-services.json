@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1083804240870",
+    "project_id": "hiclip-2bd68",
+    "storage_bucket": "hiclip-2bd68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083804240870:android:5e2aa37fcc1a17f1026427",
+        "android_client_info": {
+          "package_name": "com.creator.hiclip"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGN_drG-OFVsGLaKvlpenAYYMv4hxktP0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
