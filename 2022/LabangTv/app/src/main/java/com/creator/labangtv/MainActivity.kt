@@ -220,8 +220,8 @@ class MainActivity : AppCompatActivity() {
             mLandingUrl = intent.getStringExtra("url")
             val extraHeaders: MutableMap<String, String> = HashMap()
             extraHeaders["webview-type"] = "main"
-            mLandingUrl?.let {
-                val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(it)
+            if (mLandingUrl?.isNotEmpty() == true) {
+                val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(mLandingUrl)
                 mWebView?.loadUrl(finalUrl, extraHeaders)
             }
         }
@@ -315,9 +315,9 @@ class MainActivity : AppCompatActivity() {
 
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
-        mLandingUrl?.let {
-            mWebView?.loadUrl(it, extraHeaders)
-        } ?: run {
+        if (mLandingUrl?.isNotEmpty() == true) {
+            mWebView?.loadUrl(mLandingUrl!!, extraHeaders)
+        } else {
             mWebView?.loadUrl(HNApplication.URL, extraHeaders)
         }
     }
