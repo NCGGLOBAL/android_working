@@ -31,7 +31,7 @@ public class QRCodeActivity extends CaptureActivity {
                 } else {
                     Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(this, MainActivity.class);
-                    intent.putExtra("webviewUrl", result.getContents());
+                    intent.putExtra("url", result.getContents());
                     startActivity(intent);
                 }
                 finish();

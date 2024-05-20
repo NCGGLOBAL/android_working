@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.creator.kpopcon",
+  "applicationId": "com.creator.kpopcon1",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "properties": [],
-      "versionCode": 10,
-      "versionName": "1.1.0",
+      "versionCode": 1,
+      "versionName": "1.0.1",
       "enabled": true,
       "outputFile": "app-release.apk"
     }

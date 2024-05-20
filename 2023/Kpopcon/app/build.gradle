@@ -6,11 +6,11 @@ apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 android {
     compileSdkVersion 33
     defaultConfig {
-        applicationId "com.creator.kpopcon"
+        applicationId "com.creator.kpopcon1"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 10
-        versionName "1.1.0"
+        versionCode 1
+        versionName "1.0.1"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
