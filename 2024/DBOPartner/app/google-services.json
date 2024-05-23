@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "122172940959",
+    "project_id": "dbopartner-d512b",
+    "storage_bucket": "dbopartner-d512b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122172940959:android:a9d23caa584858b761b8aa",
+        "android_client_info": {
+          "package_name": "com.creator.dbopartner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvOtP1d77aawY-ktqJ-2et0IwZ5OzI4zQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
