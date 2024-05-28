@@ -13,6 +13,7 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.net.UrlQuerySanitizer
 import android.net.http.SslError
 import android.os.*
 import android.provider.MediaStore
@@ -217,11 +218,11 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         if (intent != null) {
             mLandingUrl = intent.getStringExtra("url")
-            Log.e(TAG, "mLandingUrl : $mLandingUrl")
             val extraHeaders: MutableMap<String, String> = HashMap()
             extraHeaders["webview-type"] = "main"
             if (mLandingUrl?.isNotEmpty() == true) {
-                mWebView?.loadUrl(mLandingUrl!!, extraHeaders)
+                val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(mLandingUrl)
+                mWebView?.loadUrl(finalUrl, extraHeaders)
             }
         }
     }
@@ -544,6 +545,14 @@ class MainActivity : AppCompatActivity() {
             LogUtil.e("shouldOverrideUrlLoading : " + url);
             var uri = Uri.parse(url)
             var intent: Intent? = null
+
+            // forbid launching activities without BROWSABLE category
+            intent?.addCategory("android.intent.category.BROWSABLE")
+            // forbid explicit call
+            intent?.setComponent(null)
+            // forbid Intent with selector Intent
+            intent?.setSelector(null)
+
             if (uri.scheme == "ncglive") {
                 startActivity(Intent(this@MainActivity, CameraActivity::class.java))
                 return true
