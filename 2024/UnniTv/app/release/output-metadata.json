@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.creator.labangtv",
+  "applicationId": "com.creator.unnitv",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "properties": [],
-      "versionCode": 22,
-      "versionName": "1.2.2",
+      "versionCode": 23,
+      "versionName": "1.2.3",
       "enabled": true,
       "outputFile": "app-release.apk"
     }
