@@ -545,6 +545,14 @@ class MainActivity : AppCompatActivity() {
             LogUtil.e("shouldOverrideUrlLoading : " + url);
             var uri = Uri.parse(url)
             var intent: Intent? = null
+
+            // forbid launching activities without BROWSABLE category
+            intent?.addCategory("android.intent.category.BROWSABLE")
+            // forbid explicit call
+            intent?.setComponent(null)
+            // forbid Intent with selector Intent
+            intent?.setSelector(null)
+
             if (uri.scheme == "ncglive") {
                 startActivity(Intent(this@MainActivity, CameraActivity::class.java))
                 return true
