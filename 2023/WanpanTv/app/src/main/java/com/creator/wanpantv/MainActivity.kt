@@ -13,6 +13,7 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.net.UrlQuerySanitizer
 import android.net.http.SslError
 import android.os.*
 import android.provider.MediaStore
@@ -221,11 +222,11 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         if (intent != null) {
             mLandingUrl = intent.getStringExtra("url")
-            Log.e(TAG, "mLandingUrl : $mLandingUrl")
             val extraHeaders: MutableMap<String, String> = HashMap()
             extraHeaders["webview-type"] = "main"
-            mLandingUrl?.let {
-                mWebView?.loadUrl(it, extraHeaders)
+            if (mLandingUrl?.isNotEmpty() == true) {
+                val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(mLandingUrl)
+                mWebView?.loadUrl(finalUrl, extraHeaders)
             }
         }
     }
