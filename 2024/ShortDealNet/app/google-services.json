@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "969349070290",
+    "project_id": "shortdealnet",
+    "storage_bucket": "shortdealnet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969349070290:android:9a8cb1d6f87aa1d9461c0b",
+        "android_client_info": {
+          "package_name": "com.creator.shortdealnet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtxudBMqnnujN9lrADEahqX4eHWzXBxjc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
