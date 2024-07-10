@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "226963842168",
+    "project_id": "koreamedi-aa07d",
+    "storage_bucket": "koreamedi-aa07d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:226963842168:android:aaabaabd609cd291fb398d",
+        "android_client_info": {
+          "package_name": "com.creator.koreamedi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgjD3tSEpLXfqoMny2_qYUsnNU0K4N1J4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
