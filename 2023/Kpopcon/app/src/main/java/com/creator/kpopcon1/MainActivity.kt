@@ -46,18 +46,13 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import com.iceteck.silicompressorr.SiliCompressor
-import com.kakao.auth.*
-import com.kakao.network.ErrorResult
-import com.kakao.usermgmt.UserManagement
-import com.kakao.usermgmt.callback.MeV2ResponseCallback
-import com.kakao.usermgmt.response.MeV2Response
-import com.kakao.util.exception.KakaoException
 import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -297,25 +292,33 @@ class MainActivity : AppCompatActivity() {
             mBackPressCloseHandler = BackPressCloseHandler(this)
 
             // topic 생성
-            mFirebaseMessaging = FirebaseMessaging.getInstance()
+            FirebaseApp.initializeApp(this)
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new FCM registration token
+                val token = task.result
+
+                if (HNSharedPreference.getSharedPreference(
+                        this,
+                        "pushtoken"
+                    ) == "" || HNSharedPreference.getSharedPreference(this, "pushtoken") != token
+                ) {
+                    HNSharedPreference.putSharedPreference(this, "pushtoken", token)
+                    sendRegistrationToServer(token)
+                }
+                LogUtil.e("push token : $token")
+            })
             if (HNSharedPreference.getSharedPreference(this, "pushtopic") == "") {
                 val topic = Random().nextInt(100) + 1 // topic 1 ~ 100의 값으로 임의 지정
                 mFirebaseMessaging?.subscribeToTopic(topic.toString())
                 HNSharedPreference.putSharedPreference(this, "pushtopic", topic.toString())
             }
-            hashKey
 
-            // token 생성
-            val token = FirebaseInstanceId.getInstance().token
-            if (HNSharedPreference.getSharedPreference(
-                    this,
-                    "pushtoken"
-                ) == "" || HNSharedPreference.getSharedPreference(this, "pushtoken") != token
-            ) {
-                HNSharedPreference.putSharedPreference(this, "pushtoken", token)
-                sendRegistrationToServer(token)
-            }
-            LogUtil.e("push token : $token")
+            hashKey
 
             mPushUid = intent.getStringExtra("pushUid")
             mLandingUrl = intent.getStringExtra("url")
@@ -1100,15 +1103,6 @@ class MainActivity : AppCompatActivity() {
                             // 네이버 로그인
 //                            callNaverLogin();
                         } else if (actionParamObj.getString("snsType") == "2") {
-                            // 카카오톡 로그인
-                            val session = Session.getCurrentSession()
-                            session.addCallback(SessionCallback())
-                            session.open(AuthType.KAKAO_LOGIN_ALL, this@MainActivity)
-                            //                            if (session.checkAndImplicitOpen()) {
-//                                // 액세스토큰 유효하거나 리프레시 토큰으로 액세스 토큰 갱신을 시도할 수 있는 경우
-//                            } else {
-//                                // 무조건 재로그인을 시켜야 하는 경우
-//                            }
                         } else if (actionParamObj.getString("snsType") == "3") {
                             // 페이스북 로그인
                             FacebookSdk.sdkInitialize(context)
@@ -2172,87 +2166,6 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
         return ""
-    }
-
-    // Handler 클래스
-    internal inner class SendMassgeHandler : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-            when (msg.what) {
-                SEND_KAKAO_MESSAGE -> Log.d("SeongKwon", "msg = $msg")
-                else -> {}
-            }
-        }
-    }
-
-    // 카카오톡 로그인
-    private inner class SessionCallback : ISessionCallback {
-        // 로그인에 성공한 상태
-        override fun onSessionOpened() {
-            try {
-                requestMe()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        // 로그인에 실패한 상태
-        override fun onSessionOpenFailed(exception: KakaoException) {
-            Log.e("SessionCallback :: ", "onSessionOpenFailed : " + exception.message)
-            Toast.makeText(this@MainActivity, "로그인 실패 원인 : " + exception.message, Toast.LENGTH_LONG)
-                .show()
-        }
-
-        // 사용자 정보 요청
-        private fun requestMe() {
-            // 사용자정보 요청 결과에 대한 Callback
-            UserManagement.getInstance().me(object : MeV2ResponseCallback() {
-                override fun onSessionClosed(errorResult: ErrorResult) {
-                    Log.d(
-                        "SeongKwon",
-                        "SessionCallback :: onSessionClosed : " + errorResult.errorMessage
-                    )
-                    Toast.makeText(
-                        this@MainActivity,
-                        "로그인 실패 원인 onSessionClosed : " + errorResult.errorMessage,
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-
-                override fun onSuccess(result: MeV2Response) {
-                    Log.d("SeongKwon", "SessionCallback :: onSuccess")
-                    Toast.makeText(this@MainActivity, "로그인 성공", Toast.LENGTH_LONG).show()
-                    try {
-                        val email = result.kakaoAccount.email
-                        val nickname = result.nickname
-                        val profileImagePath = result.profileImagePath
-                        val thumnailPath = result.thumbnailImagePath
-                        val id = result.id
-                        val jsonAccount = JSONObject()
-                        jsonAccount.put("email", email)
-                        jsonAccount.put("nickname", nickname)
-                        jsonAccount.put("profileImagePath", profileImagePath)
-                        jsonAccount.put("thumnailPath", thumnailPath)
-                        jsonAccount.put("id", id)
-                        Log.e("SeongKwon", "jsonAccount : $jsonAccount")
-                        val jsonObject = JSONObject()
-                        jsonObject.put(
-                            "accessToken",
-                            Session.getCurrentSession().accessToken
-                        ) // getAccessToken
-                        jsonObject.put("userInfo", jsonAccount) // 사용자정보
-                        executeJavascript("$mCallback($jsonObject)")
-                    } catch (e: Exception) {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "로그인 성공했지만 파싱 실패 원인 : " + e.message,
-                            Toast.LENGTH_LONG
-                        ).show()
-                        e.printStackTrace()
-                    }
-                }
-            })
-        }
     }
 
     // 페이스북 로그인

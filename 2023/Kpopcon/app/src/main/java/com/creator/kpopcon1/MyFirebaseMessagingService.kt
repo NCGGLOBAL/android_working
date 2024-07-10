@@ -26,10 +26,16 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.creator.kpopcon1.common.HNApplication
+import com.creator.kpopcon1.delegator.HNCommTran
+import com.creator.kpopcon1.delegator.HNCommTranInterface
+import com.creator.kpopcon1.delegator.HNSharedPreference
 import com.creator.kpopcon1.util.LogUtil
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import org.json.JSONObject
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -42,6 +48,21 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private var mImgUrl: String? = ""
     private var mPushType: String? = "default"
 
+    private var mHNCommTran: HNCommTran? = null
+
+    /**
+     * Called if the FCM registration token is updated. This may occur if the security of
+     * the previous token had been compromised. Note that this is called when the
+     * FCM registration token is initially generated so this is where you would retrieve the token.
+     */
+    override fun onNewToken(token: String) {
+        Log.d(TAG, "Refreshed token: $token")
+
+        // If you want to send messages to this application instance or
+        // manage this apps subscriptions on the server side, send the
+        // FCM registration token to your app server.
+        sendRegistrationToServer(token)
+    }
     /**
      * Called when message is received.
      *
@@ -242,6 +263,44 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
             return null
         }
+    }
+
+    /**
+     * Persist token to third-party servers.
+     *
+     * Modify this method to associate the user's FCM InstanceID token with any server-side account
+     * maintained by your application.
+     *
+     * @param token The new token.
+     */
+    private fun sendRegistrationToServer(token: String?) {
+        LogUtil.e("sendRegistrationToServer : $token")
+        Thread(Runnable {
+            try {
+                val jObj = JSONObject()
+                jObj.put("os", "Android")
+                jObj.put(
+                    "memberKey",
+                    HNSharedPreference.getSharedPreference(applicationContext, "memberKey")
+                )
+                jObj.put(
+                    "pushKey",
+                    HNSharedPreference.getSharedPreference(applicationContext, "pushtoken")
+                )
+                jObj.put("deviceId", HNApplication.Companion.mDeviceId)
+                mHNCommTran = HNCommTran(object : HNCommTranInterface {
+                    override fun recvMsg(tranCode: String?, params: String) {
+                        if (tranCode.equals(HNApplication.PUSH_URL)) {
+                            LogUtil.e("recv pushRegister : $tranCode : $params");
+                        }
+                    }
+                })
+                mHNCommTran!!.sendMsg(HNApplication.Companion.PUSH_URL, jObj)
+                return@Runnable
+            } catch (localException: Exception) {
+                localException.printStackTrace()
+            }
+        }).start()
     }
 
     companion object {

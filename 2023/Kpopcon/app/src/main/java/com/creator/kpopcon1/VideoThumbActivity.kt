@@ -5,11 +5,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.widget.Button
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.creator.kpopcon1.helpers.Constants
 import com.creator.kpopcon1.util.BitmapUtil
 import com.creator.kpopcon1.util.LogUtil
-import kotlinx.android.synthetic.main.activity_video_thumb.*
 import kotlin.math.roundToInt
 
 class VideoThumbActivity: AppCompatActivity() {
@@ -21,12 +22,15 @@ class VideoThumbActivity: AppCompatActivity() {
 //    var height: String? = null
     var thumbnailPath: String? = null
 
+    lateinit var thumbImageView: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_thumb)
 
         initIntent()
-        nextButton.setOnClickListener { _ ->
+        thumbImageView = findViewById(R.id.thumbImageView)
+        findViewById<Button>(R.id.nextButton).setOnClickListener { _ ->
             thumbnailPath?.let {
                 intent.putExtra("thumbnailPath", it)
                 intent.putExtra("selectedVideoPath", selectedVideoPath)

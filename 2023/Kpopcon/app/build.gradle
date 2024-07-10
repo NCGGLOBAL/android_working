@@ -1,31 +1,23 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34
     defaultConfig {
         applicationId "com.creator.kpopcon1"
         minSdkVersion 21
-        targetSdkVersion 33
-        versionCode 1
-        versionName "1.0.1"
+        targetSdkVersion 34
+        versionCode 2
+        versionName "1.0.2"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
 
         ndk.abiFilters 'armeabi-v7a','arm64-v8a','x86','x86_64'
     }
-    dexOptions {
-        javaMaxHeapSize "Xg"
-    }
-    lintOptions {
-        checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in release builds,
-        // but continue the build even when errors are found:
-        abortOnError false
-    }
+
 
     buildTypes {
         release {
@@ -42,18 +34,28 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        viewBinding false
+    }
+    namespace 'com.creator.shortdealnet'
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation 'androidx.multidex:multidex:2.0.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.10"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22"
 
-    implementation 'com.google.firebase:firebase-core:16.0.5'
-    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+    implementation 'com.google.firebase:firebase-messaging:24.0.0'
 
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.joooonho:selectableroundedimageview:1.0.1'
@@ -85,11 +87,6 @@ dependencies {
     implementation 'androidx.browser:browser:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
-    // 카카오로그인
-    implementation group: 'com.kakao.sdk', name: 'usermgmt', version: project.KAKAO_SDK_VERSION     // 카카오 로그인 sdk를 사용하기 위해 필요.
-    //implementation group: 'com.kakao.sdk', name: 'kakaolink', version: project.KAKAO_SDK_VERSION    // 카카오링크 sdk를 사용하기 위해 필요.
-    //implementation group: 'com.kakao.sdk', name: 'kakaotalk', version: project.KAKAO_SDK_VERSION    // 카카오톡 sdk를 사용하기 위해 필요.
-
     // 페이스북로그인
     implementation 'com.facebook.android:facebook-core:[8,9)'
     implementation 'com.facebook.android:facebook-login:latest.release'
@@ -101,17 +98,15 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
 //    # required, enough for most devices.
-    implementation 'com.ksyun.media:libksylive-java:3.0.0'
-    implementation 'com.ksyun.media:libksylive-armv7a:3.0.0'
-    implementation 'com.ksyun.media:libksylive-arm64:3.0.0'
+    implementation 'com.ksyun.media:libksylive-java:3.0.4'
+    implementation 'com.ksyun.media:libksylive-armv7a:3.0.4'
+    implementation 'com.ksyun.media:libksylive-arm64:3.0.4'
 
     implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9'
-
-    implementation 'com.google.android.play:core:1.10.3'
     implementation 'org.jsoup:jsoup:1.16.1'
 
     implementation 'com.iceteck.silicompressorr:silicompressor:2.2.2'
-//    implementation 'com.googlecode.mp4parser:isoparser:1.1.22'
+
 }
