@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "39549304869",
+    "project_id": "wellbeinglive-8ec58",
+    "storage_bucket": "wellbeinglive-8ec58.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39549304869:android:27412d62caf7e7d93affcc",
+        "android_client_info": {
+          "package_name": "com.creator.wellbeinglive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmnslt9oeQ8toru0DGjjHwT4ujDXSZR54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
