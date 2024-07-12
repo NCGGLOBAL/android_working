@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "279453445359",
+    "project_id": "conceptk-f0e45",
+    "storage_bucket": "conceptk-f0e45.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:279453445359:android:df99bd196b65526edeff1a",
+        "android_client_info": {
+          "package_name": "com.creator.conceptk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4G3mT89gkhYmZTd_upauPg3KpAPLJ8ZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
