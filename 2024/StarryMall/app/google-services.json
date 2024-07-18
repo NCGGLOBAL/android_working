@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "356098945957",
+    "project_id": "starrymall",
+    "storage_bucket": "starrymall.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:356098945957:android:5f60a914a2a1310c34ee4c",
+        "android_client_info": {
+          "package_name": "com.creator.starrymall"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPUoYsT90sNINcTK6qmmrFEbxrr36_zNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
