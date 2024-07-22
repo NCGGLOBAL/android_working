@@ -38,7 +38,7 @@ android {
     buildFeatures {
         viewBinding false
     }
-    namespace 'com.creator.shortdealnet'
+    namespace 'com.creator.kpopcon1'
     lint {
         abortOnError false
         checkReleaseBuilds false
