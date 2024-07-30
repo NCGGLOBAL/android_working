@@ -6,11 +6,11 @@ apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 android {
     compileSdkVersion 34
     defaultConfig {
-        applicationId "com.creator.shortdealnet"
+        applicationId "com.creator.shortdealnet1"
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 3
-        versionName "1.0.3"
+        versionCode 1
+        versionName "1.0.1"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
@@ -37,7 +37,7 @@ android {
     buildFeatures {
         viewBinding false
     }
-    namespace 'com.creator.shortdealnet'
+    namespace 'com.creator.shortdealnet1'
     lint {
         abortOnError false
         checkReleaseBuilds false
