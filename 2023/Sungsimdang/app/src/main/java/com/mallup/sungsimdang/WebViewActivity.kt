@@ -14,6 +14,7 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.net.http.SslError
 import android.os.*
 import android.provider.MediaStore
 import android.text.TextUtils
@@ -38,12 +39,6 @@ import com.facebook.login.LoginResult
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
-import com.kakao.auth.*
-import com.kakao.network.ErrorResult
-import com.kakao.usermgmt.UserManagement
-import com.kakao.usermgmt.callback.MeV2ResponseCallback
-import com.kakao.usermgmt.response.MeV2Response
-import com.kakao.util.exception.KakaoException
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
@@ -51,6 +46,7 @@ import java.net.URISyntaxException
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 //import com.nhn.android.naverlogin.OAuthLogin;
 //import com.nhn.android.naverlogin.OAuthLoginHandler;
@@ -379,8 +375,33 @@ class WebViewActivity : Activity() {
             executeJavascript("localStorage.setItem(\"dv_id\"," + "\"" + HNApplication.mDeviceId + "\")")
         }
 
+        override fun onReceivedSslError(
+            view: WebView?,
+            handler: SslErrorHandler,
+            error: SslError?) {
+            LogUtil.e("onReceivedSslError : " + error)
+            if (HNSharedPreference.getSharedPreference(this@WebViewActivity, "isFirstLive") == "") {
+                val builder = android.app.AlertDialog.Builder(this@WebViewActivity)
+                builder.setTitle("라이브 방송을 시청 하시겠습니까?")
+                builder.setPositiveButton("예") { dialog, id ->
+                    handler.proceed()
+                    HNSharedPreference.putSharedPreference(this@WebViewActivity, "isFirstLive", "Y")
+                    dialog.dismiss()
+                }
+                builder.setNegativeButton("아니오") { dialog, id ->
+                    handler.cancel()
+                    HNSharedPreference.putSharedPreference(this@WebViewActivity, "isFirstLive", "")
+                    finish()
+                }
+                val alertDialog = builder.create()
+                alertDialog.show()
+            } else {
+                handler.proceed()
+            }
+        }
+
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            // LogUtil.e("shouldOverrideUrlLoading : " + url);
+            LogUtil.e("shouldOverrideUrlLoading : " + url)
             var uri = Uri.parse(url)
             var intent: Intent? = null
             if (url.startsWith("sms:") || url.startsWith("smsto:")) {
@@ -494,6 +515,7 @@ class WebViewActivity : Activity() {
                         || url.contains("kakaopay")
                         || url.contains("naversearchapp://")
                         || url.contains("kakaotalk://")
+                        || url.contains("nidlogin://")
                         || url.contains("http://m.ahnlab.com/kr/site/download"))
             ) {
                 return try {
@@ -776,31 +798,10 @@ class WebViewActivity : Activity() {
                             // 네이버 로그인
 //                            callNaverLogin();
                         } else if (actionParamObj.getString("snsType") == "2") {
-                            // 카카오톡 로그인
-                            val session = Session.getCurrentSession()
-                            session.addCallback(SessionCallback())
-                            session.open(AuthType.KAKAO_LOGIN_ALL, this@WebViewActivity)
-                            //                            if (session.checkAndImplicitOpen()) {
-//                                // 액세스토큰 유효하거나 리프레시 토큰으로 액세스 토큰 갱신을 시도할 수 있는 경우
-//                            } else {
-//                                // 무조건 재로그인을 시켜야 하는 경우
-//                            }
                         } else if (actionParamObj.getString("snsType") == "3") {
                             // 페이스북 로그인
-                            if (AccessToken.isCurrentAccessTokenActive()) {
-                                try {
-                                    val jsonObject = JSONObject()
-                                    jsonObject.put(
-                                        "accessToken",
-                                        AccessToken.getCurrentAccessToken()
-                                    ) // getAccessToken
-                                    executeJavascript("$mCallback($jsonObject)")
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-                            } else {
-                                initFacebookLogin()
-                            }
+                            FacebookSdk.sdkInitialize(context)
+                            initFacebookLogin()
                         }
                     }
                 } else if ("ACT1037" == actionCode) {
@@ -880,6 +881,7 @@ class WebViewActivity : Activity() {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var data = data
+        callbackManager?.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("SeongKwon", "============================================")
         Log.d("SeongKwon", "requestCode = $requestCode")
@@ -1536,63 +1538,6 @@ class WebViewActivity : Activity() {
         }
     }
 
-    // 카카오톡 로그인
-    private inner class SessionCallback : ISessionCallback {
-        // 로그인에 성공한 상태
-        override fun onSessionOpened() {
-            try {
-                requestMe()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        // 로그인에 실패한 상태
-        override fun onSessionOpenFailed(exception: KakaoException) {
-            Log.e("SessionCallback :: ", "onSessionOpenFailed : " + exception.message)
-        }
-
-        // 사용자 정보 요청
-        private fun requestMe() {
-            // 사용자정보 요청 결과에 대한 Callback
-            UserManagement.getInstance().me(object : MeV2ResponseCallback() {
-                override fun onSessionClosed(errorResult: ErrorResult) {
-                    Log.d(
-                        "SeongKwon",
-                        "SessionCallback :: onSessionClosed : " + errorResult.errorMessage
-                    )
-                }
-
-                override fun onSuccess(result: MeV2Response) {
-                    Log.d("SeongKwon", "SessionCallback :: onSuccess")
-                    try {
-                        val email = result.kakaoAccount.email
-                        val nickname = result.nickname
-                        val profileImagePath = result.profileImagePath
-                        val thumnailPath = result.thumbnailImagePath
-                        val id = result.id
-                        val jsonAccount = JSONObject()
-                        jsonAccount.put("email", email)
-                        jsonAccount.put("nickname", nickname)
-                        jsonAccount.put("profileImagePath", profileImagePath)
-                        jsonAccount.put("thumnailPath", thumnailPath)
-                        jsonAccount.put("id", id)
-                        Log.e("SeongKwon", "jsonAccount : $jsonAccount")
-                        val jsonObject = JSONObject()
-                        jsonObject.put(
-                            "accessToken",
-                            Session.getCurrentSession().accessToken
-                        ) // getAccessToken
-                        jsonObject.put("userInfo", jsonAccount) // 사용자정보
-                        executeJavascript("$mCallback($jsonObject)")
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            })
-        }
-    }
-
     // 페이스북 로그인
     private fun initFacebookLogin() {
         LoginManager.getInstance().logInWithReadPermissions(this@WebViewActivity, permissionNeeds)
@@ -1600,31 +1545,38 @@ class WebViewActivity : Activity() {
         LoginManager.getInstance()
             .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
                 override fun onSuccess(loginResult: LoginResult) {
-                    Log.d(
-                        "SeongKwon",
-                        "onSuccess - getAccessToken : " + loginResult.accessToken.token
-                    )
-                    Log.d("SeongKwon", "onSuccess - getUserId : " + loginResult.accessToken.userId)
-                    Log.d(
-                        "SeongKwon",
-                        "onSuccess - getExpires : " + loginResult.accessToken.expires
-                    )
-                    Log.d(
-                        "SeongKwon",
-                        "onSuccess - getLastRefresh : " + loginResult.accessToken.lastRefresh
-                    )
-
-                    // getFbInfo();
-                    try {
-                        val jsonObject = JSONObject()
-                        jsonObject.put(
-                            "accessToken",
-                            loginResult.accessToken.token
-                        ) // getAccessToken
-                        executeJavascript("$mCallback($jsonObject)")
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                    val accessToken = AccessToken.getCurrentAccessToken()
+                    Log.d("SeongKwon", "====================================0")
+                    Log.d("SeongKwon", "onSuccess - getToken : " + accessToken?.token)
+                    Log.d("SeongKwon", "onSuccess - getUserId : " + accessToken?.userId)
+                    Log.d("SeongKwon", "onSuccess - isExpired : " + accessToken?.isExpired)
+                    Log.d("SeongKwon", "onSuccess - getExpires : " + accessToken?.expires)
+                    Log.d("SeongKwon", "onSuccess - getLastRefresh : " + accessToken?.lastRefresh)
+                    Log.d("SeongKwon", "====================================1")
+                    val request = GraphRequest.newMeRequest(
+                        AccessToken.getCurrentAccessToken()
+                    ) { result, response ->
+                        try {
+                            Log.d("SeongKwon", "fb json object: $result")
+                            Log.d("SeongKwon", "fb graph response: $response")
+                            val jsonObject = JSONObject()
+                            jsonObject.put(
+                                "accessToken",
+                                accessToken?.token
+                            ) // getAccessToken
+                            jsonObject.put("userInfo", result) // 사용자정보
+                            executeJavascript("$mCallback($jsonObject)")
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
+                    val parameters = Bundle()
+                    parameters.putString(
+                        "fields",
+                        "id,first_name,last_name,email,gender,birthday"
+                    ) // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
+                    request.parameters = parameters
+                    request.executeAsync()
                 }
 
                 override fun onCancel() {
@@ -1636,63 +1588,6 @@ class WebViewActivity : Activity() {
                 }
             })
     }
-
-    // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-    private val fbInfo: Unit
-        private get() {
-            val accessToken = AccessToken.getCurrentAccessToken()
-            Log.d("SeongKwon", "====================================0")
-            Log.d("SeongKwon", "onSuccess - getToken : " + accessToken.token)
-            Log.d("SeongKwon", "onSuccess - getUserId : " + accessToken.userId)
-            Log.d("SeongKwon", "onSuccess - isExpired : " + accessToken.isExpired)
-            Log.d("SeongKwon", "onSuccess - getExpires : " + accessToken.expires)
-            Log.d("SeongKwon", "onSuccess - getLastRefresh : " + accessToken.lastRefresh)
-            Log.d("SeongKwon", "====================================1")
-            mFacebookMessage = """
-                 Token = ${accessToken.token}
-                 
-                 """.trimIndent()
-            mFacebookMessage += """
-                 UserId = ${accessToken.userId}
-                 
-                 """.trimIndent()
-            mFacebookMessage += """
-                 Expires = ${accessToken.expires}
-                 
-                 """.trimIndent()
-            mFacebookMessage += """
-                 LastRefresh = ${accessToken.lastRefresh}
-                 
-                 """.trimIndent()
-            val request = GraphRequest.newMeRequest(
-                AccessToken.getCurrentAccessToken()
-            ) { `object`, response ->
-                try {
-                    Log.d("SeongKwon", "fb json object: $`object`")
-                    Log.d("SeongKwon", "fb graph response: $response")
-                    mFacebookMessage += "fb_json_object = $`object`\n"
-                    runOnUiThread {
-                        val alertDialogBuilder = AlertDialog.Builder(
-                            mContext!!
-                        )
-                        alertDialogBuilder.setTitle("알림")
-                        alertDialogBuilder.setMessage(mFacebookMessage)
-                            .setPositiveButton("확인") { dialogInterface, i -> }
-                            .setCancelable(false)
-                            .create().show()
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            val parameters = Bundle()
-            parameters.putString(
-                "fields",
-                "id,first_name,last_name,email,gender,birthday"
-            ) // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-            request.parameters = parameters
-            request.executeAsync()
-        }
 
     companion object {
         // SNS========================================================================= //
