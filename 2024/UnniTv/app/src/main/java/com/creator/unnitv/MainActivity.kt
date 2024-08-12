@@ -42,17 +42,12 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
-import com.kakao.auth.*
-import com.kakao.network.ErrorResult
-import com.kakao.usermgmt.UserManagement
-import com.kakao.usermgmt.callback.MeV2ResponseCallback
-import com.kakao.usermgmt.response.MeV2Response
-import com.kakao.util.exception.KakaoException
 import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -165,25 +160,31 @@ class MainActivity : AppCompatActivity() {
             mBackPressCloseHandler = BackPressCloseHandler(this)
 
             // topic 생성
-            mFirebaseMessaging = FirebaseMessaging.getInstance()
+            FirebaseApp.initializeApp(this)
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new FCM registration token
+                val token = task.result
+                if (HNSharedPreference.getSharedPreference(
+                        this,
+                        "pushtoken"
+                    ) == "" || HNSharedPreference.getSharedPreference(this, "pushtoken") != token
+                ) {
+                    HNSharedPreference.putSharedPreference(this, "pushtoken", token)
+                    sendRegistrationToServer(token)
+                }
+                LogUtil.e("push token : $token")
+            })
             if (HNSharedPreference.getSharedPreference(this, "pushtopic") == "") {
                 val topic = Random().nextInt(100) + 1 // topic 1 ~ 100의 값으로 임의 지정
                 mFirebaseMessaging?.subscribeToTopic(topic.toString())
                 HNSharedPreference.putSharedPreference(this, "pushtopic", topic.toString())
             }
             hashKey
-
-            // token 생성
-            val token = FirebaseInstanceId.getInstance().token
-            if (HNSharedPreference.getSharedPreference(
-                    this,
-                    "pushtoken"
-                ) == "" || HNSharedPreference.getSharedPreference(this, "pushtoken") != token
-            ) {
-                HNSharedPreference.putSharedPreference(this, "pushtoken", token)
-                sendRegistrationToServer(token)
-            }
-            LogUtil.e("push token : $token")
 
             mPushUid = intent.getStringExtra("pushUid")
             mLandingUrl = intent.getStringExtra("url")
@@ -220,8 +221,8 @@ class MainActivity : AppCompatActivity() {
             mLandingUrl = intent.getStringExtra("url")
             val extraHeaders: MutableMap<String, String> = HashMap()
             extraHeaders["webview-type"] = "main"
-            if (mLandingUrl?.isNotEmpty() == true) {
-                val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(mLandingUrl)
+            mLandingUrl?.let {
+                val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(it)
                 mWebView?.loadUrl(finalUrl, extraHeaders)
             }
         }
@@ -253,17 +254,17 @@ class MainActivity : AppCompatActivity() {
         try {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@MainActivity)
             fusedLocationClient?.lastLocation?.addOnSuccessListener(
-                    this
-                ) { location ->
-                    // Got last known location. In some rare situations this can be null.
-                    if (location != null) {
-                        // Logic to handle location object
-                        Log.e(TAG, "location.getLatitude() : " + location.latitude)
-                        Log.e(TAG, "location.getLongitude() : " + location.longitude)
-                        mLatitude = location.latitude
-                        mLongitude = location.longitude
-                    }
+                this
+            ) { location ->
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    // Logic to handle location object
+                    Log.e(TAG, "location.getLatitude() : " + location.latitude)
+                    Log.e(TAG, "location.getLongitude() : " + location.longitude)
+                    mLatitude = location.latitude
+                    mLongitude = location.longitude
                 }
+            }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
@@ -315,9 +316,10 @@ class MainActivity : AppCompatActivity() {
 
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
-        if (mLandingUrl?.isNotEmpty() == true) {
-            mWebView?.loadUrl(mLandingUrl!!, extraHeaders)
-        } else {
+        mLandingUrl?.let {
+            val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(it)
+            mWebView?.loadUrl(finalUrl, extraHeaders)
+        } ?: run {
             mWebView?.loadUrl(HNApplication.URL, extraHeaders)
         }
     }
@@ -545,14 +547,6 @@ class MainActivity : AppCompatActivity() {
             LogUtil.e("shouldOverrideUrlLoading : " + url);
             var uri = Uri.parse(url)
             var intent: Intent? = null
-
-            // forbid launching activities without BROWSABLE category
-            intent?.addCategory("android.intent.category.BROWSABLE")
-            // forbid explicit call
-            intent?.setComponent(null)
-            // forbid Intent with selector Intent
-            intent?.setSelector(null)
-
             if (uri.scheme == "ncglive") {
                 startActivity(Intent(this@MainActivity, CameraActivity::class.java))
                 return true
@@ -892,14 +886,10 @@ class MainActivity : AppCompatActivity() {
                         mCameraType = actionParamObj.getInt("key_type")
                         LogUtil.d("mCameraType : $mCameraType")
                     }
-
                     mCameraType = 0
-
-                    intent = Intent(context, QRCodeActivity::class.java)
-                    startActivity(intent)
-//                    requestPermission(Constants.REQUEST_CAMERA);
                     //                    requestPermission(Constants.REQUEST_CAMERA);
-                    executeJavascript("$mCallback()")
+//                    executeJavascript(mCallback + "()");
+                    callQR()
                 } else if ("ACT1003" == actionCode) {
                     LogUtil.d("ACT1003 - 위쳇페이")
                     if (actionParamObj!!.has("request_url")) {
@@ -962,15 +952,6 @@ class MainActivity : AppCompatActivity() {
                             // 네이버 로그인
 //                            callNaverLogin();
                         } else if (actionParamObj.getString("snsType") == "2") {
-                            // 카카오톡 로그인
-                            val session = Session.getCurrentSession()
-                            session.addCallback(SessionCallback())
-                            session.open(AuthType.KAKAO_LOGIN_ALL, this@MainActivity)
-                            //                            if (session.checkAndImplicitOpen()) {
-//                                // 액세스토큰 유효하거나 리프레시 토큰으로 액세스 토큰 갱신을 시도할 수 있는 경우
-//                            } else {
-//                                // 무조건 재로그인을 시켜야 하는 경우
-//                            }
                         } else if (actionParamObj.getString("snsType") == "3") {
                             // 페이스북 로그인
                             FacebookSdk.sdkInitialize(context)
@@ -1813,76 +1794,6 @@ class MainActivity : AppCompatActivity() {
                 SEND_KAKAO_MESSAGE -> Log.d("SeongKwon", "msg = $msg")
                 else -> {}
             }
-        }
-    }
-
-    // 카카오톡 로그인
-    private inner class SessionCallback : ISessionCallback {
-        // 로그인에 성공한 상태
-        override fun onSessionOpened() {
-            try {
-                requestMe()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        // 로그인에 실패한 상태
-        override fun onSessionOpenFailed(exception: KakaoException) {
-            Log.e("SessionCallback :: ", "onSessionOpenFailed : " + exception.message)
-            Toast.makeText(this@MainActivity, "로그인 실패 원인 : " + exception.message, Toast.LENGTH_LONG)
-                .show()
-        }
-
-        // 사용자 정보 요청
-        private fun requestMe() {
-            // 사용자정보 요청 결과에 대한 Callback
-            UserManagement.getInstance().me(object : MeV2ResponseCallback() {
-                override fun onSessionClosed(errorResult: ErrorResult) {
-                    Log.d(
-                        "SeongKwon",
-                        "SessionCallback :: onSessionClosed : " + errorResult.errorMessage
-                    )
-                    Toast.makeText(
-                        this@MainActivity,
-                        "로그인 실패 원인 onSessionClosed : " + errorResult.errorMessage,
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-
-                override fun onSuccess(result: MeV2Response) {
-                    Log.d("SeongKwon", "SessionCallback :: onSuccess")
-                    Toast.makeText(this@MainActivity, "로그인 성공", Toast.LENGTH_LONG).show()
-                    try {
-                        val email = result.kakaoAccount.email
-                        val nickname = result.nickname
-                        val profileImagePath = result.profileImagePath
-                        val thumnailPath = result.thumbnailImagePath
-                        val id = result.id
-                        val jsonAccount = JSONObject()
-                        jsonAccount.put("email", email)
-                        jsonAccount.put("nickname", nickname)
-                        jsonAccount.put("profileImagePath", profileImagePath)
-                        jsonAccount.put("thumnailPath", thumnailPath)
-                        jsonAccount.put("id", id)
-                        Log.e("SeongKwon", "jsonAccount : $jsonAccount")
-                        val jsonObject = JSONObject()
-                        jsonObject.put(
-                            "accessToken",
-                            Session.getCurrentSession().accessToken
-                        ) // getAccessToken
-                        jsonObject.put("userInfo", jsonAccount) // 사용자정보
-                        executeJavascript("$mCallback($jsonObject)")
-                    } catch (e: Exception) {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "로그인 성공했지만 파싱 실패 원인 : " + e.message,
-                            Toast.LENGTH_LONG
-                        ).show()
-                        e.printStackTrace()
-                    }
-                }
-            })
         }
     }
 
