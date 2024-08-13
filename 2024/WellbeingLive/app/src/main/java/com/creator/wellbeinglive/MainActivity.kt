@@ -317,7 +317,8 @@ class MainActivity : AppCompatActivity() {
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
         mLandingUrl?.let {
-            mWebView?.loadUrl(it, extraHeaders)
+            val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(it)
+            mWebView?.loadUrl(finalUrl, extraHeaders)
         } ?: run {
             mWebView?.loadUrl(HNApplication.URL, extraHeaders)
         }
