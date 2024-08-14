@@ -454,7 +454,8 @@ class MainActivity : AppCompatActivity() {
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
         if (mLandingUrl?.isNotEmpty() == true) {
-            mWebView?.loadUrl(mLandingUrl!!, extraHeaders)
+            val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(mLandingUrl)
+            mWebView?.loadUrl(finalUrl, extraHeaders)
         } else {
             mWebView?.loadUrl(HNApplication.URL, extraHeaders)
         }
@@ -1421,8 +1422,8 @@ class MainActivity : AppCompatActivity() {
                         // 100MB 이상이면 리턴
                         val videoFileSize = BitmapUtil.getFileSizeMB(selectedVideoPath)
                         Log.d(TAG, "origin videoFileSize: $videoFileSize MB")
-                        if (videoFileSize ?: 0 > 100) {
-                            Toast.makeText(this@MainActivity, "영상 용량은 100M미만으로 등록해 주세요.", Toast.LENGTH_SHORT).show()
+                        if (videoFileSize ?: 0 > 300) {
+                            Toast.makeText(this@MainActivity, "영상 용량은 300M미만으로 등록해 주세요.", Toast.LENGTH_SHORT).show()
                             return
                         }
                         // 비디오의 해상도 가져오기
