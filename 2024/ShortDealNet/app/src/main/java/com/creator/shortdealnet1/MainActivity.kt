@@ -570,43 +570,24 @@ class MainActivity : AppCompatActivity() {
                 startActivity(i)
                 return true
             } else if (url.startsWith("tel:")) {
-                intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
-                startActivity(intent)
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    val permissionResult = checkSelfPermission(Manifest.permission.CALL_PHONE)
-//                    if (permissionResult == PackageManager.PERMISSION_DENIED) {
-//                        if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
-//                            val dialog = AlertDialog.Builder(
-//                                mContext!!
-//                            )
-//                            dialog.setTitle("권한이 필요합니다.")
-//                                .setMessage("이 기능을 사용하기 위해서는 단말기의 \"전화걸기\" 권한이 필요합니다. 계속 하시겠습니까?")
-//                                .setPositiveButton("네") { dialog, which ->
-//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                                        // CALL_PHONE 권한을 Android OS에 요청한다.
-//                                        requestPermissions(
-//                                            arrayOf(Manifest.permission.CALL_PHONE),
-//                                            1000
-//                                        )
-//                                    }
-//                                }
-//                                .setNegativeButton("아니요") { dialog, which ->
-//                                    Toast.makeText(
-//                                        mContext,
-//                                        "기능을 취소했습니다",
-//                                        Toast.LENGTH_SHORT
-//                                    ).show()
-//                                }
-//                                .create().show()
-//                        }
-//                    } else {
-//                        intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
-//                        startActivity(intent)
-//                    }
-//                } else {
-//                    intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
-//                    startActivity(intent)
-//                }
+                TedPermission.create()
+                    .setPermissionListener(object : PermissionListener {
+                        //권한이 허용됐을 때
+                        override fun onPermissionGranted() {
+                            intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
+                            startActivity(intent)
+                        }
+
+                        //권한이 거부됐을 때
+                        override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                            Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    })
+                    .setDeniedMessage("전화걸기 권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                    .setPermissions(
+                        Manifest.permission.CALL_PHONE
+                    )
+                    .check()
                 return true
             } else if (url.startsWith("mailto:")) {
                 intent = Intent(Intent.ACTION_SENDTO, Uri.parse(url))
@@ -645,11 +626,11 @@ class MainActivity : AppCompatActivity() {
                     }
                     reqParam = makeBankPayData(reqParam)
                     intent = Intent(Intent.ACTION_MAIN)
-                    intent.component = ComponentName(
+                    intent?.component = ComponentName(
                         "com.kftc.bankpay.android",
                         "com.kftc.bankpay.android.activity.MainActivity"
                     )
-                    intent.putExtra("requestInfo", reqParam)
+                    intent?.putExtra("requestInfo", reqParam)
                     startActivityForResult(intent, 1)
                     true
                 } else {
@@ -684,22 +665,22 @@ class MainActivity : AppCompatActivity() {
                 return try {
                     try {
                         intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
-                        Log.i("NICE", "intent getDataString +++===>" + intent.dataString)
+                        Log.i("NICE", "intent getDataString +++===>" + intent?.dataString)
                     } catch (ex: URISyntaxException) {
                         Log.e("Browser", "Bad URI " + url + ":" + ex.message)
                         return false
                     }
                     if (url.startsWith("intent")) { //chrome πˆ¡Ø πÊΩƒ
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                            if (packageManager.resolveActivity(intent, 0) == null) {
-                                val pkgName = intent.getPackage()
+                            if (packageManager.resolveActivity(intent!!, 0) == null) {
+                                val pkgName = intent?.getPackage()
                                 if (pkgName != null) {
                                     uri = Uri.parse("market://search?q=pname:$pkgName")
                                     intent = Intent(Intent.ACTION_VIEW, uri)
                                     startActivity(intent)
                                 }
                             } else {
-                                uri = Uri.parse(intent.dataString)
+                                uri = Uri.parse(intent?.dataString)
                                 intent = Intent(Intent.ACTION_VIEW, uri)
                                 startActivity(intent)
                             }
@@ -707,7 +688,7 @@ class MainActivity : AppCompatActivity() {
                             try {
                                 startActivity(intent)
                             } catch (e: ActivityNotFoundException) {
-                                uri = Uri.parse("market://search?q=pname:" + intent.getPackage())
+                                uri = Uri.parse("market://search?q=pname:" + intent?.getPackage())
                                 intent = Intent(Intent.ACTION_VIEW, uri)
                                 startActivity(intent)
                             }
@@ -746,12 +727,12 @@ class MainActivity : AppCompatActivity() {
                 try {
                     intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
                     val existPackage =
-                        packageManager.getLaunchIntentForPackage(intent.getPackage()!!)
+                        packageManager.getLaunchIntentForPackage(intent?.getPackage()!!)
                     if (existPackage != null) {
                         startActivity(intent)
                     } else {
                         val marketIntent = Intent(Intent.ACTION_VIEW)
-                        marketIntent.data = Uri.parse("market://details?id=" + intent.getPackage())
+                        marketIntent.data = Uri.parse("market://details?id=" + intent?.getPackage())
                         startActivity(marketIntent)
                     }
                     return true
@@ -868,31 +849,14 @@ class MainActivity : AppCompatActivity() {
                         LogUtil.d("mCameraType : $mCameraType")
                         mCameraType = if (actionParamObj.getInt("key_type") == 0) {      // camera
                             3
-                            //                            requestPermission(Constants.REQUEST_SELECT_IMAGE_CAMERA);
                         } else {                                          // album
                             4
-                            //                            requestPermission(Constants.REQUEST_SELECT_IMAGE_ALBUM);
                         }
                         if (mCameraType == 3) {
                             dispatchTakePictureIntent()
                         } else {
                             galleryAddPic()
                         }
-//                        if (!hasPermissions(mContext, *PERMISSIONS)) {
-//                            ActivityCompat.requestPermissions(
-//                                this@MainActivity,
-//                                PERMISSIONS,
-//                                Constants.PERMISSIONS_MULTIPLE_REQUEST
-//                            )
-//                        } else {
-//                            if (mCameraType == 3) {
-//                                dispatchTakePictureIntent()
-//                            } else {
-//                                galleryAddPic()
-//                            }
-//                            //                            intent = new Intent(getApplicationContext(), SelectImageMethodActivity.class);
-////                            startActivityForResult(intent, Constants.REQUEST_CODE);
-//                        }
                     }
                 } else if ("ACT1002" == actionCode) {
                     LogUtil.d("ACT1002 - 앱 데이터 가져오기 (키체인 및 파일에 있는 정보 가져오기)")
@@ -905,8 +869,6 @@ class MainActivity : AppCompatActivity() {
 
                     intent = Intent(context, QRCodeActivity::class.java)
                     startActivity(intent)
-//                    requestPermission(Constants.REQUEST_CAMERA);
-                    //                    requestPermission(Constants.REQUEST_CAMERA);
                     executeJavascript("$mCallback()")
                 } else if ("ACT1003" == actionCode) {
                     LogUtil.d("ACT1003 - 위쳇페이")
@@ -978,35 +940,55 @@ class MainActivity : AppCompatActivity() {
                     }
                 } else if ("ACT1022" == actionCode) {
                     LogUtil.d("ACT1022 - 전화 걸기")
-                    val tel = actionParamObj?.getString("tel")
-                    tel?.let {
-                        intent = Intent(Intent.ACTION_CALL, Uri.parse(it))
-                        startActivity(intent)
-                    }
+                    // 권한 요청
+                    TedPermission.create()
+                        .setPermissionListener(object : PermissionListener {
+                            //권한이 허용됐을 때
+                            override fun onPermissionGranted() {
+                                val tel = actionParamObj?.getString("tel")
+                                tel?.let {
+                                    intent = Intent(Intent.ACTION_CALL, Uri.parse(it))
+                                    startActivity(intent)
+                                }
+                            }
+
+                            //권한이 거부됐을 때
+                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                        .setDeniedMessage("전화걸기 권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                        .setPermissions(
+                            Manifest.permission.CALL_PHONE
+                        )
+                        .check()
                 } else if ("ACT1026" == actionCode) {
                     // 위치 정보 조회
                     LogUtil.d("ACT1026 - 위치 정보 조회")
-                    //                    setLocation();
-//                    JSONObject jsonObject = new JSONObject();
-//                    jsonObject.put("deviceId", HNApplication.mDeviceId);      // 디바이스 아이디
-//                    jsonObject.put("latitude", mLatitude);
-//                    jsonObject.put("longitude", mLongitude);
-//
-//                    Log.e(TAG, mCallback + "(" + jsonObject.toString() + ")");
-//                    executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
-                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                        + ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) === PackageManager.PERMISSION_GRANTED
-                    ) {
-                        setLocation()
-                        val jsonObject = JSONObject()
-                        jsonObject.put("deviceId", HNApplication.mDeviceId) // 디바이스 아이디
-                        jsonObject.put("latitude", mLatitude)
-                        jsonObject.put("longitude", mLongitude)
-                        Log.e(TAG, "$mCallback($jsonObject)")
-                        executeJavascript("$mCallback($jsonObject)")
-                    } else {
-                        checkPermission()
-                    }
+                    // 권한 요청
+                    TedPermission.create()
+                        .setPermissionListener(object : PermissionListener {
+                            //권한이 허용됐을 때
+                            override fun onPermissionGranted() {
+                                setLocation()
+                                val jsonObject = JSONObject()
+                                jsonObject.put("deviceId", HNApplication.mDeviceId) // 디바이스 아이디
+                                jsonObject.put("latitude", mLatitude)
+                                jsonObject.put("longitude", mLongitude)
+                                Log.e(TAG, "$mCallback($jsonObject)")
+                                executeJavascript("$mCallback($jsonObject)")//                    Toast.makeText(this@MainActivity, "카메라 기능 권한 획득", Toast.LENGTH_SHORT).show()
+                            }
+
+                            //권한이 거부됐을 때
+                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                        .setDeniedMessage("위치 수집 권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                        .setPermissions(
+                            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
+                        )
+                        .check()
                 } else if ("ACT1037" == actionCode) {
                     LogUtil.d("ACT1037 - 파일 열기")
                     val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
@@ -1412,11 +1394,6 @@ class MainActivity : AppCompatActivity() {
         val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arrayOf(  //필요한 권한들
                 Manifest.permission.CAMERA,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.CALL_PHONE,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.GET_ACCOUNTS,
                 Manifest.permission.READ_MEDIA_AUDIO,
                 Manifest.permission.READ_MEDIA_IMAGES,
                 Manifest.permission.READ_MEDIA_VIDEO,
@@ -1427,11 +1404,6 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA,
-                Manifest.permission.CALL_PHONE,
-                Manifest.permission.GET_ACCOUNTS,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.ACCESS_COARSE_LOCATION
             )
         }
 
@@ -1439,10 +1411,7 @@ class MainActivity : AppCompatActivity() {
             .setPermissionListener(object : PermissionListener {
 
                 //권한이 허용됐을 때
-                override fun onPermissionGranted() {
-//                    startProcess()
-//                    Toast.makeText(this@MainActivity, "카메라 기능 권한 획득", Toast.LENGTH_SHORT).show()
-                }
+                override fun onPermissionGranted() {}
 
                 //권한이 거부됐을 때
                 override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
@@ -1454,21 +1423,6 @@ class MainActivity : AppCompatActivity() {
                 *requiredPermissionList
             )// 얻으려는 권한(여러개 가능)
             .check()
-    }
-
-    private fun callQR() {
-        // zxing init
-        mIntegrator = IntentIntegrator(this)
-        mIntegrator!!.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES)
-        //        mIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-        mIntegrator!!.setPrompt("Scan a barcode")
-        if (mCameraType == 0) {
-            mIntegrator!!.setCameraId(1) // Use a specific camera of the device
-        } else {
-            mIntegrator!!.setCameraId(0) // Use a specific camera of the device
-        }
-        mIntegrator!!.setBeepEnabled(false)
-        mIntegrator!!.initiateScan()
     }
 
     // 사진촬영

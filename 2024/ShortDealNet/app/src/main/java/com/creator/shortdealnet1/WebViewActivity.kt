@@ -39,6 +39,8 @@ import com.facebook.login.LoginResult
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
@@ -409,41 +411,24 @@ class WebViewActivity : Activity() {
                 startActivity(i)
                 return true
             } else if (url.startsWith("tel:")) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    val permissionResult = checkSelfPermission(Manifest.permission.CALL_PHONE)
-                    if (permissionResult == PackageManager.PERMISSION_DENIED) {
-                        if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
-                            val dialog = AlertDialog.Builder(
-                                mContext!!
-                            )
-                            dialog.setTitle("권한이 필요합니다.")
-                                .setMessage("이 기능을 사용하기 위해서는 단말기의 \"전화걸기\" 권한이 필요합니다. 계속 하시겠습니까?")
-                                .setPositiveButton("네") { dialog, which ->
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        // CALL_PHONE 권한을 Android OS에 요청한다.
-                                        requestPermissions(
-                                            arrayOf(Manifest.permission.CALL_PHONE),
-                                            1000
-                                        )
-                                    }
-                                }
-                                .setNegativeButton("아니요") { dialog, which ->
-                                    Toast.makeText(
-                                        mContext,
-                                        "기능을 취소했습니다",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                .create().show()
+                TedPermission.create()
+                    .setPermissionListener(object : PermissionListener {
+                        //권한이 허용됐을 때
+                        override fun onPermissionGranted() {
+                            intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
+                            startActivity(intent)
                         }
-                    } else {
-                        intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
-                        startActivity(intent)
-                    }
-                } else {
-                    intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
-                    startActivity(intent)
-                }
+
+                        //권한이 거부됐을 때
+                        override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                            Toast.makeText(this@WebViewActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    })
+                    .setDeniedMessage("전화걸기 권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                    .setPermissions(
+                        Manifest.permission.CALL_PHONE
+                    )
+                    .check()
                 return true
             } else if (url.startsWith("mailto:")) {
                 intent = Intent(Intent.ACTION_SENDTO, Uri.parse(url))
@@ -482,11 +467,11 @@ class WebViewActivity : Activity() {
                     }
                     reqParam = makeBankPayData(reqParam)
                     intent = Intent(Intent.ACTION_MAIN)
-                    intent.component = ComponentName(
+                    intent?.component = ComponentName(
                         "com.kftc.bankpay.android",
                         "com.kftc.bankpay.android.activity.MainActivity"
                     )
-                    intent.putExtra("requestInfo", reqParam)
+                    intent?.putExtra("requestInfo", reqParam)
                     startActivityForResult(intent, 1)
                     true
                 } else {
@@ -521,22 +506,22 @@ class WebViewActivity : Activity() {
                 return try {
                     try {
                         intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
-                        Log.i("NICE", "intent getDataString +++===>" + intent.dataString)
+                        Log.i("NICE", "intent getDataString +++===>" + intent?.dataString)
                     } catch (ex: URISyntaxException) {
                         Log.e("Browser", "Bad URI " + url + ":" + ex.message)
                         return false
                     }
                     if (url.startsWith("intent")) { //chrome πˆ¡Ø πÊΩƒ
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                            if (packageManager.resolveActivity(intent, 0) == null) {
-                                val pkgName = intent.getPackage()
+                            if (packageManager.resolveActivity(intent!!, 0) == null) {
+                                val pkgName = intent?.getPackage()
                                 if (pkgName != null) {
                                     uri = Uri.parse("market://search?q=pname:$pkgName")
                                     intent = Intent(Intent.ACTION_VIEW, uri)
                                     startActivity(intent)
                                 }
                             } else {
-                                uri = Uri.parse(intent.dataString)
+                                uri = Uri.parse(intent?.dataString)
                                 intent = Intent(Intent.ACTION_VIEW, uri)
                                 startActivity(intent)
                             }
@@ -544,7 +529,7 @@ class WebViewActivity : Activity() {
                             try {
                                 startActivity(intent)
                             } catch (e: ActivityNotFoundException) {
-                                uri = Uri.parse("market://search?q=pname:" + intent.getPackage())
+                                uri = Uri.parse("market://search?q=pname:" + intent?.getPackage())
                                 intent = Intent(Intent.ACTION_VIEW, uri)
                                 startActivity(intent)
                             }
@@ -583,12 +568,12 @@ class WebViewActivity : Activity() {
                 try {
                     intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
                     val existPackage =
-                        packageManager.getLaunchIntentForPackage(intent.getPackage()!!)
+                        packageManager.getLaunchIntentForPackage(intent?.getPackage()!!)
                     if (existPackage != null) {
                         startActivity(intent)
                     } else {
                         val marketIntent = Intent(Intent.ACTION_VIEW)
-                        marketIntent.data = Uri.parse("market://details?id=" + intent.getPackage())
+                        marketIntent.data = Uri.parse("market://details?id=" + intent?.getPackage())
                         startActivity(marketIntent)
                     }
                     return true
