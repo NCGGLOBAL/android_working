@@ -26,6 +26,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
+import com.creator.shortdealnet1.MainActivity.Companion.requiredMediaPermissionList
 import com.creator.shortdealnet1.common.BackPressCloseHandler
 import com.creator.shortdealnet1.common.HNApplication
 import com.creator.shortdealnet1.delegator.HNCommTran
@@ -686,29 +687,34 @@ class WebViewActivity : Activity() {
                 if ("ACT1001" == actionCode) {
                     LogUtil.d("ACT1001 - 앱 데이터 저장 (키체인 저장 및 파일저장)")
                     if (actionParamObj!!.has("key_type")) {
-                        LogUtil.d("mCameraType : $mCameraType")
-                        mCameraType = if (actionParamObj.getInt("key_type") == 0) {      // camera
-                            3
-                            //                            requestPermission(Constants.REQUEST_SELECT_IMAGE_CAMERA);
-                        } else {                                          // album
-                            4
-                            //                            requestPermission(Constants.REQUEST_SELECT_IMAGE_ALBUM);
-                        }
-                        if (!hasPermissions(mContext, *PERMISSIONS)) {
-                            ActivityCompat.requestPermissions(
-                                this@WebViewActivity,
-                                PERMISSIONS,
-                                Constants.PERMISSIONS_MULTIPLE_REQUEST
-                            )
-                        } else {
-                            if (mCameraType == 3) {
-                                dispatchTakePictureIntent()
-                            } else {
-                                galleryAddPic()
-                            }
-                            //                            intent = new Intent(getApplicationContext(), SelectImageMethodActivity.class);
-//                            startActivityForResult(intent, Constants.REQUEST_CODE);
-                        }
+                        TedPermission.create()
+                            .setPermissionListener(object : PermissionListener {
+
+                                //권한이 허용됐을 때
+                                override fun onPermissionGranted() {
+                                    LogUtil.d("mCameraType : $mCameraType")
+                                    mCameraType = if (actionParamObj.getInt("key_type") == 0) {      // camera
+                                        3
+                                    } else {                                          // album
+                                        4
+                                    }
+                                    if (mCameraType == 3) {
+                                        dispatchTakePictureIntent()
+                                    } else {
+                                        galleryAddPic()
+                                    }
+                                }
+
+                                //권한이 거부됐을 때
+                                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                    Toast.makeText(this@WebViewActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                                }
+                            })
+                            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                            .setPermissions(
+                                *requiredMediaPermissionList
+                            )// 얻으려는 권한(여러개 가능)
+                            .check()
                     }
                 } else if ("ACT1002" == actionCode) {
                     LogUtil.d("ACT1002 - 앱 데이터 가져오기 (키체인 및 파일에 있는 정보 가져오기)")
@@ -795,16 +801,33 @@ class WebViewActivity : Activity() {
                     }
                 } else if ("ACT1037" == actionCode) {
                     LogUtil.d("ACT1037 - 파일 열기")
-                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                    contentSelectionIntent.type = "*/*"
-                    val intentArray: Array<Intent?>
-                    intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                    startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
+                    TedPermission.create()
+                        .setPermissionListener(object : PermissionListener {
+
+                            //권한이 허용됐을 때
+                            override fun onPermissionGranted() {
+                                val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                                contentSelectionIntent.type = "*/*"
+                                val intentArray: Array<Intent?>
+                                intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                                val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                                startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
+                            }
+
+                            //권한이 거부됐을 때
+                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                Toast.makeText(this@WebViewActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                        .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                        .setPermissions(
+                            *requiredMediaPermissionList
+                        )// 얻으려는 권한(여러개 가능)
+                        .check()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

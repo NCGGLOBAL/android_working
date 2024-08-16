@@ -128,6 +128,17 @@ class MainActivity : AppCompatActivity() {
         private const val SEND_KAKAO_MESSAGE = 1
         private const val SEND_FACEBOOK_MESSAGE = 2
         var activity: MainActivity? = null
+        val requiredMediaPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(  //필요한 권한들
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.READ_MEDIA_VIDEO
+            )
+        } else {
+            arrayOf(
+                Manifest.permission.CAMERA,
+            )
+        }
         val instance: MainActivity?
             get() {
                 if (activity == null) {
@@ -846,17 +857,34 @@ class MainActivity : AppCompatActivity() {
                 if ("ACT1001" == actionCode) {
                     LogUtil.d("ACT1001 - 앱 데이터 저장 (키체인 저장 및 파일저장)")
                     if (actionParamObj!!.has("key_type")) {
-                        LogUtil.d("mCameraType : $mCameraType")
-                        mCameraType = if (actionParamObj.getInt("key_type") == 0) {      // camera
-                            3
-                        } else {                                          // album
-                            4
-                        }
-                        if (mCameraType == 3) {
-                            dispatchTakePictureIntent()
-                        } else {
-                            galleryAddPic()
-                        }
+                        TedPermission.create()
+                            .setPermissionListener(object : PermissionListener {
+
+                                //권한이 허용됐을 때
+                                override fun onPermissionGranted() {
+                                    LogUtil.d("mCameraType : $mCameraType")
+                                    mCameraType = if (actionParamObj.getInt("key_type") == 0) {      // camera
+                                        3
+                                    } else {                                          // album
+                                        4
+                                    }
+                                    if (mCameraType == 3) {
+                                        dispatchTakePictureIntent()
+                                    } else {
+                                        galleryAddPic()
+                                    }
+                                }
+
+                                //권한이 거부됐을 때
+                                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                    Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                                }
+                            })
+                            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                            .setPermissions(
+                                *requiredMediaPermissionList
+                            )// 얻으려는 권한(여러개 가능)
+                            .check()
                     }
                 } else if ("ACT1002" == actionCode) {
                     LogUtil.d("ACT1002 - 앱 데이터 가져오기 (키체인 및 파일에 있는 정보 가져오기)")
@@ -991,16 +1019,33 @@ class MainActivity : AppCompatActivity() {
                         .check()
                 } else if ("ACT1037" == actionCode) {
                     LogUtil.d("ACT1037 - 파일 열기")
-                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                    contentSelectionIntent.type = "*/*"
-                    val intentArray: Array<Intent?>
-                    intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                    startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
+                    TedPermission.create()
+                        .setPermissionListener(object : PermissionListener {
+
+                            //권한이 허용됐을 때
+                            override fun onPermissionGranted() {
+                                val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                                contentSelectionIntent.type = "*/*"
+                                val intentArray: Array<Intent?>
+                                intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                                val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                                startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
+                            }
+
+                            //권한이 거부됐을 때
+                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                        .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                        .setPermissions(
+                            *requiredMediaPermissionList
+                        )// 얻으려는 권한(여러개 가능)
+                        .check()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -1393,17 +1438,13 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermission() {
         val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arrayOf(  //필요한 권한들
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_MEDIA_AUDIO,
                 Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.READ_MEDIA_VIDEO,
                 Manifest.permission.POST_NOTIFICATIONS
             )
         } else {
             arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA,
             )
         }
 
