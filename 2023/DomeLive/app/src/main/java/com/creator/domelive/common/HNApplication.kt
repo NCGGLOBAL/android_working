@@ -24,8 +24,6 @@ class HNApplication : Application() {
         super.onCreate()
         instance = this
         MyNotificationManager.createChannel(this)
-
-//        KakaoSDK.init(new KakaoSDKAdapter());
     }
 
     val requestQueue: RequestQueue?
