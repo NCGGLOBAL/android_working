@@ -26,7 +26,6 @@ import android.webkit.WebChromeClient.FileChooserParams
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.creator.starrymall.common.BackPressCloseHandler
 import com.creator.starrymall.common.HNApplication
@@ -128,6 +127,17 @@ class MainActivity : AppCompatActivity() {
         private const val SEND_KAKAO_MESSAGE = 1
         private const val SEND_FACEBOOK_MESSAGE = 2
         var activity: MainActivity? = null
+        val requiredMediaPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(  //필요한 권한들
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_MEDIA_AUDIO,
+                Manifest.permission.READ_MEDIA_VIDEO
+            )
+        } else {
+            arrayOf(
+                Manifest.permission.CAMERA,
+            )
+        }
         val instance: MainActivity?
             get() {
                 if (activity == null) {
@@ -169,6 +179,12 @@ class MainActivity : AppCompatActivity() {
 
                 // Get new FCM registration token
                 val token = task.result
+
+                // Log and toast
+//                val msg = getString(R.string.msg_token_fmt, token)
+//                Log.d(TAG, msg)
+//                Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
+
                 if (HNSharedPreference.getSharedPreference(
                         this,
                         "pushtoken"
@@ -184,6 +200,7 @@ class MainActivity : AppCompatActivity() {
                 mFirebaseMessaging?.subscribeToTopic(topic.toString())
                 HNSharedPreference.putSharedPreference(this, "pushtopic", topic.toString())
             }
+
             hashKey
 
             mPushUid = intent.getStringExtra("pushUid")
@@ -221,8 +238,8 @@ class MainActivity : AppCompatActivity() {
             mLandingUrl = intent.getStringExtra("url")
             val extraHeaders: MutableMap<String, String> = HashMap()
             extraHeaders["webview-type"] = "main"
-            mLandingUrl?.let {
-                val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(it)
+            if (mLandingUrl?.isNotEmpty() == true) {
+                val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(mLandingUrl)
                 mWebView?.loadUrl(finalUrl, extraHeaders)
             }
         }
@@ -254,17 +271,17 @@ class MainActivity : AppCompatActivity() {
         try {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@MainActivity)
             fusedLocationClient?.lastLocation?.addOnSuccessListener(
-                    this
-                ) { location ->
-                    // Got last known location. In some rare situations this can be null.
-                    if (location != null) {
-                        // Logic to handle location object
-                        Log.e(TAG, "location.getLatitude() : " + location.latitude)
-                        Log.e(TAG, "location.getLongitude() : " + location.longitude)
-                        mLatitude = location.latitude
-                        mLongitude = location.longitude
-                    }
+                this
+            ) { location ->
+                // Got last known location. In some rare situations this can be null.
+                if (location != null) {
+                    // Logic to handle location object
+                    Log.e(TAG, "location.getLatitude() : " + location.latitude)
+                    Log.e(TAG, "location.getLongitude() : " + location.longitude)
+                    mLatitude = location.latitude
+                    mLongitude = location.longitude
                 }
+            }
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
@@ -316,9 +333,10 @@ class MainActivity : AppCompatActivity() {
 
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
-        mLandingUrl?.let {
-            mWebView?.loadUrl(it, extraHeaders)
-        } ?: run {
+        if (mLandingUrl?.isNotEmpty() == true) {
+            val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(mLandingUrl)
+            mWebView?.loadUrl(finalUrl, extraHeaders)
+        } else {
             mWebView?.loadUrl(HNApplication.URL, extraHeaders)
         }
     }
@@ -366,60 +384,77 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun imageChooser(acceptType: String?) {
-            if (acceptType.isNullOrEmpty()) {
-                // 파일만, 카메라 비노출
-                val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                contentSelectionIntent.type = "*/*"
-                val intentArray: Array<Intent?>
-                intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
-            } else {
-                var takePictureIntent: Intent? = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                if (takePictureIntent!!.resolveActivity(packageManager) != null) {
-                    // Create the File where the photo should go
-                    var photoFile: File? = null
-                    try {
-                        photoFile = createImageFile()
-                        takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath)
-                    } catch (ex: IOException) {
-                        // Error occurred while creating the File
-                        Log.e(javaClass.name, "Unable to create Image File", ex)
+            TedPermission.create()
+                .setPermissionListener(object : PermissionListener {
+
+                    //권한이 허용됐을 때
+                    override fun onPermissionGranted() {
+                        if (acceptType.isNullOrEmpty()) {
+                            // 파일만, 카메라 비노출
+                            val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                            contentSelectionIntent.type = "*/*"
+                            val intentArray: Array<Intent?>
+                            intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                            startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                        } else {
+                            var takePictureIntent: Intent? = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                            if (takePictureIntent!!.resolveActivity(packageManager) != null) {
+                                // Create the File where the photo should go
+                                var photoFile: File? = null
+                                try {
+                                    photoFile = createImageFile()
+                                    takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath)
+                                } catch (ex: IOException) {
+                                    // Error occurred while creating the File
+                                    Log.e(javaClass.name, "Unable to create Image File", ex)
+                                }
+
+                                // Continue only if the File was successfully created
+                                if (photoFile != null) {
+                                    // File 객체의 URI 를 얻는다.
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        mCapturedImageURI = FileProvider.getUriForFile(
+                                            this@MainActivity,
+                                            "$packageName.fileprovider",
+                                            photoFile
+                                        )
+                                    } else {
+                                        mCameraPhotoPath = "file:" + photoFile.absolutePath
+                                        mCapturedImageURI = Uri.fromFile(photoFile)
+                                    }
+                                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI)
+                                } else {
+                                    takePictureIntent = null
+                                }
+                            }
+                            val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                            contentSelectionIntent.type = acceptType
+                            val intentArray: Array<Intent?>
+                            intentArray = takePictureIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                            startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                        }
                     }
 
-                    // Continue only if the File was successfully created
-                    if (photoFile != null) {
-                        // File 객체의 URI 를 얻는다.
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            mCapturedImageURI = FileProvider.getUriForFile(
-                                this@MainActivity,
-                                "$packageName.fileprovider",
-                                photoFile
-                            )
-                        } else {
-                            mCameraPhotoPath = "file:" + photoFile.absolutePath
-                            mCapturedImageURI = Uri.fromFile(photoFile)
-                        }
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI)
-                    } else {
-                        takePictureIntent = null
+                    //권한이 거부됐을 때
+                    override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                        Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
                     }
-                }
-                val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                contentSelectionIntent.type = acceptType
-                val intentArray: Array<Intent?>
-                intentArray = takePictureIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
-            }
+                })
+                .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                .setPermissions(
+                    *requiredMediaPermissionList
+                )// 얻으려는 권한(여러개 가능)
+                .check()
         }
 
         override fun onJsAlert(
@@ -546,6 +581,14 @@ class MainActivity : AppCompatActivity() {
             LogUtil.e("shouldOverrideUrlLoading : " + url);
             var uri = Uri.parse(url)
             var intent: Intent? = null
+
+            // forbid launching activities without BROWSABLE category
+            intent?.addCategory("android.intent.category.BROWSABLE")
+            // forbid explicit call
+            intent?.setComponent(null)
+            // forbid Intent with selector Intent
+            intent?.setSelector(null)
+
             if (uri.scheme == "ncglive") {
                 startActivity(Intent(this@MainActivity, CameraActivity::class.java))
                 return true
@@ -555,43 +598,24 @@ class MainActivity : AppCompatActivity() {
                 startActivity(i)
                 return true
             } else if (url.startsWith("tel:")) {
-                intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
-                startActivity(intent)
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    val permissionResult = checkSelfPermission(Manifest.permission.CALL_PHONE)
-//                    if (permissionResult == PackageManager.PERMISSION_DENIED) {
-//                        if (shouldShowRequestPermissionRationale(Manifest.permission.CALL_PHONE)) {
-//                            val dialog = AlertDialog.Builder(
-//                                mContext!!
-//                            )
-//                            dialog.setTitle("권한이 필요합니다.")
-//                                .setMessage("이 기능을 사용하기 위해서는 단말기의 \"전화걸기\" 권한이 필요합니다. 계속 하시겠습니까?")
-//                                .setPositiveButton("네") { dialog, which ->
-//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                                        // CALL_PHONE 권한을 Android OS에 요청한다.
-//                                        requestPermissions(
-//                                            arrayOf(Manifest.permission.CALL_PHONE),
-//                                            1000
-//                                        )
-//                                    }
-//                                }
-//                                .setNegativeButton("아니요") { dialog, which ->
-//                                    Toast.makeText(
-//                                        mContext,
-//                                        "기능을 취소했습니다",
-//                                        Toast.LENGTH_SHORT
-//                                    ).show()
-//                                }
-//                                .create().show()
-//                        }
-//                    } else {
-//                        intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
-//                        startActivity(intent)
-//                    }
-//                } else {
-//                    intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
-//                    startActivity(intent)
-//                }
+                TedPermission.create()
+                    .setPermissionListener(object : PermissionListener {
+                        //권한이 허용됐을 때
+                        override fun onPermissionGranted() {
+                            intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
+                            startActivity(intent)
+                        }
+
+                        //권한이 거부됐을 때
+                        override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                            Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    })
+                    .setDeniedMessage("전화걸기 권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                    .setPermissions(
+                        Manifest.permission.CALL_PHONE
+                    )
+                    .check()
                 return true
             } else if (url.startsWith("mailto:")) {
                 intent = Intent(Intent.ACTION_SENDTO, Uri.parse(url))
@@ -630,11 +654,11 @@ class MainActivity : AppCompatActivity() {
                     }
                     reqParam = makeBankPayData(reqParam)
                     intent = Intent(Intent.ACTION_MAIN)
-                    intent.component = ComponentName(
+                    intent?.component = ComponentName(
                         "com.kftc.bankpay.android",
                         "com.kftc.bankpay.android.activity.MainActivity"
                     )
-                    intent.putExtra("requestInfo", reqParam)
+                    intent?.putExtra("requestInfo", reqParam)
                     startActivityForResult(intent, 1)
                     true
                 } else {
@@ -669,22 +693,22 @@ class MainActivity : AppCompatActivity() {
                 return try {
                     try {
                         intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
-                        Log.i("NICE", "intent getDataString +++===>" + intent.dataString)
+                        Log.i("NICE", "intent getDataString +++===>" + intent?.dataString)
                     } catch (ex: URISyntaxException) {
                         Log.e("Browser", "Bad URI " + url + ":" + ex.message)
                         return false
                     }
                     if (url.startsWith("intent")) { //chrome πˆ¡Ø πÊΩƒ
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                            if (packageManager.resolveActivity(intent, 0) == null) {
-                                val pkgName = intent.getPackage()
+                            if (packageManager.resolveActivity(intent!!, 0) == null) {
+                                val pkgName = intent?.getPackage()
                                 if (pkgName != null) {
                                     uri = Uri.parse("market://search?q=pname:$pkgName")
                                     intent = Intent(Intent.ACTION_VIEW, uri)
                                     startActivity(intent)
                                 }
                             } else {
-                                uri = Uri.parse(intent.dataString)
+                                uri = Uri.parse(intent?.dataString)
                                 intent = Intent(Intent.ACTION_VIEW, uri)
                                 startActivity(intent)
                             }
@@ -692,7 +716,7 @@ class MainActivity : AppCompatActivity() {
                             try {
                                 startActivity(intent)
                             } catch (e: ActivityNotFoundException) {
-                                uri = Uri.parse("market://search?q=pname:" + intent.getPackage())
+                                uri = Uri.parse("market://search?q=pname:" + intent?.getPackage())
                                 intent = Intent(Intent.ACTION_VIEW, uri)
                                 startActivity(intent)
                             }
@@ -731,12 +755,12 @@ class MainActivity : AppCompatActivity() {
                 try {
                     intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
                     val existPackage =
-                        packageManager.getLaunchIntentForPackage(intent.getPackage()!!)
+                        packageManager.getLaunchIntentForPackage(intent?.getPackage()!!)
                     if (existPackage != null) {
                         startActivity(intent)
                     } else {
                         val marketIntent = Intent(Intent.ACTION_VIEW)
-                        marketIntent.data = Uri.parse("market://details?id=" + intent.getPackage())
+                        marketIntent.data = Uri.parse("market://details?id=" + intent?.getPackage())
                         startActivity(marketIntent)
                     }
                     return true
@@ -850,34 +874,34 @@ class MainActivity : AppCompatActivity() {
                 if ("ACT1001" == actionCode) {
                     LogUtil.d("ACT1001 - 앱 데이터 저장 (키체인 저장 및 파일저장)")
                     if (actionParamObj!!.has("key_type")) {
-                        LogUtil.d("mCameraType : $mCameraType")
-                        mCameraType = if (actionParamObj.getInt("key_type") == 0) {      // camera
-                            3
-                            //                            requestPermission(Constants.REQUEST_SELECT_IMAGE_CAMERA);
-                        } else {                                          // album
-                            4
-                            //                            requestPermission(Constants.REQUEST_SELECT_IMAGE_ALBUM);
-                        }
-                        if (mCameraType == 3) {
-                            dispatchTakePictureIntent()
-                        } else {
-                            galleryAddPic()
-                        }
-//                        if (!hasPermissions(mContext, *PERMISSIONS)) {
-//                            ActivityCompat.requestPermissions(
-//                                this@MainActivity,
-//                                PERMISSIONS,
-//                                Constants.PERMISSIONS_MULTIPLE_REQUEST
-//                            )
-//                        } else {
-//                            if (mCameraType == 3) {
-//                                dispatchTakePictureIntent()
-//                            } else {
-//                                galleryAddPic()
-//                            }
-//                            //                            intent = new Intent(getApplicationContext(), SelectImageMethodActivity.class);
-////                            startActivityForResult(intent, Constants.REQUEST_CODE);
-//                        }
+                        TedPermission.create()
+                            .setPermissionListener(object : PermissionListener {
+
+                                //권한이 허용됐을 때
+                                override fun onPermissionGranted() {
+                                    LogUtil.d("mCameraType : $mCameraType")
+                                    mCameraType = if (actionParamObj.getInt("key_type") == 0) {      // camera
+                                        3
+                                    } else {                                          // album
+                                        4
+                                    }
+                                    if (mCameraType == 3) {
+                                        dispatchTakePictureIntent()
+                                    } else {
+                                        galleryAddPic()
+                                    }
+                                }
+
+                                //권한이 거부됐을 때
+                                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                    Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                                }
+                            })
+                            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                            .setPermissions(
+                                *requiredMediaPermissionList
+                            )// 얻으려는 권한(여러개 가능)
+                            .check()
                     }
                 } else if ("ACT1002" == actionCode) {
                     LogUtil.d("ACT1002 - 앱 데이터 가져오기 (키체인 및 파일에 있는 정보 가져오기)")
@@ -890,8 +914,6 @@ class MainActivity : AppCompatActivity() {
 
                     intent = Intent(context, QRCodeActivity::class.java)
                     startActivity(intent)
-//                    requestPermission(Constants.REQUEST_CAMERA);
-                    //                    requestPermission(Constants.REQUEST_CAMERA);
                     executeJavascript("$mCallback()")
                 } else if ("ACT1003" == actionCode) {
                     LogUtil.d("ACT1003 - 위쳇페이")
@@ -963,47 +985,84 @@ class MainActivity : AppCompatActivity() {
                     }
                 } else if ("ACT1022" == actionCode) {
                     LogUtil.d("ACT1022 - 전화 걸기")
-                    val tel = actionParamObj?.getString("tel")
-                    tel?.let {
-                        intent = Intent(Intent.ACTION_CALL, Uri.parse(it))
-                        startActivity(intent)
-                    }
+                    // 권한 요청
+                    TedPermission.create()
+                        .setPermissionListener(object : PermissionListener {
+                            //권한이 허용됐을 때
+                            override fun onPermissionGranted() {
+                                val tel = actionParamObj?.getString("tel")
+                                tel?.let {
+                                    intent = Intent(Intent.ACTION_CALL, Uri.parse(it))
+                                    startActivity(intent)
+                                }
+                            }
+
+                            //권한이 거부됐을 때
+                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                        .setDeniedMessage("전화걸기 권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                        .setPermissions(
+                            Manifest.permission.CALL_PHONE
+                        )
+                        .check()
                 } else if ("ACT1026" == actionCode) {
                     // 위치 정보 조회
                     LogUtil.d("ACT1026 - 위치 정보 조회")
-                    //                    setLocation();
-//                    JSONObject jsonObject = new JSONObject();
-//                    jsonObject.put("deviceId", HNApplication.mDeviceId);      // 디바이스 아이디
-//                    jsonObject.put("latitude", mLatitude);
-//                    jsonObject.put("longitude", mLongitude);
-//
-//                    Log.e(TAG, mCallback + "(" + jsonObject.toString() + ")");
-//                    executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
-                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                        + ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) === PackageManager.PERMISSION_GRANTED
-                    ) {
-                        setLocation()
-                        val jsonObject = JSONObject()
-                        jsonObject.put("deviceId", HNApplication.mDeviceId) // 디바이스 아이디
-                        jsonObject.put("latitude", mLatitude)
-                        jsonObject.put("longitude", mLongitude)
-                        Log.e(TAG, "$mCallback($jsonObject)")
-                        executeJavascript("$mCallback($jsonObject)")
-                    } else {
-                        checkPermission()
-                    }
+                    // 권한 요청
+                    TedPermission.create()
+                        .setPermissionListener(object : PermissionListener {
+                            //권한이 허용됐을 때
+                            override fun onPermissionGranted() {
+                                setLocation()
+                                val jsonObject = JSONObject()
+                                jsonObject.put("deviceId", HNApplication.mDeviceId) // 디바이스 아이디
+                                jsonObject.put("latitude", mLatitude)
+                                jsonObject.put("longitude", mLongitude)
+                                Log.e(TAG, "$mCallback($jsonObject)")
+                                executeJavascript("$mCallback($jsonObject)")//                    Toast.makeText(this@MainActivity, "카메라 기능 권한 획득", Toast.LENGTH_SHORT).show()
+                            }
+
+                            //권한이 거부됐을 때
+                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                        .setDeniedMessage("위치 수집 권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                        .setPermissions(
+                            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
+                        )
+                        .check()
                 } else if ("ACT1037" == actionCode) {
                     LogUtil.d("ACT1037 - 파일 열기")
-                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                    contentSelectionIntent.type = "*/*"
-                    val intentArray: Array<Intent?>
-                    intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                    startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
+                    TedPermission.create()
+                        .setPermissionListener(object : PermissionListener {
+
+                            //권한이 허용됐을 때
+                            override fun onPermissionGranted() {
+                                val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                                contentSelectionIntent.type = "*/*"
+                                val intentArray: Array<Intent?>
+                                intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                                val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                                startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
+                            }
+
+                            //권한이 거부됐을 때
+                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                        .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                        .setPermissions(
+                            *requiredMediaPermissionList
+                        )// 얻으려는 권한(여러개 가능)
+                        .check()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -1396,27 +1455,13 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermission() {
         val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arrayOf(  //필요한 권한들
-                Manifest.permission.CAMERA,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.CALL_PHONE,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.GET_ACCOUNTS,
-                Manifest.permission.READ_MEDIA_AUDIO,
                 Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.READ_MEDIA_VIDEO,
                 Manifest.permission.POST_NOTIFICATIONS
             )
         } else {
             arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA,
-                Manifest.permission.CALL_PHONE,
-                Manifest.permission.GET_ACCOUNTS,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.ACCESS_COARSE_LOCATION
             )
         }
 
@@ -1424,10 +1469,7 @@ class MainActivity : AppCompatActivity() {
             .setPermissionListener(object : PermissionListener {
 
                 //권한이 허용됐을 때
-                override fun onPermissionGranted() {
-//                    startProcess()
-//                    Toast.makeText(this@MainActivity, "카메라 기능 권한 획득", Toast.LENGTH_SHORT).show()
-                }
+                override fun onPermissionGranted() {}
 
                 //권한이 거부됐을 때
                 override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
@@ -1439,21 +1481,6 @@ class MainActivity : AppCompatActivity() {
                 *requiredPermissionList
             )// 얻으려는 권한(여러개 가능)
             .check()
-    }
-
-    private fun callQR() {
-        // zxing init
-        mIntegrator = IntentIntegrator(this)
-        mIntegrator!!.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES)
-        //        mIntegrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-        mIntegrator!!.setPrompt("Scan a barcode")
-        if (mCameraType == 0) {
-            mIntegrator!!.setCameraId(1) // Use a specific camera of the device
-        } else {
-            mIntegrator!!.setCameraId(0) // Use a specific camera of the device
-        }
-        mIntegrator!!.setBeepEnabled(false)
-        mIntegrator!!.initiateScan()
     }
 
     // 사진촬영
