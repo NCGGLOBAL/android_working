@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "32877649044",
+    "project_id": "soundrank-5d68f",
+    "storage_bucket": "soundrank-5d68f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32877649044:android:cc9022e765b9374fcde881",
+        "android_client_info": {
+          "package_name": "com.creator.soundrank"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQJMaBCJ_uZF_jC23Bj66GiZ3iBoNssb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
