@@ -39,7 +39,7 @@
         android:layout_height="match_parent"
         android:visibility="visible"
         android:scaleType="fitXY"
-        android:background="@drawable/loading"/>
+        android:background="@color/black"/>
     <!--
     <LinearLayout
         android:id="@+id/ll_push"
