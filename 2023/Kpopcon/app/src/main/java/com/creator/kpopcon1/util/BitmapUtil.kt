@@ -12,6 +12,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.util.Log
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -423,6 +424,24 @@ class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransfor
             }
 
             return 0
+        }
+
+        fun getFileSizeFromUri(context: Context, uri: Uri): Long? {
+            val contentResolver = context.contentResolver
+            var fileSize: Long? = null
+
+            // 쿼리를 통해 파일 메타데이터를 가져옵니다
+            contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                // 커서가 데이터가 있는지 확인
+                if (cursor.moveToFirst()) {
+                    val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+                    // 사이즈 컬럼의 인덱스를 가져와서 파일 크기를 가져옵니다
+                    if (sizeIndex != -1) {
+                        fileSize = cursor.getLong(sizeIndex)
+                    }
+                }
+            }
+            return fileSize
         }
     }
 }

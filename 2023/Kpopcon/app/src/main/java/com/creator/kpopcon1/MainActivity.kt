@@ -126,6 +126,18 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    val requiredMediaPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(  //필요한 권한들
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_MEDIA_AUDIO,
+            Manifest.permission.READ_MEDIA_VIDEO
+        )
+    } else {
+        arrayOf(
+            Manifest.permission.CAMERA,
+        )
+    }
+
     // NICE 연동 가이드
     val ISP_LINK = "market://details?id=kvp.jjy.MispAndroid320" // ISP 설치 링크
     val KFTC_LINK = "market://details?id=com.kftc.bankpay.android" //금융결제원 설치 링크
@@ -504,60 +516,77 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun imageChooser(acceptType: String?) {
-            if (acceptType.isNullOrEmpty()) {
-                // 파일만, 카메라 비노출
-                val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                contentSelectionIntent.type = "*/*"
-                val intentArray: Array<Intent?>
-                intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
-            } else {
-                var takePictureIntent: Intent? = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                if (takePictureIntent!!.resolveActivity(packageManager) != null) {
-                    // Create the File where the photo should go
-                    var photoFile: File? = null
-                    try {
-                        photoFile = createImageFile()
-                        takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath)
-                    } catch (ex: IOException) {
-                        // Error occurred while creating the File
-                        Log.e(javaClass.name, "Unable to create Image File", ex)
+            TedPermission.create()
+                .setPermissionListener(object : PermissionListener {
+
+                    //권한이 허용됐을 때
+                    override fun onPermissionGranted() {
+                        if (acceptType.isNullOrEmpty()) {
+                            // 파일만, 카메라 비노출
+                            val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                            contentSelectionIntent.type = "*/*"
+                            val intentArray: Array<Intent?>
+                            intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                            startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                        } else {
+                            var takePictureIntent: Intent? = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                            if (takePictureIntent!!.resolveActivity(packageManager) != null) {
+                                // Create the File where the photo should go
+                                var photoFile: File? = null
+                                try {
+                                    photoFile = createImageFile()
+                                    takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath)
+                                } catch (ex: IOException) {
+                                    // Error occurred while creating the File
+                                    Log.e(javaClass.name, "Unable to create Image File", ex)
+                                }
+
+                                // Continue only if the File was successfully created
+                                if (photoFile != null) {
+                                    // File 객체의 URI 를 얻는다.
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        mCapturedImageURI = FileProvider.getUriForFile(
+                                            this@MainActivity,
+                                            "$packageName.fileprovider",
+                                            photoFile
+                                        )
+                                    } else {
+                                        mCameraPhotoPath = "file:" + photoFile.absolutePath
+                                        mCapturedImageURI = Uri.fromFile(photoFile)
+                                    }
+                                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI)
+                                } else {
+                                    takePictureIntent = null
+                                }
+                            }
+                            val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                            contentSelectionIntent.type = acceptType
+                            val intentArray: Array<Intent?>
+                            intentArray = takePictureIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                            startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                        }
                     }
 
-                    // Continue only if the File was successfully created
-                    if (photoFile != null) {
-                        // File 객체의 URI 를 얻는다.
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            mCapturedImageURI = FileProvider.getUriForFile(
-                                this@MainActivity,
-                                "$packageName.fileprovider",
-                                photoFile
-                            )
-                        } else {
-                            mCameraPhotoPath = "file:" + photoFile.absolutePath
-                            mCapturedImageURI = Uri.fromFile(photoFile)
-                        }
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI)
-                    } else {
-                        takePictureIntent = null
+                    //권한이 거부됐을 때
+                    override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                        Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
                     }
-                }
-                val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                contentSelectionIntent.type = acceptType
-                val intentArray: Array<Intent?>
-                intentArray = takePictureIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
-            }
+                })
+                .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                .setPermissions(
+                    *requiredMediaPermissionList
+                )// 얻으려는 권한(여러개 가능)
+                .check()
         }
 
         override fun onJsAlert(
@@ -1382,6 +1411,14 @@ class MainActivity : AppCompatActivity() {
             if (mFilePathCallback == null) {
                 super.onActivityResult(requestCode, resultCode, data)
                 return
+            }
+            mCapturedImageURI?.let {
+                val imageFileSize = BitmapUtil.getFileSizeFromUri(this, it)
+                val maxSizeInBytes = 3 * 1024 * 1024
+                if (imageFileSize ?: 0 > maxSizeInBytes) {
+                    Toast.makeText(this@MainActivity, "이미지 용량은 3M 이하로 등록해 주세요.", Toast.LENGTH_SHORT).show()
+                    return
+                }
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 if (data == null) data = Intent()
