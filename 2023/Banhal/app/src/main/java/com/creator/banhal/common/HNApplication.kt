@@ -24,8 +24,6 @@ class HNApplication : Application() {
         super.onCreate()
         instance = this
         MyNotificationManager.createChannel(this)
-
-//        KakaoSDK.init(new KakaoSDKAdapter());
     }
 
     val requestQueue: RequestQueue?
@@ -55,7 +53,7 @@ class HNApplication : Application() {
     companion object {
         val TAG = HNApplication::class.java.simpleName
         var mSigned = false
-        var URL = "https://banhal.co.kr"
+        var URL = "https://banhalshop.co.kr"
         var PUSH_URL = URL + "/m/app/pushRegister.asp"
         var UPLOAD_URL = URL + "/m/app/"
         var mIsFirstLoading = false
