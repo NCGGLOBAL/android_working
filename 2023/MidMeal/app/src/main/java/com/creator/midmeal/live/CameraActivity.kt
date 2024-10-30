@@ -9,6 +9,7 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.net.UrlQuerySanitizer
 import android.net.http.SslError
 import android.opengl.GLSurfaceView
 import android.os.*
@@ -330,7 +331,9 @@ class CameraActivity : Activity() {
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
         mWebView!!.isDrawingCacheEnabled = true
         mWebView!!.buildDrawingCache()
-        mWebView!!.loadUrl(LIVE_URL)
+
+        val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(LIVE_URL)
+        mWebView!!.loadUrl(finalUrl)
     }
 
     public override fun onResume() {

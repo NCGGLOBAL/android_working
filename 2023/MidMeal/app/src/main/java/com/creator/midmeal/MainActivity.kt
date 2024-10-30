@@ -547,7 +547,8 @@ class MainActivity : AppCompatActivity() {
 
                     val extraHeaders: MutableMap<String, String> = HashMap()
                     extraHeaders["webview-type"] = "main"
-                    mWebView?.loadUrl(HNApplication.URL, extraHeaders)
+                    val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(HNApplication.URL)
+                    mWebView?.loadUrl(finalUrl, extraHeaders)
 
                     dialog.dismiss()
                 }
@@ -730,7 +731,8 @@ class MainActivity : AppCompatActivity() {
                 }
             } else if (url.startsWith(WAP_URL)) {
                 val thisurl = url.substring(WAP_URL.length)
-                view.loadUrl(thisurl)
+                val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(thisurl)
+                view.loadUrl(finalUrl)
                 return true
             } else if (url != null && url.startsWith("intent://")) {
                 try {
@@ -785,7 +787,9 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
             }
-            view.loadUrl(url)
+
+            val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(url)
+            view.loadUrl(finalUrl)
             view.setDownloadListener(this)
             return false // webview replace
         }

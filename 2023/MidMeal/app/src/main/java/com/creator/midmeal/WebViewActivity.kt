@@ -576,7 +576,8 @@ class WebViewActivity : Activity() {
                 }
             } else if (url.startsWith(WAP_URL)) {
                 val thisurl = url.substring(WAP_URL.length)
-                view.loadUrl(thisurl)
+                val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(thisurl)
+                view.loadUrl(finalUrl)
                 return true
             } else if (url != null && url.startsWith("intent://")) {
                 try {
@@ -631,7 +632,8 @@ class WebViewActivity : Activity() {
                     true
                 }
             }
-            view.loadUrl(url)
+            val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(url)
+            view.loadUrl(finalUrl)
             view.setDownloadListener(this)
             return false // webview replace
         }
