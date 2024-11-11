@@ -114,10 +114,6 @@ class MainActivity : AppCompatActivity() {
     // SNS========================================================================= //
     private var mLoadingView: View? = null
 
-    private var fusedLocationClient: FusedLocationProviderClient? = null
-    private var mLatitude: Double? = null
-    private var mLongitude: Double? = null
-
     companion object {
         const val INTENT_PROTOCOL_START = "intent:"
         const val INTENT_PROTOCOL_INTENT = "#Intent;"
@@ -248,27 +244,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-    private fun setLocation() {
-        Log.e(TAG, "setLocation")
-        try {
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@MainActivity)
-            fusedLocationClient?.lastLocation?.addOnSuccessListener(
-                    this
-                ) { location ->
-                    // Got last known location. In some rare situations this can be null.
-                    if (location != null) {
-                        // Logic to handle location object
-                        Log.e(TAG, "location.getLatitude() : " + location.latitude)
-                        Log.e(TAG, "location.getLongitude() : " + location.longitude)
-                        mLatitude = location.latitude
-                        mLongitude = location.longitude
-                    }
-                }
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-    }
 
     @SuppressLint("JavascriptInterface")
     private fun initWebView() {
@@ -968,30 +943,6 @@ class MainActivity : AppCompatActivity() {
                         intent = Intent(Intent.ACTION_CALL, Uri.parse(it))
                         startActivity(intent)
                     }
-                } else if ("ACT1026" == actionCode) {
-                    // 위치 정보 조회
-                    LogUtil.d("ACT1026 - 위치 정보 조회")
-                    //                    setLocation();
-//                    JSONObject jsonObject = new JSONObject();
-//                    jsonObject.put("deviceId", HNApplication.mDeviceId);      // 디바이스 아이디
-//                    jsonObject.put("latitude", mLatitude);
-//                    jsonObject.put("longitude", mLongitude);
-//
-//                    Log.e(TAG, mCallback + "(" + jsonObject.toString() + ")");
-//                    executeJavascript(mCallback + "(" + jsonObject.toString() + ")");
-                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                        + ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) === PackageManager.PERMISSION_GRANTED
-                    ) {
-                        setLocation()
-                        val jsonObject = JSONObject()
-                        jsonObject.put("deviceId", HNApplication.mDeviceId) // 디바이스 아이디
-                        jsonObject.put("latitude", mLatitude)
-                        jsonObject.put("longitude", mLongitude)
-                        Log.e(TAG, "$mCallback($jsonObject)")
-                        executeJavascript("$mCallback($jsonObject)")
-                    } else {
-                        checkPermission()
-                    }
                 } else if ("ACT1037" == actionCode) {
                     LogUtil.d("ACT1037 - 파일 열기")
                     val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
@@ -1397,8 +1348,6 @@ class MainActivity : AppCompatActivity() {
         val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arrayOf(  //필요한 권한들
                 Manifest.permission.CAMERA,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.CALL_PHONE,
                 Manifest.permission.RECORD_AUDIO,
                 Manifest.permission.GET_ACCOUNTS,
@@ -1414,9 +1363,7 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.CAMERA,
                 Manifest.permission.CALL_PHONE,
                 Manifest.permission.GET_ACCOUNTS,
-                Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.ACCESS_COARSE_LOCATION
             )
         }
 
