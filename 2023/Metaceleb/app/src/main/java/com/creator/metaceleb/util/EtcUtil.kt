@@ -1,12 +1,19 @@
 package com.creator.metaceleb.util
 
+import android.app.Activity
+import android.app.DownloadManager
 import android.content.*
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.telephony.TelephonyManager
+import android.webkit.CookieManager
+import android.webkit.URLUtil
 import android.webkit.WebView
+import android.widget.Toast
 import java.io.*
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -363,5 +370,59 @@ object EtcUtil {
                 return buf.toString()
             }
         }
+    }
+
+    fun checkAppInstall(context: Context, packageName: String): Boolean {
+        val pm: PackageManager = context.packageManager
+        return try {
+            pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+            // 카카오톡이 설치되어 있음
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            // 카카오톡이 설치되어 있지 않음
+            false
+        }
+    }
+
+    fun moveToPlayStoreApp(context: Context, packageName: String) {
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("market://details?id=$packageName")
+        )
+        context.startActivity(intent)
+    }
+
+    fun downloadFile(url: String?,
+                     userAgent: String?,
+                     contentDisposition: String?,
+                     mimeType: String?,
+                     context: Context) {
+
+        Toast.makeText(context, "다운로드를 시작합니다.", Toast.LENGTH_LONG).show()
+
+        val request = DownloadManager.Request(Uri.parse(url))
+        request.setMimeType(mimeType)
+
+        //------------------------COOKIE!!------------------------
+
+        //------------------------COOKIE!!------------------------
+        val cookies = CookieManager.getInstance().getCookie(url)
+        request.addRequestHeader("cookie", cookies)
+        //------------------------COOKIE!!------------------------
+        //------------------------COOKIE!!------------------------
+        request.addRequestHeader(
+            "User-Agent",
+            userAgent
+        )
+        request.setDescription("Downloading file...")
+        request.setTitle(URLUtil.guessFileName(url, contentDisposition, mimeType))
+        request.allowScanningByMediaScanner()
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+        request.setDestinationInExternalPublicDir(
+            Environment.DIRECTORY_DOWNLOADS,
+            URLUtil.guessFileName(url, contentDisposition, mimeType)
+        )
+        val dm = context.getSystemService(Activity.DOWNLOAD_SERVICE) as DownloadManager
+        dm.enqueue(request)
     }
 }

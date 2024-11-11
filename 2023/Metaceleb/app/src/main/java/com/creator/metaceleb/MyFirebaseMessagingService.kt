@@ -15,7 +15,7 @@
  */
 package com.creator.metaceleb
 
-import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -26,9 +26,16 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
+import android.util.Log
+import androidx.core.app.NotificationCompat
+import com.creator.metaceleb.common.HNApplication
+import com.creator.metaceleb.delegator.HNCommTran
+import com.creator.metaceleb.delegator.HNCommTranInterface
+import com.creator.metaceleb.delegator.HNSharedPreference
 import com.creator.metaceleb.util.LogUtil
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import org.json.JSONObject
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -40,6 +47,22 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private var mLandingUrl: String? = ""
     private var mImgUrl: String? = ""
     private var mPushType: String? = "default"
+
+    private var mHNCommTran: HNCommTran? = null
+
+    /**
+     * Called if the FCM registration token is updated. This may occur if the security of
+     * the previous token had been compromised. Note that this is called when the
+     * FCM registration token is initially generated so this is where you would retrieve the token.
+     */
+    override fun onNewToken(token: String) {
+        Log.d(TAG, "Refreshed token: $token")
+
+        // If you want to send messages to this application instance or
+        // manage this apps subscriptions on the server side, send the
+        // FCM registration token to your app server.
+        sendRegistrationToServer(token)
+    }
 
     /**
      * Called when message is received.
@@ -155,12 +178,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 intent.putExtra("pushUid", mPushUid)
                 intent.putExtra("url", mLandingUrl)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                val requestCode = System.currentTimeMillis().toInt()
                 val pendingIntent = PendingIntent.getActivity(
                     ctx,
-                    0 /* Request code */,
+                    requestCode /* Request code */,
                     intent,
                     PendingIntent.FLAG_IMMUTABLE
                 )
+
+                val channelId = getString(R.string.default_notification_channel_id)
 
                 // Creates an explicit intent for an Activity in your app
                 var defaultSoundUri =
@@ -171,57 +197,48 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                                 + ctx.packageName + "/" + R.raw.custom_push
                     )
                 }
-                var notificationBuilder: Notification.Builder? = null
-                LogUtil.d(TAG, "Message Notification 3")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    LogUtil.d(TAG, "Message Notification 4")
-                    notificationBuilder = Notification.Builder(
-                        ctx,
-                        MyNotificationManager.Channel.Companion.MESSAGE
-                    ) // round Image
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .setLargeIcon(
-                            BitmapFactory.decodeResource(
-                                ctx.resources,
-                                R.mipmap.ic_launcher
-                            )
+                val notificationBuilder: NotificationCompat.Builder = NotificationCompat.Builder(
+                    ctx,
+                    channelId
+                )
+                notificationBuilder
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setLargeIcon(
+                        BitmapFactory.decodeResource(
+                            ctx.resources,
+                            R.mipmap.ic_launcher
                         )
-                        .setContentTitle(title)
-                        .setContentText(message)
-                        .setAutoCancel(true)
-                        .setContentIntent(pendingIntent)
-                    if (result != null) {
-                        val bigPictureStyle = Notification.BigPictureStyle()
+                    )
+                    .setContentTitle(title)
+                    .setContentText(message)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent)
+                    .setShowWhen(true)
+                if (result != null) {
+                    notificationBuilder.setStyle(
+                        NotificationCompat.BigPictureStyle()
                             .bigPicture(result)
-                            .setBigContentTitle(title)
-                            .setSummaryText(message)
-                        notificationBuilder.style = bigPictureStyle
-                    } else {
-                        notificationBuilder.style = Notification.BigTextStyle().bigText(message)
-                    }
+                            .bigLargeIcon(null)) // Large icon shown in expanded notification
                 } else {
-                    LogUtil.d(TAG, "Message Notification 5")
-                    notificationBuilder = Notification.Builder(ctx)
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .setLargeIcon(
-                            BitmapFactory.decodeResource(
-                                ctx.resources,
-                                R.mipmap.ic_launcher
-                            )
-                        )
-                        .setStyle(
-                            Notification.BigPictureStyle()
-                                .bigPicture(result)
-                                .setBigContentTitle(title)
-                                .setSummaryText(message)
-                        )
-                        .setContentTitle(resources.getString(R.string.app_name))
-                        .setContentText(message)
-                        .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
-                        .setContentIntent(pendingIntent)
+                    notificationBuilder.setStyle(
+                        NotificationCompat.BigTextStyle()
+                            .bigText(message))
                 }
-                getManager(ctx).notify(0 /* ID of notification */, notificationBuilder.build())
+
+                val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val channel = NotificationChannel(
+                        channelId,
+                        getString(R.string.app_name),
+                        NotificationManager.IMPORTANCE_DEFAULT
+                    )
+                    notificationManager.createNotificationChannel(channel)
+                }
+
+                val notificationId = System.currentTimeMillis().toInt()
+
+                notificationManager.notify(notificationId, notificationBuilder.build())
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -232,6 +249,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             title = params[0]
             message = params[1]
             try {
+                if (params[2].isNullOrEmpty()) return null
                 val url = URL(params[2])
                 val connection =
                     url.openConnection() as HttpURLConnection
@@ -246,6 +264,44 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
             return null
         }
+    }
+
+    /**
+     * Persist token to third-party servers.
+     *
+     * Modify this method to associate the user's FCM InstanceID token with any server-side account
+     * maintained by your application.
+     *
+     * @param token The new token.
+     */
+    private fun sendRegistrationToServer(token: String?) {
+        LogUtil.e("sendRegistrationToServer : $token")
+        Thread(Runnable {
+            try {
+                val jObj = JSONObject()
+                jObj.put("os", "Android")
+                jObj.put(
+                    "memberKey",
+                    HNSharedPreference.getSharedPreference(applicationContext, "memberKey")
+                )
+                jObj.put(
+                    "pushKey",
+                    HNSharedPreference.getSharedPreference(applicationContext, "pushtoken")
+                )
+                jObj.put("deviceId", HNApplication.mDeviceId)
+                mHNCommTran = HNCommTran(object : HNCommTranInterface {
+                    override fun recvMsg(tranCode: String?, params: String) {
+                        if (tranCode.equals(HNApplication.PUSH_URL)) {
+                            LogUtil.e("recv pushRegister : $tranCode : $params");
+                        }
+                    }
+                })
+                mHNCommTran!!.sendMsg(HNApplication.Companion.PUSH_URL, jObj)
+                return@Runnable
+            } catch (localException: Exception) {
+                localException.printStackTrace()
+            }
+        }).start()
     }
 
     companion object {

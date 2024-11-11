@@ -16,15 +16,19 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.creator.metaceleb.delegator.HNSharedPreference
 import java.io.*
+import java.security.MessageDigest
 
 /**
  * Created by skcrackers on 10/16/17.
  */
-class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransformation(context) {
+class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransformation() {
     private var rotateRotationAngle = 0f
 
     init {
         this.rotateRotationAngle = rotateRotationAngle
+    }
+
+    override fun updateDiskCacheKey(messageDigest: MessageDigest) {
     }
 
     override fun transform(
@@ -44,10 +48,6 @@ class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransfor
             matrix,
             true
         )
-    }
-
-    override fun getId(): String {
-        return "rotate$rotateRotationAngle"
     }
 
     companion object {
@@ -244,20 +244,18 @@ class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransfor
                     val imageItem = savedImageArray[i]
                     Log.d("SeongKwon", "imageItem = $imageItem")
                     val delemeter = imageItem.indexOf("&")
-                    Log.d("SeongKwon", "imageArray[0] = " + imageItem.substring(0, delemeter))
-                    Log.d(
-                        "SeongKwon",
-                        "imageArray[1] = " + imageItem.substring(delemeter + 1, imageItem.length)
-                    )
-                    val name = imageItem.substring(0, delemeter)
-                    Log.d("SeongKwon", "$name//$fileName")
-                    if (name != fileName) {
-                        tmp += "$imageItem,"
+                    if (imageItem.isNotEmpty()) {
+                        val name = imageItem.substring(0, delemeter)
+                        Log.d("SeongKwon", "$name//$fileName")
+                        if (name != fileName) {
+                            tmp += "$imageItem,"
+                        }
                     }
                 }
                 HNSharedPreference.putSharedPreference(context, "savedImage", tmp)
             } catch (e: Exception) {
                 Toast.makeText(context, "파일 삭제 실패 ", Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
                 return false
             }
             return true
@@ -309,6 +307,11 @@ class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransfor
             } finally {
                 `in`.close()
             }
+        }
+
+        fun uriToBitmap(context: Context, uri: Uri?): Bitmap? {
+            val bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri)
+            return bitmap
         }
     }
 }

@@ -21,6 +21,7 @@ object Constants {
     const val REQUEST_ADD_IMAGE = 5000
     const val REQUEST_EDIT_IMAGE = 5001
     const val REQUEST_CROP_IMAGE = 5002
+    const val REQUEST_GET_FILE = 6000
 
     /**
      * Request code for permission has to be < (1 << 8)
