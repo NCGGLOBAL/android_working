@@ -16,15 +16,19 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.creator.labangtv.delegator.HNSharedPreference
 import java.io.*
+import java.security.MessageDigest
 
 /**
  * Created by skcrackers on 10/16/17.
  */
-class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransformation(context) {
+class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransformation() {
     private var rotateRotationAngle = 0f
 
     init {
         this.rotateRotationAngle = rotateRotationAngle
+    }
+
+    override fun updateDiskCacheKey(messageDigest: MessageDigest) {
     }
 
     override fun transform(
@@ -44,10 +48,6 @@ class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransfor
             matrix,
             true
         )
-    }
-
-    override fun getId(): String {
-        return "rotate$rotateRotationAngle"
     }
 
     companion object {
