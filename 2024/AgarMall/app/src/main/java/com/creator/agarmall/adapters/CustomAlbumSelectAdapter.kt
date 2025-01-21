@@ -44,9 +44,11 @@ class CustomAlbumSelectAdapter(
 //        viewHolder.imageView.getLayoutParams().height = size;
         viewHolder.textViewName!!.text = arrayList!![position]!!.name
         viewHolder.textViewCount!!.text = count[arrayList!![position]!!.name].toString() + ""
-        Glide.with(context)
-            .load(arrayList!![position]!!.cover)
-            .placeholder(R.drawable.image_placeholder).centerCrop().into(viewHolder.imageView)
+        context?.let {
+            Glide.with(it)
+                .load(arrayList!![position].cover)
+                .placeholder(R.drawable.image_placeholder).centerCrop().into(viewHolder.imageView!!)
+        }
         return convertView
     }
 
