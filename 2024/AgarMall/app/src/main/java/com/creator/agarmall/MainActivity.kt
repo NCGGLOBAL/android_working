@@ -235,14 +235,39 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent != null) {
-            mLandingUrl = intent.getStringExtra("url")
+            // URL을 가져오고, null 또는 비어있는 값을 처리
+            mLandingUrl = intent.getStringExtra("url")?.trim()
+
+            // 추가 헤더 설정
             val extraHeaders: MutableMap<String, String> = HashMap()
             extraHeaders["webview-type"] = "main"
-            if (mLandingUrl?.isNotEmpty() == true) {
-                val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(mLandingUrl)
-                mWebView?.loadUrl(finalUrl, extraHeaders)
+
+            // URL이 유효한지 검증
+            if (!mLandingUrl.isNullOrEmpty()) {
+                // URL이 신뢰할 수 있는 도메인에서 오는지 검증
+                if (isValidUrl(mLandingUrl)) {
+                    val finalUrl = sanitizeUrl(mLandingUrl)
+                    mWebView?.loadUrl(finalUrl, extraHeaders)
+                } else {
+                    // 유효하지 않은 URL일 경우 로깅하거나 사용자에게 알림
+                    Log.e("URL Error", "Invalid or untrusted URL: $mLandingUrl")
+                }
             }
         }
+    }
+
+    // URL이 신뢰할 수 있는 도메인인지 확인
+    private fun isValidUrl(url: String?): Boolean {
+        // 신뢰할 수 있는 도메인 목록을 정의
+        val trustedDomains = listOf("agarmall.com")
+        return trustedDomains.any { url?.contains(it) == true }
+    }
+
+    // URL을 정리하고, 의심스러운 부분을 제거
+    private fun sanitizeUrl(url: String?): String {
+        // javascript:와 같은 악의적인 URL을 필터링
+        val sanitizedUrl = url?.replace("javascript:", "")?.replace("data:", "")?.replace("vbscript:", "")
+        return UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(sanitizedUrl)
     }
 
     private val hashKey: Unit
