@@ -246,28 +246,43 @@ class MainActivity : AppCompatActivity() {
             if (!mLandingUrl.isNullOrEmpty()) {
                 // URL이 신뢰할 수 있는 도메인에서 오는지 검증
                 if (isValidUrl(mLandingUrl)) {
-                    val finalUrl = sanitizeUrl(mLandingUrl)
-                    mWebView?.loadUrl(finalUrl, extraHeaders)
+                    // URL 정화 (악성 스크립트 제거)
+                    val sanitizedUrl = sanitizeUrl(mLandingUrl!!)
+
+                    // 신뢰할 수 있는 도메인만 허용
+                    if (isTrustedDomain(sanitizedUrl)) {
+                        // 정화된 URL을 WebView에서 로드
+                        mWebView?.loadUrl(sanitizedUrl, extraHeaders)
+                    } else {
+                        // 신뢰할 수 없는 도메인
+                        Log.e("URL Error", "Untrusted domain: ${Uri.parse(sanitizedUrl).host}")
+                    }
                 } else {
-                    // 유효하지 않은 URL일 경우 로깅하거나 사용자에게 알림
-                    Log.e("URL Error", "Invalid or untrusted URL: $mLandingUrl")
+                    Log.e("URL Error", "Invalid URL: $mLandingUrl")
                 }
+            } else {
+                Log.e("URL Error", "Empty or null URL")
             }
         }
     }
 
-    // URL이 신뢰할 수 있는 도메인인지 확인
-    private fun isValidUrl(url: String?): Boolean {
-        // 신뢰할 수 있는 도메인 목록을 정의
-        val trustedDomains = listOf("agarmall.com")
-        return trustedDomains.any { url?.contains(it) == true }
+    // 신뢰할 수 있는 도메인만 허용하는 함수
+    fun isTrustedDomain(url: String): Boolean {
+        val trustedDomains = listOf("agarmall.com") // 신뢰할 수 있는 도메인 목록
+        val urlHost = Uri.parse(url).host
+        return urlHost in trustedDomains
     }
 
-    // URL을 정리하고, 의심스러운 부분을 제거
-    private fun sanitizeUrl(url: String?): String {
-        // javascript:와 같은 악의적인 URL을 필터링
-        val sanitizedUrl = url?.replace("javascript:", "")?.replace("data:", "")?.replace("vbscript:", "")
-        return UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(sanitizedUrl)
+    // URL을 정화하는 함수 (간단한 예: 스크립트 태그 제거)
+    fun sanitizeUrl(url: String): String {
+        // 간단한 정화 작업: 스크립트 태그 제거
+        return url.replace("<script>", "").replace("</script>", "")
+    }
+
+    // URL 유효성 검사 함수 (정규 표현식 등을 사용하여 검사 가능)
+    fun isValidUrl(url: String?): Boolean {
+        val regex = "^(https?|ftp)://[a-zA-Z0-9.-]+(?:\\.[a-zA-Z]{2,})$"
+        return url?.matches(regex.toRegex()) == true
     }
 
     private val hashKey: Unit
