@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "445303910286",
+    "project_id": "sayrobin-1db82",
+    "storage_bucket": "sayrobin-1db82.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445303910286:android:9da38ad203d48c2356bedf",
+        "android_client_info": {
+          "package_name": "com.creator.waglelive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJHtkVBiHnZnVA9NC65bhi01O5DhlNJV8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
