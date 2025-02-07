@@ -232,39 +232,39 @@ class MainActivity : AppCompatActivity() {
         mWebView?.onPause()
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        if (intent != null) {
-            // URL을 가져오고, null 또는 비어있는 값을 처리
-            mLandingUrl = intent.getStringExtra("url")?.trim()
-
-            // 추가 헤더 설정
-            val extraHeaders: MutableMap<String, String> = HashMap()
-            extraHeaders["webview-type"] = "main"
-
-            // URL이 유효한지 검증
-            if (!mLandingUrl.isNullOrEmpty()) {
-                // URL이 신뢰할 수 있는 도메인에서 오는지 검증
-                if (isValidUrl(mLandingUrl)) {
-                    // URL 정화 (악성 스크립트 제거)
-                    val sanitizedUrl = sanitizeUrl(mLandingUrl!!)
-
-                    // 신뢰할 수 있는 도메인만 허용
-                    if (isTrustedDomain(sanitizedUrl)) {
-                        // 정화된 URL을 WebView에서 로드
-                        mWebView?.loadUrl(sanitizedUrl, extraHeaders)
-                    } else {
-                        // 신뢰할 수 없는 도메인
-                        Log.e("URL Error", "Untrusted domain: ${Uri.parse(sanitizedUrl).host}")
-                    }
-                } else {
-                    Log.e("URL Error", "Invalid URL: $mLandingUrl")
-                }
-            } else {
-                Log.e("URL Error", "Empty or null URL")
-            }
-        }
-    }
+//    override fun onNewIntent(intent: Intent?) {
+//        super.onNewIntent(intent)
+//        if (intent != null) {
+//            // URL을 가져오고, null 또는 비어있는 값을 처리
+//            mLandingUrl = intent.getStringExtra("url")?.trim()
+//
+//            // 추가 헤더 설정
+//            val extraHeaders: MutableMap<String, String> = HashMap()
+//            extraHeaders["webview-type"] = "main"
+//
+//            // URL이 유효한지 검증
+//            if (!mLandingUrl.isNullOrEmpty()) {
+//                // URL이 신뢰할 수 있는 도메인에서 오는지 검증
+//                if (isValidUrl(mLandingUrl)) {
+//                    // URL 정화 (악성 스크립트 제거)
+//                    val sanitizedUrl = sanitizeUrl(mLandingUrl!!)
+//
+//                    // 신뢰할 수 있는 도메인만 허용
+//                    if (isTrustedDomain(sanitizedUrl)) {
+//                        // 정화된 URL을 WebView에서 로드
+//                        mWebView?.loadUrl(sanitizedUrl, extraHeaders)
+//                    } else {
+//                        // 신뢰할 수 없는 도메인
+//                        Log.e("URL Error", "Untrusted domain: ${Uri.parse(sanitizedUrl).host}")
+//                    }
+//                } else {
+//                    Log.e("URL Error", "Invalid URL: $mLandingUrl")
+//                }
+//            } else {
+//                Log.e("URL Error", "Empty or null URL")
+//            }
+//        }
+//    }
 
     // 신뢰할 수 있는 도메인만 허용하는 함수
     fun isTrustedDomain(url: String): Boolean {
