@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "384009167745",
+    "project_id": "sayrobin-9c45c",
+    "storage_bucket": "sayrobin-9c45c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:384009167745:android:7e133473dab99ef39e7e80",
+        "android_client_info": {
+          "package_name": "com.creator.sayrobin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2SJmyLnBOvMvw_EybXdD0f50DxM2YMkY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
