@@ -329,7 +329,15 @@ class CameraActivity : Activity() {
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
         mWebView!!.isDrawingCacheEnabled = true
         mWebView!!.buildDrawingCache()
-        mWebView!!.loadUrl(LIVE_URL)
+
+        // URL이 비어있지 않은지 확인
+        if (LIVE_URL?.isNotEmpty() == true) {
+            // URL 인코딩을 통해 위험한 문자들을 처리
+            val sanitizedUrl = EtcUtil.sanitizeUrl(LIVE_URL)
+            if (sanitizedUrl != null) {
+                mWebView?.loadUrl(sanitizedUrl)
+            }
+        }
     }
 
     public override fun onResume() {

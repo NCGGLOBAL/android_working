@@ -186,9 +186,14 @@ class WebViewActivity : Activity() {
         mWebView!!.buildDrawingCache()
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "sub"
-        if (!TextUtils.isEmpty(mWebViewUrl)) {
-            val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(mWebViewUrl)
-            mWebView?.loadUrl(finalUrl, extraHeaders)
+
+        // URL이 비어있지 않은지 확인
+        if (mWebViewUrl?.isNotEmpty() == true) {
+            // URL 인코딩을 통해 위험한 문자들을 처리
+            val sanitizedUrl = EtcUtil.sanitizeUrl(mWebViewUrl)
+            if (sanitizedUrl != null) {
+                mWebView?.loadUrl(sanitizedUrl, extraHeaders)
+            }
         }
     }
 

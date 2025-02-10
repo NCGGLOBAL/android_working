@@ -23,6 +23,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLDecoder
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.*
@@ -493,5 +494,26 @@ object EtcUtil {
             mVer = mVer.substring(0, mVer.indexOf(endToken)).trim { it <= ' ' }
         }
         return mVer
+    }
+
+    // URL을 안전하게 정리하는 함수
+    fun sanitizeUrl(url: String?): String? {
+        // URL이 null이거나 비어 있으면 처리하지 않음
+        if (url.isNullOrEmpty()) return null
+
+        // HTTP와 HTTPS로 시작하는 URL만 허용
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            return null
+        }
+
+        // URL에 포함된 공백이나 특수 문자를 안전하게 인코딩
+        return try {
+            val sanitizedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
+            val sanitizedUrlWithSpaces = sanitizedUrl.replace("+", "%20")
+            sanitizedUrlWithSpaces
+        } catch (e: Exception) {
+            // 인코딩 오류가 발생하면 null 반환
+            null
+        }
     }
 }

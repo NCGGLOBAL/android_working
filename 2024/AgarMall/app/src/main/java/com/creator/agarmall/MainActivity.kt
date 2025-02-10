@@ -56,6 +56,8 @@ import java.net.HttpURLConnection
 import java.net.URISyntaxException
 import java.net.URL
 import java.net.URLDecoder
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
@@ -232,59 +234,6 @@ class MainActivity : AppCompatActivity() {
         mWebView?.onPause()
     }
 
-//    override fun onNewIntent(intent: Intent?) {
-//        super.onNewIntent(intent)
-//        if (intent != null) {
-//            // URL을 가져오고, null 또는 비어있는 값을 처리
-//            mLandingUrl = intent.getStringExtra("url")?.trim()
-//
-//            // 추가 헤더 설정
-//            val extraHeaders: MutableMap<String, String> = HashMap()
-//            extraHeaders["webview-type"] = "main"
-//
-//            // URL이 유효한지 검증
-//            if (!mLandingUrl.isNullOrEmpty()) {
-//                // URL이 신뢰할 수 있는 도메인에서 오는지 검증
-//                if (isValidUrl(mLandingUrl)) {
-//                    // URL 정화 (악성 스크립트 제거)
-//                    val sanitizedUrl = sanitizeUrl(mLandingUrl!!)
-//
-//                    // 신뢰할 수 있는 도메인만 허용
-//                    if (isTrustedDomain(sanitizedUrl)) {
-//                        // 정화된 URL을 WebView에서 로드
-//                        mWebView?.loadUrl(sanitizedUrl, extraHeaders)
-//                    } else {
-//                        // 신뢰할 수 없는 도메인
-//                        Log.e("URL Error", "Untrusted domain: ${Uri.parse(sanitizedUrl).host}")
-//                    }
-//                } else {
-//                    Log.e("URL Error", "Invalid URL: $mLandingUrl")
-//                }
-//            } else {
-//                Log.e("URL Error", "Empty or null URL")
-//            }
-//        }
-//    }
-
-    // 신뢰할 수 있는 도메인만 허용하는 함수
-    fun isTrustedDomain(url: String): Boolean {
-        val trustedDomains = listOf("agarmall.com") // 신뢰할 수 있는 도메인 목록
-        val urlHost = Uri.parse(url).host
-        return urlHost in trustedDomains
-    }
-
-    // URL을 정화하는 함수 (간단한 예: 스크립트 태그 제거)
-    fun sanitizeUrl(url: String): String {
-        // 간단한 정화 작업: 스크립트 태그 제거
-        return url.replace("<script>", "").replace("</script>", "")
-    }
-
-    // URL 유효성 검사 함수 (정규 표현식 등을 사용하여 검사 가능)
-    fun isValidUrl(url: String?): Boolean {
-        val regex = "^(https?|ftp)://[a-zA-Z0-9.-]+(?:\\.[a-zA-Z]{2,})$"
-        return url?.matches(regex.toRegex()) == true
-    }
-
     private val hashKey: Unit
         private get() {
             var packageInfo: PackageInfo? = null
@@ -371,11 +320,20 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.isDrawingCacheEnabled = true
         mWebView!!.buildDrawingCache()
 
+
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
+
+        // URL이 비어있지 않은지 확인
         if (mLandingUrl?.isNotEmpty() == true) {
-            val finalUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(mLandingUrl)
-            mWebView?.loadUrl(finalUrl, extraHeaders)
+            // URL 인코딩을 통해 위험한 문자들을 처리
+            val sanitizedUrl = EtcUtil.sanitizeUrl(mLandingUrl)
+            if (sanitizedUrl != null) {
+                mWebView?.loadUrl(sanitizedUrl, extraHeaders)
+            } else {
+                // URL이 안전하지 않으면 기본 URL로 로드
+                mWebView?.loadUrl(HNApplication.URL, extraHeaders)
+            }
         } else {
             mWebView?.loadUrl(HNApplication.URL, extraHeaders)
         }
