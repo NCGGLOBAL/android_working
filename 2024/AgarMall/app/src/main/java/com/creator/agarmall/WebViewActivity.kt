@@ -36,6 +36,7 @@ import com.creator.agarmall.delegator.HNSharedPreference
 import com.creator.agarmall.helpers.Constants
 import com.creator.agarmall.models.Image
 import com.creator.agarmall.util.*
+import com.creator.agarmall.util.EtcUtil.loadSafetyUrl
 import com.facebook.*
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
@@ -186,15 +187,7 @@ class WebViewActivity : Activity() {
         mWebView!!.buildDrawingCache()
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "sub"
-
-        // URL이 비어있지 않은지 확인
-        if (mWebViewUrl?.isNotEmpty() == true) {
-            // URL 인코딩을 통해 위험한 문자들을 처리
-            val sanitizedUrl = EtcUtil.sanitizeUrl(mWebViewUrl)
-            if (sanitizedUrl != null) {
-                mWebView?.loadUrl(sanitizedUrl, extraHeaders)
-            }
-        }
+        mWebView?.loadSafetyUrl(mWebViewUrl, extraHeaders)
     }
 
     inner class HNWebChromeClient : WebChromeClient() {
@@ -588,7 +581,7 @@ class WebViewActivity : Activity() {
                 }
             } else if (url.startsWith(WAP_URL)) {
                 val thisurl = url.substring(WAP_URL.length)
-                view.loadUrl(thisurl)
+                view.loadSafetyUrl(thisurl)
                 return true
             } else if (url != null && url.startsWith("intent://")) {
                 try {
@@ -643,7 +636,7 @@ class WebViewActivity : Activity() {
                     true
                 }
             }
-            view.loadUrl(url)
+            view.loadSafetyUrl(url)
             view.setDownloadListener(this)
             return false // webview replace
         }
@@ -760,7 +753,7 @@ class WebViewActivity : Activity() {
                     if (actionParamObj!!.has("request_url")) {
                         val request_url = actionParamObj.getString("request_url")
                         LogUtil.d("request_url : $request_url")
-                        mWebView!!.loadUrl(request_url)
+                        mWebView!!.loadSafetyUrl(request_url)
                     }
                 } else if ("ACT1011" == actionCode) {
                     LogUtil.d("ACT1011 - Custom Native 카메라 및 사진 라이브러리 호출")
@@ -905,7 +898,7 @@ class WebViewActivity : Activity() {
             LogUtil.i("<<executeJavascript>>    $formattedScript")
             // Build.VERSION_CODES.KITKAT
             if (Build.VERSION.SDK_INT < 19) {
-                mWebView!!.loadUrl(formattedScript!!)
+                mWebView!!.loadSafetyUrl(formattedScript!!)
             } else {
                 mWebView!!.evaluateJavascript(formattedScript!!) { value -> LogUtil.d("<<onReceiveValue>>    $value") }
             }
@@ -1141,7 +1134,7 @@ class WebViewActivity : Activity() {
         d.setNegativeButton("아니요") { dialog, which ->
             dialog.cancel()
             //결제 초기 화면을 요청합니다.
-            mWebView?.loadUrl(MERCHANT_URL)
+            mWebView?.loadSafetyUrl(MERCHANT_URL)
         }
         d.show()
     }
@@ -1159,7 +1152,7 @@ class WebViewActivity : Activity() {
         }
         d.setNegativeButton("아니요") { dialog, which ->
             dialog.cancel()
-            mWebView!!.loadUrl(MERCHANT_URL)
+            mWebView!!.loadSafetyUrl(MERCHANT_URL)
         }
         d.show()
     }

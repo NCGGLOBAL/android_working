@@ -7,6 +7,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
+import android.net.UrlQuerySanitizer
 import android.os.Build
 import android.os.Environment
 import android.telephony.TelephonyManager
@@ -496,24 +497,17 @@ object EtcUtil {
         return mVer
     }
 
-    // URL을 안전하게 정리하는 함수
-    fun sanitizeUrl(url: String?): String? {
-        // URL이 null이거나 비어 있으면 처리하지 않음
-        if (url.isNullOrEmpty()) return null
-
-        // HTTP와 HTTPS로 시작하는 URL만 허용
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            return null
-        }
-
-        // URL에 포함된 공백이나 특수 문자를 안전하게 인코딩
-        return try {
-            val sanitizedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
-            val sanitizedUrlWithSpaces = sanitizedUrl.replace("+", "%20")
-            sanitizedUrlWithSpaces
-        } catch (e: Exception) {
-            // 인코딩 오류가 발생하면 null 반환
-            null
+    fun WebView.loadSafetyUrl(url: String?, extraHeaders: MutableMap<String, String>? = null) {
+        url?.let {
+            val sanitizedUrl = UrlQuerySanitizer.getUrlAndSpaceLegal().sanitize(it)
+            sanitizedUrl?.let { sanitizedUrl ->
+                extraHeaders?.let { extraHeaders ->
+                    loadUrl(sanitizedUrl, extraHeaders)
+                } ?: run {
+                    loadUrl(sanitizedUrl)
+                }
+            }
         }
     }
+
 }

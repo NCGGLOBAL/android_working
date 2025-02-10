@@ -28,6 +28,7 @@ import com.creator.agarmall.delegator.HNSharedPreference
 import com.creator.agarmall.helpers.Constants
 import com.creator.agarmall.models.Image
 import com.creator.agarmall.util.*
+import com.creator.agarmall.util.EtcUtil.loadSafetyUrl
 import com.ksyun.media.streamer.capture.CameraCapture
 import com.ksyun.media.streamer.capture.camera.CameraTouchHelper
 import com.ksyun.media.streamer.filter.imgtex.ImgTexFilterMgt
@@ -330,14 +331,7 @@ class CameraActivity : Activity() {
         mWebView!!.isDrawingCacheEnabled = true
         mWebView!!.buildDrawingCache()
 
-        // URL이 비어있지 않은지 확인
-        if (LIVE_URL?.isNotEmpty() == true) {
-            // URL 인코딩을 통해 위험한 문자들을 처리
-            val sanitizedUrl = EtcUtil.sanitizeUrl(LIVE_URL)
-            if (sanitizedUrl != null) {
-                mWebView?.loadUrl(sanitizedUrl)
-            }
-        }
+        mWebView?.loadSafetyUrl(LIVE_URL)
     }
 
     public override fun onResume() {
@@ -717,7 +711,7 @@ class CameraActivity : Activity() {
             LogUtil.i("<<executeJavascript>>    $formattedScript")
             // Build.VERSION_CODES.KITKAT
             if (Build.VERSION.SDK_INT < 19) {
-                mWebView!!.loadUrl(formattedScript!!)
+                mWebView!!.loadSafetyUrl(formattedScript!!)
             } else {
                 mWebView!!.evaluateJavascript(formattedScript!!) { value -> LogUtil.d("<<onReceiveValue>>    $value") }
             }

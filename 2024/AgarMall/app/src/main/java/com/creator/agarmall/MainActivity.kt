@@ -36,6 +36,7 @@ import com.creator.agarmall.helpers.Constants
 import com.creator.agarmall.live.CameraActivity
 import com.creator.agarmall.models.Image
 import com.creator.agarmall.util.*
+import com.creator.agarmall.util.EtcUtil.loadSafetyUrl
 import com.facebook.*
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
@@ -327,15 +328,9 @@ class MainActivity : AppCompatActivity() {
         // URL이 비어있지 않은지 확인
         if (mLandingUrl?.isNotEmpty() == true) {
             // URL 인코딩을 통해 위험한 문자들을 처리
-            val sanitizedUrl = EtcUtil.sanitizeUrl(mLandingUrl)
-            if (sanitizedUrl != null) {
-                mWebView?.loadUrl(sanitizedUrl, extraHeaders)
-            } else {
-                // URL이 안전하지 않으면 기본 URL로 로드
-                mWebView?.loadUrl(HNApplication.URL, extraHeaders)
-            }
+            mWebView?.loadSafetyUrl(mLandingUrl, extraHeaders)
         } else {
-            mWebView?.loadUrl(HNApplication.URL, extraHeaders)
+            mWebView?.loadSafetyUrl(HNApplication.URL, extraHeaders)
         }
     }
 
@@ -564,7 +559,7 @@ class MainActivity : AppCompatActivity() {
 
                     val extraHeaders: MutableMap<String, String> = HashMap()
                     extraHeaders["webview-type"] = "main"
-                    mWebView?.loadUrl(HNApplication.URL, extraHeaders)
+                    mWebView?.loadSafetyUrl(HNApplication.URL, extraHeaders)
 
                     dialog.dismiss()
                 }
@@ -747,7 +742,7 @@ class MainActivity : AppCompatActivity() {
                 }
             } else if (url.startsWith(WAP_URL)) {
                 val thisurl = url.substring(WAP_URL.length)
-                view.loadUrl(thisurl)
+                view.loadSafetyUrl(thisurl)
                 return true
             } else if (url != null && url.startsWith("intent://")) {
                 try {
@@ -802,7 +797,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
             }
-            view.loadUrl(url)
+            view.loadSafetyUrl(url)
             view.setDownloadListener(this)
             return false // webview replace
         }
@@ -918,7 +913,7 @@ class MainActivity : AppCompatActivity() {
                     if (actionParamObj!!.has("request_url")) {
                         val request_url = actionParamObj.getString("request_url")
                         LogUtil.d("request_url : $request_url")
-                        mWebView!!.loadUrl(request_url)
+                        mWebView!!.loadSafetyUrl(request_url)
                     }
                 } else if ("ACT1011" == actionCode) {
                     LogUtil.d("ACT1011 - Custom Native 카메라 및 사진 라이브러리 호출")
@@ -1114,7 +1109,7 @@ class MainActivity : AppCompatActivity() {
             LogUtil.i("<<executeJavascript>>    $formattedScript")
             // Build.VERSION_CODES.KITKAT
             if (Build.VERSION.SDK_INT < 19) {
-                mWebView!!.loadUrl(formattedScript!!)
+                mWebView!!.loadSafetyUrl(formattedScript!!)
             } else {
                 mWebView?.evaluateJavascript(formattedScript) {
                         value -> LogUtil.d("<<onReceiveValue>>    $value")
