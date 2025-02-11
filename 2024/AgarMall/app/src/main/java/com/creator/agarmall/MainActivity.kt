@@ -289,7 +289,7 @@ class MainActivity : AppCompatActivity() {
             "Mozilla/5.0 (Linux; Android 4.1.1; Galaxy Nexus Build/JRO03C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/97.0.4692.87 Mobile Safari/535.19 " + " NINTH" + "&deviceId=" + HNApplication.mDeviceId
         mWebView!!.settings.setUserAgentString(userAgentString)
         if (Build.VERSION.SDK_INT >= 21) {
-            mWebView!!.settings.mixedContentMode = 0
+//            mWebView!!.settings.mixedContentMode = 0
             mCookieManager = CookieManager.getInstance()
             mCookieManager?.setAcceptCookie(true)
             mCookieManager?.setAcceptThirdPartyCookies(mWebView, true)
@@ -321,13 +321,21 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.isDrawingCacheEnabled = true
         mWebView!!.buildDrawingCache()
 
+// 외부 콘텐츠 차단 (CSP 대체 가능)
+        mWebView!!.settings.allowFileAccess = false
+        mWebView!!.settings.allowContentAccess = false
+// WebView에서 XSS 방지
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mWebView!!.settings.safeBrowsingEnabled = true
+        }
+// Mixed Content 차단 (HTTP 콘텐츠 로딩 방지)
+        mWebView!!.settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
 
         val extraHeaders: MutableMap<String, String> = HashMap()
         extraHeaders["webview-type"] = "main"
 
         // URL이 비어있지 않은지 확인
         if (mLandingUrl?.isNotEmpty() == true) {
-            // URL 인코딩을 통해 위험한 문자들을 처리
             mWebView?.loadSafetyUrl(mLandingUrl, extraHeaders)
         } else {
             mWebView?.loadSafetyUrl(HNApplication.URL, extraHeaders)

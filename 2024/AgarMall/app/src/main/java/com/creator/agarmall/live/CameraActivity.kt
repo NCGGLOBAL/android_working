@@ -331,6 +331,16 @@ class CameraActivity : Activity() {
         mWebView!!.isDrawingCacheEnabled = true
         mWebView!!.buildDrawingCache()
 
+        // 외부 콘텐츠 차단 (CSP 대체 가능)
+        mWebView!!.settings.allowFileAccess = false
+        mWebView!!.settings.allowContentAccess = false
+// WebView에서 XSS 방지
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mWebView!!.settings.safeBrowsingEnabled = true
+        }
+// Mixed Content 차단 (HTTP 콘텐츠 로딩 방지)
+        mWebView!!.settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+
         mWebView?.loadSafetyUrl(LIVE_URL)
     }
 
