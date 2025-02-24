@@ -28,6 +28,8 @@ import com.creator.waglelive.delegator.HNSharedPreference
 import com.creator.waglelive.helpers.Constants
 import com.creator.waglelive.models.Image
 import com.creator.waglelive.util.*
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import com.ksyun.media.streamer.capture.CameraCapture
 import com.ksyun.media.streamer.capture.camera.CameraTouchHelper
 import com.ksyun.media.streamer.filter.imgtex.ImgTexFilterMgt
@@ -72,8 +74,34 @@ class CameraActivity : Activity() {
         // Activity가 실행 될 때 항상 화면을 켜짐으로 유지한다.
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_camera)
-        initWebView()
-        initCamera()
+
+        val requiredPermissionList = arrayOf(  //필요한 권한들
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+
+        TedPermission.create()
+            .setPermissionListener(object : PermissionListener {
+
+                //권한이 허용됐을 때
+                override fun onPermissionGranted() {
+                    initWebView()
+                    initCamera()
+                }
+
+                //권한이 거부됐을 때
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    Toast.makeText(this@CameraActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            })
+            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+            .setPermissions(
+                *requiredPermissionList
+            )// 얻으려는 권한(여러개 가능)
+            .check()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
