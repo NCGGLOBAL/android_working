@@ -903,6 +903,15 @@ class CameraActivity : Activity() {
 
             return true
         }
+
+        override fun onPermissionRequest(request: PermissionRequest?) {
+            if (request != null) {
+                if (request.resources.contains(PermissionRequest.RESOURCE_VIDEO_CAPTURE) ||
+                    request.resources.contains(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
+                    request.grant(request.resources)  // 카메라/마이크 권한을 허용
+                }
+            }
+        }
     }
 
     // 사진저장
