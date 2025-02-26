@@ -62,6 +62,14 @@ class CameraActivity : Activity() {
     var mCameraHintView: CameraHintView? = null
     var mMainHandler: Handler? = null
 
+    // 요청할 권한 리스트
+    private val REQUIRED_PERMISSIONS = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    )
+
     companion object {
         const val INTENT_PROTOCOL_START = "intent:"
         const val INTENT_PROTOCOL_INTENT = "#Intent;"
@@ -75,33 +83,8 @@ class CameraActivity : Activity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_camera)
 
-        val requiredPermissionList = arrayOf(  //필요한 권한들
-            Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-
-        TedPermission.create()
-            .setPermissionListener(object : PermissionListener {
-
-                //권한이 허용됐을 때
-                override fun onPermissionGranted() {
-                    initWebView()
-                    initCamera()
-                }
-
-                //권한이 거부됐을 때
-                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    Toast.makeText(this@CameraActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-            })
-            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
-            .setPermissions(
-                *requiredPermissionList
-            )// 얻으려는 권한(여러개 가능)
-            .check()
+        initWebView()
+        initCamera()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -905,10 +888,28 @@ class CameraActivity : Activity() {
         }
 
         override fun onPermissionRequest(request: PermissionRequest?) {
-            if (request != null) {
-                if (request.resources.contains(PermissionRequest.RESOURCE_VIDEO_CAPTURE) ||
-                    request.resources.contains(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
-                    request.grant(request.resources)  // 카메라/마이크 권한을 허용
+            request?.let {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    TedPermission.create()
+                        .setPermissionListener(object : PermissionListener {
+
+                            //권한이 허용됐을 때
+                            override fun onPermissionGranted() {
+                                it.grant(it.resources) // 모든 요청된 권한을 허용
+                            }
+
+                            //권한이 거부됐을 때
+                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                it.deny()
+                            }
+                        })
+                        .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+                        .setPermissions(
+                            *REQUIRED_PERMISSIONS
+                        )// 얻으려는 권한(여러개 가능)
+                        .check()
+                } else {
+                    it.grant(it.resources) // 마시멜로우 이하에서는 바로 허용
                 }
             }
         }
