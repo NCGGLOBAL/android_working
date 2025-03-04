@@ -67,7 +67,8 @@ class CameraActivity : Activity() {
         Manifest.permission.CAMERA,
         Manifest.permission.RECORD_AUDIO,
         Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.MODIFY_AUDIO_SETTINGS,
     )
 
     companion object {
@@ -84,7 +85,7 @@ class CameraActivity : Activity() {
         setContentView(R.layout.activity_camera)
 
         initWebView()
-        initCamera()
+//        initCamera()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -275,7 +276,7 @@ class CameraActivity : Activity() {
 //        if (config.mZoomFocus) {
         val cameraTouchHelper = CameraTouchHelper()
         cameraTouchHelper.setCameraCapture(mStreamer!!.cameraCapture)
-        mCameraPreview!!.setOnTouchListener(cameraTouchHelper)
+//        mCameraPreview?.setOnTouchListener(cameraTouchHelper)
         // set CameraHintView to show focus rect and zoom ratio
         mCameraHintView = findViewById(R.id.camera_hint)
         mCameraHintView?.visibility = View.VISIBLE
@@ -889,6 +890,7 @@ class CameraActivity : Activity() {
 
         override fun onPermissionRequest(request: PermissionRequest?) {
             request?.let {
+                Toast.makeText(this@CameraActivity, "웹뷰에서 onPermissionRequest 호출", Toast.LENGTH_SHORT).show()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     TedPermission.create()
                         .setPermissionListener(object : PermissionListener {
@@ -896,6 +898,7 @@ class CameraActivity : Activity() {
                             //권한이 허용됐을 때
                             override fun onPermissionGranted() {
                                 it.grant(it.resources) // 모든 요청된 권한을 허용
+                                Toast.makeText(this@CameraActivity, "모든 요청된 권한을 웹에 허용합니다.", Toast.LENGTH_SHORT).show()
                             }
 
                             //권한이 거부됐을 때
