@@ -33,12 +33,13 @@
             android:background="@drawable/permission_btn"/>
     </LinearLayout>
 
-    <FrameLayout
+    <ImageView
         android:id="@+id/view_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
-        android:background="@drawable/loading"/>
+        android:scaleType="fitXY"
+        android:background="@color/black"/>
     <!--
     <LinearLayout
         android:id="@+id/ll_push"

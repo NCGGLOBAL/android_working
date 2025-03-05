@@ -890,7 +890,7 @@ class CameraActivity : Activity() {
 
         override fun onPermissionRequest(request: PermissionRequest?) {
             request?.let {
-                Toast.makeText(this@CameraActivity, "웹뷰에서 onPermissionRequest 호출", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this@CameraActivity, "웹뷰에서 onPermissionRequest 호출", Toast.LENGTH_SHORT).show()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     TedPermission.create()
                         .setPermissionListener(object : PermissionListener {
@@ -898,7 +898,7 @@ class CameraActivity : Activity() {
                             //권한이 허용됐을 때
                             override fun onPermissionGranted() {
                                 it.grant(it.resources) // 모든 요청된 권한을 허용
-                                Toast.makeText(this@CameraActivity, "모든 요청된 권한을 웹에 허용합니다.", Toast.LENGTH_SHORT).show()
+//                                Toast.makeText(this@CameraActivity, "모든 요청된 권한을 웹에 허용합니다.", Toast.LENGTH_SHORT).show()
                             }
 
                             //권한이 거부됐을 때
