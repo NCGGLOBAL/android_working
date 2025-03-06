@@ -54,9 +54,11 @@ class CustomImageSelectAdapter : CustomGenericAdapter<Image> {
             viewHolder.view!!.alpha = 0.0f
             (convertView as FrameLayout).foreground = null
         }
-        Glide.with(context)
-            .load(arrayList!![position]!!.path)
-            .placeholder(R.drawable.image_placeholder).into(viewHolder.imageView)
+        context?.let {
+            Glide.with(it)
+                .load(arrayList!![position]!!.path)
+                .placeholder(R.drawable.image_placeholder).into(viewHolder.imageView!!)
+        }
         return convertView
     }
 

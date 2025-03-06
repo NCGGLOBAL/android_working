@@ -103,14 +103,6 @@
             </intent-filter>
         </service>
         <!-- [END firebase_service] -->
-        <!-- [START firebase_iid_service] -->
-        <service android:name="com.mallup.eduwelfare.MyFirebaseInstanceIdService"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-        <!-- [END firebase_iid_service] -->
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -179,6 +171,10 @@
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+
+    <uses-permission
+        android:name="android.permission.POST_NOTIFICATIONS"
+        android:minSdkVersion="33" />
 
     <!--
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
