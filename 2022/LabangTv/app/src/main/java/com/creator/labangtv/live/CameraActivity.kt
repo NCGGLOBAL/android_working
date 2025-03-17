@@ -28,6 +28,8 @@ import com.creator.labangtv.delegator.HNSharedPreference
 import com.creator.labangtv.helpers.Constants
 import com.creator.labangtv.models.Image
 import com.creator.labangtv.util.*
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import com.ksyun.media.streamer.capture.CameraCapture
 import com.ksyun.media.streamer.capture.camera.CameraTouchHelper
 import com.ksyun.media.streamer.filter.imgtex.ImgTexFilterMgt
@@ -60,6 +62,12 @@ class CameraActivity : Activity() {
     var mCameraHintView: CameraHintView? = null
     var mMainHandler: Handler? = null
 
+    // 요청할 권한 리스트
+    private val REQUIRED_PERMISSIONS = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO,
+    )
+
     companion object {
         const val INTENT_PROTOCOL_START = "intent:"
         const val INTENT_PROTOCOL_INTENT = "#Intent;"
@@ -73,6 +81,7 @@ class CameraActivity : Activity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_camera)
         initWebView()
+        checkPermission()
         initCamera()
     }
 
@@ -241,7 +250,7 @@ class CameraActivity : Activity() {
         mStreamer!!.targetFps = 15f
         // 设置视频码率，分别为初始平均码率、最高平均码率、最低平均码率，单位为kbps，另有setVideoBitrate接口，单位为bps
 //        mStreamer.setVideoKBitrate(600, 800, 400);
-        mStreamer!!.setVideoKBitrate(1000, 1200, 800)
+        mStreamer!!.setVideoKBitrate(1200, 1500, 800)
         // 设置音频采样率
         mStreamer!!.audioSampleRate = 44100
         // 设置音频码率，单位为kbps，另有setAudioBitrate接口，单位为bps
@@ -925,5 +934,24 @@ class CameraActivity : Activity() {
             result = Uri.parse(filePath)
         }
         return result!!
+    }
+
+    private fun checkPermission() {
+        TedPermission.create()
+            .setPermissionListener(object : PermissionListener {
+
+                //권한이 허용됐을 때
+                override fun onPermissionGranted() {}
+
+                //권한이 거부됐을 때
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    Toast.makeText(this@CameraActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+            })
+            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+            .setPermissions(
+                *REQUIRED_PERMISSIONS
+            )// 얻으려는 권한(여러개 가능)
+            .check()
     }
 }
