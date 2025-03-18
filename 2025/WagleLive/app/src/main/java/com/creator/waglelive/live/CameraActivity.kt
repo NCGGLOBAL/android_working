@@ -248,12 +248,12 @@ class CameraActivity : Activity() {
         // 设置推流分辨率，可以不同于预览分辨率（不应大于预览分辨率，否则推流会有画质损失）
         mStreamer!!.setTargetResolution(720, 1280)
         // 设置预览帧率
-        mStreamer!!.previewFps = 15f
+        mStreamer!!.previewFps = 30f
         // 设置推流帧率，当预览帧率大于推流帧率时，编码模块会自动丢帧以适应设定的推流帧率
-        mStreamer!!.targetFps = 15f
+        mStreamer!!.targetFps = 30f
         // 设置视频码率，分别为初始平均码率、最高平均码率、最低平均码率，单位为kbps，另有setVideoBitrate接口，单位为bps
 //        mStreamer.setVideoKBitrate(600, 800, 400);
-        mStreamer!!.setVideoKBitrate(2048, 2160, 2000)
+        mStreamer!!.setVideoKBitrate(1500, 2000, 1000)
         // 设置音频采样率
         mStreamer!!.audioSampleRate = 44100
         // 设置音频码率，单位为kbps，另有setAudioBitrate接口，单位为bps
