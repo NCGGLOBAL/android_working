@@ -252,6 +252,7 @@ class CameraActivity : Activity() {
 //        mStreamer.setVideoKBitrate(600, 800, 400);
         mStreamer!!.setVideoKBitrate(1500, 2000, 1000)
         // 设置音频采样率
+        mStreamer?.iFrameInterval = 2f
         mStreamer!!.audioSampleRate = 44100
         // 设置音频码率，单位为kbps，另有setAudioBitrate接口，单位为bps
         mStreamer!!.setAudioKBitrate(48)
