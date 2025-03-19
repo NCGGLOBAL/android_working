@@ -713,12 +713,6 @@ class CameraActivity : Activity() {
                     chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
                     chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
                     startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
-                } else if ("ACT1041" == actionCode) {
-                    LogUtil.d("ACT1041 - wlive 스트림 설정값 제어")
-//                    val resultcd = 1
-//                    val jsonObject = JSONObject()
-//                    jsonObject.put("resultcd", resultcd) //1: 성공, 0: 실패
-//                    executeJavascript("$mCallback($jsonObject)")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

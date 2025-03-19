@@ -66,9 +66,9 @@ class CameraActivity : Activity() {
     private val REQUIRED_PERMISSIONS = arrayOf(
         Manifest.permission.CAMERA,
         Manifest.permission.RECORD_AUDIO,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.MODIFY_AUDIO_SETTINGS,
+//        Manifest.permission.ACCESS_FINE_LOCATION,
+//        Manifest.permission.ACCESS_COARSE_LOCATION,
+//        Manifest.permission.MODIFY_AUDIO_SETTINGS,
     )
 
     companion object {
@@ -85,7 +85,8 @@ class CameraActivity : Activity() {
         setContentView(R.layout.activity_camera)
 
         initWebView()
-//        initCamera()
+        checkPermission()
+        initCamera()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -240,7 +241,17 @@ class CameraActivity : Activity() {
         mStreamer!!.setDisplayPreview(mCameraPreview)
     }
 
-    private fun initStreamer(streamUrl: String) {
+    private fun initStreamer(
+        streamUrl: String,
+        previewFps: Int,
+        targetFps: Int,
+        videoBitrateList: ArrayList<Int>
+    ) {
+        LogUtil.e("initStreamer previewFps : " + previewFps)
+        LogUtil.e("initStreamer targetFps : " + targetFps)
+        LogUtil.e("initStreamer videoBitrateList[0] : " + videoBitrateList[0])
+        LogUtil.e("initStreamer videoBitrateList[1] : " + videoBitrateList[1])
+        LogUtil.e("initStreamer videoBitrateList[2] : " + videoBitrateList[2])
 // 设置推流url（需要向相关人员申请，测试地址并不稳定！）
         mStreamer!!.url = streamUrl
         // 设置预览分辨率, 当一边为0时，SDK会根据另一边及实际预览View的尺寸进行计算
@@ -248,13 +259,14 @@ class CameraActivity : Activity() {
         // 设置推流分辨率，可以不同于预览分辨率（不应大于预览分辨率，否则推流会有画质损失）
         mStreamer!!.setTargetResolution(720, 1280)
         // 设置预览帧率
-        mStreamer!!.previewFps = 30f
+        mStreamer!!.previewFps = previewFps.toFloat()
         // 设置推流帧率，当预览帧率大于推流帧率时，编码模块会自动丢帧以适应设定的推流帧率
-        mStreamer!!.targetFps = 30f
+        mStreamer!!.targetFps = targetFps.toFloat()
         // 设置视频码率，分别为初始平均码率、最高平均码率、最低平均码率，单位为kbps，另有setVideoBitrate接口，单位为bps
 //        mStreamer.setVideoKBitrate(600, 800, 400);
-        mStreamer!!.setVideoKBitrate(1500, 2000, 1000)
+        mStreamer!!.setVideoKBitrate(videoBitrateList[0], videoBitrateList[1], videoBitrateList[2])
         // 设置音频采样率
+        mStreamer?.iFrameInterval = 1f
         mStreamer!!.audioSampleRate = 44100
         // 设置音频码率，单位为kbps，另有setAudioBitrate接口，单位为bps
         mStreamer!!.setAudioKBitrate(48)
@@ -276,7 +288,7 @@ class CameraActivity : Activity() {
 //        if (config.mZoomFocus) {
         val cameraTouchHelper = CameraTouchHelper()
         cameraTouchHelper.setCameraCapture(mStreamer!!.cameraCapture)
-//        mCameraPreview?.setOnTouchListener(cameraTouchHelper)
+        mCameraPreview!!.setOnTouchListener(cameraTouchHelper)
         // set CameraHintView to show focus rect and zoom ratio
         mCameraHintView = findViewById(R.id.camera_hint)
         mCameraHintView?.visibility = View.VISIBLE
@@ -660,11 +672,17 @@ class CameraActivity : Activity() {
                 } else if ("ACT1030" == actionCode) {
                     LogUtil.d("ACT1030 - wlive 스트림키 전달 및 송출")
                     val resultcd = 1
-                    val streamUrl = actionParamObj!!.getString("stream_url")
-                    runOnUiThread { initStreamer(streamUrl) }
-                    val jsonObject = JSONObject()
-                    jsonObject.put("resultcd", resultcd) //1: 성공, 0: 실패
-                    executeJavascript("$mCallback($jsonObject)")
+                    actionParamObj?.let {
+                        val streamUrl = it.getString("stream_url")
+                        val previewFps = it.getInt("previewFps")
+                        val targetFps = it.getInt("targetFps")
+                        val setVideoKBitrate = it.getJSONArray("setVideoKBitrate")
+                        val videoBitrateList = setVideoKBitrate.toArrayListInt()
+                        runOnUiThread { initStreamer(streamUrl, previewFps, targetFps, videoBitrateList) }
+                        val jsonObject = JSONObject()
+                        jsonObject.put("resultcd", resultcd) //1: 성공, 0: 실패
+                        executeJavascript("$mCallback($jsonObject)")
+                    }
                 } else if ("ACT1031" == actionCode) {
                     // 종료
                     finish()
@@ -888,34 +906,34 @@ class CameraActivity : Activity() {
             return true
         }
 
-        override fun onPermissionRequest(request: PermissionRequest?) {
-            request?.let {
-//                Toast.makeText(this@CameraActivity, "웹뷰에서 onPermissionRequest 호출", Toast.LENGTH_SHORT).show()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    TedPermission.create()
-                        .setPermissionListener(object : PermissionListener {
-
-                            //권한이 허용됐을 때
-                            override fun onPermissionGranted() {
-                                it.grant(it.resources) // 모든 요청된 권한을 허용
-//                                Toast.makeText(this@CameraActivity, "모든 요청된 권한을 웹에 허용합니다.", Toast.LENGTH_SHORT).show()
-                            }
-
-                            //권한이 거부됐을 때
-                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                                it.deny()
-                            }
-                        })
-                        .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
-                        .setPermissions(
-                            *REQUIRED_PERMISSIONS
-                        )// 얻으려는 권한(여러개 가능)
-                        .check()
-                } else {
-                    it.grant(it.resources) // 마시멜로우 이하에서는 바로 허용
-                }
-            }
-        }
+//        override fun onPermissionRequest(request: PermissionRequest?) {
+//            request?.let {
+////                Toast.makeText(this@CameraActivity, "웹뷰에서 onPermissionRequest 호출", Toast.LENGTH_SHORT).show()
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    TedPermission.create()
+//                        .setPermissionListener(object : PermissionListener {
+//
+//                            //권한이 허용됐을 때
+//                            override fun onPermissionGranted() {
+//                                it.grant(it.resources) // 모든 요청된 권한을 허용
+////                                Toast.makeText(this@CameraActivity, "모든 요청된 권한을 웹에 허용합니다.", Toast.LENGTH_SHORT).show()
+//                            }
+//
+//                            //권한이 거부됐을 때
+//                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+//                                it.deny()
+//                            }
+//                        })
+//                        .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+//                        .setPermissions(
+//                            *REQUIRED_PERMISSIONS
+//                        )// 얻으려는 권한(여러개 가능)
+//                        .check()
+//                } else {
+//                    it.grant(it.resources) // 마시멜로우 이하에서는 바로 허용
+//                }
+//            }
+//        }
     }
 
     // 사진저장
@@ -966,5 +984,24 @@ class CameraActivity : Activity() {
             result = Uri.parse(filePath)
         }
         return result!!
+    }
+
+    private fun checkPermission() {
+        TedPermission.create()
+            .setPermissionListener(object : PermissionListener {
+
+                //권한이 허용됐을 때
+                override fun onPermissionGranted() {}
+
+                //권한이 거부됐을 때
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    Toast.makeText(this@CameraActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+            })
+            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+            .setPermissions(
+                *REQUIRED_PERMISSIONS
+            )// 얻으려는 권한(여러개 가능)
+            .check()
     }
 }
