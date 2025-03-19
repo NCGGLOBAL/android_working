@@ -14,6 +14,7 @@ import android.webkit.CookieManager
 import android.webkit.URLUtil
 import android.webkit.WebView
 import android.widget.Toast
+import org.json.JSONArray
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -494,4 +495,14 @@ object EtcUtil {
         }
         return mVer
     }
+}
+
+fun JSONArray.toArrayListInt(): ArrayList<Int> {
+    val result = ArrayList<Int>()
+
+    for (i in 0 until this.length()) {
+        result.add(this.getInt(i))
+    }
+
+    return result
 }
