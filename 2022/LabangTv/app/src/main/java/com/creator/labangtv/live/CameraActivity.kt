@@ -243,17 +243,14 @@ class CameraActivity : Activity() {
         targetFps: Int,
         videoBitrateList: ArrayList<Int>
     ) {
-        LogUtil.e("initStreamer previewFps : " + previewFps)
-        LogUtil.e("initStreamer targetFps : " + targetFps)
-        LogUtil.e("initStreamer videoBitrateList[0] : " + videoBitrateList[0])
-        LogUtil.e("initStreamer videoBitrateList[1] : " + videoBitrateList[1])
-        LogUtil.e("initStreamer videoBitrateList[2] : " + videoBitrateList[2])
+        LogUtil.e("initStreamer widthPixels : " + screenWidth)
+        LogUtil.e("initStreamer heightPixels : " + screenHeight)
 // 设置推流url（需要向相关人员申请，测试地址并不稳定！）
         mStreamer!!.url = streamUrl
         // 设置预览分辨率, 当一边为0时，SDK会根据另一边及实际预览View的尺寸进行计算
-        mStreamer!!.setPreviewResolution(720, 1280)
+        mStreamer!!.setPreviewResolution(screenWidth, screenHeight)
         // 设置推流分辨率，可以不同于预览分辨率（不应大于预览分辨率，否则推流会有画质损失）
-        mStreamer!!.setTargetResolution(720, 1280)
+        mStreamer!!.setTargetResolution(screenWidth, screenHeight)
         // 设置预览帧率
         mStreamer!!.previewFps = previewFps.toFloat()
         // 设置推流帧率，当预览帧率大于推流帧率时，编码模块会自动丢帧以适应设定的推流帧率

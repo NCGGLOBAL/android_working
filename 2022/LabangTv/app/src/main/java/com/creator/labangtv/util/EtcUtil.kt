@@ -506,3 +506,9 @@ fun JSONArray.toArrayListInt(): ArrayList<Int> {
 
     return result
 }
+
+val Context.screenWidth: Int
+    get() = resources.displayMetrics.widthPixels
+
+val Context.screenHeight: Int
+    get() = resources.displayMetrics.heightPixels
