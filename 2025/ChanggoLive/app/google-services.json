@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "676198017419",
+    "project_id": "changgolive-b6c5a",
+    "storage_bucket": "changgolive-b6c5a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:676198017419:android:4c18e3987caf54f017a78e",
+        "android_client_info": {
+          "package_name": "com.creator.changgolive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEhEwzFUzKa9rhyz2I-grSAHn_ey7EwC4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
