@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "85349982823",
+    "project_id": "dibob-e60c8",
+    "storage_bucket": "dibob-e60c8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:85349982823:android:e62a571cd453bfa3bdeac2",
+        "android_client_info": {
+          "package_name": "com.creator.dibob"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBt0bLHblgE1TIBMOjRKOecxmYkQrieJAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
