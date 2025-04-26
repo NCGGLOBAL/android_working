@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "785849947485",
+    "project_id": "tokshop-287b4",
+    "storage_bucket": "tokshop-287b4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:785849947485:android:21cb547a8bd817b1c8c4b4",
+        "android_client_info": {
+          "package_name": "com.creator.tokshop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCbED-4RCC2fqyHorXsLdpsbdLPWqwCco"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
