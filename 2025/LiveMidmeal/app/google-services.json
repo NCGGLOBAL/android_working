@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "587774582076",
+    "project_id": "livemidmeal-24e08",
+    "storage_bucket": "livemidmeal-24e08.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587774582076:android:25e9703adde961ce975239",
+        "android_client_info": {
+          "package_name": "com.creator.livemidmeal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-316psfoueIdxTl6KloJDpIgesCPIwpw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
