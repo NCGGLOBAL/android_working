@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "621254795174",
+    "project_id": "viclive-18957",
+    "storage_bucket": "viclive-18957.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:621254795174:android:56be20d390cac5ded13967",
+        "android_client_info": {
+          "package_name": "com.creator.viclive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA67oYeUs5CObR35SqrwyUvzpn_o_VYGAs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
