@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "859034775966",
+    "project_id": "tanglejp-78c58",
+    "storage_bucket": "tanglejp-78c58.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:859034775966:android:a172484d6936e6f007668f",
+        "android_client_info": {
+          "package_name": "com.creator.tanglejp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiimJQQOi2kPBNwi1SQnnM2byA-sGBdZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
