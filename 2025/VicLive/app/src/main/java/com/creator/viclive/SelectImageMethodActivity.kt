@@ -32,6 +32,8 @@ import com.creator.viclive.delegator.HNSharedPreference
 import com.creator.viclive.helpers.Constants
 import com.creator.viclive.models.Image
 import com.creator.viclive.util.*
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
@@ -670,58 +672,44 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
      */
     private fun requestPermission(requestPermissionId: Int) {
         LogUtil.d("$requestPermissionId :: permission has NOT been granted. Requesting permission.")
-        var permission = ""
-        val title = "Request Message"
-        var message = ""
-        if (requestPermissionId == Constants.REQUEST_CAMERA || requestPermissionId == Constants.REQUEST_SELECT_IMAGE_CAMERA) {
-            permission = Manifest.permission.CAMERA
-            message = "Allow access camera?"
-        } else if (requestPermissionId == Constants.REQUEST_WRITE_EXTERNAL_STORAGE) {
-            permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-            message = "Allow write external storage?"
+        val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(  //필요한 권한들
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.CAMERA
+            )
+        } else {
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA
+            )
         }
-        val finalPermission = permission
+        TedPermission.create()
+            .setPermissionListener(object : PermissionListener {
 
-        // 권한체크가 필요한 버전인지 확인 || 권한 체크가 필요한 상태인지 확인
-        val permissionCheck = ContextCompat.checkSelfPermission(this, finalPermission)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            // 이미 사용자가 권한을 허용하여 앱이 권한을 가지고 있는 상태이므로 하고자 하는 기능 수행.
-            if (requestPermissionId == Constants.REQUEST_CAMERA || requestPermissionId == Constants.REQUEST_SELECT_IMAGE_CAMERA) {
-                if (mCameraType == 3) {
-                    dispatchTakePictureIntent()
-                }
-            } else if (requestPermissionId == Constants.REQUEST_WRITE_EXTERNAL_STORAGE || requestPermissionId == Constants.REQUEST_SELECT_IMAGE_ALBUM) {
-                if (mCameraType == 4) {
-                    galleryAddPic()
-                }
-            }
-            return
-        }
-
-        // 사용자에게 지금 이 앱이 권한을 왜 요청하고 있는지 설명하는 페이지를 보여줄 것인지 말것인지 확인
-        // 사용자가 권한 설정 허용 팝업에서 거절했을 경우 return true, 다시 묻지 않음을 체크한 경우엔 return false;
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, finalPermission)) {
-            val dialog = AlertDialog.Builder(this@SelectImageMethodActivity)
-            dialog.setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("Allow") { dialog, which ->
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(arrayOf(finalPermission), 0)
+                //권한이 허용됐을 때
+                override fun onPermissionGranted() {
+                    if (requestPermissionId == Constants.REQUEST_CAMERA || requestPermissionId == Constants.REQUEST_SELECT_IMAGE_CAMERA) {
+                        if (mCameraType == 3) {
+                            dispatchTakePictureIntent()
+                        }
+                    } else if (requestPermissionId == Constants.REQUEST_WRITE_EXTERNAL_STORAGE || requestPermissionId == Constants.REQUEST_SELECT_IMAGE_ALBUM) {
+                        if (mCameraType == 4) {
+                            galleryAddPic()
+                        }
                     }
                 }
-                .setNegativeButton("Decline") { dialog, which ->
-                    Toast.makeText(
-                        this@SelectImageMethodActivity,
-                        "Cancel permission",
-                        Toast.LENGTH_SHORT
-                    ).show()
+
+                //권한이 거부됐을 때
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    Toast.makeText(this@SelectImageMethodActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
                 }
-                .create().show()
-        } else {
-            // Camera permission has not been granted yet. Request it directly.
-            ActivityCompat.requestPermissions(this, arrayOf(finalPermission), requestPermissionId)
-        }
-        // END_INCLUDE(camera_permission_request)
+            })
+            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+            .setPermissions(
+                *requiredPermissionList
+            )// 얻으려는 권한(여러개 가능)
+            .check()
     }
 
     /**
