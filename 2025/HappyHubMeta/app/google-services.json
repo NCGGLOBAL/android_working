@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "988160210906",
+    "project_id": "happyhubmeta-756e0",
+    "storage_bucket": "happyhubmeta-756e0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:988160210906:android:66ac2c50cd6b57a04072e3",
+        "android_client_info": {
+          "package_name": "com.creator.happyhubmeta"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNMC86gkih87ilJJslnUuCRTUge_qLcpY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
