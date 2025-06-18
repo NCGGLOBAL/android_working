@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "871521821841",
+    "project_id": "wowlive-80033",
+    "storage_bucket": "wowlive-80033.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:871521821841:android:87fa620b936a162dd04b30",
+        "android_client_info": {
+          "package_name": "com.creator.wowlive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDt8fp_QcifufbfSgSUu1lqoDQE5bl3M1A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
