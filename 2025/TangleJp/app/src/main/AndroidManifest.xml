@@ -3,7 +3,12 @@
     package="com.creator.tanglejp">
 
     <queries>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="text/plain" />
+        </intent>
         <package android:name="com.kakao.talk" />
+        <package android:name="com.zing.zalo" />
     </queries>
 
     <application
