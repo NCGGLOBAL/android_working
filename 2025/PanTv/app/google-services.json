@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "268372113696",
+    "project_id": "pantv-7d008",
+    "storage_bucket": "pantv-7d008.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:268372113696:android:3371c1ef76b8cadb36ff45",
+        "android_client_info": {
+          "package_name": "com.creator.pantv"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfjhwxP6LP8YFitcQwJFfB_uNdTwKFW-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
