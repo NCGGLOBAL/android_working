@@ -572,7 +572,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 val alertDialog = builder.create()
                 alertDialog.show()
-                handler.proceed()
             } else {
                 handler.proceed()
             }
