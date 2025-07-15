@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "358900849931",
+    "project_id": "greenmother-fa227",
+    "storage_bucket": "greenmother-fa227.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358900849931:android:1aaed4b6fa2f7a7b8b560e",
+        "android_client_info": {
+          "package_name": "com.creator.greenmother"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDim7x_rCevgq2SO_j2Orw_4BV74Vt5Y4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
