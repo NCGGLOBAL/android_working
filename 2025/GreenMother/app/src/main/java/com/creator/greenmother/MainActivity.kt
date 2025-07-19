@@ -912,8 +912,8 @@ class MainActivity : AppCompatActivity() {
 
                     mCameraType = 0
 
-//                    intent = Intent(context, QRCodeActivity::class.java)
-//                    startActivity(intent)
+                    intent = Intent(context, QRCodeActivity::class.java)
+                    startActivity(intent)
                     executeJavascript("$mCallback()")
                 } else if ("ACT1003" == actionCode) {
                     LogUtil.d("ACT1003 - 위쳇페이")
