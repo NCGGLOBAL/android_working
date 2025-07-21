@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "724838258000",
+    "project_id": "zoozootv-82f45",
+    "storage_bucket": "zoozootv-82f45.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:724838258000:android:e6a933ac951b55686ac855",
+        "android_client_info": {
+          "package_name": "com.creator.zoozootv"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8PpJdqFNoirgi1ad5DMtSrcrFfVpZkVY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
