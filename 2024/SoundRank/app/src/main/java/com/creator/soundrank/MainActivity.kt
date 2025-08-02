@@ -36,9 +36,6 @@ import com.creator.soundrank.helpers.Constants
 import com.creator.soundrank.live.CameraActivity
 import com.creator.soundrank.models.Image
 import com.creator.soundrank.util.*
-import com.facebook.*
-import com.facebook.login.LoginManager
-import com.facebook.login.LoginResult
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
@@ -101,14 +98,7 @@ class MainActivity : AppCompatActivity() {
     private var mCapturedImageURI: Uri? = null
 
     //    private static OAuthLogin mOAuthLoginModule;
-    private var callbackManager: CallbackManager? = null
     private val permissionNeeds = Arrays.asList("public_profile", "email")
-    private val btnNaverLogin: Button? = null
-    private val btnFacebookLogin: Button? = null
-    private val btnKakaoLogin: Button? = null
-    private val mNaverMessage = ""
-    private var mFacebookMessage = ""
-    private val mKakaoMessage = ""
 
     // SNS========================================================================= //
     private var mLoadingView: View? = null
@@ -255,7 +245,7 @@ class MainActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
             if (packageInfo == null) Log.e("KeyHash", "KeyHash:null")
-            for (signature in packageInfo!!.signatures) {
+            packageInfo?.signatures?.forEach { signature ->
                 try {
                     val md = MessageDigest.getInstance("SHA")
                     md.update(signature.toByteArray())
@@ -979,8 +969,6 @@ class MainActivity : AppCompatActivity() {
                         } else if (actionParamObj.getString("snsType") == "2") {
                         } else if (actionParamObj.getString("snsType") == "3") {
                             // 페이스북 로그인
-                            FacebookSdk.sdkInitialize(context)
-                            initFacebookLogin()
                         }
                     }
                 } else if ("ACT1022" == actionCode) {
@@ -1080,7 +1068,7 @@ class MainActivity : AppCompatActivity() {
                     } catch (e: PackageManager.NameNotFoundException) {
                         e.printStackTrace()
                     }
-                    versionName = pi!!.versionName
+                    versionName = pi?.versionName.toString()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -1147,7 +1135,6 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var data = data
-        callbackManager?.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("SeongKwon", "============================================")
         Log.d("SeongKwon", "requestCode = $requestCode")
@@ -1825,56 +1812,5 @@ class MainActivity : AppCompatActivity() {
                 else -> {}
             }
         }
-    }
-
-    // 페이스북 로그인
-    private fun initFacebookLogin() {
-        LoginManager.getInstance().logInWithReadPermissions(this@MainActivity, permissionNeeds)
-        callbackManager = CallbackManager.Factory.create()
-        LoginManager.getInstance()
-            .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-                override fun onSuccess(loginResult: LoginResult) {
-                    val accessToken = AccessToken.getCurrentAccessToken()
-                    Log.d("SeongKwon", "====================================0")
-                    Log.d("SeongKwon", "onSuccess - getToken : " + accessToken?.token)
-                    Log.d("SeongKwon", "onSuccess - getUserId : " + accessToken?.userId)
-                    Log.d("SeongKwon", "onSuccess - isExpired : " + accessToken?.isExpired)
-                    Log.d("SeongKwon", "onSuccess - getExpires : " + accessToken?.expires)
-                    Log.d("SeongKwon", "onSuccess - getLastRefresh : " + accessToken?.lastRefresh)
-                    Log.d("SeongKwon", "====================================1")
-                    val request = GraphRequest.newMeRequest(
-                        AccessToken.getCurrentAccessToken()
-                    ) { result, response ->
-                        try {
-                            Log.d("SeongKwon", "fb json object: $result")
-                            Log.d("SeongKwon", "fb graph response: $response")
-                            val jsonObject = JSONObject()
-                            jsonObject.put(
-                                "accessToken",
-                                accessToken?.token
-                            ) // getAccessToken
-                            jsonObject.put("userInfo", result) // 사용자정보
-                            executeJavascript("$mCallback($jsonObject)")
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                    val parameters = Bundle()
-                    parameters.putString(
-                        "fields",
-                        "id,first_name,last_name,email,gender,birthday"
-                    ) // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-                    request.parameters = parameters
-                    request.executeAsync()
-                }
-
-                override fun onCancel() {
-                    Log.d("SeongKwon", "onCancel")
-                }
-
-                override fun onError(error: FacebookException) {
-                    Log.d("SeongKwon", "onError : " + error.localizedMessage)
-                }
-            })
     }
 }

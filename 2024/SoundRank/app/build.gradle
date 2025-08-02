@@ -4,13 +4,13 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
 android {
-    compileSdkVersion 34
+    compileSdk 35
     defaultConfig {
         applicationId "com.creator.soundrank"
         minSdkVersion 21
-        targetSdkVersion 34
-        versionCode 1
-        versionName "1.0.1"
+        targetSdk 35
+        versionCode 2
+        versionName "1.0.2"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
@@ -84,11 +84,6 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
     implementation 'androidx.browser:browser:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-
-    // 페이스북로그인
-    implementation 'com.facebook.android:facebook-core:[8,9)'
-    implementation 'com.facebook.android:facebook-login:latest.release'
-    implementation 'com.facebook.android:facebook-share:[8,9)'
 
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
