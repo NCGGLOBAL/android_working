@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "851102224447",
+    "project_id": "dadalive-24781",
+    "storage_bucket": "dadalive-24781.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851102224447:android:0ac7fcaed870f70a8fe88a",
+        "android_client_info": {
+          "package_name": "com.creator.dadalive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD41k9G_sshBHNSMsPSB2EscLrIFIT-6lw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
