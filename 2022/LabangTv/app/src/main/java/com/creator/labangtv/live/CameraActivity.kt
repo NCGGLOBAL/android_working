@@ -662,6 +662,27 @@ class CameraActivity : Activity() {
                     val jsonObject = JSONObject()
                     jsonObject.put("resultcd", resultcd) //1: 성공, 0: 실패
                     executeJavascript("$mCallback($jsonObject)")
+                } else if ("ACT1034" == actionCode) {
+                    LogUtil.d("ACT1034 - wlive 카메라 좌우 반전 제어")
+                    var resultcd = 1
+                    if (actionParamObj != null && actionParamObj.has("key_type")) {
+                        try {
+                            val keyType = actionParamObj.getInt("key_type")
+                            // 0: 미러 OFF, 1: 미러 ON
+                            if (keyType == 1) {
+                                mStreamer?.setEnableCameraMirror(true)
+                            } else {
+                                mStreamer?.setEnableCameraMirror(false)
+                            }
+                        } catch (e: Exception) {
+                            resultcd = 0
+                        }
+                    } else {
+                        resultcd = 0
+                    }
+                    val jsonObject = JSONObject()
+                    jsonObject.put("resultcd", resultcd) //1: 성공, 0: 실패
+                    executeJavascript("$mCallback($jsonObject)")
                 } else if ("ACT1030" == actionCode) {
                     LogUtil.d("ACT1030 - wlive 스트림키 전달 및 송출")
                     val resultcd = 1
