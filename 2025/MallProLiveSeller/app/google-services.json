@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "970900497302",
+    "project_id": "mallproliveseller",
+    "storage_bucket": "mallproliveseller.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:970900497302:android:02320aba52a3bd79d933b7",
+        "android_client_info": {
+          "package_name": "com.creator.mallproliveseller"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCszZO7HvipxdY1Cgnk89JRc40A2mI4PS0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
