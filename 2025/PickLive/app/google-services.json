@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "345808975324",
+    "project_id": "picklive-29490",
+    "storage_bucket": "picklive-29490.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:345808975324:android:d24246fe8d17283b818b19",
+        "android_client_info": {
+          "package_name": "com.creator.picklive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkbdQVUqgQQjrTv2tl5gg_eEAxKjdJOcA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
