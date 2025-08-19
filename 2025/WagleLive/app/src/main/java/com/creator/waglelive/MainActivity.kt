@@ -579,6 +579,7 @@ class MainActivity : AppCompatActivity() {
                 alertDialog.show()
             } else {
                 handler.proceed()
+                HNSharedPreference.putSharedPreference(this@MainActivity, "isFirstLive", "Y")
             }
         }
 

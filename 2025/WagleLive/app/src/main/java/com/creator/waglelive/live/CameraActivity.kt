@@ -434,6 +434,7 @@ class CameraActivity : Activity() {
                 alertDialog.show()
             } else {
                 handler.proceed()
+                HNSharedPreference.putSharedPreference(this@CameraActivity, "isFirstLive", "Y")
             }
         }
 

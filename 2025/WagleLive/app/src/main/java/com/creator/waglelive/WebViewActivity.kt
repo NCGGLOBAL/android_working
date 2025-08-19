@@ -420,6 +420,7 @@ class WebViewActivity : Activity() {
                 alertDialog.show()
             } else {
                 handler.proceed()
+                HNSharedPreference.putSharedPreference(this@WebViewActivity, "isFirstLive", "Y")
             }
         }
 
