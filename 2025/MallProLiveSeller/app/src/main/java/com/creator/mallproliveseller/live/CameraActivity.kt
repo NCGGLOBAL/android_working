@@ -50,7 +50,8 @@ class CameraActivity : Activity() {
     private var mCallback: String? = null
     private var mCookieManager: CookieManager? = null
 
-    private val LIVE_URL: String = "https://mallprolive.co.kr/addon/wlive/TV_live_creator.asp"
+    private var LIVE_URL: String = HNApplication.Companion.URL + "/addon/wlive/TV_live_creator.asp"
+    private var currentLiveUrl = LIVE_URL
     private var mUploadMessage: ValueCallback<Uri?>? = null
     private var mFilePathCallback: ValueCallback<Array<Uri>>? = null
     private var mCameraPhotoPath: String? = null
@@ -81,6 +82,14 @@ class CameraActivity : Activity() {
         // Activity가 실행 될 때 항상 화면을 켜짐으로 유지한다.
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_camera)
+
+        val webViewUrl = intent.getStringExtra("liveUrl")
+        if (webViewUrl?.contains("ncglive://make?subject=&screen_type=2") == true) {
+            val uri = Uri.parse(webViewUrl)
+            val landingUrl = uri.getQueryParameter("url")
+            currentLiveUrl = "${landingUrl}/addon/wlive/TV_live_creator.asp"
+        }
+
         initWebView()
         checkPermission()
         initCamera()
@@ -347,7 +356,7 @@ class CameraActivity : Activity() {
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
         mWebView!!.isDrawingCacheEnabled = true
         mWebView!!.buildDrawingCache()
-        mWebView!!.loadUrl(LIVE_URL)
+        mWebView!!.loadUrl(currentLiveUrl)
     }
 
     public override fun onResume() {

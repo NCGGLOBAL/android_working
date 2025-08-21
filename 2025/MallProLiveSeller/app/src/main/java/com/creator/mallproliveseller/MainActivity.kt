@@ -584,7 +584,10 @@ class MainActivity : AppCompatActivity() {
             intent?.setSelector(null)
 
             if (uri.scheme == "ncglive") {
-                startActivity(Intent(this@MainActivity, CameraActivity::class.java))
+                val intent = Intent(this@MainActivity, CameraActivity::class.java)
+                intent.putExtra("liveUrl", url)  // url 변수에 담긴 값을 전달
+                startActivity(intent)
+
                 return true
             }
             if (url.startsWith("sms:") || url.startsWith("smsto:")) {
