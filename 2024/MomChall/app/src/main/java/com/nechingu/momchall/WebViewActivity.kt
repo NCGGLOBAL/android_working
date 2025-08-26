@@ -25,7 +25,10 @@ import android.webkit.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import com.nechingu.momchall.common.BackPressCloseHandler
 import com.nechingu.momchall.common.HNApplication
 import com.nechingu.momchall.delegator.HNCommTran
@@ -435,12 +438,14 @@ class WebViewActivity : Activity() {
                                 .create().show()
                         }
                     } else {
-                        intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
-                        startActivity(intent)
+                        // 전화 걸기 기능 제거됨
+                        // intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
+                        // startActivity(intent)
                     }
                 } else {
-                    intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
-                    startActivity(intent)
+                    // 전화 걸기 기능 제거됨
+                    // intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
+                    // startActivity(intent)
                 }
                 return true
             } else if (url.startsWith("mailto:")) {
@@ -808,16 +813,24 @@ class WebViewActivity : Activity() {
                     }
                 } else if ("ACT1037" == actionCode) {
                     LogUtil.d("ACT1037 - 파일 열기")
-                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                    contentSelectionIntent.type = "*/*"
-                    val intentArray: Array<Intent?>
-                    intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                    startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
+                    // 파일 접근 권한 요청
+                    requestMediaPermission(
+                        onGranted = {
+                            val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                            contentSelectionIntent.type = "*/*"
+                            val intentArray: Array<Intent?>
+                            intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                            startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
+                        },
+                        onDenied = {
+                            Toast.makeText(context, "파일 접근 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -835,7 +848,7 @@ class WebViewActivity : Activity() {
                     } catch (e: PackageManager.NameNotFoundException) {
                         e.printStackTrace()
                     }
-                    versionName = pi!!.versionName
+                    versionName = pi?.versionName ?: ""
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -1585,6 +1598,41 @@ class WebViewActivity : Activity() {
                     Log.d("SeongKwon", "onError : " + error.localizedMessage)
                 }
             })
+    }
+
+    // 사진 및 동영상 권한 요청
+    fun requestMediaPermission(onGranted: () -> Unit, onDenied: () -> Unit) {
+        val mediaPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+        } else {
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        }
+
+        // 권한이 이미 허용되어 있는지 먼저 확인
+        val allPermissionsGranted = mediaPermissions.all { permission ->
+            ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+        }
+
+        if (allPermissionsGranted) {
+            onGranted()
+        } else {
+            TedPermission.create()
+                .setPermissionListener(object : PermissionListener {
+                    override fun onPermissionGranted() {
+                        onGranted()
+                    }
+
+                    override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                        onDenied()
+                    }
+                })
+                .setDeniedMessage("사진 및 동영상 접근 권한이 필요합니다.")
+                .setPermissions(*mediaPermissions)
+                .check()
+        }
     }
 
     companion object {

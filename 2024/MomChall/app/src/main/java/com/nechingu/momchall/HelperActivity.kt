@@ -23,39 +23,45 @@ open class HelperActivity : AppCompatActivity() {
 
     //    Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA
     protected fun checkPermission() {
-        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
-                permissionGranted()
-            } else {
-                ActivityCompat.requestPermissions(this, permissions, Constants.PERMISSION_REQUEST_CODE)
-            }
+        val requiredPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
         } else {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
-                permissionGranted()
-            } else {
-                ActivityCompat.requestPermissions(this, permissions, Constants.PERMISSION_REQUEST_CODE)
-            }
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+        
+        if (requiredPermissions.all { ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED }) {
+            permissionGranted()
+        } else {
+            ActivityCompat.requestPermissions(this, requiredPermissions, Constants.PERMISSION_REQUEST_CODE)
         }
     }
 
     private fun requestPermission() {
-        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_IMAGES)) {
-                showRequestPermissionRationale()
-            } else {
-                showAppPermissionSettings()
-            }
+        val requiredPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
         } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                showRequestPermissionRationale()
-            } else {
-                showAppPermissionSettings()
-            }
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+        
+        val shouldShowRationale = requiredPermissions.any { 
+            ActivityCompat.shouldShowRequestPermissionRationale(this, it) 
+        }
+        
+        if (shouldShowRationale) {
+            showRequestPermissionRationale()
+        } else {
+            showAppPermissionSettings()
         }
     }
 
     private fun showRequestPermissionRationale() {
         if (view == null) return
+        val requiredPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+        } else {
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+        
         val snackbar = Snackbar.make(
             view!!,
             getString(R.string.permission_info),
@@ -64,7 +70,7 @@ open class HelperActivity : AppCompatActivity() {
             .setAction(getString(R.string.permission_ok)) {
                 ActivityCompat.requestPermissions(
                     this@HelperActivity,
-                    permissions,
+                    requiredPermissions,
                     Constants.PERMISSION_REQUEST_CODE
                 )
             }

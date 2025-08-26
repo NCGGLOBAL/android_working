@@ -187,8 +187,8 @@ class MainActivity : AppCompatActivity() {
             LogUtil.e("mPushUid : $mPushUid")
             LogUtil.e("mLandingUrl : $mLandingUrl")
 
-            // permission 체크 - 최초실행
-            checkPermission()
+            // 알림 권한만 요청 - 최초실행
+            checkNotificationPermission()
 
             // WebView 초기화
             initWebView()
@@ -233,8 +233,11 @@ class MainActivity : AppCompatActivity() {
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
             }
-            if (packageInfo == null) Log.e("KeyHash", "KeyHash:null")
-            for (signature in packageInfo!!.signatures) {
+            if (packageInfo == null) {
+                Log.e("KeyHash", "KeyHash:null")
+                return
+            }
+            for (signature in packageInfo.signatures ?: emptyArray()) {
                 try {
                     val md = MessageDigest.getInstance("SHA")
                     md.update(signature.toByteArray())
@@ -530,8 +533,9 @@ class MainActivity : AppCompatActivity() {
                 startActivity(i)
                 return true
             } else if (url.startsWith("tel:")) {
-                intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
-                startActivity(intent)
+                // 전화 걸기 기능 제거됨
+                // intent = Intent(Intent.ACTION_CALL, Uri.parse(url))
+                // startActivity(intent)
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //                    val permissionResult = checkSelfPermission(Manifest.permission.CALL_PHONE)
 //                    if (permissionResult == PackageManager.PERMISSION_DENIED) {
@@ -828,31 +832,31 @@ class MainActivity : AppCompatActivity() {
                         LogUtil.d("mCameraType : $mCameraType")
                         mCameraType = if (actionParamObj.getInt("key_type") == 0) {      // camera
                             3
-                            //                            requestPermission(Constants.REQUEST_SELECT_IMAGE_CAMERA);
                         } else {                                          // album
                             4
-                            //                            requestPermission(Constants.REQUEST_SELECT_IMAGE_ALBUM);
                         }
+                        
                         if (mCameraType == 3) {
-                            dispatchTakePictureIntent()
+                            // 카메라 권한 요청
+                            requestCameraPermission(
+                                onGranted = {
+                                    dispatchTakePictureIntent()
+                                },
+                                onDenied = {
+                                    Toast.makeText(context, "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                                }
+                            )
                         } else {
-                            galleryAddPic()
+                            // 사진 접근 권한 요청
+                            requestMediaPermission(
+                                onGranted = {
+                                    galleryAddPic()
+                                },
+                                onDenied = {
+                                    Toast.makeText(context, "사진 접근 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                                }
+                            )
                         }
-//                        if (!hasPermissions(mContext, *PERMISSIONS)) {
-//                            ActivityCompat.requestPermissions(
-//                                this@MainActivity,
-//                                PERMISSIONS,
-//                                Constants.PERMISSIONS_MULTIPLE_REQUEST
-//                            )
-//                        } else {
-//                            if (mCameraType == 3) {
-//                                dispatchTakePictureIntent()
-//                            } else {
-//                                galleryAddPic()
-//                            }
-//                            //                            intent = new Intent(getApplicationContext(), SelectImageMethodActivity.class);
-////                            startActivityForResult(intent, Constants.REQUEST_CODE);
-//                        }
                     }
                 } else if ("ACT1002" == actionCode) {
                     LogUtil.d("ACT1002 - 앱 데이터 가져오기 (키체인 및 파일에 있는 정보 가져오기)")
@@ -863,11 +867,18 @@ class MainActivity : AppCompatActivity() {
 
                     mCameraType = 0
 
-                    intent = Intent(context, QRCodeActivity::class.java)
-                    startActivity(intent)
-//                    requestPermission(Constants.REQUEST_CAMERA);
-                    //                    requestPermission(Constants.REQUEST_CAMERA);
-                    executeJavascript("$mCallback()")
+                    // QR 코드 스캔을 위한 카메라 권한 요청
+                    requestCameraPermission(
+                        onGranted = {
+                            intent = Intent(context, QRCodeActivity::class.java)
+                            startActivity(intent)
+                            executeJavascript("$mCallback()")
+                        },
+                        onDenied = {
+                            Toast.makeText(context, "QR 코드 스캔을 위해 카메라 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                            executeJavascript("$mCallback()")
+                        }
+                    )
                 } else if ("ACT1003" == actionCode) {
                     LogUtil.d("ACT1003 - 위쳇페이")
                     if (actionParamObj!!.has("request_url")) {
@@ -886,13 +897,43 @@ class MainActivity : AppCompatActivity() {
                     Log.d("SeongKwon", "mImgArr : " + mImgArr.toString())
                     Log.d("SeongKwon", "pageGbn : $pageGbn")
 
-                    // 신규
-                    intent = Intent(mContext, SelectImageMethodActivity::class.java)
-                    intent.putExtra("token", mToken)
-                    intent.putExtra("imgArr", mImgArr.toString())
-                    intent.putExtra("pageGbn", pageGbn)
-                    intent.putExtra("cnt", cnt)
-                    startActivityForResult(intent, Constants.REQUEST_ADD_IMAGE)
+                    // 카메라 및 사진 접근 권한 요청
+                    val cameraPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        Manifest.permission.CAMERA
+                    } else {
+                        Manifest.permission.CAMERA
+                    }
+                    
+                    val mediaPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+                    } else {
+                        arrayOf(
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        )
+                    }
+                    
+                    val allPermissions = arrayOf(cameraPermission, *mediaPermissions)
+                    
+                    TedPermission.create()
+                        .setPermissionListener(object : PermissionListener {
+                            override fun onPermissionGranted() {
+                                // 신규
+                                val newIntent = Intent(mContext, SelectImageMethodActivity::class.java)
+                                newIntent.putExtra("token", mToken)
+                                newIntent.putExtra("imgArr", mImgArr.toString())
+                                newIntent.putExtra("pageGbn", pageGbn)
+                                newIntent.putExtra("cnt", cnt)
+                                startActivityForResult(newIntent, Constants.REQUEST_ADD_IMAGE)
+                            }
+
+                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                Toast.makeText(context, "카메라 및 사진 접근 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                        .setDeniedMessage("카메라 및 사진 접근 권한이 필요합니다.")
+                        .setPermissions(*allPermissions)
+                        .check()
                 } else if ("ACT1012" == actionCode) {
                     LogUtil.d("ACT1012 - 사진 임시저장 통신")
                     mToken = actionParamObj!!.getString("token") // 사진 임시저장시 토큰값
@@ -909,9 +950,9 @@ class MainActivity : AppCompatActivity() {
                     if (actionParamObj!!.has("url")) {
                         val request_url = actionParamObj.getString("url")
                         LogUtil.d("url : $request_url")
-                        intent = Intent(mContext, WebViewActivity::class.java)
-                        intent.putExtra("webviewUrl", request_url)
-                        startActivity(intent)
+                        val newIntent = Intent(mContext, WebViewActivity::class.java)
+                        newIntent.putExtra("webviewUrl", request_url)
+                        startActivity(newIntent)
                     }
                 } else if ("ACT1016" == actionCode) {
                     LogUtil.d("ACT1016 - 팝업을 닫은후(ACT1015)  호출할 function 이름")
@@ -937,24 +978,33 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 } else if ("ACT1022" == actionCode) {
-                    LogUtil.d("ACT1022 - 전화 걸기")
-                    val tel = actionParamObj?.getString("tel")
-                    tel?.let {
-                        intent = Intent(Intent.ACTION_CALL, Uri.parse(it))
-                        startActivity(intent)
-                    }
+                    LogUtil.d("ACT1022 - 전화 걸기 (기능 제거됨)")
+                    // 전화 걸기 기능 제거됨
+                    // val tel = actionParamObj?.getString("tel")
+                    // tel?.let {
+                    //     intent = Intent(Intent.ACTION_CALL, Uri.parse(it))
+                    //     startActivity(intent)
+                    // }
                 } else if ("ACT1037" == actionCode) {
                     LogUtil.d("ACT1037 - 파일 열기")
-                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                    contentSelectionIntent.type = "*/*"
-                    val intentArray: Array<Intent?>
-                    intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                    startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
+                    // 파일 접근 권한 요청
+                    requestMediaPermission(
+                        onGranted = {
+                            val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                            contentSelectionIntent.type = "*/*"
+                            val intentArray: Array<Intent?>
+                            intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                            startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
+                        },
+                        onDenied = {
+                            Toast.makeText(context, "파일 접근 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -972,7 +1022,7 @@ class MainActivity : AppCompatActivity() {
                     } catch (e: PackageManager.NameNotFoundException) {
                         e.printStackTrace()
                     }
-                    versionName = pi!!.versionName
+                    versionName = pi?.versionName ?: ""
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -1344,48 +1394,86 @@ class MainActivity : AppCompatActivity() {
         }).start()
     }
 
-    private fun checkPermission() {
-        val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(  //필요한 권한들
-                Manifest.permission.CAMERA,
-                Manifest.permission.CALL_PHONE,
-                Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.GET_ACCOUNTS,
-                Manifest.permission.READ_MEDIA_AUDIO,
-                Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.READ_MEDIA_VIDEO,
-                Manifest.permission.POST_NOTIFICATIONS
-            )
+    // 최초 실행 시 알림 권한만 요청
+    private fun checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            TedPermission.create()
+                .setPermissionListener(object : PermissionListener {
+                    override fun onPermissionGranted() {
+                        // 알림 권한 허용됨
+                    }
+
+                    override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                        // 알림 권한 거부됨 - 앱 사용 가능
+                    }
+                })
+                .setDeniedMessage("알림 권한을 허용하면 새로운 소식을 받을 수 있습니다.")
+                .setPermissions(Manifest.permission.POST_NOTIFICATIONS)
+                .check()
+        }
+    }
+
+    // 카메라 권한 요청
+    fun requestCameraPermission(onGranted: () -> Unit, onDenied: () -> Unit) {
+        val cameraPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.CAMERA
+        } else {
+            Manifest.permission.CAMERA
+        }
+
+        // 권한이 이미 허용되어 있는지 먼저 확인
+        if (ContextCompat.checkSelfPermission(this, cameraPermission) == PackageManager.PERMISSION_GRANTED) {
+            onGranted()
+        } else {
+            TedPermission.create()
+                .setPermissionListener(object : PermissionListener {
+                    override fun onPermissionGranted() {
+                        onGranted()
+                    }
+
+                    override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                        onDenied()
+                    }
+                })
+                .setDeniedMessage("카메라 권한이 필요합니다.")
+                .setPermissions(cameraPermission)
+                .check()
+        }
+    }
+
+    // 사진 및 동영상 권한 요청
+    fun requestMediaPermission(onGranted: () -> Unit, onDenied: () -> Unit) {
+        val mediaPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
         } else {
             arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA,
-                Manifest.permission.CALL_PHONE,
-                Manifest.permission.GET_ACCOUNTS,
-                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
         }
 
-        TedPermission.create()
-            .setPermissionListener(object : PermissionListener {
+        // 권한이 이미 허용되어 있는지 먼저 확인
+        val allPermissionsGranted = mediaPermissions.all { permission ->
+            ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+        }
 
-                //권한이 허용됐을 때
-                override fun onPermissionGranted() {
-//                    startProcess()
-//                    Toast.makeText(this@MainActivity, "카메라 기능 권한 획득", Toast.LENGTH_SHORT).show()
-                }
+        if (allPermissionsGranted) {
+            onGranted()
+        } else {
+            TedPermission.create()
+                .setPermissionListener(object : PermissionListener {
+                    override fun onPermissionGranted() {
+                        onGranted()
+                    }
 
-                //권한이 거부됐을 때
-                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
-                }
-            })
-            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
-            .setPermissions(
-                *requiredPermissionList
-            )// 얻으려는 권한(여러개 가능)
-            .check()
+                    override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                        onDenied()
+                    }
+                })
+                .setDeniedMessage("사진 및 동영상 접근 권한이 필요합니다.")
+                .setPermissions(*mediaPermissions)
+                .check()
+        }
     }
 
     private fun callQR() {

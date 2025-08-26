@@ -4,23 +4,33 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
     defaultConfig {
         applicationId "com.nechingu.momchall"
         minSdkVersion 21
-        targetSdkVersion 34
-        versionCode 22
-        versionName "1.2.2"
+        targetSdkVersion 35
+        versionCode 23
+        versionName "1.2.3"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
 
         ndk.abiFilters 'armeabi-v7a','arm64-v8a','x86','x86_64'
     }
+    signingConfigs {
+        release {
+            storeFile file("/Users/jeongjinman/Dev/Android/android_working/keystore/2024/Momchall/momchall.jks")
+            storePassword "momchall2019"
+            keyAlias "momchall"
+            keyPassword "momchall2019!@"
+        }
+    }
+    
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
