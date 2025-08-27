@@ -9,18 +9,29 @@ android {
         applicationId "com.creator.mallproliveseller"
         minSdkVersion 21
         targetSdkVersion 35
-        versionCode 3
-        versionName "1.0.3"
+        versionCode 4
+        versionName "1.0.4"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
 
         ndk.abiFilters 'armeabi-v7a','arm64-v8a','x86','x86_64'
     }
+    
+    signingConfigs {
+        release {
+            storeFile file("/Users/jeongjinman/Dev/Android/android_working/keystore/2025/MallProLiveSeller/mallproliveseller.jks")
+            storePassword "mallproliveseller2025"
+            keyAlias "mallproliveseller"
+            keyPassword "mallproliveseller2025"
+        }
+    }
+    
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
