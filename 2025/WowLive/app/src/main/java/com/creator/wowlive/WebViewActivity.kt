@@ -36,9 +36,6 @@ import com.creator.wowlive.delegator.HNSharedPreference
 import com.creator.wowlive.helpers.Constants
 import com.creator.wowlive.models.Image
 import com.creator.wowlive.util.*
-import com.facebook.*
-import com.facebook.login.LoginManager
-import com.facebook.login.LoginResult
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
@@ -101,15 +98,7 @@ class WebViewActivity : Activity() {
     private var mCameraPhotoPath: String? = null
     private var mCapturedImageURI: Uri? = null
 
-    //    private static OAuthLogin mOAuthLoginModule;
-    private var callbackManager: CallbackManager? = null
     private val permissionNeeds = Arrays.asList("public_profile", "email")
-    private val btnNaverLogin: Button? = null
-    private val btnFacebookLogin: Button? = null
-    private val btnKakaoLogin: Button? = null
-    private val mNaverMessage = ""
-    private var mFacebookMessage = ""
-    private val mKakaoMessage = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Activity가 실행 될 때 항상 화면을 켜짐으로 유지한다.
@@ -815,8 +804,6 @@ class WebViewActivity : Activity() {
                         } else if (actionParamObj.getString("snsType") == "2") {
                         } else if (actionParamObj.getString("snsType") == "3") {
                             // 페이스북 로그인
-                            FacebookSdk.sdkInitialize(context)
-                            initFacebookLogin()
                         }
                     }
                 } else if ("ACT1037" == actionCode) {
@@ -865,7 +852,7 @@ class WebViewActivity : Activity() {
                     } catch (e: PackageManager.NameNotFoundException) {
                         e.printStackTrace()
                     }
-                    versionName = pi!!.versionName
+                    versionName = pi?.versionName.toString()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -913,7 +900,6 @@ class WebViewActivity : Activity() {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var data = data
-        callbackManager?.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("SeongKwon", "============================================")
         Log.d("SeongKwon", "requestCode = $requestCode")
@@ -1568,57 +1554,6 @@ class WebViewActivity : Activity() {
                 else -> {}
             }
         }
-    }
-
-    // 페이스북 로그인
-    private fun initFacebookLogin() {
-        LoginManager.getInstance().logInWithReadPermissions(this@WebViewActivity, permissionNeeds)
-        callbackManager = CallbackManager.Factory.create()
-        LoginManager.getInstance()
-            .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-                override fun onSuccess(loginResult: LoginResult) {
-                    val accessToken = AccessToken.getCurrentAccessToken()
-                    Log.d("SeongKwon", "====================================0")
-                    Log.d("SeongKwon", "onSuccess - getToken : " + accessToken?.token)
-                    Log.d("SeongKwon", "onSuccess - getUserId : " + accessToken?.userId)
-                    Log.d("SeongKwon", "onSuccess - isExpired : " + accessToken?.isExpired)
-                    Log.d("SeongKwon", "onSuccess - getExpires : " + accessToken?.expires)
-                    Log.d("SeongKwon", "onSuccess - getLastRefresh : " + accessToken?.lastRefresh)
-                    Log.d("SeongKwon", "====================================1")
-                    val request = GraphRequest.newMeRequest(
-                        AccessToken.getCurrentAccessToken()
-                    ) { result, response ->
-                        try {
-                            Log.d("SeongKwon", "fb json object: $result")
-                            Log.d("SeongKwon", "fb graph response: $response")
-                            val jsonObject = JSONObject()
-                            jsonObject.put(
-                                "accessToken",
-                                accessToken?.token
-                            ) // getAccessToken
-                            jsonObject.put("userInfo", result) // 사용자정보
-                            executeJavascript("$mCallback($jsonObject)")
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                    val parameters = Bundle()
-                    parameters.putString(
-                        "fields",
-                        "id,first_name,last_name,email,gender,birthday"
-                    ) // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-                    request.parameters = parameters
-                    request.executeAsync()
-                }
-
-                override fun onCancel() {
-                    Log.d("SeongKwon", "onCancel")
-                }
-
-                override fun onError(error: FacebookException) {
-                    Log.d("SeongKwon", "onError : " + error.localizedMessage)
-                }
-            })
     }
 
     companion object {
