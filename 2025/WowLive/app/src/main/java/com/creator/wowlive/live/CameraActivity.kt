@@ -241,7 +241,8 @@ class CameraActivity : Activity() {
         streamUrl: String,
         previewFps: Int,
         targetFps: Int,
-        videoBitrateList: ArrayList<Int>
+        videoBitrateList: ArrayList<Int>,
+        keyframeInterval: Int = 2
     ) {
         LogUtil.e("initStreamer widthPixels : " + screenWidth)
         LogUtil.e("initStreamer heightPixels : " + screenHeight)
@@ -259,7 +260,7 @@ class CameraActivity : Activity() {
 //        mStreamer.setVideoKBitrate(600, 800, 400);
         mStreamer!!.setVideoKBitrate(videoBitrateList[0], videoBitrateList[1], videoBitrateList[2])
         // 设置音频采样率
-        mStreamer?.iFrameInterval = 1f
+        mStreamer?.iFrameInterval = keyframeInterval.toFloat()
         mStreamer!!.audioSampleRate = 44100
         // 设置音频码率，单位为kbps，另有setAudioBitrate接口，单位为bps
         mStreamer!!.setAudioKBitrate(48)
@@ -671,7 +672,8 @@ class CameraActivity : Activity() {
                         val targetFps = it.getInt("targetFps")
                         val setVideoKBitrate = it.getJSONArray("setVideoKBitrate")
                         val videoBitrateList = setVideoKBitrate.toArrayListInt()
-                        runOnUiThread { initStreamer(streamUrl, previewFps, targetFps, videoBitrateList) }
+                        val keyframeInterval = if (it.has("keyframeinterval")) it.getInt("keyframeinterval") else 2
+                        runOnUiThread { initStreamer(streamUrl, previewFps, targetFps, videoBitrateList, keyframeInterval) }
                         val jsonObject = JSONObject()
                         jsonObject.put("resultcd", resultcd) //1: 성공, 0: 실패
                         executeJavascript("$mCallback($jsonObject)")
