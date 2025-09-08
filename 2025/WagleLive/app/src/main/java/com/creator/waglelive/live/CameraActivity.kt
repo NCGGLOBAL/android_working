@@ -233,12 +233,55 @@ class CameraActivity : Activity() {
     }
 
     private fun initCamera() {
-        mCameraPreview = findViewById<View>(R.id.camera_preview) as GLSurfaceView
-        mMainHandler = Handler()
-        // 创建KSYStreamer实例
-        mStreamer = KSYStreamer(this)
-        // 设置预览View
-        mStreamer!!.setDisplayPreview(mCameraPreview)
+        try {
+            // 1. 안전한 findViewById 처리
+            val cameraPreviewView = findViewById<View>(R.id.camera_preview)
+            if (cameraPreviewView !is GLSurfaceView) {
+                val errorMsg = "camera_preview가 GLSurfaceView가 아닙니다: ${cameraPreviewView?.javaClass?.simpleName}"
+                Log.e(TAG, errorMsg)
+                showErrorDialog("레이아웃 오류: $errorMsg")
+                return
+            }
+            mCameraPreview = cameraPreviewView
+            
+            // 2. Handler 초기화 (메모리 누수 방지)
+            mMainHandler = Handler(Looper.getMainLooper())
+            
+            // 3. KSYStreamer 초기화 (예외 처리)
+            try {
+                mStreamer = KSYStreamer(this)
+                Log.d(TAG, "KSYStreamer 초기화 성공")
+            } catch (e: UnsatisfiedLinkError) {
+                Log.e(TAG, "KSYStreamer 네이티브 라이브러리 로드 실패: ${e.message}")
+                showErrorDialog("KSYStreamer 네이티브 라이브러리 로드 실패: ")
+                return
+            } catch (e: Exception) {
+                Log.e(TAG, "KSYStreamer 초기화 실패: ${e.message}")
+                showErrorDialog("KSYStreamer 초기화 실패", e)
+                return
+            }
+            
+            // 4. 안전한 setDisplayPreview 호출
+            mStreamer?.let { streamer ->
+                try {
+                    streamer.setDisplayPreview(mCameraPreview)
+                    Log.d(TAG, "카메라 프리뷰 설정 완료")
+                } catch (e: Exception) {
+                    Log.e(TAG, "카메라 프리뷰 설정 실패: ${e.message}")
+                    // 스트리머 정리
+                    streamer.release()
+                    mStreamer = null
+                    showErrorDialog("카메라 프리뷰 설정 실패", e)
+                }
+            }
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "initCamera 전체 실패: ${e.message}")
+            e.printStackTrace()
+            // 전체 초기화 실패 시 정리 작업
+            cleanupCamera()
+            showErrorDialog("카메라 초기화 전체 실패", e)
+        }
     }
 
     private fun initStreamer(
@@ -360,47 +403,99 @@ class CameraActivity : Activity() {
     public override fun onResume() {
         super.onResume()
         if (mStreamer != null) {
-            // 一般可以在onResume中开启摄像头预览
-            mStreamer!!.startCameraPreview()
-            // 调用KSYStreamer的onResume接口
-            mStreamer!!.onResume()
-            // 如果onPause中切到了DummyAudio模块，可以在此恢复
-            mStreamer!!.setUseDummyAudioCapture(false)
+            try {
+                // 一般可以在onResume中开启摄像头预览
+                mStreamer!!.startCameraPreview()
+                // 调用KSYStreamer的onResume接口
+                mStreamer!!.onResume()
+                // 如果onPause中切到了DummyAudio模块，可以在此恢复
+                mStreamer!!.setUseDummyAudioCapture(false)
 
-            // 设置Info回调，可以收到相关通知信息
-            mStreamer!!.onInfoListener = KSYStreamer.OnInfoListener { what, msg1, msg2 ->
-                // ...
-            }
-            // 设置错误回调，收到该回调后，一般是发生了严重错误，比如网络断开等，
+                // 设置Info回调，可以收到相关通知信息
+                mStreamer!!.onInfoListener = KSYStreamer.OnInfoListener { what, msg1, msg2 ->
+                    // ...
+                }
+                // 设置错误回调，收到该回调后，一般是发生了严重错误，比如网络断开等，
 // SDK内部会停止推流，APP可以在这里根据回调类型及需求添加重试逻辑。
-            mStreamer!!.onErrorListener =
-                KSYStreamer.OnErrorListener { what, msg1, msg2 -> Log.e(TAG, "onError : $msg1") }
+                mStreamer!!.onErrorListener =
+                    KSYStreamer.OnErrorListener { what, msg1, msg2 -> 
+                        Log.e(TAG, "onError : $msg1")
+                        showErrorDialog("스트리머 오류 발생: $msg1")
+                    }
+            } catch (e: Exception) {
+                Log.e(TAG, "onResume 중 오류: ${e.message}")
+                showErrorDialog("카메라 재개 중 오류 발생", e)
+            }
         }
     }
 
     public override fun onPause() {
         super.onPause()
         if (mStreamer != null) {
-            mStreamer!!.onPause()
-            // 一般在这里停止摄像头采集
-            mStreamer!!.stopCameraPreview()
-            // 如果希望App切后台后，停止录制主播端的声音，可以在此切换为DummyAudio采集，
-            // 该模块会代替mic采集模块产生静音数据，同时释放占用的mic资源
-            mStreamer!!.setUseDummyAudioCapture(true)
+            try {
+                mStreamer!!.onPause()
+                // 一般在这里停止摄像头采集
+                mStreamer!!.stopCameraPreview()
+                // 如果希望App切后台后，停止录制主播端的声音，可以在此切换为DummyAudio采集，
+                // 该模块会代替mic采集模块产生静音数据，同时释放占用的mic资源
+                mStreamer!!.setUseDummyAudioCapture(true)
+            } catch (e: Exception) {
+                Log.e(TAG, "onPause 중 오류: ${e.message}")
+                showErrorDialog("카메라 일시정지 중 오류 발생", e)
+            }
         }
     }
 
     public override fun onDestroy() {
-        if (mMainHandler != null) {
-            mMainHandler!!.removeCallbacksAndMessages(null)
-            mMainHandler = null
-        }
-        if (mStreamer != null) {
-            mStreamer!!.stopRecord()
-            // 清理相关资源
-            mStreamer!!.release()
-        }
+        cleanupCamera()
         super.onDestroy()
+    }
+
+    private fun showErrorDialog(message: String, exception: Exception? = null) {
+        runOnUiThread {
+            val detailedMessage = if (exception != null) {
+                """
+                $message
+                
+                상세 정보:
+                - 오류 타입: ${exception.javaClass.simpleName}
+                - 오류 메시지: ${exception.message}
+                - 스택 트레이스: ${exception.stackTraceToString()}
+                """.trimIndent()
+            } else {
+                message
+            }
+            
+            AlertDialog.Builder(this)
+                .setTitle("오류 발생")
+                .setMessage(detailedMessage)
+                .setPositiveButton("확인") { _, _ -> finish() }
+                .setCancelable(false)
+                .show()
+        }
+    }
+
+    private fun cleanupCamera() {
+        try {
+            if (mMainHandler != null) {
+                mMainHandler!!.removeCallbacksAndMessages(null)
+                mMainHandler = null
+            }
+            if (mStreamer != null) {
+                mStreamer!!.stopRecord()
+                // 清理相关资源
+                mStreamer!!.release()
+                mStreamer = null
+            }
+            mCameraPreview = null
+        } catch (e: Exception) {
+            Log.e(TAG, "카메라 정리 중 오류: ${e.message}")
+            showErrorDialog("카메라 리소스 정리 중 오류 발생", e)
+        }
+    }
+
+    private fun isCameraInitialized(): Boolean {
+        return mStreamer != null && mCameraPreview != null
     }
 
     inner class HNWebViewClient : WebViewClient(), DownloadListener {
