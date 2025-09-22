@@ -898,16 +898,10 @@ class MainActivity : AppCompatActivity() {
                             .check()
                     }
                 } else if ("ACT1002" == actionCode) {
-                    LogUtil.d("ACT1002 - 앱 데이터 가져오기 (키체인 및 파일에 있는 정보 가져오기)")
-                    if (actionParamObj!!.has("key_type")) {
-                        mCameraType = actionParamObj.getInt("key_type")
-                        LogUtil.d("mCameraType : $mCameraType")
-                    }
+                    LogUtil.d("ACT1002 - QR 코드 호출")
 
-                    mCameraType = 0
-
-//                    intent = Intent(context, QRCodeActivity::class.java)
-//                    startActivity(intent)
+                    intent = Intent(context, QRCodeActivity::class.java)
+                    startActivity(intent)
                     executeJavascript("$mCallback()")
                 } else if ("ACT1003" == actionCode) {
                     LogUtil.d("ACT1003 - 위쳇페이")
