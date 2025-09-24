@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
-// apply plugin: 'com.google.gms.google-services'  // Google Services plugin - 주석처리
+apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
 android {
     compileSdkVersion 35
@@ -22,7 +22,6 @@ android {
             storeFile file('keystore/hanin.jks')
             storePassword 'hanin2025'
             keyAlias 'hanin'
-            keyPassword 'hanin2025!@'
         }
     }
 
@@ -30,7 +29,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            // signingConfig signingConfigs.release  // 임시로 사이닝 비활성화
+            // signingConfig signingConfigs.release
         }
     }
 
@@ -60,9 +59,9 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22"
 
-    // implementation 'com.google.firebase:firebase-core:21.1.1'  // 주석처리
-    // implementation 'com.google.firebase:firebase-messaging:24.0.0'  // 주석처리
-    // implementation 'com.google.firebase:firebase-crashlytics-ndk:19.4.4'  // 주석처리
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+    implementation 'com.google.firebase:firebase-messaging:24.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics-ndk:19.4.4'
 
     implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'com.google.android.material:material:1.0.0'
@@ -99,7 +98,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
 
-    // implementation 'com.google.android.gms:play-services-location:21.0.1'  // 주석처리
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 
 //    # required, enough for most devices.
     implementation 'com.ksyun.media:libksylive-java:3.0.4'

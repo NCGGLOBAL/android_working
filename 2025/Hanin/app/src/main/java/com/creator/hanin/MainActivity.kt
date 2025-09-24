@@ -36,11 +36,11 @@ import com.creator.hanin.helpers.Constants
 import com.creator.hanin.live.CameraActivity
 import com.creator.hanin.models.Image
 import com.creator.hanin.util.*
-// import com.google.android.gms.location.FusedLocationProviderClient  // 주석처리
-// import com.google.android.gms.location.LocationServices  // 주석처리
-// import com.google.android.gms.tasks.OnCompleteListener  // 주석처리
-// import com.google.firebase.FirebaseApp  // 주석처리
-// import com.google.firebase.messaging.FirebaseMessaging  // 주석처리
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     private var mCookieManager: CookieManager? = null
     private var mCallback: String? = null
     private val mCallbackParam: String? = null
-    // private var mFirebaseMessaging: FirebaseMessaging? = null  // 주석처리
+    private var mFirebaseMessaging: FirebaseMessaging? = null
     private var mPushUid: String? = ""
     private var mLandingUrl: String? = null
     private var mBackPressCloseHandler: BackPressCloseHandler? = null
@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
     // SNS========================================================================= //
     private var mLoadingView: View? = null
 
-    // private var fusedLocationClient: FusedLocationProviderClient? = null  // 주석처리
+    private var fusedLocationClient: FusedLocationProviderClient? = null
     private var mLatitude: Double? = null
     private var mLongitude: Double? = null
 
@@ -163,9 +163,9 @@ class MainActivity : AppCompatActivity() {
             // Back Handler
             mBackPressCloseHandler = BackPressCloseHandler(this)
 
-            // topic 생성 - Firebase 관련 코드 주석처리
-            /*
+            // topic 생성 - Firebase 관련 코드 복원
             FirebaseApp.initializeApp(this)
+            mFirebaseMessaging = FirebaseMessaging.getInstance()
             FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
                     Log.w(TAG, "Fetching FCM registration token failed", task.exception)
@@ -195,7 +195,6 @@ class MainActivity : AppCompatActivity() {
                 mFirebaseMessaging?.subscribeToTopic(topic.toString())
                 HNSharedPreference.putSharedPreference(this, "pushtopic", topic.toString())
             }
-            */
 
             hashKey
 
@@ -264,8 +263,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setLocation() {
         Log.e(TAG, "setLocation")
-        // Location 관련 기능 주석처리
-        /*
+        // Location 관련 기능 복원
         try {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@MainActivity)
             fusedLocationClient?.lastLocation?.addOnSuccessListener(
@@ -283,7 +281,6 @@ class MainActivity : AppCompatActivity() {
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
-        */
     }
 
     @SuppressLint("JavascriptInterface")

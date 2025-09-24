@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "785988896727",
+    "project_id": "hanin-fce86",
+    "storage_bucket": "hanin-fce86.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:785988896727:android:88d4a4c79026d655abad92",
+        "android_client_info": {
+          "package_name": "com.creator.hanin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEQFZbhv3_5vwGE-jpKUYKaOBCaKhaIvc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

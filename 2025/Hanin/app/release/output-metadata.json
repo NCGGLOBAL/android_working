@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.creator.labangtv",
+  "applicationId": "com.creator.hanin",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 44,
-      "versionName": "1.4.4",
+      "versionCode": 1,
+      "versionName": "1.0.1",
       "outputFile": "app-release.apk"
     }
   ],
