@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "751462427383",
+    "project_id": "meflex-bf56e",
+    "storage_bucket": "meflex-bf56e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:751462427383:android:82f019590adfd27e0281f2",
+        "android_client_info": {
+          "package_name": "com.creator.meflex"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6EHnWYOvKuU5J71uCy2xIolalykQm5lk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
