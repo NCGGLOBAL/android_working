@@ -34,9 +34,7 @@ class ItemRegistrationActivity : AppCompatActivity() {
     private var actionBar: ActionBar? = null
     var PERMISSION_ALL = 1
     var PERMISSIONS = arrayOf(
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.CAMERA
+        Manifest.permission.CAMERA  // Photo Picker 사용으로 스토리지 권한 불필요
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

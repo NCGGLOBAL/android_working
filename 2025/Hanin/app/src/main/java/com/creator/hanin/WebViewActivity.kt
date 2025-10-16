@@ -69,10 +69,9 @@ class WebViewActivity : Activity() {
     private var mProgressDialog // 처리중
             : ProgressDialog? = null
     var PERMISSIONS = arrayOf(
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_EXTERNAL_STORAGE,  //            Manifest.permission.CAMERA,
+        // Photo Picker 사용으로 스토리지 권한 불필요
         Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION,  //            Manifest.permission.CALL_PHONE
+        Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.GET_ACCOUNTS
     )
 
@@ -1162,8 +1161,7 @@ class WebViewActivity : Activity() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         requestPermissions(
                             arrayOf(
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,  //                                            Manifest.permission.CAMERA,
+                                // Photo Picker 사용으로 스토리지 권한 불필요
                                 Manifest.permission.CALL_PHONE,
                                 Manifest.permission.GET_ACCOUNTS,
                                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -1182,9 +1180,7 @@ class WebViewActivity : Activity() {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             requestPermissions(
                                 arrayOf(
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,  //                                                            Manifest.permission.CAMERA,
-                                    //                                                            Manifest.permission.CALL_PHONE,
+                                    // Photo Picker 사용으로 스토리지 권한 불필요
                                     Manifest.permission.GET_ACCOUNTS,
                                     Manifest.permission.ACCESS_FINE_LOCATION,
                                     Manifest.permission.ACCESS_COARSE_LOCATION

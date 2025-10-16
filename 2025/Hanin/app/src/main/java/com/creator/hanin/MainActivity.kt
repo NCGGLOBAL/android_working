@@ -121,17 +121,9 @@ class MainActivity : AppCompatActivity() {
         private const val SEND_KAKAO_MESSAGE = 1
         private const val SEND_FACEBOOK_MESSAGE = 2
         var activity: MainActivity? = null
-        val requiredMediaPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(  //필요한 권한들
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_MEDIA_AUDIO,
-                Manifest.permission.READ_MEDIA_VIDEO
-            )
-        } else {
-            arrayOf(
-                Manifest.permission.CAMERA,
-            )
-        }
+        val requiredMediaPermissionList = arrayOf(
+            Manifest.permission.CAMERA  // 카메라 권한만 필요 (Photo Picker는 권한 불필요)
+        )
         val instance: MainActivity?
             get() {
                 if (activity == null) {
@@ -649,13 +641,13 @@ class MainActivity : AppCompatActivity() {
                         e.printStackTrace()
                     }
                     reqParam = makeBankPayData(reqParam)
-                    intent = Intent(Intent.ACTION_MAIN)
-                    intent?.component = ComponentName(
+                    val bankPayIntent = Intent(Intent.ACTION_MAIN)
+                    bankPayIntent.component = ComponentName(
                         "com.kftc.bankpay.android",
                         "com.kftc.bankpay.android.activity.MainActivity"
                     )
-                    intent?.putExtra("requestInfo", reqParam)
-                    startActivityForResult(intent, 1)
+                    bankPayIntent.putExtra("requestInfo", reqParam)
+                    startActivityForResult(bankPayIntent, 1)
                     true
                 } else {
                     installKFTC()
@@ -1442,14 +1434,10 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermission() {
         val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arrayOf(  //필요한 권한들
-                Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.POST_NOTIFICATIONS
+                Manifest.permission.POST_NOTIFICATIONS  // Android 13+: 알림 권한만 (Photo Picker는 권한 불필요)
             )
         } else {
-            arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            )
+            arrayOf<String>()  // Android 12 이하: 권한 요청 불필요 (기존 방식 사용)
         }
 
         TedPermission.create()

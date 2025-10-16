@@ -23,14 +23,12 @@ open class HelperActivity : AppCompatActivity() {
 
     //    Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA
     protected fun checkPermission() {
-        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
-                permissionGranted()
-            } else {
-                ActivityCompat.requestPermissions(this, permissions, Constants.PERMISSION_REQUEST_CODE)
-            }
+        // Android 13 (API 33) 이상에서는 Photo Picker 사용으로 권한 불필요
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionGranted()
         } else {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
+            // Android 12 이하에서만 권한 체크
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 permissionGranted()
             } else {
                 ActivityCompat.requestPermissions(this, permissions, Constants.PERMISSION_REQUEST_CODE)
@@ -39,18 +37,16 @@ open class HelperActivity : AppCompatActivity() {
     }
 
     private fun requestPermission() {
-        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_IMAGES)) {
-                showRequestPermissionRationale()
-            } else {
-                showAppPermissionSettings()
-            }
+        // Android 13 이상에서는 권한 요청 불필요
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return
+        }
+        
+        // Android 12 이하에서만 권한 요청
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            showRequestPermissionRationale()
         } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                showRequestPermissionRationale()
-            } else {
-                showAppPermissionSettings()
-            }
+            showAppPermissionSettings()
         }
     }
 

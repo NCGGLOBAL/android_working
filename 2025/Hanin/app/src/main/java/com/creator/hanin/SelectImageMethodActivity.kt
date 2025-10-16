@@ -20,6 +20,8 @@ import android.widget.GridView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -72,6 +74,13 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
         MediaStore.Images.Media.DISPLAY_NAME,
         MediaStore.Images.Media.DATA
     )
+    
+    // Photo Picker for Android 13+
+    private val pickMultipleMedia = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(HNApplication.LIMIT_IMAGE_COUNT)) { uris ->
+        if (uris.isNotEmpty()) {
+            handlePhotoPickerResult(uris)
+        }
+    }
 
     // ============================= Album =============================
     private var mProgressDialog: ProgressDialog? = null
@@ -783,8 +792,19 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
 
     // 사진 앨범선택
     private fun galleryAddPic() {
-        val intent = Intent(applicationContext, AlbumSelectActivity::class.java)
-        startActivityForResult(intent, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+        // Android 13 (API 33) 이상에서는 Photo Picker 사용
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val maxSelectableItems = HNApplication.LIMIT_IMAGE_COUNT - (images?.size ?: 0)
+            if (maxSelectableItems > 0) {
+                pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            } else {
+                Toast.makeText(this, "최대 ${HNApplication.LIMIT_IMAGE_COUNT}개까지 선택 가능합니다.", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            // Android 12 이하에서는 기존 방식 사용
+            val intent = Intent(applicationContext, AlbumSelectActivity::class.java)
+            startActivityForResult(intent, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+        }
     }
 
     // 사진저장
@@ -1048,5 +1068,68 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
         val column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
         cursor.moveToFirst()
         return cursor.getString(column_index)
+    }
+    
+    // Photo Picker 결과 처리
+    private fun handlePhotoPickerResult(uris: List<Uri>) {
+        Log.d("SeongKwon", "Photo Picker selected ${uris.size} images")
+        
+        val addimages = ArrayList<Image>()
+        
+        for (uri in uris) {
+            try {
+                // Uri에서 파일 정보 추출
+                val cursor = contentResolver.query(uri, null, null, null, null)
+                cursor?.use {
+                    if (it.moveToFirst()) {
+                        val displayNameIndex = it.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)
+                        val displayName = if (displayNameIndex >= 0) it.getString(displayNameIndex) else "image_${System.currentTimeMillis()}.jpg"
+                        
+                        // Uri를 파일로 복사 (앱 내부 저장소)
+                        val inputStream = contentResolver.openInputStream(uri)
+                        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+                        val fileName = "${timeStamp}_$displayName"
+                        val file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName)
+                        
+                        inputStream?.use { input ->
+                            FileOutputStream(file).use { output ->
+                                input.copyTo(output)
+                            }
+                        }
+                        
+                        // Image 객체 생성
+                        val image = Image(
+                            0,
+                            fileName,
+                            file.absolutePath,
+                            true,
+                            (images?.size ?: 0) + addimages.size + 1
+                        )
+                        addimages.add(image)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("SeongKwon", "Error processing image from Photo Picker", e)
+                e.printStackTrace()
+            }
+        }
+        
+        if (addimages.size > 0) {
+            mIsChanged = true
+            
+            // 기존 이미지 리스트에 추가
+            for (i in addimages.indices) {
+                val image = addimages[i]
+                image.sequence = (images?.size ?: 0) + 1
+                image.isSelected = true
+                images?.add(image)
+                Log.e("SeongKwon", "//// sequence = ${image.sequence}")
+            }
+            countSelected = images?.size ?: 0
+            Log.e("SeongKwon", "//// countSelected = $countSelected")
+            
+            // 이미지 저장
+            saveImagesAsyncTask().execute(addimages)
+        }
     }
 }
