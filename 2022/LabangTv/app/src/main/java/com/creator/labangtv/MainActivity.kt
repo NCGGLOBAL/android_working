@@ -12,6 +12,7 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.net.UrlQuerySanitizer
 import android.net.http.SslError
@@ -24,6 +25,8 @@ import android.view.*
 import android.webkit.*
 import android.webkit.WebChromeClient.FileChooserParams
 import android.widget.*
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -44,6 +47,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
+import com.iceteck.silicompressorr.SiliCompressor
 import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -140,6 +144,97 @@ class MainActivity : AppCompatActivity() {
                 return activity
             }
     }
+
+    var videoWidth: Int = 0
+    var videoHeight: Int = 0
+    var videoBitrate: Int? = null
+    var videoArchiveFilePath: String? = null
+    var videoThumnailPath: String? = null
+    var selectedVideoPath: String? = null
+    var videoParam: HashMap<String, String?>? = null
+    var uploadVideoUrl: String? = null
+    var videoList: ArrayList<Image>? = null
+
+    val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            result: ActivityResult ->
+        when(result.resultCode) {
+            Constants.FILECHOOSER_LOLLIPOP_REQ_VEDIO_CODE -> {
+                // 썸네일 이미지 업로드
+                result.data?.getStringExtra("thumbnailPath")?.let {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        videoThumnailPath = it
+
+                        HNSharedPreference.putSharedPreference(
+                            this@MainActivity,
+                            "videoThumnailPath",
+                            it
+                        )
+                        val dataUrl = BitmapUtil.getFileImageDataUrl(it)
+                        val jsonObject = JSONObject()
+                        jsonObject.put("type", "0")
+                        jsonObject.put("thumbData", dataUrl)
+                        executeJavascript("$mCallback($jsonObject)")
+
+                        // 압축여부 체크
+                        jsonObject.remove("thumbData")
+                        jsonObject.put("type", "1")
+                        if (videoWidth > videoHeight) { // 가로영상
+                            if (videoHeight > 720) {
+                                videoWidth = videoWidth * 720 / videoHeight
+                                videoHeight = 720
+                            } else {
+                                executeJavascript("$mCallback($jsonObject)")
+                                videoArchiveFilePath = null
+                                return@launch
+                            }
+                        } else {    // 세로영상
+                            if (videoWidth > 720) {
+                                videoHeight = videoHeight * 720 / videoWidth
+                                videoWidth = 720
+                            } else {
+                                executeJavascript("$mCallback($jsonObject)")
+                                videoArchiveFilePath = null
+                                return@launch
+                            }
+                        }
+
+                        // 해상도가 홀수일경우 강제로 짝수로 변경
+                        if (videoWidth % 2 == 1) {
+                            videoWidth -= 1
+                        }
+                        if (videoHeight % 2 == 1) {
+                            videoHeight -= 1
+                        }
+
+                        videoArchiveFilePath = SiliCompressor.with(this@MainActivity)
+                            .compressVideo(selectedVideoPath,
+                                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).absolutePath,
+                                videoWidth,
+                                videoHeight,
+                                videoBitrate ?: 2067102
+                            )
+                        Log.e(TAG, "videoWidth: ${videoWidth}")
+                        Log.e(TAG, "videoHeight: ${videoHeight}")
+                        val videoFileSize = BitmapUtil.getFileSizeMB(videoArchiveFilePath)
+                        Log.d(TAG, "videoArchiveFilePath FileSize: $videoFileSize MB")
+//                        Log.e(TAG, "videoBitrate: ${videoBitrate}")
+                        Log.e(TAG, "archiveFilePath: ${videoArchiveFilePath}")
+                        Log.e(TAG, "selectedVideoPath: ${selectedVideoPath}")
+
+                        HNSharedPreference.putSharedPreference(
+                            this@MainActivity,
+                            "videoArchiveFilePath",
+                            videoArchiveFilePath
+                        )
+                        jsonObject.remove("thumbData")
+                        jsonObject.put("type", "1")
+                        executeJavascript("$mCallback($jsonObject)")
+                    }
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Activity가 실행 될 때 항상 화면을 켜짐으로 유지한다.
@@ -1049,6 +1144,29 @@ class MainActivity : AppCompatActivity() {
                             *requiredMediaPermissionList
                         )// 얻으려는 권한(여러개 가능)
                         .check()
+                } else if ("ACT1039" == actionCode) {
+                    LogUtil.d("ACT1039 - 영상 선택후 압축, 썸네일 이미지 전달")
+                    videoBitrate = actionParamObj?.getInt("bitrate")
+
+                    videoThumnailPath = HNSharedPreference.getSharedPreference(this@MainActivity, "videoThumnailPath")
+                    videoArchiveFilePath = HNSharedPreference.getSharedPreference(this@MainActivity, "videoArchiveFilePath")
+                    LogUtil.e("ACT1038 - videoThumnailPath : " + videoThumnailPath)
+                    LogUtil.e("ACT1038 - videoArchiveFilePath : " + videoArchiveFilePath)
+                    // 기존 파일 삭제
+                    deleteVideoFile()
+
+                    // 비디오 파일 선택을 위한 인텐트 실행
+                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type = "video/*"
+
+                    startActivityForResult(intent, Constants.FILECHOOSER_LOLLIPOP_REQ_VEDIO_CODE)
+                } else if ("ACT1040" == actionCode) {
+                    LogUtil.d("ACT1040 - ACT1040 영상 파일 업로드")
+                    val url = actionParamObj?.getString("url")
+                    val key = actionParamObj?.getString("key")
+                    val token = actionParamObj?.getString("token")
+
+                    uploadVideoArchive(url, key, token)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -1249,6 +1367,71 @@ class MainActivity : AppCompatActivity() {
                 val results = arrayOf(getResultUri(data))
                 mFilePathCallback?.onReceiveValue(results)
                 mFilePathCallback = null
+            }
+        } else if (requestCode == Constants.FILECHOOSER_LOLLIPOP_REQ_VEDIO_CODE) {
+            val selectedVideoUri: Uri? = data?.data
+
+            if (selectedVideoUri != null) {
+                // Uri를 파일 경로로 변환
+                selectedVideoPath = RealPathUtil.getRealPath(this, selectedVideoUri)
+
+                val outputVideoPath = "${getExternalFilesDir(Environment.DIRECTORY_PICTURES)}"
+
+                if (selectedVideoPath != null) {
+                    Log.d(TAG, "Selected Video Path: $selectedVideoPath")
+                    Log.d(TAG, "outputVideoPath: $outputVideoPath")
+
+                    // 여기서 선택된 비디오 파일에 대한 추가 작업을 수행할 수 있습니다.
+                    val retriever = MediaMetadataRetriever()
+
+                    try {
+                        retriever.setDataSource(selectedVideoPath)
+
+                        // 비디오의 전체 시간 가져오기 (ms)
+                        val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                        Log.d(TAG, "Duration: $duration ms")
+                        if ((duration?.toLong() ?: 0) > Constants.VIDEO_LIMIT_TIME) {
+                            Toast.makeText(this@MainActivity, "영상시간을 2분이내로 줄여주세요", Toast.LENGTH_SHORT).show()
+                            return
+                        }
+                        // 100MB 이상이면 리턴
+                        val videoFileSize = BitmapUtil.getFileSizeMB(selectedVideoPath)
+                        Log.d(TAG, "origin videoFileSize: $videoFileSize MB")
+                        if (videoFileSize ?: 0 > 300) {
+                            Toast.makeText(this@MainActivity, "영상 용량은 300M미만으로 등록해 주세요.", Toast.LENGTH_SHORT).show()
+                            return
+                        }
+                        // 비디오의 해상도 가져오기
+                        videoWidth = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toInt() ?: 0
+                        videoHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toInt() ?: 0
+                        val rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
+
+                        Log.d(TAG, "video videoWidth : $videoWidth")
+                        Log.d(TAG, "video videoHeight : $videoHeight")
+                        Log.d(TAG, "video rotation : $rotation")
+                        // 비트레이트 가져오기
+//                        videoBitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)
+//                        Log.d(TAG, "Bitrate : $videoBitrate bps")
+
+                        // 비디오 압축 액티비티 이동
+                        Intent(this@MainActivity, VideoThumbActivity::class.java).apply {
+                            putExtra("selectedVideoPath", selectedVideoPath)
+                            putExtra("outputVideoPath", outputVideoPath)
+//                            putExtra("width", videoWidth)
+//                            putExtra("height", videoHeight)
+
+                            resultLauncher.launch(this)
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error extracting video metadata: ${e.message}")
+                    } finally {
+                        retriever.release()
+                    }
+                } else {
+                    Log.e(TAG, "Failed to get selected video path")
+                }
+            } else {
+                Log.e(TAG, "Failed to get selected video URI")
             }
         } else if (resultCode == RESULT_OK && requestCode == Constants.REQUEST_GET_FILE) {
             data?.data?.let {
@@ -1809,6 +1992,105 @@ class MainActivity : AppCompatActivity() {
                 SEND_KAKAO_MESSAGE -> Log.d("SeongKwon", "msg = $msg")
                 else -> {}
             }
+        }
+    }
+
+    private fun uploadVideoArchive(
+        uploadUrl: String?,
+        key: String?,
+        token: String?
+    ) {
+        if (uploadUrl.isNullOrEmpty()) return
+        Log.e(TAG, "uploadUrl: ${uploadUrl}")
+        videoParam = HashMap<String, String?>().apply {
+            this["token"] = token
+            this["key"] = key
+        }
+
+        uploadVideoUrl = uploadUrl
+        val videoData = Image(0, "uploadVideo.mp4", videoArchiveFilePath ?: selectedVideoPath, true, 0)
+        videoList = ArrayList<Image>()
+        videoList?.add(videoData)
+        uploadVideoAsyncTask().execute()
+    }
+
+    inner class uploadVideoAsyncTask : AsyncTask<String?, Void?, String?>() {
+        var result: String? = null
+        override fun onPreExecute() {
+            super.onPreExecute()
+            mProgressDialog = ProgressDialog(mContext)
+            mProgressDialog!!.setTitle("알림")
+            mProgressDialog!!.setMessage("처리중입니다.\n잠시만 기다려 주세요.")
+            mProgressDialog!!.show()
+        }
+
+//        override fun onProgressUpdate(vararg values: Void?) {
+//            super.onProgressUpdate(*values)
+//        }
+
+        override fun onPostExecute(s: String?, ) {
+            super.onPostExecute(s)
+            mProgressDialog!!.dismiss()
+//            Log.e("SeongKwon", s!!)
+
+            deleteVideoFile()
+            val jsonObject = JSONObject()
+            if (s == null) {
+                val builder = AlertDialog.Builder(
+                    mContext!!
+                )
+                builder.setPositiveButton(R.string.confirm) { dialog, id -> dialog.dismiss() }
+                builder.setTitle("알림")
+                builder.setMessage("동영상 등록 중 오류가 발생했습니다.\n다시 시도해 주세요.")
+                val dialog = builder.create()
+                dialog.show()
+
+                jsonObject.put("result", "-1")
+                executeJavascript("$mCallback($jsonObject)")
+                return
+            }
+            if (s == "-1") {
+                val builder = AlertDialog.Builder(
+                    mContext!!
+                )
+                builder.setPositiveButton(R.string.confirm) { dialog, id -> dialog.dismiss() }
+                builder.setTitle("알림")
+                builder.setMessage("등록 할 동영상 선택해 주세요.")
+                val dialog = builder.create()
+                dialog.show()
+
+                jsonObject.put("result", "-1")
+                executeJavascript("$mCallback($jsonObject)")
+
+            } else {
+                jsonObject.put("result", "1")
+                executeJavascript("$mCallback($jsonObject)")
+            }
+        }
+
+        override fun doInBackground(vararg params: String?): String? {
+            Log.d("SeongKwon", "*************************************************")
+            try {
+                result = UploadUtil.upload(
+                    mContext,
+                    uploadVideoUrl!!,
+                    videoList!!,
+                    videoParam!!,
+                    true
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return result
+        }
+    }
+
+    fun deleteVideoFile() {
+        videoThumnailPath?.let {
+            BitmapUtil.deleteFile(it)
+        }
+        videoArchiveFilePath?.let {
+            BitmapUtil.deleteFile(it)
         }
     }
 }

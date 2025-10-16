@@ -13,13 +13,14 @@ import java.net.URL
 object UploadUtil {
     private const val LINE_END = "\r\n"
     private const val TWOHYPEN = "--"
-    private const val boundary = "----WebKitFormBoundaryAndroidForWavayo"
+    const val boundary = "----WebKitFormBoundaryAndroidForWavayo"
     @Throws(Exception::class)
     fun upload(
         context: Context?,
         uploadUrl: String,
         images: ArrayList<Image>,
-        paramMap: HashMap<String, String?>
+        paramMap: HashMap<String, String?>,
+        isVideo: Boolean = false
     ): String {
         var result = ""
 
@@ -54,7 +55,8 @@ object UploadUtil {
         dataOutputStream.writeBytes(postDataBuilder.toString())
         for (idx in images.indices) {
             Log.d("SeongKwon", "uploadUtil Name = " + images[idx].name)
-            dataOutputStream.writeBytes(setFile("imgFile", images[idx].name))
+            Log.d("SeongKwon", "setFile : " + setFile("imgFile", images[idx].name, isVideo))
+            dataOutputStream.writeBytes(setFile("imgFile", images[idx].name, isVideo))
             dataOutputStream.writeBytes(LINE_END)
 
             // 전송 작업 시작
@@ -127,8 +129,9 @@ object UploadUtil {
      * @param fileName : 서버에서 저장될 파일명
      * @return
      */
-    fun setFile(key: String, fileName: String?): String {
-        return "Content-Disposition: form-data; name=\"$key\"; filename=\"$fileName\"\r\nContent-Type: image/jpeg\r\n"
+    fun setFile(key: String, fileName: String?, isVideo: Boolean = false): String {
+        return if (isVideo)"Content-Disposition: form-data; name=file; filename=\"$fileName\"\r\nContent-Type: video/mp4\r\n"
+        else "Content-Disposition: form-data; name=\"$key\"; filename=\"$fileName\"\r\nContent-Type: image/jpeg\r\n"
     }
 
     private fun readInputStreamToString(connection: HttpURLConnection): String? {
