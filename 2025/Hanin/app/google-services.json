@@ -12,7 +12,12 @@
           "package_name": "com.creator.hanin"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "785988896727-hfp27ebh2tgq2eo9tkbqdo6hh25h12jg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDEQFZbhv3_5vwGE-jpKUYKaOBCaKhaIvc"
@@ -20,7 +25,41 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "785988896727-hfp27ebh2tgq2eo9tkbqdo6hh25h12jg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:785988896727:android:a17eecbbfccc3d97abad92",
+        "android_client_info": {
+          "package_name": "com.creator.haninapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "785988896727-hfp27ebh2tgq2eo9tkbqdo6hh25h12jg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEQFZbhv3_5vwGE-jpKUYKaOBCaKhaIvc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "785988896727-hfp27ebh2tgq2eo9tkbqdo6hh25h12jg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

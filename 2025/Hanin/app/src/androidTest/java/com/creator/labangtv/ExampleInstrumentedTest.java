@@ -1,4 +1,4 @@
-package com.creator.hanin;
+package com.creator.haninapp;
 
 import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;

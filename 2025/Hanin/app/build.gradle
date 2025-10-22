@@ -6,11 +6,11 @@ apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 android {
     compileSdkVersion 35
     defaultConfig {
-        applicationId "com.creator.hanin"
+        applicationId "com.creator.haninapp"
         minSdkVersion 21
         targetSdkVersion 35
-        versionCode 2
-        versionName "1.0.2"
+        versionCode 1
+        versionName "1.0.1"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
@@ -19,9 +19,9 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file('keystore/hanin.jks')
+            storeFile file('keystore/haninapp.jks')
             storePassword 'hanin2025'
-            keyAlias 'hanin'
+            keyAlias 'haninapp'
         }
     }
 
@@ -45,7 +45,7 @@ android {
     buildFeatures {
         viewBinding false
     }
-    namespace 'com.creator.hanin'
+    namespace 'com.creator.haninapp'
     lint {
         abortOnError false
         checkReleaseBuilds false
