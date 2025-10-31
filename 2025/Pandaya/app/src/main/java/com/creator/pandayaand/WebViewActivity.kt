@@ -865,7 +865,7 @@ class WebViewActivity : Activity() {
                     } catch (e: PackageManager.NameNotFoundException) {
                         e.printStackTrace()
                     }
-                    versionName = pi!!.versionName
+                    versionName = pi?.versionName ?: ""
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
