@@ -33,11 +33,16 @@ import java.io.ByteArrayOutputStream
 class ItemRegistrationActivity : AppCompatActivity() {
     private var actionBar: ActionBar? = null
     var PERMISSION_ALL = 1
-    var PERMISSIONS = arrayOf(
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.CAMERA
-    )
+    // READ_EXTERNAL_STORAGE 권한 제거 - Android 13+에서는 Photo Picker 사용으로 불필요
+    var PERMISSIONS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(Manifest.permission.CAMERA) // Android 13+ : 카메라 권한만 필요
+    } else {
+        arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

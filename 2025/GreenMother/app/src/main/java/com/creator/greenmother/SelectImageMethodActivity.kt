@@ -669,44 +669,29 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
      */
     private fun requestPermission(requestPermissionId: Int) {
         LogUtil.d("$requestPermissionId :: permission has NOT been granted. Requesting permission.")
-        val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(  //필요한 권한들
-                Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.CAMERA
-            )
-        } else {
-            arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA
-            )
-        }
-        TedPermission.create()
-            .setPermissionListener(object : PermissionListener {
-
-                //권한이 허용됐을 때
-                override fun onPermissionGranted() {
-                    if (requestPermissionId == Constants.REQUEST_CAMERA || requestPermissionId == Constants.REQUEST_SELECT_IMAGE_CAMERA) {
-                        if (mCameraType == 3) {
+        
+        if (requestPermissionId == Constants.REQUEST_CAMERA || requestPermissionId == Constants.REQUEST_SELECT_IMAGE_CAMERA) {
+            // 카메라 선택 - 카메라 권한만 필요
+            if (mCameraType == 3) {
+                TedPermission.create()
+                    .setPermissionListener(object : PermissionListener {
+                        override fun onPermissionGranted() {
                             dispatchTakePictureIntent()
                         }
-                    } else if (requestPermissionId == Constants.REQUEST_WRITE_EXTERNAL_STORAGE || requestPermissionId == Constants.REQUEST_SELECT_IMAGE_ALBUM) {
-                        if (mCameraType == 4) {
-                            galleryAddPic()
+                        override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                            Toast.makeText(this@SelectImageMethodActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
                         }
-                    }
-                }
-
-                //권한이 거부됐을 때
-                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    Toast.makeText(this@SelectImageMethodActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
-                }
-            })
-            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
-            .setPermissions(
-                *requiredPermissionList
-            )// 얻으려는 권한(여러개 가능)
-            .check()
+                    })
+                    .setDeniedMessage("권한을 허용해주세요.")
+                    .setPermissions(Manifest.permission.CAMERA)
+                    .check()
+            }
+        } else if (requestPermissionId == Constants.REQUEST_WRITE_EXTERNAL_STORAGE || requestPermissionId == Constants.REQUEST_SELECT_IMAGE_ALBUM) {
+            // 앨범 선택 - Photo Picker 사용 (권한 불필요)
+            if (mCameraType == 4) {
+                galleryAddPic()
+            }
+        }
     }
 
     /**
@@ -812,8 +797,40 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
         }
         if (requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM && resultCode == RESULT_OK && data != null) {
             Log.d("SeongKwon", "////" + images!!.size)
-            val addimages = data.getParcelableArrayListExtra<Image>("images")
-            Log.d("SeongKwon", "////" + addimages!!.size)
+            val addimages: ArrayList<Image>
+            
+            // Photo Picker 결과 처리 (Android 13+)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && data.data != null) {
+                addimages = ArrayList()
+                val uris = ArrayList<Uri>()
+                
+                // ClipData에서 여러 이미지 가져오기 (다중 선택 시)
+                if (data.clipData != null) {
+                    for (i in 0 until data.clipData!!.itemCount) {
+                        uris.add(data.clipData!!.getItemAt(i).uri)
+                    }
+                } else if (data.data != null) {
+                    uris.add(data.data!!)
+                }
+                
+                // Uri를 Image 객체로 변환
+                for ((index, uri) in uris.withIndex()) {
+                    val path = RealPathUtil.getRealPath(this, uri) ?: uri.toString()
+                    val fileName = File(path).name
+                    addimages.add(Image(
+                        index.toLong(),
+                        fileName,
+                        path,
+                        true,
+                        images!!.size + index + 1
+                    ))
+                }
+            } else {
+                // AlbumSelectActivity 결과 처리 (Android 12 이하)
+                addimages = data.getParcelableArrayListExtra<Image>("images") ?: ArrayList()
+            }
+            
+            Log.d("SeongKwon", "////" + addimages.size)
             if (addimages.size > 0) {
                 mIsChanged = true
             }
