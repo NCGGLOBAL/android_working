@@ -82,7 +82,7 @@ object EtcUtil {
         deviceInfo["osVersion"] = Build.VERSION.RELEASE
         var appVersion = ""
         if (packageInfo != null) {
-            appVersion = packageInfo.versionName
+            appVersion = packageInfo.versionName ?: ""
         }
         deviceInfo["appVersion"] = appVersion
         val telephony = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
