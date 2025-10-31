@@ -21,10 +21,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.creator.metaceleb.adapters.CustomImageSelectAdapter
 import com.creator.metaceleb.common.HNApplication
@@ -32,6 +29,8 @@ import com.creator.metaceleb.delegator.HNSharedPreference
 import com.creator.metaceleb.helpers.Constants
 import com.creator.metaceleb.models.Image
 import com.creator.metaceleb.util.*
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
@@ -208,8 +207,9 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                     BitmapUtil.Companion.deleteImages(this, "$filesDir/")
                 }
             }
-            imageCount!!.text =
-                savedImageSize.toString() + "/" + HNApplication.Companion.LIMIT_IMAGE_COUNT
+            imageCount?.text =
+                savedImageSize.toString() + "/" + HNApplication.LIMIT_IMAGE_COUNT
+            loadImages()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -317,7 +317,9 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             false,
             observer!!
         )
-        checkPermission()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            checkPermission()
+        }
     }
 
     override fun onStop() {
@@ -457,7 +459,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                 //                Log.d("update===============", "idx = " + idx + " // sequence = " + images.get(idx).sequence);
             }
         }
-        adapter!!.notifyDataSetChanged()
+        adapter?.notifyDataSetChanged()
     }
 
     private fun deselectAll() {
@@ -468,7 +470,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             i++
         }
         countSelected = 0
-        adapter!!.notifyDataSetChanged()
+        adapter?.notifyDataSetChanged()
     }// ACT1011 CALLBACK
 
     // utype =  0: 기존이미지, 1: 신규, 2: 수정
@@ -667,58 +669,29 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
      */
     private fun requestPermission(requestPermissionId: Int) {
         LogUtil.d("$requestPermissionId :: permission has NOT been granted. Requesting permission.")
-        var permission = ""
-        val title = "Request Message"
-        var message = ""
+
         if (requestPermissionId == Constants.REQUEST_CAMERA || requestPermissionId == Constants.REQUEST_SELECT_IMAGE_CAMERA) {
-            permission = Manifest.permission.CAMERA
-            message = "Allow access camera?"
-        } else if (requestPermissionId == Constants.REQUEST_WRITE_EXTERNAL_STORAGE) {
-            permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-            message = "Allow write external storage?"
-        }
-        val finalPermission = permission
-
-        // 권한체크가 필요한 버전인지 확인 || 권한 체크가 필요한 상태인지 확인
-        val permissionCheck = ContextCompat.checkSelfPermission(this, finalPermission)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            // 이미 사용자가 권한을 허용하여 앱이 권한을 가지고 있는 상태이므로 하고자 하는 기능 수행.
-            if (requestPermissionId == Constants.REQUEST_CAMERA || requestPermissionId == Constants.REQUEST_SELECT_IMAGE_CAMERA) {
-                if (mCameraType == 3) {
-                    dispatchTakePictureIntent()
-                }
-            } else if (requestPermissionId == Constants.REQUEST_WRITE_EXTERNAL_STORAGE || requestPermissionId == Constants.REQUEST_SELECT_IMAGE_ALBUM) {
-                if (mCameraType == 4) {
-                    galleryAddPic()
-                }
+            // 카메라 선택 - 카메라 권한만 필요
+            if (mCameraType == 3) {
+                TedPermission.create()
+                    .setPermissionListener(object : PermissionListener {
+                        override fun onPermissionGranted() {
+                            dispatchTakePictureIntent()
+                        }
+                        override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                            Toast.makeText(this@SelectImageMethodActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    })
+                    .setDeniedMessage("권한을 허용해주세요.")
+                    .setPermissions(Manifest.permission.CAMERA)
+                    .check()
             }
-            return
+        } else if (requestPermissionId == Constants.REQUEST_WRITE_EXTERNAL_STORAGE || requestPermissionId == Constants.REQUEST_SELECT_IMAGE_ALBUM) {
+            // 앨범 선택 - Photo Picker 사용 (권한 불필요)
+            if (mCameraType == 4) {
+                galleryAddPic()
+            }
         }
-
-        // 사용자에게 지금 이 앱이 권한을 왜 요청하고 있는지 설명하는 페이지를 보여줄 것인지 말것인지 확인
-        // 사용자가 권한 설정 허용 팝업에서 거절했을 경우 return true, 다시 묻지 않음을 체크한 경우엔 return false;
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, finalPermission)) {
-            val dialog = AlertDialog.Builder(this@SelectImageMethodActivity)
-            dialog.setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("Allow") { dialog, which ->
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(arrayOf(finalPermission), 0)
-                    }
-                }
-                .setNegativeButton("Decline") { dialog, which ->
-                    Toast.makeText(
-                        this@SelectImageMethodActivity,
-                        "Cancel permission",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                .create().show()
-        } else {
-            // Camera permission has not been granted yet. Request it directly.
-            ActivityCompat.requestPermissions(this, arrayOf(finalPermission), requestPermissionId)
-        }
-        // END_INCLUDE(camera_permission_request)
     }
 
     /**
@@ -742,13 +715,8 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             }
         } else if (requestCode == Constants.REQUEST_WRITE_EXTERNAL_STORAGE || requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM) {
             LogUtil.i("Received response for getting Location Info permission request.")
-            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (mCameraType == 4) {
-                    galleryAddPic()
-                }
-                LogUtil.i("ACCESS_FINE_LOCATION permission has now been granted. Showing preview.")
-            } else {
-                LogUtil.i("ACCESS_FINE_LOCATION permission was NOT granted.")
+            if (mCameraType == 4) {
+                galleryAddPic()
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -829,8 +797,40 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
         }
         if (requestCode == Constants.REQUEST_SELECT_IMAGE_ALBUM && resultCode == RESULT_OK && data != null) {
             Log.d("SeongKwon", "////" + images!!.size)
-            val addimages = data.getParcelableArrayListExtra<Image>("images")
-            Log.d("SeongKwon", "////" + addimages!!.size)
+            val addimages: ArrayList<Image>
+
+            // Photo Picker 결과 처리 (Android 13+)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && data.data != null) {
+                addimages = ArrayList()
+                val uris = ArrayList<Uri>()
+
+                // ClipData에서 여러 이미지 가져오기 (다중 선택 시)
+                if (data.clipData != null) {
+                    for (i in 0 until data.clipData!!.itemCount) {
+                        uris.add(data.clipData!!.getItemAt(i).uri)
+                    }
+                } else if (data.data != null) {
+                    uris.add(data.data!!)
+                }
+
+                // Uri를 Image 객체로 변환
+                for ((index, uri) in uris.withIndex()) {
+                    val path = RealPathUtil.getRealPath(this, uri) ?: uri.toString()
+                    val fileName = File(path).name
+                    addimages.add(Image(
+                        index.toLong(),
+                        fileName,
+                        path,
+                        true,
+                        images!!.size + index + 1
+                    ))
+                }
+            } else {
+                // AlbumSelectActivity 결과 처리 (Android 12 이하)
+                addimages = data.getParcelableArrayListExtra<Image>("images") ?: ArrayList()
+            }
+
+            Log.d("SeongKwon", "////" + addimages.size)
             if (addimages.size > 0) {
                 mIsChanged = true
             }
@@ -922,6 +922,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                     "SeongKwon",
                     "Constants.REQUEST_EDIT_IMAGE ******************************************* adapter.notifyDataSetChanged();"
                 )
+                imageCount?.text = images?.size.toString() + "/" + HNApplication.LIMIT_IMAGE_COUNT
             }
             //            }
         }
@@ -954,9 +955,10 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             //            sendMessage(Constants.FETCH_COMPLETED, countSelected);
             mProgressDialog!!.dismiss()
             savedImageSize = images!!.size
-            imageCount!!.text =
+            imageCount?.text =
                 savedImageSize.toString() + "/" + HNApplication.Companion.LIMIT_IMAGE_COUNT
 
+            loadImages()
             // Close progressdialog
             mProgressDialog!!.dismiss()
         }

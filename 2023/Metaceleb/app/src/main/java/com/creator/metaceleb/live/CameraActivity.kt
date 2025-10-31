@@ -28,6 +28,8 @@ import com.creator.metaceleb.delegator.HNSharedPreference
 import com.creator.metaceleb.helpers.Constants
 import com.creator.metaceleb.models.Image
 import com.creator.metaceleb.util.*
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.normal.TedPermission
 import com.ksyun.media.streamer.capture.CameraCapture
 import com.ksyun.media.streamer.capture.camera.CameraTouchHelper
 import com.ksyun.media.streamer.filter.imgtex.ImgTexFilterMgt
@@ -60,6 +62,12 @@ class CameraActivity : Activity() {
     var mCameraHintView: CameraHintView? = null
     var mMainHandler: Handler? = null
 
+    // 요청할 권한 리스트
+    private val REQUIRED_PERMISSIONS = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO,
+    )
+
     companion object {
         const val INTENT_PROTOCOL_START = "intent:"
         const val INTENT_PROTOCOL_INTENT = "#Intent;"
@@ -73,10 +81,11 @@ class CameraActivity : Activity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_camera)
         initWebView()
+        checkPermission()
         initCamera()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var data: Intent? = data
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("SeongKwon", "============================================")
@@ -89,8 +98,39 @@ class CameraActivity : Activity() {
                 val jObj = JSONObject()
                 val jArray = JSONArray()
                 jObj.put("resultcd", "0") // 0:성공. 1:실패
-                val selectedImages =
-                    data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+
+                val selectedImages: ArrayList<Image>?
+                // Photo Picker 결과 처리 (Android 13+)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && data?.data != null) {
+                    selectedImages = ArrayList()
+                    val uris = ArrayList<Uri>()
+
+                    // ClipData에서 여러 이미지 가져오기 (다중 선택 시)
+                    if (data.clipData != null) {
+                        for (i in 0 until data.clipData!!.itemCount) {
+                            uris.add(data.clipData!!.getItemAt(i).uri)
+                        }
+                    } else if (data.data != null) {
+                        uris.add(data.data!!)
+                    }
+
+                    // Uri를 Image 객체로 변환
+                    for ((index, uri) in uris.withIndex()) {
+                        val path = RealPathUtil.getRealPath(this, uri) ?: uri.toString()
+                        val fileName = File(path).name
+                        selectedImages.add(Image(
+                            index.toLong(),
+                            fileName,
+                            path,
+                            true,
+                            index
+                        ))
+                    }
+                } else {
+                    // AlbumSelectActivity 결과 처리 (Android 12 이하)
+                    selectedImages = data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+                }
+
                 for (i in selectedImages!!.indices) {
                     val jObjItem = JSONObject()
 
@@ -192,6 +232,22 @@ class CameraActivity : Activity() {
                 mFilePathCallback!!.onReceiveValue(results)
                 mFilePathCallback = null
             }
+        } else if (resultCode == RESULT_OK && requestCode == Constants.REQUEST_GET_FILE) {
+            data?.data?.let {
+                try {
+                    val bitmap = BitmapUtil.uriToBitmap(this, it)
+                    val base64String = getBase64String(bitmap!!)
+
+                    val fileName = File(it.path).name
+                    val jObj = JSONObject()
+                    jObj.put("fName", fileName)
+                    jObj.put("fData", base64String)
+
+                    executeJavascript("$mCallback($jObj)")
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
     }
 
@@ -212,21 +268,29 @@ class CameraActivity : Activity() {
         mStreamer!!.setDisplayPreview(mCameraPreview)
     }
 
-    private fun initStreamer(streamUrl: String) {
+    private fun initStreamer(
+        streamUrl: String,
+        previewFps: Int,
+        targetFps: Int,
+        videoBitrateList: ArrayList<Int>
+    ) {
+        LogUtil.e("initStreamer widthPixels : " + screenWidth)
+        LogUtil.e("initStreamer heightPixels : " + screenHeight)
 // 设置推流url（需要向相关人员申请，测试地址并不稳定！）
         mStreamer!!.url = streamUrl
         // 设置预览分辨率, 当一边为0时，SDK会根据另一边及实际预览View的尺寸进行计算
-        mStreamer!!.setPreviewResolution(720, 1280)
+        mStreamer!!.setPreviewResolution(screenWidth, screenHeight)
         // 设置推流分辨率，可以不同于预览分辨率（不应大于预览分辨率，否则推流会有画质损失）
-        mStreamer!!.setTargetResolution(720, 1280)
+        mStreamer!!.setTargetResolution(screenWidth, screenHeight)
         // 设置预览帧率
-        mStreamer!!.previewFps = 15f
+        mStreamer!!.previewFps = previewFps.toFloat()
         // 设置推流帧率，当预览帧率大于推流帧率时，编码模块会自动丢帧以适应设定的推流帧率
-        mStreamer!!.targetFps = 15f
+        mStreamer!!.targetFps = targetFps.toFloat()
         // 设置视频码率，分别为初始平均码率、最高平均码率、最低平均码率，单位为kbps，另有setVideoBitrate接口，单位为bps
 //        mStreamer.setVideoKBitrate(600, 800, 400);
-        mStreamer!!.setVideoKBitrate(2048, 2160, 2000)
+        mStreamer!!.setVideoKBitrate(videoBitrateList[0], videoBitrateList[1], videoBitrateList[2])
         // 设置音频采样率
+        mStreamer?.iFrameInterval = 1f
         mStreamer!!.audioSampleRate = 44100
         // 设置音频码率，单位为kbps，另有setAudioBitrate接口，单位为bps
         mStreamer!!.setAudioKBitrate(48)
@@ -301,13 +365,14 @@ class CameraActivity : Activity() {
         mWebView!!.settings.allowContentAccess = true
         mWebView!!.settings.loadsImagesAutomatically = true
         mWebView!!.settings.loadWithOverviewMode = true
-        mWebView!!.settings.setSupportMultipleWindows(false)
         mWebView!!.settings.useWideViewPort = true
         mWebView!!.settings.databaseEnabled = true
         mWebView!!.settings.domStorageEnabled = true
         mWebView!!.settings.javaScriptCanOpenWindowsAutomatically = true
         mWebView!!.settings.setSupportMultipleWindows(true)
+//        mWebView!!.settings.setAppCacheEnabled(true)
         mWebView!!.settings.cacheMode = WebSettings.LOAD_DEFAULT
+//        mWebView!!.settings.setAppCachePath(applicationContext.cacheDir.absolutePath)
         mWebView!!.settings.textZoom = 100
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
         mWebView!!.isDrawingCacheEnabled = true
@@ -361,7 +426,7 @@ class CameraActivity : Activity() {
         super.onDestroy()
     }
 
-    inner class HNWebViewClient : WebViewClient() {
+    inner class HNWebViewClient : WebViewClient(), DownloadListener {
         override fun onPageFinished(view: WebView, url: String) {
             super.onPageFinished(view, url)
             // LogUtil.d("onPageLoadStopped : " + url);
@@ -382,6 +447,7 @@ class CameraActivity : Activity() {
                 builder.setPositiveButton("예") { dialog, id ->
                     handler.proceed()
                     HNSharedPreference.putSharedPreference(this@CameraActivity, "isFirstLive", "Y")
+                    dialog.dismiss()
                 }
                 builder.setNegativeButton("아니오") { dialog, id ->
                     handler.cancel()
@@ -494,7 +560,18 @@ class CameraActivity : Activity() {
                     true
                 }
             }
+            view.setDownloadListener(this)
             return false // webview replace
+        }
+
+        override fun onDownloadStart(
+            url: String?,
+            userAgent: String?,
+            contentDisposition: String?,
+            mimeType: String?,
+            contentLength: Long
+        ) {
+            EtcUtil.downloadFile(url, userAgent, contentDisposition, mimeType, this@CameraActivity)
         }
     }
 
@@ -619,11 +696,17 @@ class CameraActivity : Activity() {
                 } else if ("ACT1030" == actionCode) {
                     LogUtil.d("ACT1030 - wlive 스트림키 전달 및 송출")
                     val resultcd = 1
-                    val streamUrl = actionParamObj!!.getString("stream_url")
-                    runOnUiThread { initStreamer(streamUrl) }
-                    val jsonObject = JSONObject()
-                    jsonObject.put("resultcd", resultcd) //1: 성공, 0: 실패
-                    executeJavascript("$mCallback($jsonObject)")
+                    actionParamObj?.let {
+                        val streamUrl = it.getString("stream_url")
+                        val previewFps = it.getInt("previewFps")
+                        val targetFps = it.getInt("targetFps")
+                        val setVideoKBitrate = it.getJSONArray("setVideoKBitrate")
+                        val videoBitrateList = setVideoKBitrate.toArrayListInt()
+                        runOnUiThread { initStreamer(streamUrl, previewFps, targetFps, videoBitrateList) }
+                        val jsonObject = JSONObject()
+                        jsonObject.put("resultcd", resultcd) //1: 성공, 0: 실패
+                        executeJavascript("$mCallback($jsonObject)")
+                    }
                 } else if ("ACT1031" == actionCode) {
                     // 종료
                     finish()
@@ -636,6 +719,28 @@ class CameraActivity : Activity() {
                         intent.putExtra("webviewUrl", request_url)
                         startActivity(intent)
                     }
+                } else if ("ACT1036" == actionCode) {
+                    LogUtil.d("ACT1036 - 스트리밍 화면 캡쳐")
+                    mStreamer?.requestScreenShot {
+                        it?.let {
+                            val base64String = getBase64String(it)
+                            val jObj = JSONObject()
+                            jObj.put("fData", base64String)
+                            executeJavascript("$mCallback($jObj)")
+                        }
+                    }
+                } else if ("ACT1037" == actionCode) {
+                    LogUtil.d("ACT1037 - 파일 열기")
+                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                    contentSelectionIntent.type = "*/*"
+                    val intentArray: Array<Intent?>
+                    intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                    startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -778,6 +883,52 @@ class CameraActivity : Activity() {
                 .setCancelable(false).create().show()
             return true
         }
+
+        override fun onCreateWindow(
+            view: WebView?,
+            isDialog: Boolean,
+            isUserGesture: Boolean,
+            resultMsg: Message?
+        ): Boolean {
+
+            val windowWebview = WebView(this@CameraActivity)
+            windowWebview.settings.run {
+                javaScriptEnabled = true                        // 자바 스크립트 사용 여부
+                setSupportMultipleWindows(true)                 //여러개의 윈도우 사용 여부
+                javaScriptCanOpenWindowsAutomatically = true
+            }
+
+            val windowDialog = Dialog(this@CameraActivity).apply {
+
+                setContentView(windowWebview)
+                val params = window?.attributes?.apply {
+                    width = ViewGroup.LayoutParams.MATCH_PARENT
+                    height = ViewGroup.LayoutParams.MATCH_PARENT
+                }
+
+                window?.attributes = params
+            }
+
+            windowWebview.webChromeClient = object : WebChromeClient() {
+
+                override fun onCloseWindow(window: WebView?) {
+                    windowDialog.dismiss()
+                    windowWebview.destroy()
+                    window?.destroy()
+                }
+            }
+
+            windowDialog.setOnDismissListener {
+                windowWebview.destroy()
+            }
+
+            windowDialog.show()
+
+            (resultMsg?.obj as WebView.WebViewTransport).webView = windowWebview
+            resultMsg.sendToTarget()
+
+            return true
+        }
     }
 
     // 사진저장
@@ -828,5 +979,24 @@ class CameraActivity : Activity() {
             result = Uri.parse(filePath)
         }
         return result!!
+    }
+
+    private fun checkPermission() {
+        TedPermission.create()
+            .setPermissionListener(object : PermissionListener {
+
+                //권한이 허용됐을 때
+                override fun onPermissionGranted() {}
+
+                //권한이 거부됐을 때
+                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                    Toast.makeText(this@CameraActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+            })
+            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
+            .setPermissions(
+                *REQUIRED_PERMISSIONS
+            )// 얻으려는 권한(여러개 가능)
+            .check()
     }
 }
