@@ -98,8 +98,39 @@ class CameraActivity : Activity() {
                 val jObj = JSONObject()
                 val jArray = JSONArray()
                 jObj.put("resultcd", "0") // 0:성공. 1:실패
-                val selectedImages =
-                    data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+
+                val selectedImages: ArrayList<Image>?
+                // Photo Picker 결과 처리 (Android 13+)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && data?.data != null) {
+                    selectedImages = ArrayList()
+                    val uris = ArrayList<Uri>()
+
+                    // ClipData에서 여러 이미지 가져오기 (다중 선택 시)
+                    if (data.clipData != null) {
+                        for (i in 0 until data.clipData!!.itemCount) {
+                            uris.add(data.clipData!!.getItemAt(i).uri)
+                        }
+                    } else if (data.data != null) {
+                        uris.add(data.data!!)
+                    }
+
+                    // Uri를 Image 객체로 변환
+                    for ((index, uri) in uris.withIndex()) {
+                        val path = RealPathUtil.getRealPath(this, uri) ?: uri.toString()
+                        val fileName = File(path).name
+                        selectedImages.add(Image(
+                            index.toLong(),
+                            fileName,
+                            path,
+                            true,
+                            index
+                        ))
+                    }
+                } else {
+                    // AlbumSelectActivity 결과 처리 (Android 12 이하)
+                    selectedImages = data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+                }
+
                 for (i in selectedImages!!.indices) {
                     val jObjItem = JSONObject()
 
@@ -241,8 +272,7 @@ class CameraActivity : Activity() {
         streamUrl: String,
         previewFps: Int,
         targetFps: Int,
-        videoBitrateList: ArrayList<Int>,
-        keyframeInterval: Int = 2
+        videoBitrateList: ArrayList<Int>
     ) {
         LogUtil.e("initStreamer widthPixels : " + screenWidth)
         LogUtil.e("initStreamer heightPixels : " + screenHeight)
@@ -260,7 +290,7 @@ class CameraActivity : Activity() {
 //        mStreamer.setVideoKBitrate(600, 800, 400);
         mStreamer!!.setVideoKBitrate(videoBitrateList[0], videoBitrateList[1], videoBitrateList[2])
         // 设置音频采样率
-        mStreamer?.iFrameInterval = keyframeInterval.toFloat()
+        mStreamer?.iFrameInterval = 1f
         mStreamer!!.audioSampleRate = 44100
         // 设置音频码率，单位为kbps，另有setAudioBitrate接口，单位为bps
         mStreamer!!.setAudioKBitrate(48)
@@ -672,8 +702,7 @@ class CameraActivity : Activity() {
                         val targetFps = it.getInt("targetFps")
                         val setVideoKBitrate = it.getJSONArray("setVideoKBitrate")
                         val videoBitrateList = setVideoKBitrate.toArrayListInt()
-                        val keyframeInterval = if (it.has("keyframeinterval")) it.getInt("keyframeinterval") else 2
-                        runOnUiThread { initStreamer(streamUrl, previewFps, targetFps, videoBitrateList, keyframeInterval) }
+                        runOnUiThread { initStreamer(streamUrl, previewFps, targetFps, videoBitrateList) }
                         val jsonObject = JSONObject()
                         jsonObject.put("resultcd", resultcd) //1: 성공, 0: 실패
                         executeJavascript("$mCallback($jsonObject)")

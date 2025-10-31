@@ -33,11 +33,16 @@ import java.io.ByteArrayOutputStream
 class ItemRegistrationActivity : AppCompatActivity() {
     private var actionBar: ActionBar? = null
     var PERMISSION_ALL = 1
-    var PERMISSIONS = arrayOf(
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.CAMERA
-    )
+    // READ_EXTERNAL_STORAGE 권한 제거 - Android 13+에서는 Photo Picker 사용으로 불필요
+    var PERMISSIONS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(Manifest.permission.CAMERA) // Android 13+ : 카메라 권한만 필요
+    } else {
+        arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -192,8 +197,8 @@ class ItemRegistrationActivity : AppCompatActivity() {
         if (requestCode == 1) {
             /* 요청한 권한을 사용자가 "허용"했다면 인텐트를 띄워라
                 내가 요청한 게 하나밖에 없기 때문에. 원래 같으면 for문을 돈다.*/
-/*            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_EXTERNAL_STORAGE}, 1);*/
+            /*            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_EXTERNAL_STORAGE}, 1);*/
             for (i in permissions.indices) {
                 if (grantResults.size > 0 && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                     if (ActivityCompat.checkSelfPermission(
