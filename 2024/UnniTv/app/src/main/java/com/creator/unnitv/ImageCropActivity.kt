@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.media.ExifInterface
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -247,11 +248,28 @@ class ImageCropActivity : HelperActivity() {
     }
 
     private fun pickImage() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT).setType("image/*")
-        try {
-            startActivityForResult(intent, REQUEST_CODE_PICK_GALLERY)
-        } catch (e: ActivityNotFoundException) {
-            Toast.makeText(this, "No image source available", Toast.LENGTH_SHORT).show()
+        // Android 13 이상에서는 Photo Picker 사용, 이하에서는 기존 방식 사용
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            try {
+                val pickImages = Intent(MediaStore.ACTION_PICK_IMAGES)
+                pickImages.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, 1)
+                startActivityForResult(pickImages, REQUEST_CODE_PICK_GALLERY)
+            } catch (e: Exception) {
+                // Photo Picker를 사용할 수 없는 경우 기존 방식 사용
+                val intent = Intent(Intent.ACTION_GET_CONTENT).setType("image/*")
+                try {
+                    startActivityForResult(intent, REQUEST_CODE_PICK_GALLERY)
+                } catch (ex: ActivityNotFoundException) {
+                    Toast.makeText(this, "No image source available", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            val intent = Intent(Intent.ACTION_GET_CONTENT).setType("image/*")
+            try {
+                startActivityForResult(intent, REQUEST_CODE_PICK_GALLERY)
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(this, "No image source available", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
