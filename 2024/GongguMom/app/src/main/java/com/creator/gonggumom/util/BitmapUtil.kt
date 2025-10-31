@@ -20,13 +20,7 @@ import java.io.*
 /**
  * Created by skcrackers on 10/16/17.
  */
-class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransformation(context) {
-    private var rotateRotationAngle = 0f
-
-    init {
-        this.rotateRotationAngle = rotateRotationAngle
-    }
-
+class BitmapUtil(private val rotateRotationAngle: Float) : BitmapTransformation() {
     override fun transform(
         pool: BitmapPool,
         toTransform: Bitmap,
@@ -46,8 +40,19 @@ class BitmapUtil(context: Context?, rotateRotationAngle: Float) : BitmapTransfor
         )
     }
 
-    override fun getId(): String {
-        return "rotate$rotateRotationAngle"
+    override fun equals(other: Any?): Boolean {
+        if (other is BitmapUtil) {
+            return rotateRotationAngle == other.rotateRotationAngle
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return rotateRotationAngle.hashCode()
+    }
+
+    override fun updateDiskCacheKey(messageDigest: java.security.MessageDigest) {
+        messageDigest.update("rotate$rotateRotationAngle".toByteArray())
     }
 
     companion object {

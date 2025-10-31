@@ -167,7 +167,7 @@ class ImageEditChangeOrder : HelperActivity() {
                                         viewHolder.view.alpha = 0.0f
                                         Glide.with(this@ImageEditChangeOrder)
                                             .load(images!![position]!!.path) //                                                .transform(new BitmapUtil(ImageEditChangeOrder.this, BitmapUtil.GetExifOrientation(images.get(position).path)))
-                                            .transform(BitmapUtil(this@ImageEditChangeOrder, 0f))
+                                            .transform(BitmapUtil(0f))
                                             .placeholder(R.drawable.image_placeholder)
                                             .into(viewHolder.imageView)
                                         setUpDragNDrop(position, convertView)
