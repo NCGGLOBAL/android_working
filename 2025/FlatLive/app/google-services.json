@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "329384559748",
+    "project_id": "flatlive-417b7",
+    "storage_bucket": "flatlive-417b7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:329384559748:android:2a1fcf2499195f8ff66ed1",
+        "android_client_info": {
+          "package_name": "com.creator.flatlive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJyQ8wWn0QTSJPqlJK6Jp34YqGWdH9p8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
