@@ -7,6 +7,7 @@ import android.app.ActivityManager
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.*
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -835,6 +836,16 @@ class WebViewActivity : Activity() {
                             *requiredMediaPermissionList
                         )// 얻으려는 권한(여러개 가능)
                         .check()
+                } else if ("ACT1038" == actionCode) {
+                    LogUtil.d("ACT1038 - 화면 가로보기 또는 세로보기 모드")
+                    actionParamObj?.getString("key_type")?.let {
+                        requestedOrientation = if (it == "0") {
+                            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                        } else {
+                            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                        }
+                    }
+                    executeJavascript("$mCallback")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -1150,8 +1150,8 @@ class MainActivity : AppCompatActivity() {
 
                     videoThumnailPath = HNSharedPreference.getSharedPreference(this@MainActivity, "videoThumnailPath")
                     videoArchiveFilePath = HNSharedPreference.getSharedPreference(this@MainActivity, "videoArchiveFilePath")
-                    LogUtil.e("ACT1038 - videoThumnailPath : " + videoThumnailPath)
-                    LogUtil.e("ACT1038 - videoArchiveFilePath : " + videoArchiveFilePath)
+                    LogUtil.e("ACT1039 - videoThumnailPath : " + videoThumnailPath)
+                    LogUtil.e("ACT1039 - videoArchiveFilePath : " + videoArchiveFilePath)
                     // 기존 파일 삭제
                     deleteVideoFile()
 

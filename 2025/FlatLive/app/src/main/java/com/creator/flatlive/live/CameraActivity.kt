@@ -3,6 +3,7 @@ package com.creator.flatlive.live
 import android.Manifest
 import android.app.*
 import android.content.*
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
@@ -340,6 +341,7 @@ class CameraActivity : Activity() {
         mWebView!!.settings.domStorageEnabled = true
         mWebView!!.settings.javaScriptCanOpenWindowsAutomatically = true
         mWebView!!.settings.setSupportMultipleWindows(true)
+        mWebView!!.settings.mediaPlaybackRequiresUserGesture = false
 //        mWebView!!.settings.setAppCacheEnabled(true)
         mWebView!!.settings.cacheMode = WebSettings.LOAD_DEFAULT
 //        mWebView!!.settings.setAppCachePath(applicationContext.cacheDir.absolutePath)
@@ -721,6 +723,16 @@ class CameraActivity : Activity() {
                             executeJavascript("$mCallback($jObj)")
                         }
                     }
+                } else if ("ACT1038" == actionCode) {
+                    LogUtil.d("ACT1038 - 화면 가로보기 또는 세로보기 모드")
+                    actionParamObj?.getString("key_type")?.let {
+                        requestedOrientation = if (it == "0") {
+                            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                        } else {
+                            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                        }
+                    }
+                    executeJavascript("$mCallback")
                 } else if ("ACT1037" == actionCode) {
                     LogUtil.d("ACT1037 - 파일 열기")
                     val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
