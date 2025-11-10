@@ -61,6 +61,7 @@ class CameraActivity : Activity() {
     var mCameraPreview: GLSurfaceView? = null
     var mCameraHintView: CameraHintView? = null
     var mMainHandler: Handler? = null
+    private var currentCameraFacing: Int = CameraCapture.FACING_FRONT
 
     // 요청할 권한 리스트
     private val REQUIRED_PERMISSIONS = arrayOf(
@@ -235,6 +236,7 @@ class CameraActivity : Activity() {
         mStreamer = KSYStreamer(this)
         // 设置预览View
         mStreamer!!.setDisplayPreview(mCameraPreview)
+        currentCameraFacing = mStreamer?.cameraCapture?.cameraFacing ?: CameraCapture.FACING_FRONT
     }
 
     private fun initStreamer(
@@ -275,7 +277,9 @@ class CameraActivity : Activity() {
         // 设置屏幕的旋转角度，支持 0, 90, 180, 270
         mStreamer!!.rotateDegrees = 0
         // 设置开始预览使用前置还是后置摄像头
-        mStreamer!!.cameraFacing = CameraCapture.FACING_FRONT
+        currentCameraFacing =
+            mStreamer?.cameraCapture?.cameraFacing ?: currentCameraFacing
+        mStreamer!!.cameraFacing = currentCameraFacing
         mStreamer!!.toggleTorch(false)
 
         // 触摸对焦和手势缩放功能
@@ -578,6 +582,8 @@ class CameraActivity : Activity() {
                     var resultcd = 1
                     if (actionParamObj!!.has("key_type")) {
                         mStreamer!!.switchCamera()
+                        currentCameraFacing =
+                            mStreamer?.cameraCapture?.cameraFacing ?: currentCameraFacing
                     } else {
                         resultcd = 0
                     }
