@@ -168,6 +168,7 @@ class WebViewActivity : Activity() {
         mWebView!!.settings.javaScriptCanOpenWindowsAutomatically = true
         mWebView!!.settings.setSupportMultipleWindows(true)
 //        mWebView!!.settings.setAppCacheEnabled(true)
+        mWebView!!.settings.mediaPlaybackRequiresUserGesture = false
         mWebView!!.settings.cacheMode = WebSettings.LOAD_DEFAULT
 //        mWebView!!.settings.setAppCachePath(applicationContext.cacheDir.absolutePath)
         mWebView!!.settings.textZoom = 100

@@ -1156,8 +1156,8 @@ class MainActivity : AppCompatActivity() {
 
                     videoThumnailPath = HNSharedPreference.getSharedPreference(this@MainActivity, "videoThumnailPath")
                     videoArchiveFilePath = HNSharedPreference.getSharedPreference(this@MainActivity, "videoArchiveFilePath")
-                    LogUtil.e("ACT1038 - videoThumnailPath : " + videoThumnailPath)
-                    LogUtil.e("ACT1038 - videoArchiveFilePath : " + videoArchiveFilePath)
+                    LogUtil.e(TAG, "ACT1039 - videoThumnailPath : " + videoThumnailPath)
+                    LogUtil.e(TAG, "ACT1039 - videoArchiveFilePath : " + videoArchiveFilePath)
                     // 기존 파일 삭제
                     deleteVideoFile()
 
@@ -1167,7 +1167,7 @@ class MainActivity : AppCompatActivity() {
 
                     startActivityForResult(intent, Constants.FILECHOOSER_LOLLIPOP_REQ_VEDIO_CODE)
                 } else if ("ACT1040" == actionCode) {
-                    LogUtil.d("ACT1040 - ACT1040 영상 파일 업로드")
+                    LogUtil.d(TAG,"ACT1040 - ACT1040 영상 파일 업로드")
                     val url = actionParamObj?.getString("url")
                     val key = actionParamObj?.getString("key")
                     val token = actionParamObj?.getString("token")
