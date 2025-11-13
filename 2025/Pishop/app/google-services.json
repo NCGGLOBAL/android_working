@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "3303875886",
+    "project_id": "pishop-9cc9a",
+    "storage_bucket": "pishop-9cc9a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3303875886:android:8172b3a377387c2aef46bf",
+        "android_client_info": {
+          "package_name": "com.creator.pishop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAF2A83f2OXnE1oViiqCDI1OsyQKPXPWQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
