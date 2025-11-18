@@ -19,7 +19,3 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
-
-# Keep mp4parser classes used by SiliCompressor (avoid class stripping)
--keep class com.googlecode.mp4parser.** { *; }
--keep class org.mp4parser.** { *; }
