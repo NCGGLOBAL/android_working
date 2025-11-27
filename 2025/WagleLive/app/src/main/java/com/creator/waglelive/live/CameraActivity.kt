@@ -61,14 +61,12 @@ class CameraActivity : Activity() {
     var mCameraPreview: GLSurfaceView? = null
     var mCameraHintView: CameraHintView? = null
     var mMainHandler: Handler? = null
+    private var currentCameraFacing: Int = CameraCapture.FACING_FRONT
 
     // 요청할 권한 리스트
     private val REQUIRED_PERMISSIONS = arrayOf(
         Manifest.permission.CAMERA,
         Manifest.permission.RECORD_AUDIO,
-//        Manifest.permission.ACCESS_FINE_LOCATION,
-//        Manifest.permission.ACCESS_COARSE_LOCATION,
-//        Manifest.permission.MODIFY_AUDIO_SETTINGS,
     )
 
     companion object {
@@ -83,7 +81,6 @@ class CameraActivity : Activity() {
         // Activity가 실행 될 때 항상 화면을 켜짐으로 유지한다.
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_camera)
-
         initWebView()
         checkPermission()
         initCamera()
@@ -233,55 +230,13 @@ class CameraActivity : Activity() {
     }
 
     private fun initCamera() {
-        try {
-            // 1. 안전한 findViewById 처리
-            val cameraPreviewView = findViewById<View>(R.id.camera_preview)
-            if (cameraPreviewView !is GLSurfaceView) {
-                val errorMsg = "camera_preview가 GLSurfaceView가 아닙니다: ${cameraPreviewView?.javaClass?.simpleName}"
-                Log.e(TAG, errorMsg)
-                showErrorDialog("레이아웃 오류: $errorMsg")
-                return
-            }
-            mCameraPreview = cameraPreviewView
-            
-            // 2. Handler 초기화 (메모리 누수 방지)
-            mMainHandler = Handler(Looper.getMainLooper())
-            
-            // 3. KSYStreamer 초기화 (예외 처리)
-            try {
-                mStreamer = KSYStreamer(this)
-                Log.d(TAG, "KSYStreamer 초기화 성공")
-            } catch (e: UnsatisfiedLinkError) {
-                Log.e(TAG, "KSYStreamer 네이티브 라이브러리 로드 실패: ${e.message}")
-                showErrorDialog("KSYStreamer 네이티브 라이브러리 로드 실패: ")
-                return
-            } catch (e: Exception) {
-                Log.e(TAG, "KSYStreamer 초기화 실패: ${e.message}")
-                showErrorDialog("KSYStreamer 초기화 실패", e)
-                return
-            }
-            
-            // 4. 안전한 setDisplayPreview 호출
-            mStreamer?.let { streamer ->
-                try {
-                    streamer.setDisplayPreview(mCameraPreview)
-                    Log.d(TAG, "카메라 프리뷰 설정 완료")
-                } catch (e: Exception) {
-                    Log.e(TAG, "카메라 프리뷰 설정 실패: ${e.message}")
-                    // 스트리머 정리
-                    streamer.release()
-                    mStreamer = null
-                    showErrorDialog("카메라 프리뷰 설정 실패", e)
-                }
-            }
-            
-        } catch (e: Exception) {
-            Log.e(TAG, "initCamera 전체 실패: ${e.message}")
-            e.printStackTrace()
-            // 전체 초기화 실패 시 정리 작업
-            cleanupCamera()
-            showErrorDialog("카메라 초기화 전체 실패", e)
-        }
+        mCameraPreview = findViewById<View>(R.id.camera_preview) as GLSurfaceView
+        mMainHandler = Handler()
+        // 创建KSYStreamer实例
+        mStreamer = KSYStreamer(this)
+        // 设置预览View
+        mStreamer!!.setDisplayPreview(mCameraPreview)
+        currentCameraFacing = mStreamer?.cameraCapture?.cameraFacing ?: CameraCapture.FACING_FRONT
     }
 
     private fun initStreamer(
@@ -291,17 +246,14 @@ class CameraActivity : Activity() {
         videoBitrateList: ArrayList<Int>,
         keyframeInterval: Int = 2
     ) {
-        LogUtil.e("initStreamer previewFps : " + previewFps)
-        LogUtil.e("initStreamer targetFps : " + targetFps)
-        LogUtil.e("initStreamer videoBitrateList[0] : " + videoBitrateList[0])
-        LogUtil.e("initStreamer videoBitrateList[1] : " + videoBitrateList[1])
-        LogUtil.e("initStreamer videoBitrateList[2] : " + videoBitrateList[2])
+        LogUtil.e("initStreamer widthPixels : " + screenWidth)
+        LogUtil.e("initStreamer heightPixels : " + screenHeight)
 // 设置推流url（需要向相关人员申请，测试地址并不稳定！）
         mStreamer!!.url = streamUrl
         // 设置预览分辨率, 当一边为0时，SDK会根据另一边及实际预览View的尺寸进行计算
-        mStreamer!!.setPreviewResolution(720, 1280)
+        mStreamer!!.setPreviewResolution(screenWidth, screenHeight)
         // 设置推流分辨率，可以不同于预览分辨率（不应大于预览分辨率，否则推流会有画质损失）
-        mStreamer!!.setTargetResolution(720, 1280)
+        mStreamer!!.setTargetResolution(screenWidth, screenHeight)
         // 设置预览帧率
         mStreamer!!.previewFps = previewFps.toFloat()
         // 设置推流帧率，当预览帧率大于推流帧率时，编码模块会自动丢帧以适应设定的推流帧率
@@ -325,7 +277,9 @@ class CameraActivity : Activity() {
         // 设置屏幕的旋转角度，支持 0, 90, 180, 270
         mStreamer!!.rotateDegrees = 0
         // 设置开始预览使用前置还是后置摄像头
-        mStreamer!!.cameraFacing = CameraCapture.FACING_FRONT
+        currentCameraFacing =
+            mStreamer?.cameraCapture?.cameraFacing ?: currentCameraFacing
+        mStreamer!!.cameraFacing = currentCameraFacing
         mStreamer!!.toggleTorch(false)
 
         // 触摸对焦和手势缩放功能
@@ -403,99 +357,47 @@ class CameraActivity : Activity() {
     public override fun onResume() {
         super.onResume()
         if (mStreamer != null) {
-            try {
-                // 一般可以在onResume中开启摄像头预览
-                mStreamer!!.startCameraPreview()
-                // 调用KSYStreamer的onResume接口
-                mStreamer!!.onResume()
-                // 如果onPause中切到了DummyAudio模块，可以在此恢复
-                mStreamer!!.setUseDummyAudioCapture(false)
+            // 一般可以在onResume中开启摄像头预览
+            mStreamer!!.startCameraPreview()
+            // 调用KSYStreamer的onResume接口
+            mStreamer!!.onResume()
+            // 如果onPause中切到了DummyAudio模块，可以在此恢复
+            mStreamer!!.setUseDummyAudioCapture(false)
 
-                // 设置Info回调，可以收到相关通知信息
-                mStreamer!!.onInfoListener = KSYStreamer.OnInfoListener { what, msg1, msg2 ->
-                    // ...
-                }
-                // 设置错误回调，收到该回调后，一般是发生了严重错误，比如网络断开等，
-// SDK内部会停止推流，APP可以在这里根据回调类型及需求添加重试逻辑。
-                mStreamer!!.onErrorListener =
-                    KSYStreamer.OnErrorListener { what, msg1, msg2 -> 
-                        Log.e(TAG, "onError : $msg1")
-                        showErrorDialog("스트리머 오류 발생: $msg1")
-                    }
-            } catch (e: Exception) {
-                Log.e(TAG, "onResume 중 오류: ${e.message}")
-                showErrorDialog("카메라 재개 중 오류 발생", e)
+            // 设置Info回调，可以收到相关通知信息
+            mStreamer!!.onInfoListener = KSYStreamer.OnInfoListener { what, msg1, msg2 ->
+                // ...
             }
+            // 设置错误回调，收到该回调后，一般是发生了严重错误，比如网络断开等，
+// SDK内部会停止推流，APP可以在这里根据回调类型及需求添加重试逻辑。
+            mStreamer!!.onErrorListener =
+                KSYStreamer.OnErrorListener { what, msg1, msg2 -> Log.e(TAG, "onError : $msg1") }
         }
     }
 
     public override fun onPause() {
         super.onPause()
         if (mStreamer != null) {
-            try {
-                mStreamer!!.onPause()
-                // 一般在这里停止摄像头采集
-                mStreamer!!.stopCameraPreview()
-                // 如果希望App切后台后，停止录制主播端的声音，可以在此切换为DummyAudio采集，
-                // 该模块会代替mic采集模块产生静音数据，同时释放占用的mic资源
-                mStreamer!!.setUseDummyAudioCapture(true)
-            } catch (e: Exception) {
-                Log.e(TAG, "onPause 중 오류: ${e.message}")
-                showErrorDialog("카메라 일시정지 중 오류 발생", e)
-            }
+            mStreamer!!.onPause()
+            // 一般在这里停止摄像头采集
+            mStreamer!!.stopCameraPreview()
+            // 如果希望App切后台后，停止录制主播端的声音，可以在此切换为DummyAudio采集，
+            // 该模块会代替mic采集模块产生静音数据，同时释放占用的mic资源
+            mStreamer!!.setUseDummyAudioCapture(true)
         }
     }
 
     public override fun onDestroy() {
-        cleanupCamera()
+        if (mMainHandler != null) {
+            mMainHandler!!.removeCallbacksAndMessages(null)
+            mMainHandler = null
+        }
+        if (mStreamer != null) {
+            mStreamer!!.stopRecord()
+            // 清理相关资源
+            mStreamer!!.release()
+        }
         super.onDestroy()
-    }
-
-    private fun showErrorDialog(message: String, exception: Exception? = null) {
-        runOnUiThread {
-            val detailedMessage = if (exception != null) {
-                """
-                $message
-                
-                상세 정보:
-                - 오류 타입: ${exception.javaClass.simpleName}
-                - 오류 메시지: ${exception.message}
-                - 스택 트레이스: ${exception.stackTraceToString()}
-                """.trimIndent()
-            } else {
-                message
-            }
-            
-            AlertDialog.Builder(this)
-                .setTitle("오류 발생")
-                .setMessage(detailedMessage)
-                .setPositiveButton("확인") { _, _ -> finish() }
-                .setCancelable(false)
-                .show()
-        }
-    }
-
-    private fun cleanupCamera() {
-        try {
-            if (mMainHandler != null) {
-                mMainHandler!!.removeCallbacksAndMessages(null)
-                mMainHandler = null
-            }
-            if (mStreamer != null) {
-                mStreamer!!.stopRecord()
-                // 清理相关资源
-                mStreamer!!.release()
-                mStreamer = null
-            }
-            mCameraPreview = null
-        } catch (e: Exception) {
-            Log.e(TAG, "카메라 정리 중 오류: ${e.message}")
-            showErrorDialog("카메라 리소스 정리 중 오류 발생", e)
-        }
-    }
-
-    private fun isCameraInitialized(): Boolean {
-        return mStreamer != null && mCameraPreview != null
     }
 
     inner class HNWebViewClient : WebViewClient(), DownloadListener {
@@ -530,7 +432,6 @@ class CameraActivity : Activity() {
                 alertDialog.show()
             } else {
                 handler.proceed()
-                HNSharedPreference.putSharedPreference(this@CameraActivity, "isFirstLive", "Y")
             }
         }
 
@@ -681,6 +582,8 @@ class CameraActivity : Activity() {
                     var resultcd = 1
                     if (actionParamObj!!.has("key_type")) {
                         mStreamer!!.switchCamera()
+                        currentCameraFacing =
+                            mStreamer?.cameraCapture?.cameraFacing ?: currentCameraFacing
                     } else {
                         resultcd = 0
                     }
@@ -759,6 +662,27 @@ class CameraActivity : Activity() {
                                 mStreamer!!.glRender,
                                 ImgTexFilterMgt.KSY_FILTER_BEAUTY_PRO4
                             )
+                        }
+                    } else {
+                        resultcd = 0
+                    }
+                    val jsonObject = JSONObject()
+                    jsonObject.put("resultcd", resultcd) //1: 성공, 0: 실패
+                    executeJavascript("$mCallback($jsonObject)")
+                } else if ("ACT1034" == actionCode) {
+                    LogUtil.d("ACT1034 - wlive 카메라 좌우 반전 제어")
+                    var resultcd = 1
+                    if (actionParamObj != null && actionParamObj.has("key_type")) {
+                        try {
+                            val keyType = actionParamObj.getInt("key_type")
+                            // 0: 미러 OFF, 1: 미러 ON
+                            if (keyType == 1) {
+                                mStreamer?.setEnableCameraMirror(true)
+                            } else {
+                                mStreamer?.setEnableCameraMirror(false)
+                            }
+                        } catch (e: Exception) {
+                            resultcd = 0
                         }
                     } else {
                         resultcd = 0
@@ -1003,35 +927,6 @@ class CameraActivity : Activity() {
 
             return true
         }
-
-//        override fun onPermissionRequest(request: PermissionRequest?) {
-//            request?.let {
-////                Toast.makeText(this@CameraActivity, "웹뷰에서 onPermissionRequest 호출", Toast.LENGTH_SHORT).show()
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    TedPermission.create()
-//                        .setPermissionListener(object : PermissionListener {
-//
-//                            //권한이 허용됐을 때
-//                            override fun onPermissionGranted() {
-//                                it.grant(it.resources) // 모든 요청된 권한을 허용
-////                                Toast.makeText(this@CameraActivity, "모든 요청된 권한을 웹에 허용합니다.", Toast.LENGTH_SHORT).show()
-//                            }
-//
-//                            //권한이 거부됐을 때
-//                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-//                                it.deny()
-//                            }
-//                        })
-//                        .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
-//                        .setPermissions(
-//                            *REQUIRED_PERMISSIONS
-//                        )// 얻으려는 권한(여러개 가능)
-//                        .check()
-//                } else {
-//                    it.grant(it.resources) // 마시멜로우 이하에서는 바로 허용
-//                }
-//            }
-//        }
     }
 
     // 사진저장

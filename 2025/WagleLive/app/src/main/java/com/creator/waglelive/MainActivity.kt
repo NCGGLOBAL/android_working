@@ -260,7 +260,7 @@ class MainActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
             if (packageInfo == null) Log.e("KeyHash", "KeyHash:null")
-            for (signature in packageInfo!!.signatures) {
+            for (signature in packageInfo!!.signatures!!) {
                 try {
                     val md = MessageDigest.getInstance("SHA")
                     md.update(signature.toByteArray())
@@ -1086,7 +1086,7 @@ class MainActivity : AppCompatActivity() {
                     } catch (e: PackageManager.NameNotFoundException) {
                         e.printStackTrace()
                     }
-                    versionName = pi!!.versionName
+                    versionName = pi!!.versionName.toString()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

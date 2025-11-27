@@ -91,7 +91,7 @@ object EtcUtil {
         deviceInfo["osVersion"] = Build.VERSION.RELEASE
         var appVersion = ""
         if (packageInfo != null) {
-            appVersion = packageInfo.versionName
+            appVersion = packageInfo.versionName.toString()
         }
         deviceInfo["appVersion"] = appVersion
         val telephony = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
@@ -506,3 +506,9 @@ fun JSONArray.toArrayListInt(): ArrayList<Int> {
 
     return result
 }
+
+val Context.screenWidth: Int
+    get() = resources.displayMetrics.widthPixels
+
+val Context.screenHeight: Int
+    get() = resources.displayMetrics.heightPixels
