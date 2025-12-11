@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "841464826314",
+    "project_id": "kobulatv-f9da0",
+    "storage_bucket": "kobulatv-f9da0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:841464826314:android:e894ef7fcc61793e17e733",
+        "android_client_info": {
+          "package_name": "com.creator.kobulatv"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9bnB0OCMvthrpQZTf0OJammCjkpiwb2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
