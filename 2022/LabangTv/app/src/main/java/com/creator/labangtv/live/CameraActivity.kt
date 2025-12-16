@@ -677,9 +677,9 @@ class CameraActivity : Activity() {
                             val keyType = actionParamObj.getInt("key_type")
                             // 0: 미러 OFF, 1: 미러 ON
                             if (keyType == 1) {
-                                mStreamer?.setEnableCameraMirror(true)
+                                mStreamer?.setFrontCameraMirror(true)
                             } else {
-                                mStreamer?.setEnableCameraMirror(false)
+                                mStreamer?.setFrontCameraMirror(false)
                             }
                         } catch (e: Exception) {
                             resultcd = 0
