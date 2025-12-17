@@ -232,11 +232,28 @@ class CameraActivity : Activity() {
     private fun initCamera() {
         mCameraPreview = findViewById<View>(R.id.camera_preview) as GLSurfaceView
         mMainHandler = Handler()
-        // 创建KSYStreamer实例
+
+        // KSYStreamer 생성 및 Preview 연결
         mStreamer = KSYStreamer(this)
-        // 设置预览View
         mStreamer!!.setDisplayPreview(mCameraPreview)
+
+        // 초기 상태: key_type 1이면 프리뷰 반전 ON
+        updatePreviewMirror(false)  // 기본값 OFF
+
         currentCameraFacing = mStreamer?.cameraCapture?.cameraFacing ?: CameraCapture.FACING_FRONT
+        mStreamer?.setFrontCameraMirror(false)  // 스트림은 항상 원본
+    }
+
+    private fun updatePreviewMirror(isMirrorOn: Boolean) {
+        mCameraPreview?.post {
+            mCameraPreview?.scaleX = if (isMirrorOn) -1f else 1f
+            LogUtil.d("MIRROR", "Preview mirror: ${if (isMirrorOn) "ON" else "OFF"}")
+            if (isMirrorOn) {
+                Toast.makeText(this@CameraActivity, "프리뷰 미러링 : ON", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this@CameraActivity, "프리뷰 미러링 : OFF", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun initStreamer(
@@ -674,13 +691,12 @@ class CameraActivity : Activity() {
                     var resultcd = 1
                     if (actionParamObj != null && actionParamObj.has("key_type")) {
                         try {
-                            val keyType = actionParamObj.getInt("key_type")
-                            // 0: 미러 OFF, 1: 미러 ON
-                            if (keyType == 1) {
-                                mStreamer?.setFrontCameraMirror(true)
-                            } else {
-                                mStreamer?.setFrontCameraMirror(false)
-                            }
+                            val keyType = actionParamObj.getInt("key_type")  // 0: OFF, 1: ON
+
+                            // 프리뷰 미러만 조건부 설정 (스트림 미러는 항상 OFF)
+                            updatePreviewMirror(keyType == 1)
+
+                            resultcd = 1
                         } catch (e: Exception) {
                             resultcd = 0
                         }
