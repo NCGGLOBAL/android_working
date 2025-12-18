@@ -247,8 +247,15 @@ class WebViewActivity : Activity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && acceptType?.contains("video") != true && acceptType?.contains("VIDEO") != true) {
                 // Android 13+ : Photo Picker 사용 (권한 불필요, 이미지만)
                 try {
+                    // accept="image/*"일 때만 이미지만 선택되도록 처리
+                    val isImageOnly = acceptType == "image/*"
+
                     val pickImages = Intent(MediaStore.ACTION_PICK_IMAGES)
-                    pickImages.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, 1)
+                    if (isImageOnly) {
+                        pickImages.type = "image/*"
+                    } else {
+                        pickImages.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, 1)
+                    }
                     startActivityForResult(pickImages, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
                 } catch (e: Exception) {
                     // Photo Picker를 사용할 수 없는 경우 기존 방식 사용
