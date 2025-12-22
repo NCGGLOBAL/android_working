@@ -342,6 +342,9 @@ class WebViewActivity : Activity() {
                 javaScriptCanOpenWindowsAutomatically = true
             }
 
+            // 부모 WebView의 WebViewClient 재사용 (intent:// 등 특수 URL 처리 포함)
+            windowWebview.webViewClient = HNWebViewClient()
+
             val windowDialog = Dialog(this@WebViewActivity).apply {
 
                 setContentView(windowWebview)
@@ -359,6 +362,13 @@ class WebViewActivity : Activity() {
                     windowDialog.dismiss()
                     windowWebview.destroy()
                     window?.destroy()
+                }
+                
+                override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                    super.onProgressChanged(view, newProgress)
+                    if (newProgress == 100) {
+                        LogUtil.d("Window WebView loading completed")
+                    }
                 }
             }
 
