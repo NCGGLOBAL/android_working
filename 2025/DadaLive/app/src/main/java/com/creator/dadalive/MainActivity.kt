@@ -319,6 +319,7 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.settings.domStorageEnabled = true
         mWebView!!.settings.javaScriptCanOpenWindowsAutomatically = true
         mWebView!!.settings.setSupportMultipleWindows(true)
+        mWebView!!.settings.mediaPlaybackRequiresUserGesture = false
         mWebView!!.settings.cacheMode = WebSettings.LOAD_DEFAULT
         mWebView!!.settings.textZoom = 100
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
