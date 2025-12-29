@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "394700582064",
+    "project_id": "liverandombox-702a2",
+    "storage_bucket": "liverandombox-702a2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394700582064:android:f3d98237fcb57ec3771f75",
+        "android_client_info": {
+          "package_name": "com.creator.liverandombox"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaKg11fL3l5ai1YPWnHALIFfEY_Fa5F4Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
