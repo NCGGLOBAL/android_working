@@ -254,14 +254,19 @@ class MainActivity : AppCompatActivity() {
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
             }
-            if (packageInfo == null) Log.e("KeyHash", "KeyHash:null")
-            for (signature in packageInfo!!.signatures) {
-                try {
-                    val md = MessageDigest.getInstance("SHA")
-                    md.update(signature.toByteArray())
-                    Log.d("KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT))
-                } catch (e: NoSuchAlgorithmException) {
-                    Log.e("KeyHash", "Unable to get MessageDigest. signature=$signature", e)
+            if (packageInfo == null) {
+                Log.e("KeyHash", "KeyHash:null")
+                return
+            }
+            packageInfo.signatures?.let { signatures ->
+                for (signature in signatures) {
+                    try {
+                        val md = MessageDigest.getInstance("SHA")
+                        md.update(signature.toByteArray())
+                        Log.d("KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT))
+                    } catch (e: NoSuchAlgorithmException) {
+                        Log.e("KeyHash", "Unable to get MessageDigest. signature=$signature", e)
+                    }
                 }
             }
         }
@@ -325,6 +330,7 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.settings.domStorageEnabled = true
         mWebView!!.settings.javaScriptCanOpenWindowsAutomatically = true
         mWebView!!.settings.setSupportMultipleWindows(true)
+        mWebView!!.settings.mediaPlaybackRequiresUserGesture = false
         mWebView!!.settings.cacheMode = WebSettings.LOAD_DEFAULT
         mWebView!!.settings.textZoom = 100
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
@@ -1080,7 +1086,7 @@ class MainActivity : AppCompatActivity() {
                     } catch (e: PackageManager.NameNotFoundException) {
                         e.printStackTrace()
                     }
-                    versionName = pi!!.versionName
+                    versionName = pi?.versionName ?: ""
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
