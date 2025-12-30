@@ -1,32 +1,13 @@
 {
   "project_info": {
-    "project_number": "415230702756",
-    "project_id": "pandaya-bef13",
-    "storage_bucket": "pandaya-bef13.firebasestorage.app"
+    "project_number": "111525067602",
+    "project_id": "pandaya-211bc",
+    "storage_bucket": "pandaya-211bc.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:415230702756:android:cc1f1ebfd71acb0d3c6231",
-        "android_client_info": {
-          "package_name": "com.creator.pandaya"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyA9ZCauneBaaXCMhel4XCaSUGcNqfBq_Bs"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:415230702756:android:353488fa70718b6b3c6231",
+        "mobilesdk_app_id": "1:111525067602:android:b609ab3094f8d11badd88b",
         "android_client_info": {
           "package_name": "com.creator.pandayaand"
         }
@@ -34,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA9ZCauneBaaXCMhel4XCaSUGcNqfBq_Bs"
+          "current_key": "AIzaSyD3lVXK8v-4oaRVgpWsCpB7wovRxaAhyrY"
         }
       ],
       "services": {
