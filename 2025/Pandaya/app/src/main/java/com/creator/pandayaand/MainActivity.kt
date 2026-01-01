@@ -214,7 +214,7 @@ class MainActivity : AppCompatActivity() {
                 .into(mLoadingView!!)
             Handler().postDelayed(Runnable {
                 mLoadingView?.visibility = View.GONE
-            }, 3000)
+            }, 5000)
         } catch (e: Exception) {
             e.printStackTrace()
         }
