@@ -27,6 +27,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.bumptech.glide.Glide
 import com.creator.pandayaand.common.BackPressCloseHandler
 import com.creator.pandayaand.common.HNApplication
 import com.creator.pandayaand.delegator.HNCommTran
@@ -111,7 +112,7 @@ class MainActivity : AppCompatActivity() {
     private val mKakaoMessage = ""
 
     // SNS========================================================================= //
-    private var mLoadingView: View? = null
+    private var mLoadingView: ImageView? = null
 
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var mLatitude: Double? = null
@@ -207,6 +208,10 @@ class MainActivity : AppCompatActivity() {
             // WebView 초기화
             initWebView()
             mLoadingView = findViewById(R.id.view_loading)
+            Glide.with(this)
+                .asGif()
+                .load(R.drawable.loading) // GIF 파일 리소스
+                .into(mLoadingView!!)
             Handler().postDelayed(Runnable {
                 mLoadingView?.visibility = View.GONE
             }, 3000)
