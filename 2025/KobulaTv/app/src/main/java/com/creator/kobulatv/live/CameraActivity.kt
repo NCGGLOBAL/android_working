@@ -248,6 +248,17 @@ class CameraActivity : Activity() {
     ) {
         LogUtil.e("initStreamer widthPixels : " + screenWidth)
         LogUtil.e("initStreamer heightPixels : " + screenHeight)
+        
+        // 기존 스트리밍이 실행 중인 경우 중지 (예외 처리로 안전하게 처리)
+        try {
+            if (mStreamer != null) {
+                mStreamer!!.stopStream()
+            }
+        } catch (e: Exception) {
+            // 스트리밍이 실행 중이 아니어도 예외가 발생할 수 있으므로 무시
+            LogUtil.d(TAG, "기존 스트리밍 중지 시도 (실행 중이 아닐 수 있음): ${e.message}")
+        }
+        
 // 设置推流url（需要向相关人员申请，测试地址并不稳定！）
         mStreamer!!.url = streamUrl
         // 设置预览分辨率, 当一边为0时，SDK会根据另一边及实际预览View的尺寸进行计算
@@ -273,7 +284,32 @@ class CameraActivity : Activity() {
          */
         mStreamer!!.enableRepeatLastFrame = false // disable repeat last frame in background
         mStreamer!!.setEnableAutoRestart(true, 500)
-        mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_SOFTWARE)
+        
+        // 인코딩 메서드 설정은 스트리밍 시작 전에만 가능하므로 try-catch로 보호
+        // 원래 로직과 동일하게 즉시 설정 시도
+        try {
+            mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_SOFTWARE)
+        } catch (e: IllegalStateException) {
+            // 스트리밍이 실행 중인 경우, 중지 후 재시도
+            LogUtil.e(TAG, "인코딩 메서드 설정 실패 (스트리밍 중일 수 있음): ${e.message}")
+            try {
+                mStreamer!!.stopStream()
+                // 중지 후 즉시 재시도
+                try {
+                    mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_SOFTWARE)
+                } catch (ex: Exception) {
+                    LogUtil.e(TAG, "인코딩 메서드 재설정 실패: ${ex.message}")
+                    ex.printStackTrace()
+                }
+            } catch (ex: Exception) {
+                LogUtil.e(TAG, "스트리밍 중지 실패: ${ex.message}")
+                ex.printStackTrace()
+            }
+        } catch (e: Exception) {
+            LogUtil.e(TAG, "인코딩 메서드 설정 중 예상치 못한 오류: ${e.message}")
+            e.printStackTrace()
+        }
+        
         // 设置屏幕的旋转角度，支持 0, 90, 180, 270
         mStreamer!!.rotateDegrees = 0
         // 设置开始预览使用前置还是后置摄像头
