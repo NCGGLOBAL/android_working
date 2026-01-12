@@ -254,14 +254,20 @@ class MainActivity : AppCompatActivity() {
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
             }
-            if (packageInfo == null) Log.e("KeyHash", "KeyHash:null")
-            for (signature in packageInfo!!.signatures) {
-                try {
-                    val md = MessageDigest.getInstance("SHA")
-                    md.update(signature.toByteArray())
-                    Log.d("KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT))
-                } catch (e: NoSuchAlgorithmException) {
-                    Log.e("KeyHash", "Unable to get MessageDigest. signature=$signature", e)
+            if (packageInfo == null) {
+                Log.e("KeyHash", "KeyHash:null")
+                return
+            }
+            val signatures = packageInfo.signatures
+            if (signatures != null) {
+                for (signature in signatures) {
+                    try {
+                        val md = MessageDigest.getInstance("SHA")
+                        md.update(signature.toByteArray())
+                        Log.d("KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT))
+                    } catch (e: NoSuchAlgorithmException) {
+                        Log.e("KeyHash", "Unable to get MessageDigest. signature=$signature", e)
+                    }
                 }
             }
         }
@@ -1080,7 +1086,7 @@ class MainActivity : AppCompatActivity() {
                     } catch (e: PackageManager.NameNotFoundException) {
                         e.printStackTrace()
                     }
-                    versionName = pi!!.versionName
+                    versionName = pi?.versionName ?: ""
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
