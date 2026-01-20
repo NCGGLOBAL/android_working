@@ -9,6 +9,8 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.media.MediaCodecInfo
+import android.media.MediaCodecList
 import android.net.http.SslError
 import android.opengl.GLSurfaceView
 import android.os.*
@@ -273,7 +275,21 @@ class CameraActivity : Activity() {
          */
         mStreamer!!.enableRepeatLastFrame = false // disable repeat last frame in background
         mStreamer!!.setEnableAutoRestart(true, 500)
-        mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_SOFTWARE)
+        // HW 인코딩 지원 여부 확인 후 적용, 실패 시 SW로 폴백
+        val isHwEncoderAvailable = isHardwareH264EncoderAvailable()
+        LogUtil.d("$TAG Encoder - H264 HW available: $isHwEncoderAvailable")
+        if (isHwEncoderAvailable) {
+            try {
+                mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_HARDWARE)
+                LogUtil.d("$TAG Encoder set: HARDWARE")
+            } catch (e: Exception) {
+                mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_SOFTWARE)
+                LogUtil.e("$TAG Encoder set failed (HW). Fallback to SOFTWARE: ${e.message}")
+            }
+        } else {
+            mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_SOFTWARE)
+            LogUtil.d("$TAG Encoder set: SOFTWARE (HW not available)")
+        }
         // 设置屏幕的旋转角度，支持 0, 90, 180, 270
         mStreamer!!.rotateDegrees = 0
         // 设置开始预览使用前置还是后置摄像头
@@ -304,6 +320,29 @@ class CameraActivity : Activity() {
 // 设置美颜滤镜，关于美颜滤镜的具体说明请参见专题说明
 //        mStreamer.getImgTexFilterMgt().setFilter(mStreamer.getGLRender(),
 //                ImgTexFilterMgt.KSY_FILTER_BEAUTY_DISABLE);
+    }
+
+    private fun isHardwareH264EncoderAvailable(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return false
+        }
+        val codecList = MediaCodecList(MediaCodecList.ALL_CODECS)
+        val codecs = codecList.codecInfos
+        for (codecInfo in codecs) {
+            if (!codecInfo.isEncoder) continue
+            val supportedTypes = codecInfo.supportedTypes
+            if (!supportedTypes.any { it.equals("video/avc", ignoreCase = true) }) continue
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (!codecInfo.isSoftwareOnly) return true
+            } else {
+                val name = codecInfo.name.lowercase(Locale.US)
+                val isSoftware = name.startsWith("omx.google.")
+                        || name.startsWith("c2.android.")
+                        || name.startsWith("c2.google.")
+                if (!isSoftware) return true
+            }
+        }
+        return false
     }
 
     private fun initWebView() {
