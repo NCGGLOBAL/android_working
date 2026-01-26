@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "783264405121",
+    "project_id": "jamlive-5272b",
+    "storage_bucket": "jamlive-5272b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783264405121:android:bcd3b71f99414e9dbc9f80",
+        "android_client_info": {
+          "package_name": "com.creator.jamlive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnrn4b2h1cUbCE_8K9ZH6UWje8stLGnSM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
