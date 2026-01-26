@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "499266904338",
+    "project_id": "seongsulive-ecd2a",
+    "storage_bucket": "seongsulive-ecd2a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:499266904338:android:96abfd9cbe4e1856d853cb",
+        "android_client_info": {
+          "package_name": "com.creator.seongsulive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKULZuda37yfYkmJSuBzntqwd6LQqAw6Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
