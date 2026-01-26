@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "665258716491",
+    "project_id": "hlemall",
+    "storage_bucket": "hlemall.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:665258716491:android:0bcd18a3d87eb3fd24ccce",
+        "android_client_info": {
+          "package_name": "com.creator.hlemall"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCo9HZrgttwkzYbvyoOdylHeXsKM1WDqN4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
