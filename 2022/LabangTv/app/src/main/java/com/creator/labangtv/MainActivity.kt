@@ -13,6 +13,8 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.MediaMetadataRetriever
+import android.media.MediaExtractor
+import android.media.MediaFormat
 import android.net.Uri
 import android.net.UrlQuerySanitizer
 import android.net.http.SslError
@@ -47,8 +49,14 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
-import com.iceteck.silicompressorr.SiliCompressor
+import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
+import com.abedelazizshe.lightcompressorlibrary.CompressionListener
+import com.abedelazizshe.lightcompressorlibrary.config.Configuration
+import com.abedelazizshe.lightcompressorlibrary.config.SharedStorageConfiguration
+import com.abedelazizshe.lightcompressorlibrary.config.SaveLocation
+import com.abedelazizshe.lightcompressorlibrary.config.VideoResizer
 import kotlinx.coroutines.*
+import kotlin.coroutines.cancellation.CancellationException
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
@@ -206,18 +214,18 @@ class MainActivity : AppCompatActivity() {
                             videoHeight -= 1
                         }
 
-                        videoArchiveFilePath = SiliCompressor.with(this@MainActivity)
-                            .compressVideo(selectedVideoPath,
-                                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).absolutePath,
-                                videoWidth,
-                                videoHeight,
-                                videoBitrate ?: 2067102
-                            )
+                        // LightCompressor를 사용한 비디오 압축
+                        videoArchiveFilePath = compressVideoWithLightCompressor(
+                            selectedVideoPath!!,
+                            videoWidth,
+                            videoHeight,
+                            videoBitrate ?: 2067102
+                        )
+                        
                         Log.e(TAG, "videoWidth: ${videoWidth}")
                         Log.e(TAG, "videoHeight: ${videoHeight}")
                         val videoFileSize = BitmapUtil.getFileSizeMB(videoArchiveFilePath)
                         Log.d(TAG, "videoArchiveFilePath FileSize: $videoFileSize MB")
-//                        Log.e(TAG, "videoBitrate: ${videoBitrate}")
                         Log.e(TAG, "archiveFilePath: ${videoArchiveFilePath}")
                         Log.e(TAG, "selectedVideoPath: ${selectedVideoPath}")
 
@@ -2092,6 +2100,163 @@ class MainActivity : AppCompatActivity() {
         }
         videoArchiveFilePath?.let {
             BitmapUtil.deleteFile(it)
+        }
+    }
+    
+    private suspend fun compressVideoWithLightCompressor(
+        inputPath: String,
+        targetWidth: Int,
+        targetHeight: Int,
+        targetBitrate: Int
+    ): String? = withContext(Dispatchers.IO) {
+        return@withContext suspendCancellableCoroutine { continuation: CancellableContinuation<String?> ->
+            // 원본 파일 확인 (try 블록 밖에서 정의하여 catch 블록에서도 접근 가능)
+            val inputFile = File(inputPath)
+            try {
+                Log.d(TAG, "LightCompressor 비디오 압축 시작: $inputPath")
+                Log.d(TAG, "목표 해상도: ${targetWidth}x${targetHeight}, 비트레이트: $targetBitrate")
+                if (!inputFile.exists()) {
+                    Log.e(TAG, "원본 파일이 존재하지 않습니다: $inputPath")
+                    continuation.resume(null) {}
+                    return@suspendCancellableCoroutine
+                }
+                
+                // 원본 해상도 확인 (압축 필요 여부 판단)
+                val videoExtractor = MediaExtractor()
+                videoExtractor.setDataSource(inputPath)
+                
+                var originalWidth = 0
+                var originalHeight = 0
+                var originalBitrate = 0
+                var videoMimeType: String? = null
+                
+                for (i in 0 until videoExtractor.trackCount) {
+                    val format = videoExtractor.getTrackFormat(i)
+                    val mime = format.getString(MediaFormat.KEY_MIME)
+                    if (mime != null && mime.startsWith("video/")) {
+                        videoMimeType = mime
+                        originalWidth = format.getInteger(MediaFormat.KEY_WIDTH)
+                        originalHeight = format.getInteger(MediaFormat.KEY_HEIGHT)
+                        // 비트레이트가 없는 경우가 있으므로 null 체크
+                        if (format.containsKey(MediaFormat.KEY_BIT_RATE)) {
+                            originalBitrate = format.getInteger(MediaFormat.KEY_BIT_RATE)
+                        } else {
+                            originalBitrate = 0 // 비트레이트 정보가 없으면 0으로 설정
+                        }
+                        break
+                    }
+                }
+                videoExtractor.release()
+                
+                // 지원하지 않는 비디오 포맷 체크
+                if (videoMimeType != null && videoMimeType.contains("dolby-vision", ignoreCase = true)) {
+                    Log.e(TAG, "지원하지 않는 비디오 포맷: $videoMimeType")
+                    runOnUiThread {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Dolby Vision 비디오 포맷은 압축을 지원하지 않습니다.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    continuation.resume(null) {}
+                    return@suspendCancellableCoroutine
+                }
+                
+                Log.d(TAG, "원본 해상도: ${originalWidth}x${originalHeight}, 비트레이트: $originalBitrate, 포맷: $videoMimeType")
+                
+                // 압축 필요 여부 확인
+                val needsCompression = originalWidth != targetWidth || 
+                                      originalHeight != targetHeight || 
+                                      (originalBitrate > 0 && originalBitrate > targetBitrate)
+                
+                val inputUri = Uri.fromFile(inputFile)
+                
+                // LightCompressor는 항상 압축을 수행하므로, 압축이 필요 없어도 원본을 그대로 사용
+                if (!needsCompression) {
+                    Log.d(TAG, "압축이 필요하지 않습니다. 원본을 그대로 사용합니다.")
+                    // 압축이 필요 없으면 원본 파일 경로를 그대로 반환
+                    continuation.resume(inputPath) {}
+                } else {
+                    Log.d(TAG, "압축이 필요합니다. LightCompressor로 압축 수행")
+                    
+                    // 비트레이트를 Mbps로 변환
+                    val bitrateInMbps = (targetBitrate / 1000000.0).toInt()
+                    
+                    // 비디오 파일명 생성
+                    val videoFileName = "compressed_${System.currentTimeMillis()}.mp4"
+                    
+                    // Configuration 생성 - resizer를 사용하는 생성자
+                    val compressionConfiguration = Configuration(
+                        videoNames = listOf(videoFileName),
+                        isMinBitrateCheckEnabled = false,
+                        videoBitrateInMbps = bitrateInMbps,
+                        resizer = VideoResizer.matchSize(targetWidth.toDouble(), targetHeight.toDouble())
+                    )
+                    
+                    // SharedStorageConfiguration 생성
+                    val storageConfiguration = SharedStorageConfiguration(
+                        saveAt = SaveLocation.movies,
+                        subFolderName = null
+                    )
+                    
+                    VideoCompressor.start(
+                        context = this@MainActivity,
+                        uris = listOf(inputUri),
+                        isStreamable = false,
+                        storageConfiguration = storageConfiguration,
+                        configureWith = compressionConfiguration,
+                        listener = object : CompressionListener {
+                            override fun onProgress(index: Int, percent: Float) {
+                                Log.d(TAG, "압축 진행률: $percent%")
+                            }
+                            
+                            override fun onStart(index: Int) {
+                                Log.d(TAG, "압축 시작")
+                            }
+                            
+                            override fun onSuccess(index: Int, size: Long, path: String?) {
+                                Log.d(TAG, "압축 성공: $path, 크기: ${size / 1024 / 1024} MB")
+                                continuation.resume(path ?: inputPath) {}
+                            }
+                            
+                            override fun onFailure(index: Int, failureMessage: String) {
+                                Log.e(TAG, "압축 실패: $failureMessage")
+                                // 압축 실패 시 토스트 메시지만 표시하고 null 반환
+                                runOnUiThread {
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        "비디오 압축에 실패했습니다: $failureMessage",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                continuation.resume(null) {}
+                            }
+                            
+                            override fun onCancelled(index: Int) {
+                                Log.d(TAG, "압축 취소됨")
+                                continuation.resume(null) {}
+                            }
+                        }
+                    )
+                }
+                
+                continuation.invokeOnCancellation {
+                    Log.d(TAG, "압축 취소 요청됨")
+                }
+                
+            } catch (e: Exception) {
+                Log.e(TAG, "LightCompressor 압축 중 오류 발생: ${e.message}")
+                e.printStackTrace()
+                // 예외 발생 시 토스트 메시지만 표시하고 null 반환
+                runOnUiThread {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "비디오 압축 중 오류가 발생했습니다: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                continuation.resume(null) {}
+            }
         }
     }
 }
