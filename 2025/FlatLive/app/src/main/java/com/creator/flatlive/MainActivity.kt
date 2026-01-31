@@ -57,8 +57,10 @@ import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
 import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
 import com.abedelazizshe.lightcompressorlibrary.CompressionListener
-import com.abedelazizshe.lightcompressorlibrary.config.StorageConfiguration
 import com.abedelazizshe.lightcompressorlibrary.config.Configuration
+import com.abedelazizshe.lightcompressorlibrary.config.SharedStorageConfiguration
+import com.abedelazizshe.lightcompressorlibrary.config.SaveLocation
+import com.abedelazizshe.lightcompressorlibrary.config.VideoResizer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -2270,21 +2272,24 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     Log.d(TAG, "압축이 필요합니다. LightCompressor로 압축 수행")
                     
-                    // StorageConfiguration 생성 - saveAt는 디렉토리 이름만 (Movies, DCIM, Pictures 등)
-                    val storageConfiguration = StorageConfiguration(
-                        saveAt = "Movies",
-                        isExternal = true
-                    )
-                    
                     // 비트레이트를 Mbps로 변환
                     val bitrateInMbps = (targetBitrate / 1000000.0).toInt()
                     
-                    // Configuration 생성
+                    // 비디오 파일명 생성
+                    val videoFileName = "compressed_${System.currentTimeMillis()}.mp4"
+                    
+                    // Configuration 생성 - resizer를 사용하는 생성자
                     val compressionConfiguration = Configuration(
+                        videoNames = listOf(videoFileName),
                         isMinBitrateCheckEnabled = false,
                         videoBitrateInMbps = bitrateInMbps,
-                        videoWidth = targetWidth.toDouble(),
-                        videoHeight = targetHeight.toDouble()
+                        resizer = VideoResizer.matchSize(targetWidth.toDouble(), targetHeight.toDouble())
+                    )
+                    
+                    // SharedStorageConfiguration 생성
+                    val storageConfiguration = SharedStorageConfiguration(
+                        saveAt = SaveLocation.movies,
+                        subFolderName = null
                     )
                     
                     VideoCompressor.start(
