@@ -95,8 +95,7 @@
 
         <activity android:name="com.creator.labangtv.live.CameraActivity"
             android:screenOrientation="portrait"
-            android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustPan|stateHidden"/>
+            android:configChanges="orientation|screenSize"/>
 
         <activity android:name=".QRCodeActivity"
             android:screenOrientation="fullSensor"
