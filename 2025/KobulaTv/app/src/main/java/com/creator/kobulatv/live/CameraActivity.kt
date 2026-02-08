@@ -744,6 +744,16 @@ class CameraActivity : Activity() {
                 } else if ("ACT1031" == actionCode) {
                     // 종료
                     finish()
+                } else if ("ACT1035" == actionCode) {
+                    LogUtil.d("ACT1035 - wlive 카메라 영상 송출 중지")
+                    try {
+                        // 즉시 스트리밍 중지
+                        mStreamer?.stopStream()
+                        LogUtil.d("영상 송출이 즉시 중지되었습니다")
+                    } catch (e: Exception) {
+                        LogUtil.e("ACT1035 - 송출 중지 실패: ${e.message}")
+                        e.printStackTrace()
+                    }
                 } else if ("ACT1015" == actionCode) {
                     LogUtil.d("ACT1015 - 웹뷰 새창")
                     if (actionParamObj!!.has("url")) {
