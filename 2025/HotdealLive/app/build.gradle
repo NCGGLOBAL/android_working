@@ -6,11 +6,11 @@ apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 android {
     compileSdkVersion 35
     defaultConfig {
-        applicationId "com.creator.hotdeallive"
+        applicationId "com.creator.hotdeallive2"
         minSdkVersion 21
         targetSdkVersion 35
-        versionCode 2
-        versionName "1.0.2"
+        versionCode 1
+        versionName "1.0.1"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
@@ -46,7 +46,7 @@ android {
     buildFeatures {
         viewBinding false
     }
-    namespace 'com.creator.hotdeallive'
+    namespace 'com.creator.hotdeallive2'
     lint {
         abortOnError false
         checkReleaseBuilds false

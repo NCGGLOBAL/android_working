@@ -1,4 +1,4 @@
-package com.creator.hotdeallive;
+package com.creator.hotdeallive2;
 
 import org.junit.Test;
 

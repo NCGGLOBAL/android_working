@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "893998861585",
-    "project_id": "hotdeallive",
-    "storage_bucket": "hotdeallive.firebasestorage.app"
+    "project_number": "247611443598",
+    "project_id": "hotdeallive-633bb",
+    "storage_bucket": "hotdeallive-633bb.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:893998861585:android:3e015e3c78a52b955ad0b0",
+        "mobilesdk_app_id": "1:247611443598:android:2d20eb9e1f5f2f5c0a3cdf",
         "android_client_info": {
-          "package_name": "com.creator.hotdeallive"
+          "package_name": "com.creator.hotdeallive2"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBofskqmoTdHEzZuwMkMgKqW_S0h1_G0C8"
+          "current_key": "AIzaSyDkU1rLI2t4TQ-o99ZjWwPgO3aBm85H634"
         }
       ],
       "services": {
