@@ -99,8 +99,22 @@ class CameraActivity : Activity() {
                 val jObj = JSONObject()
                 val jArray = JSONArray()
                 jObj.put("resultcd", "0") // 0:성공. 1:실패
-                val selectedImages =
-                    data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+
+                val selectedImages: ArrayList<Image>?
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && data?.data != null) {
+                    selectedImages = ArrayList()
+                    val uris = ArrayList<Uri>()
+                    if (data.clipData != null) {
+                        for (i in 0 until data.clipData!!.itemCount) { uris.add(data.clipData!!.getItemAt(i).uri) }
+                    } else if (data.data != null) { uris.add(data.data!!) }
+                    for ((index, uri) in uris.withIndex()) {
+                        val path = RealPathUtil.getRealPath(this, uri) ?: uri.toString()
+                        selectedImages.add(Image(index.toLong(), File(path).name, path, true, index))
+                    }
+                } else {
+                    selectedImages = data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+                }
+
                 for (i in selectedImages!!.indices) {
                     val jObjItem = JSONObject()
 
