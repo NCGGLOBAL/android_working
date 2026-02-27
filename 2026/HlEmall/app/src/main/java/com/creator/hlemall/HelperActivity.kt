@@ -23,34 +23,31 @@ open class HelperActivity : AppCompatActivity() {
 
     //    Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA
     protected fun checkPermission() {
-        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
+        // READ_MEDIA_IMAGES 권한 체크 제거 - Android Photo Picker 사용으로 권한 불필요
+        // Android 13 이하 버전에서만 WRITE_EXTERNAL_STORAGE 체크
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 permissionGranted()
             } else {
                 ActivityCompat.requestPermissions(this, permissions, Constants.PERMISSION_REQUEST_CODE)
             }
         } else {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
-                permissionGranted()
-            } else {
-                ActivityCompat.requestPermissions(this, permissions, Constants.PERMISSION_REQUEST_CODE)
-            }
+            // Android 13+ : Photo Picker 사용으로 권한 불필요
+            permissionGranted()
         }
     }
 
     private fun requestPermission() {
-        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_MEDIA_IMAGES)) {
-                showRequestPermissionRationale()
-            } else {
-                showAppPermissionSettings()
-            }
-        } else {
+        // READ_MEDIA_IMAGES 권한 체크 제거 - Android Photo Picker 사용으로 권한 불필요
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 showRequestPermissionRationale()
             } else {
                 showAppPermissionSettings()
             }
+        } else {
+            // Android 13+ : Photo Picker 사용으로 권한 불필요
+            permissionGranted()
         }
     }
 
