@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "894951332972",
+    "project_id": "linklive-ab485",
+    "storage_bucket": "linklive-ab485.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:894951332972:android:d76a276855b90079694c49",
+        "android_client_info": {
+          "package_name": "com.creator.linklive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdKSkt9HC8FSa6NncKjsSNVd76oF1Zl0M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
