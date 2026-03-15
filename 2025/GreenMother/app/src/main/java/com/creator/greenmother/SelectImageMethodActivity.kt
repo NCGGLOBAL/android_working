@@ -753,8 +753,23 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
 
     // 사진 앨범선택
     private fun galleryAddPic() {
-        val intent = Intent(applicationContext, AlbumSelectActivity::class.java)
-        startActivityForResult(intent, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+        // Android 13 이상: Photo Picker 사용 (권한 불필요, MediaStore 직접 쿼리 시 READ_MEDIA_IMAGES 필요)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            try {
+                val pickImages = Intent(MediaStore.ACTION_PICK_IMAGES)
+                pickImages.type = "image/*"
+                val maxSelect = (HNApplication.LIMIT_IMAGE_COUNT - (images?.size ?: 0)).coerceAtLeast(1)
+                pickImages.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxSelect)
+                startActivityForResult(pickImages, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+            } catch (e: Exception) {
+                // Photo Picker를 사용할 수 없는 경우 기존 방식 사용
+                val intent = Intent(applicationContext, AlbumSelectActivity::class.java)
+                startActivityForResult(intent, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+            }
+        } else {
+            val intent = Intent(applicationContext, AlbumSelectActivity::class.java)
+            startActivityForResult(intent, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+        }
     }
 
     // 사진저장
@@ -799,8 +814,8 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             Log.d("SeongKwon", "////" + images!!.size)
             val addimages: ArrayList<Image>
             
-            // Photo Picker 결과 처리 (Android 13+)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && data.data != null) {
+            // Photo Picker 결과 처리 (clipData 또는 data로 반환)
+            if (data.clipData != null || data.data != null) {
                 addimages = ArrayList()
                 val uris = ArrayList<Uri>()
                 
