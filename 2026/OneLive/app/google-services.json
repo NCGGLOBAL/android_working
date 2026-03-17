@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "533677270026",
+    "project_id": "onelive-30329",
+    "storage_bucket": "onelive-30329.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:533677270026:android:b7dd5739b4bb4559e1ebf3",
+        "android_client_info": {
+          "package_name": "com.creator.onelive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMsGicRyyPRenTNCXWD1YyxrDe9RmGIf4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
