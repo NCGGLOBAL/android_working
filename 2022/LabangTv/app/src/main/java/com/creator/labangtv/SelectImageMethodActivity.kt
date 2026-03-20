@@ -66,6 +66,8 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
     private var mToken: String? = "" // 이미지 등록 Token
     private var mImgArr: JSONArray? = null // 이미지 Array
     private var mIsChanged = false
+    /** 카메라 촬영 결과 처리 중일 때 ContentObserver가 loadImages를 호출하지 않도록 하는 플래그 */
+    private var mIsProcessingCameraResult = false
     private var mPageGbn = "2"
     private var mCnt: String? = "0"
     private val mImageCaptureUri: Uri? = null
@@ -251,10 +253,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
 
     override fun onStart() {
         super.onStart()
-        if (mIsChanged) {
-//            mIsChanged = false;
-            return
-        }
+        // handler는 항상 설정 (카메라/앨범 복귀 시 saveImagesAsyncTask → loadImages → FETCH_COMPLETED 전달에 필요)
         handler = object : Handler() {
             override fun handleMessage(msg: Message) {
                 when (msg.what) {
@@ -312,6 +311,8 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
         }
         observer = object : ContentObserver(handler) {
             override fun onChange(selfChange: Boolean) {
+                // 카메라 촬영 결과 처리 중에는 loadImages 호출 금지 (레이스 컨디션 방지)
+                if (mIsProcessingCameraResult) return
                 loadImages()
             }
         }
@@ -320,14 +321,21 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             false,
             observer!!
         )
+        // mIsChanged일 때는 loadImages를 호출하지 않음 (saveImagesAsyncTask onPostExecute에서 호출)
+        if (mIsChanged) return
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             checkPermission()
+        } else {
+            loadImages()
         }
     }
 
     override fun onStop() {
         super.onStop()
-        deselectAll()
+        // mIsChanged일 때(카메라/앨범에서 이미지 추가 중) deselectAll 호출 금지
+        if (!mIsChanged) {
+            deselectAll()
+        }
         stopThread()
         if (observer != null) {
             contentResolver.unregisterContentObserver(observer!!)
@@ -561,8 +569,13 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                 }
                 images!!.clear()
                 savedImageSize = mImgArr!!.length()
+                val imageExtensions = setOf("jpg", "jpeg", "png", "gif", "webp", "bmp")
                 for (i in flist.indices) {
                     val fname = flist[i].name
+                    if (!flist[i].isFile) continue
+                    val ext = fname.substringAfterLast('.', "").lowercase()
+                    if (ext !in imageExtensions) continue
+
                     val id: Long = -1
                     val path = file.absolutePath + "/" + fname
                     val isSelected = true
@@ -575,11 +588,14 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                     )
                     val savedImageArray = savedImage!!.split(",").toTypedArray()
                     var fName = ""
-                    val tempArray = ArrayList<Image>()
                     for (j in savedImageArray.indices) {
-                        fName = savedImageArray[j].split("&").toTypedArray()[0]
-                        if (fName == fname) {
-                            sort = savedImageArray[j].split("&").toTypedArray()[1].toInt()
+                        val part = savedImageArray[j].split("&").toTypedArray()
+                        if (part.size >= 2) {
+                            fName = part[0]
+                            if (fName == fname) {
+                                sort = part[1].toIntOrNull() ?: -1
+                                break
+                            }
                         }
                     }
                     Log.d("SeongKwon", "=========================")
@@ -588,7 +604,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                     Log.d("SeongKwon", "path = $path")
                     Log.d("SeongKwon", "isSelected = $isSelected")
                     Log.d("SeongKwon", "=========================")
-                    if (file.exists()) {
+                    if (File(path).exists()) {
                         images!!.add(
                             Image(
                                 id,
@@ -610,16 +626,33 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                 var fName = ""
                 val tempArray = ArrayList<Image>()
                 for (j in savedImageArray.indices) {
-                    fName = savedImageArray[j].split("&").toTypedArray()[0]
+                    val part = savedImageArray[j].split("&").toTypedArray()
+                    if (part.isEmpty()) continue
+                    fName = part[0].trim()
+                    if (fName.isBlank()) continue  // 빈 항목 시 디렉터리 경로가 Glide에 전달되어 회색 썸네일 발생 방지
+                    var found = false
                     for (k in images!!.indices) {
                         if (fName == images!![k].name) {
                             tempArray.add(images!![k])
+                            found = true
                             break
                         }
                     }
+                    // listFiles()가 방금 저장된 파일을 아직 반영하지 않을 수 있음 → 직접 존재 여부 확인
+                    if (!found) {
+                        val path = file.absolutePath + "/" + fName
+                        val pathFile = File(path)
+                        if (pathFile.exists() && pathFile.isFile) {
+                            val sort = part.getOrNull(1)?.toIntOrNull() ?: -1
+                            tempArray.add(Image(-1L, fName, path, true, sort))
+                        }
+                    }
                 }
-                images!!.clear()
-                images!!.addAll(tempArray)
+                // savedImage에 유효한 항목이 있을 때만 tempArray로 교체 (빈 tempArray면 첫 번째 루프 결과 유지)
+                if (tempArray.isNotEmpty()) {
+                    images!!.clear()
+                    images!!.addAll(tempArray)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
                 sendMessage(Constants.ERROR)
@@ -851,6 +884,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                 Toast.makeText(this, "카메라 촬영에 실패했습니다.", Toast.LENGTH_LONG).show()
                 return
             }
+            mIsProcessingCameraResult = true
             //            Uri currImageURI = data.getData();
 //            if(data.getData() == null) {
 //                currImageURI = mImageCaptureUri;
@@ -952,14 +986,13 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
 
             // 화면 그리기
             Log.e("SeongKwon", "//// saveImagesAsyncTask onPostExecute")
-            //            sendMessage(Constants.FETCH_COMPLETED, countSelected);
             mProgressDialog!!.dismiss()
             savedImageSize = images!!.size
             imageCount?.text =
                 savedImageSize.toString() + "/" + HNApplication.Companion.LIMIT_IMAGE_COUNT
 
+            mIsProcessingCameraResult = false
             loadImages()
-            // Close progressdialog
             mProgressDialog!!.dismiss()
         }
     }
