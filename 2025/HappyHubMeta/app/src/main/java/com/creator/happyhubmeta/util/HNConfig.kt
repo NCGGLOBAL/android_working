@@ -12,7 +12,7 @@ class HNConfig(private val ctx: Context) {
     val appVersion: String
         get() {
             try {
-                return ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName
+                return ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName.toString()
             } catch (localNameNotFoundException: PackageManager.NameNotFoundException) {
             }
             return ""

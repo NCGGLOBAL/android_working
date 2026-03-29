@@ -97,11 +97,15 @@
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"/>
 
-        <activity android:name="com.creator.happyhubmeta.QRCodeActivity"
+        <activity android:name=".QRCodeActivity"
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity android:name=".VideoThumbActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"/>
 
         <service android:name="com.creator.happyhubmeta.MyFirebaseMessagingService"
             android:exported="true">
@@ -176,8 +180,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <!-- READ_MEDIA_IMAGES and READ_MEDIA_VIDEO removed - using Android Photo Picker instead -->
 
     <uses-permission
         android:name="android.permission.POST_NOTIFICATIONS"

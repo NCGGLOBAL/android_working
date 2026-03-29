@@ -2,6 +2,10 @@ package com.creator.happyhubmeta
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Bitmap.CompressFormat
+import android.graphics.BitmapFactory
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.ActionMode
@@ -14,6 +18,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.creator.happyhubmeta.ImageCropActivity
+import com.creator.happyhubmeta.ImageEditChangeOrder
 import com.creator.happyhubmeta.adapters.PageAdapter
 import com.creator.happyhubmeta.croper.GOTOConstants.IntentExtras
 import com.creator.happyhubmeta.delegator.HNSharedPreference
@@ -23,6 +29,7 @@ import com.creator.happyhubmeta.util.BitmapUtil
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
+import java.net.URL
 
 /**
  * Created by skcrackers on 10/24/17.

@@ -17,6 +17,7 @@ object Constants {
     const val REQUEST_SELECT_IMAGE_ALBUM = 3001
     const val FILECHOOSER_NORMAL_REQ_CODE = 1001
     const val FILECHOOSER_LOLLIPOP_REQ_CODE = 1002
+    const val FILECHOOSER_LOLLIPOP_REQ_VEDIO_CODE = 1003
     const val PERMISSIONS_MULTIPLE_REQUEST = 4001
     const val REQUEST_ADD_IMAGE = 5000
     const val REQUEST_EDIT_IMAGE = 5001
@@ -36,4 +37,6 @@ object Constants {
 
     //Maximum number of images that can be selected at a time
     var limit = 8
+
+    const val VIDEO_LIMIT_TIME = 1000 * 60 * 2  // 2분
 }

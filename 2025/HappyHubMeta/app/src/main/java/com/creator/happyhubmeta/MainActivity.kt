@@ -12,6 +12,9 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.media.MediaMetadataRetriever
+import android.media.MediaExtractor
+import android.media.MediaFormat
 import android.net.Uri
 import android.net.UrlQuerySanitizer
 import android.net.http.SslError
@@ -24,6 +27,8 @@ import android.view.*
 import android.webkit.*
 import android.webkit.WebChromeClient.FileChooserParams
 import android.widget.*
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -36,9 +41,6 @@ import com.creator.happyhubmeta.helpers.Constants
 import com.creator.happyhubmeta.live.CameraActivity
 import com.creator.happyhubmeta.models.Image
 import com.creator.happyhubmeta.util.*
-import com.facebook.*
-import com.facebook.login.LoginManager
-import com.facebook.login.LoginResult
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
@@ -47,7 +49,14 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
+import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
+import com.abedelazizshe.lightcompressorlibrary.CompressionListener
+import com.abedelazizshe.lightcompressorlibrary.config.Configuration
+import com.abedelazizshe.lightcompressorlibrary.config.SharedStorageConfiguration
+import com.abedelazizshe.lightcompressorlibrary.config.SaveLocation
+import com.abedelazizshe.lightcompressorlibrary.config.VideoResizer
 import kotlinx.coroutines.*
+import kotlin.coroutines.cancellation.CancellationException
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
@@ -101,13 +110,10 @@ class MainActivity : AppCompatActivity() {
     private var mCapturedImageURI: Uri? = null
 
     //    private static OAuthLogin mOAuthLoginModule;
-    private var callbackManager: CallbackManager? = null
     private val permissionNeeds = Arrays.asList("public_profile", "email")
     private val btnNaverLogin: Button? = null
-    private val btnFacebookLogin: Button? = null
     private val btnKakaoLogin: Button? = null
     private val mNaverMessage = ""
-    private var mFacebookMessage = ""
     private val mKakaoMessage = ""
 
     // SNS========================================================================= //
@@ -127,17 +133,10 @@ class MainActivity : AppCompatActivity() {
         private const val SEND_KAKAO_MESSAGE = 1
         private const val SEND_FACEBOOK_MESSAGE = 2
         var activity: MainActivity? = null
-        val requiredMediaPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(  //필요한 권한들
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_MEDIA_AUDIO,
-                Manifest.permission.READ_MEDIA_VIDEO
-            )
-        } else {
-            arrayOf(
-                Manifest.permission.CAMERA,
-            )
-        }
+        // READ_MEDIA_IMAGES/READ_MEDIA_VIDEO 권한 제거 - Android Photo Picker 사용
+        val requiredMediaPermissionList = arrayOf(
+            Manifest.permission.CAMERA
+        )
         val instance: MainActivity?
             get() {
                 if (activity == null) {
@@ -146,6 +145,97 @@ class MainActivity : AppCompatActivity() {
                 return activity
             }
     }
+
+    var videoWidth: Int = 0
+    var videoHeight: Int = 0
+    var videoBitrate: Int? = null
+    var videoArchiveFilePath: String? = null
+    var videoThumnailPath: String? = null
+    var selectedVideoPath: String? = null
+    var videoParam: HashMap<String, String?>? = null
+    var uploadVideoUrl: String? = null
+    var videoList: ArrayList<Image>? = null
+
+    val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            result: ActivityResult ->
+        when(result.resultCode) {
+            Constants.FILECHOOSER_LOLLIPOP_REQ_VEDIO_CODE -> {
+                // 썸네일 이미지 업로드
+                result.data?.getStringExtra("thumbnailPath")?.let {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        videoThumnailPath = it
+
+                        HNSharedPreference.putSharedPreference(
+                            this@MainActivity,
+                            "videoThumnailPath",
+                            it
+                        )
+                        val dataUrl = BitmapUtil.getFileImageDataUrl(it)
+                        val jsonObject = JSONObject()
+                        jsonObject.put("type", "0")
+                        jsonObject.put("thumbData", dataUrl)
+                        executeJavascript("$mCallback($jsonObject)")
+
+                        // 압축여부 체크
+                        jsonObject.remove("thumbData")
+                        jsonObject.put("type", "1")
+                        if (videoWidth > videoHeight) { // 가로영상
+                            if (videoHeight > 720) {
+                                videoWidth = videoWidth * 720 / videoHeight
+                                videoHeight = 720
+                            } else {
+                                executeJavascript("$mCallback($jsonObject)")
+                                videoArchiveFilePath = null
+                                return@launch
+                            }
+                        } else {    // 세로영상
+                            if (videoWidth > 720) {
+                                videoHeight = videoHeight * 720 / videoWidth
+                                videoWidth = 720
+                            } else {
+                                executeJavascript("$mCallback($jsonObject)")
+                                videoArchiveFilePath = null
+                                return@launch
+                            }
+                        }
+
+                        // 해상도가 홀수일경우 강제로 짝수로 변경
+                        if (videoWidth % 2 == 1) {
+                            videoWidth -= 1
+                        }
+                        if (videoHeight % 2 == 1) {
+                            videoHeight -= 1
+                        }
+
+                        // LightCompressor를 사용한 비디오 압축
+                        videoArchiveFilePath = compressVideoWithLightCompressor(
+                            selectedVideoPath!!,
+                            videoWidth,
+                            videoHeight,
+                            videoBitrate ?: 2067102
+                        )
+                        
+                        Log.e(TAG, "videoWidth: ${videoWidth}")
+                        Log.e(TAG, "videoHeight: ${videoHeight}")
+                        val videoFileSize = BitmapUtil.getFileSizeMB(videoArchiveFilePath)
+                        Log.d(TAG, "videoArchiveFilePath FileSize: $videoFileSize MB")
+                        Log.e(TAG, "archiveFilePath: ${videoArchiveFilePath}")
+                        Log.e(TAG, "selectedVideoPath: ${selectedVideoPath}")
+
+                        HNSharedPreference.putSharedPreference(
+                            this@MainActivity,
+                            "videoArchiveFilePath",
+                            videoArchiveFilePath
+                        )
+                        jsonObject.remove("thumbData")
+                        jsonObject.put("type", "1")
+                        executeJavascript("$mCallback($jsonObject)")
+                    }
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Activity가 실행 될 때 항상 화면을 켜짐으로 유지한다.
@@ -255,7 +345,7 @@ class MainActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
             if (packageInfo == null) Log.e("KeyHash", "KeyHash:null")
-            for (signature in packageInfo!!.signatures) {
+            packageInfo?.signatures?.forEach { signature ->
                 try {
                     val md = MessageDigest.getInstance("SHA")
                     md.update(signature.toByteArray())
@@ -325,6 +415,7 @@ class MainActivity : AppCompatActivity() {
         mWebView!!.settings.domStorageEnabled = true
         mWebView!!.settings.javaScriptCanOpenWindowsAutomatically = true
         mWebView!!.settings.setSupportMultipleWindows(true)
+        mWebView!!.settings.mediaPlaybackRequiresUserGesture = false
         mWebView!!.settings.cacheMode = WebSettings.LOAD_DEFAULT
         mWebView!!.settings.textZoom = 100
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
@@ -384,77 +475,72 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun imageChooser(acceptType: String?) {
-            TedPermission.create()
-                .setPermissionListener(object : PermissionListener {
-
-                    //권한이 허용됐을 때
-                    override fun onPermissionGranted() {
-                        if (acceptType.isNullOrEmpty()) {
-                            // 파일만, 카메라 비노출
-                            val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                            contentSelectionIntent.type = "*/*"
-                            val intentArray: Array<Intent?>
-                            intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                            startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
-                        } else {
-                            var takePictureIntent: Intent? = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                            if (takePictureIntent!!.resolveActivity(packageManager) != null) {
-                                // Create the File where the photo should go
-                                var photoFile: File? = null
-                                try {
-                                    photoFile = createImageFile()
-                                    takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath)
-                                } catch (ex: IOException) {
-                                    // Error occurred while creating the File
-                                    Log.e(javaClass.name, "Unable to create Image File", ex)
-                                }
-
-                                // Continue only if the File was successfully created
-                                if (photoFile != null) {
-                                    // File 객체의 URI 를 얻는다.
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                        mCapturedImageURI = FileProvider.getUriForFile(
-                                            this@MainActivity,
-                                            "$packageName.fileprovider",
-                                            photoFile
-                                        )
-                                    } else {
-                                        mCameraPhotoPath = "file:" + photoFile.absolutePath
-                                        mCapturedImageURI = Uri.fromFile(photoFile)
-                                    }
-                                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI)
-                                } else {
-                                    takePictureIntent = null
-                                }
+            // Android Photo Picker를 사용하여 권한 없이 이미지 선택
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && acceptType?.contains("video") != true && acceptType?.contains("VIDEO") != true) {
+                // Android 13+ : Photo Picker 사용 (권한 불필요, 이미지만)
+                try {
+                    val pickImages = Intent(MediaStore.ACTION_PICK_IMAGES)
+                    pickImages.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, 1)
+                    startActivityForResult(pickImages, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                } catch (e: Exception) {
+                    // Photo Picker를 사용할 수 없는 경우 기존 방식 사용
+                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                    contentSelectionIntent.type = acceptType ?: "image/*"
+                    startActivityForResult(contentSelectionIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                }
+            } else {
+                // Android 12 이하 : 기존 방식 사용 (권한 체크 없이)
+                if (acceptType.isNullOrEmpty()) {
+                    // 파일만, 카메라 비노출
+                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                    contentSelectionIntent.type = "*/*"
+                    val intentArray: Array<Intent?>
+                    intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                    startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                } else {
+                    var takePictureIntent: Intent? = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    if (takePictureIntent!!.resolveActivity(packageManager) != null) {
+                        var photoFile: File? = null
+                        try {
+                            photoFile = createImageFile()
+                            takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath)
+                        } catch (ex: IOException) {
+                            Log.e(javaClass.name, "Unable to create Image File", ex)
+                        }
+                        if (photoFile != null) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                mCapturedImageURI = FileProvider.getUriForFile(
+                                    this@MainActivity,
+                                    "$packageName.fileprovider",
+                                    photoFile
+                                )
+                            } else {
+                                mCameraPhotoPath = "file:" + photoFile.absolutePath
+                                mCapturedImageURI = Uri.fromFile(photoFile)
                             }
-                            val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                            contentSelectionIntent.type = acceptType
-                            val intentArray: Array<Intent?>
-                            intentArray = takePictureIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                            startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI)
+                        } else {
+                            takePictureIntent = null
                         }
                     }
-
-                    //권한이 거부됐을 때
-                    override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                        Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                })
-                .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
-                .setPermissions(
-                    *requiredMediaPermissionList
-                )// 얻으려는 권한(여러개 가능)
-                .check()
+                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                    contentSelectionIntent.type = acceptType
+                    val intentArray: Array<Intent?>
+                    intentArray = takePictureIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                    startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                }
+            }
         }
 
         override fun onJsAlert(
@@ -572,7 +658,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 val alertDialog = builder.create()
                 alertDialog.show()
-                handler.proceed()
             } else {
                 handler.proceed()
             }
@@ -875,46 +960,35 @@ class MainActivity : AppCompatActivity() {
                 if ("ACT1001" == actionCode) {
                     LogUtil.d("ACT1001 - 앱 데이터 저장 (키체인 저장 및 파일저장)")
                     if (actionParamObj!!.has("key_type")) {
-                        TedPermission.create()
-                            .setPermissionListener(object : PermissionListener {
-
-                                //권한이 허용됐을 때
-                                override fun onPermissionGranted() {
-                                    LogUtil.d("mCameraType : $mCameraType")
-                                    mCameraType = if (actionParamObj.getInt("key_type") == 0) {      // camera
-                                        3
-                                    } else {                                          // album
-                                        4
-                                    }
-                                    if (mCameraType == 3) {
+                        mCameraType = if (actionParamObj.getInt("key_type") == 0) {      // camera
+                            3
+                        } else {                                          // album
+                            4
+                        }
+                        if (mCameraType == 3) {
+                            // 카메라 선택 - 카메라 권한만 필요
+                            TedPermission.create()
+                                .setPermissionListener(object : PermissionListener {
+                                    override fun onPermissionGranted() {
                                         dispatchTakePictureIntent()
-                                    } else {
-                                        galleryAddPic()
                                     }
-                                }
-
-                                //권한이 거부됐을 때
-                                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                                    Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
-                                }
-                            })
-                            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
-                            .setPermissions(
-                                *requiredMediaPermissionList
-                            )// 얻으려는 권한(여러개 가능)
-                            .check()
+                                    override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                        Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                                    }
+                                })
+                                .setDeniedMessage("권한을 허용해주세요.")
+                                .setPermissions(Manifest.permission.CAMERA)
+                                .check()
+                        } else {
+                            // 앨범 선택 - Photo Picker 사용 (권한 불필요)
+                            galleryAddPic()
+                        }
                     }
                 } else if ("ACT1002" == actionCode) {
-                    LogUtil.d("ACT1002 - 앱 데이터 가져오기 (키체인 및 파일에 있는 정보 가져오기)")
-                    if (actionParamObj!!.has("key_type")) {
-                        mCameraType = actionParamObj.getInt("key_type")
-                        LogUtil.d("mCameraType : $mCameraType")
-                    }
+                    LogUtil.d("ACT1002 - QR 코드 호출")
 
-                    mCameraType = 0
-
-//                    intent = Intent(context, QRCodeActivity::class.java)
-//                    startActivity(intent)
+                    intent = Intent(context, QRCodeActivity::class.java)
+                    startActivity(intent)
                     executeJavascript("$mCallback()")
                 } else if ("ACT1003" == actionCode) {
                     LogUtil.d("ACT1003 - 위쳇페이")
@@ -980,8 +1054,6 @@ class MainActivity : AppCompatActivity() {
                         } else if (actionParamObj.getString("snsType") == "2") {
                         } else if (actionParamObj.getString("snsType") == "3") {
                             // 페이스북 로그인
-                            FacebookSdk.sdkInitialize(context)
-                            initFacebookLogin()
                         }
                     }
                 } else if ("ACT1022" == actionCode) {
@@ -1037,33 +1109,34 @@ class MainActivity : AppCompatActivity() {
                         .check()
                 } else if ("ACT1037" == actionCode) {
                     LogUtil.d("ACT1037 - 파일 열기")
-                    TedPermission.create()
-                        .setPermissionListener(object : PermissionListener {
+                    // 파일 선택 - 권한 없이 바로 파일 선택기 사용
+                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                    contentSelectionIntent.type = "*/*"
+                    startActivityForResult(contentSelectionIntent, Constants.REQUEST_GET_FILE)
+                } else if ("ACT1039" == actionCode) {
+                    LogUtil.d("ACT1039 - 영상 선택후 압축, 썸네일 이미지 전달")
+                    videoBitrate = actionParamObj?.getInt("bitrate")
 
-                            //권한이 허용됐을 때
-                            override fun onPermissionGranted() {
-                                val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                                contentSelectionIntent.type = "*/*"
-                                val intentArray: Array<Intent?>
-                                intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                                val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                                startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
-                            }
+                    videoThumnailPath = HNSharedPreference.getSharedPreference(this@MainActivity, "videoThumnailPath")
+                    videoArchiveFilePath = HNSharedPreference.getSharedPreference(this@MainActivity, "videoArchiveFilePath")
+                    LogUtil.e("ACT1039 - videoThumnailPath : " + videoThumnailPath)
+                    LogUtil.e("ACT1039 - videoArchiveFilePath : " + videoArchiveFilePath)
+                    // 기존 파일 삭제
+                    deleteVideoFile()
 
-                            //권한이 거부됐을 때
-                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                                Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
-                            }
-                        })
-                        .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
-                        .setPermissions(
-                            *requiredMediaPermissionList
-                        )// 얻으려는 권한(여러개 가능)
-                        .check()
+                    // 비디오 파일 선택을 위한 인텐트 실행
+                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type = "video/*"
+
+                    startActivityForResult(intent, Constants.FILECHOOSER_LOLLIPOP_REQ_VEDIO_CODE)
+                } else if ("ACT1040" == actionCode) {
+                    LogUtil.d("ACT1040 - ACT1040 영상 파일 업로드")
+                    val url = actionParamObj?.getString("url")
+                    val key = actionParamObj?.getString("key")
+                    val token = actionParamObj?.getString("token")
+
+                    uploadVideoArchive(url, key, token)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -1081,7 +1154,7 @@ class MainActivity : AppCompatActivity() {
                     } catch (e: PackageManager.NameNotFoundException) {
                         e.printStackTrace()
                     }
-                    versionName = pi!!.versionName
+                    versionName = pi?.versionName.toString()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -1148,7 +1221,6 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var data = data
-        callbackManager?.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("SeongKwon", "============================================")
         Log.d("SeongKwon", "requestCode = $requestCode")
@@ -1163,8 +1235,29 @@ class MainActivity : AppCompatActivity() {
                 val jObj = JSONObject()
                 val jArray = JSONArray()
                 jObj.put("resultcd", "0") // 0:성공. 1:실패
-                val selectedImages =
-                    data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+
+                val selectedImages: ArrayList<Image>?
+                // Photo Picker 결과 처리 (Android 13+)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && data?.data != null) {
+                    selectedImages = ArrayList()
+                    val uris = ArrayList<Uri>()
+                    if (data.clipData != null) {
+                        for (i in 0 until data.clipData!!.itemCount) {
+                            uris.add(data.clipData!!.getItemAt(i).uri)
+                        }
+                    } else if (data.data != null) {
+                        uris.add(data.data!!)
+                    }
+                    for ((index, uri) in uris.withIndex()) {
+                        val path = RealPathUtil.getRealPath(this, uri) ?: uri.toString()
+                        val fileName = File(path).name
+                        selectedImages.add(Image(index.toLong(), fileName, path, true, index))
+                    }
+                } else {
+                    // AlbumSelectActivity 결과 처리 (Android 12 이하)
+                    selectedImages = data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+                }
+
                 for (i in selectedImages!!.indices) {
                     val jObjItem = JSONObject()
 
@@ -1265,6 +1358,71 @@ class MainActivity : AppCompatActivity() {
                 val results = arrayOf(getResultUri(data))
                 mFilePathCallback?.onReceiveValue(results)
                 mFilePathCallback = null
+            }
+        } else if (requestCode == Constants.FILECHOOSER_LOLLIPOP_REQ_VEDIO_CODE) {
+            val selectedVideoUri: Uri? = data?.data
+
+            if (selectedVideoUri != null) {
+                // Uri를 파일 경로로 변환
+                selectedVideoPath = RealPathUtil.getRealPath(this, selectedVideoUri)
+
+                val outputVideoPath = "${getExternalFilesDir(Environment.DIRECTORY_PICTURES)}"
+
+                if (selectedVideoPath != null) {
+                    Log.d(TAG, "Selected Video Path: $selectedVideoPath")
+                    Log.d(TAG, "outputVideoPath: $outputVideoPath")
+
+                    // 여기서 선택된 비디오 파일에 대한 추가 작업을 수행할 수 있습니다.
+                    val retriever = MediaMetadataRetriever()
+
+                    try {
+                        retriever.setDataSource(selectedVideoPath)
+
+                        // 비디오의 전체 시간 가져오기 (ms)
+                        val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                        Log.d(TAG, "Duration: $duration ms")
+                        if ((duration?.toLong() ?: 0) > Constants.VIDEO_LIMIT_TIME) {
+                            Toast.makeText(this@MainActivity, "영상시간을 2분이내로 줄여주세요", Toast.LENGTH_SHORT).show()
+                            return
+                        }
+                        // 100MB 이상이면 리턴
+                        val videoFileSize = BitmapUtil.getFileSizeMB(selectedVideoPath)
+                        Log.d(TAG, "origin videoFileSize: $videoFileSize MB")
+                        if (videoFileSize ?: 0 > 300) {
+                            Toast.makeText(this@MainActivity, "영상 용량은 300M미만으로 등록해 주세요.", Toast.LENGTH_SHORT).show()
+                            return
+                        }
+                        // 비디오의 해상도 가져오기
+                        videoWidth = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toInt() ?: 0
+                        videoHeight = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toInt() ?: 0
+                        val rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
+
+                        Log.d(TAG, "video videoWidth : $videoWidth")
+                        Log.d(TAG, "video videoHeight : $videoHeight")
+                        Log.d(TAG, "video rotation : $rotation")
+                        // 비트레이트 가져오기
+//                        videoBitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)
+//                        Log.d(TAG, "Bitrate : $videoBitrate bps")
+
+                        // 비디오 압축 액티비티 이동
+                        Intent(this@MainActivity, VideoThumbActivity::class.java).apply {
+                            putExtra("selectedVideoPath", selectedVideoPath)
+                            putExtra("outputVideoPath", outputVideoPath)
+//                            putExtra("width", videoWidth)
+//                            putExtra("height", videoHeight)
+
+                            resultLauncher.launch(this)
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error extracting video metadata: ${e.message}")
+                    } finally {
+                        retriever.release()
+                    }
+                } else {
+                    Log.e(TAG, "Failed to get selected video path")
+                }
+            } else {
+                Log.e(TAG, "Failed to get selected video URI")
             }
         } else if (resultCode == RESULT_OK && requestCode == Constants.REQUEST_GET_FILE) {
             data?.data?.let {
@@ -1454,34 +1612,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermission() {
+        // READ_MEDIA_IMAGES 권한 체크 제거 - Android Photo Picker 사용으로 권한 불필요
         val requiredPermissionList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(  //필요한 권한들
-                Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.POST_NOTIFICATIONS
-            )
+            arrayOf(Manifest.permission.POST_NOTIFICATIONS)
         } else {
-            arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            )
+            arrayOf<String>()
         }
 
-        TedPermission.create()
-            .setPermissionListener(object : PermissionListener {
-
-                //권한이 허용됐을 때
-                override fun onPermissionGranted() {}
-
-                //권한이 거부됐을 때
-                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                    Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
-                }
-            })
-            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
-            .setPermissions(
-                *requiredPermissionList
-            )// 얻으려는 권한(여러개 가능)
-            .check()
+        if (requiredPermissionList.isNotEmpty()) {
+            TedPermission.create()
+                .setPermissionListener(object : PermissionListener {
+                    override fun onPermissionGranted() {}
+                    override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                        Toast.makeText(this@MainActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                })
+                .setDeniedMessage("권한을 허용해주세요.")
+                .setPermissions(*requiredPermissionList)
+                .check()
+        }
     }
 
     // 사진촬영
@@ -1508,8 +1657,20 @@ class MainActivity : AppCompatActivity() {
 
     // 사진 앨범선택
     private fun galleryAddPic() {
-        val intent = Intent(this, AlbumSelectActivity::class.java)
-        startActivityForResult(intent, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+        // Android 13 이상에서는 Photo Picker 사용, 이하에서는 기존 AlbumSelectActivity 사용
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            try {
+                val pickImages = Intent(MediaStore.ACTION_PICK_IMAGES)
+                pickImages.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, Constants.limit)
+                startActivityForResult(pickImages, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+            } catch (e: Exception) {
+                val intent = Intent(this, AlbumSelectActivity::class.java)
+                startActivityForResult(intent, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+            }
+        } else {
+            val intent = Intent(this, AlbumSelectActivity::class.java)
+            startActivityForResult(intent, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+        }
     }
 
     // 사진저장
@@ -1828,54 +1989,259 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // 페이스북 로그인
-    private fun initFacebookLogin() {
-        LoginManager.getInstance().logInWithReadPermissions(this@MainActivity, permissionNeeds)
-        callbackManager = CallbackManager.Factory.create()
-        LoginManager.getInstance()
-            .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-                override fun onSuccess(loginResult: LoginResult) {
-                    val accessToken = AccessToken.getCurrentAccessToken()
-                    Log.d("SeongKwon", "====================================0")
-                    Log.d("SeongKwon", "onSuccess - getToken : " + accessToken?.token)
-                    Log.d("SeongKwon", "onSuccess - getUserId : " + accessToken?.userId)
-                    Log.d("SeongKwon", "onSuccess - isExpired : " + accessToken?.isExpired)
-                    Log.d("SeongKwon", "onSuccess - getExpires : " + accessToken?.expires)
-                    Log.d("SeongKwon", "onSuccess - getLastRefresh : " + accessToken?.lastRefresh)
-                    Log.d("SeongKwon", "====================================1")
-                    val request = GraphRequest.newMeRequest(
-                        AccessToken.getCurrentAccessToken()
-                    ) { result, response ->
-                        try {
-                            Log.d("SeongKwon", "fb json object: $result")
-                            Log.d("SeongKwon", "fb graph response: $response")
-                            val jsonObject = JSONObject()
-                            jsonObject.put(
-                                "accessToken",
-                                accessToken?.token
-                            ) // getAccessToken
-                            jsonObject.put("userInfo", result) // 사용자정보
-                            executeJavascript("$mCallback($jsonObject)")
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+    private fun uploadVideoArchive(
+        uploadUrl: String?,
+        key: String?,
+        token: String?
+    ) {
+        if (uploadUrl.isNullOrEmpty()) return
+        Log.e(TAG, "uploadUrl: ${uploadUrl}")
+        videoParam = HashMap<String, String?>().apply {
+            this["token"] = token
+            this["key"] = key
+        }
+
+        uploadVideoUrl = uploadUrl
+        val videoData = Image(0, "uploadVideo.mp4", videoArchiveFilePath ?: selectedVideoPath, true, 0)
+        videoList = ArrayList<Image>()
+        videoList?.add(videoData)
+        uploadVideoAsyncTask().execute()
+    }
+
+    inner class uploadVideoAsyncTask : AsyncTask<String?, Void?, String?>() {
+        var result: String? = null
+        override fun onPreExecute() {
+            super.onPreExecute()
+            mProgressDialog = ProgressDialog(mContext)
+            mProgressDialog!!.setTitle("알림")
+            mProgressDialog!!.setMessage("처리중입니다.\n잠시만 기다려 주세요.")
+            mProgressDialog!!.show()
+        }
+
+//        override fun onProgressUpdate(vararg values: Void?) {
+//            super.onProgressUpdate(*values)
+//        }
+
+        override fun onPostExecute(s: String?, ) {
+            super.onPostExecute(s)
+            mProgressDialog!!.dismiss()
+//            Log.e("SeongKwon", s!!)
+
+            deleteVideoFile()
+            val jsonObject = JSONObject()
+            if (s == null) {
+                val builder = AlertDialog.Builder(
+                    mContext!!
+                )
+                builder.setPositiveButton(R.string.confirm) { dialog, id -> dialog.dismiss() }
+                builder.setTitle("알림")
+                builder.setMessage("동영상 등록 중 오류가 발생했습니다.\n다시 시도해 주세요.")
+                val dialog = builder.create()
+                dialog.show()
+
+                jsonObject.put("result", "-1")
+                executeJavascript("$mCallback($jsonObject)")
+                return
+            }
+            if (s == "-1") {
+                val builder = AlertDialog.Builder(
+                    mContext!!
+                )
+                builder.setPositiveButton(R.string.confirm) { dialog, id -> dialog.dismiss() }
+                builder.setTitle("알림")
+                builder.setMessage("등록 할 동영상 선택해 주세요.")
+                val dialog = builder.create()
+                dialog.show()
+
+                jsonObject.put("result", "-1")
+                executeJavascript("$mCallback($jsonObject)")
+
+            } else {
+                jsonObject.put("result", "1")
+                executeJavascript("$mCallback($jsonObject)")
+            }
+        }
+
+        override fun doInBackground(vararg params: String?): String? {
+            Log.d("SeongKwon", "*************************************************")
+            try {
+                result = UploadUtil.upload(
+                    mContext,
+                    uploadVideoUrl!!,
+                    videoList!!,
+                    videoParam!!,
+                    true
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return result
+        }
+    }
+
+    fun deleteVideoFile() {
+        videoThumnailPath?.let {
+            BitmapUtil.deleteFile(it)
+        }
+        videoArchiveFilePath?.let {
+            BitmapUtil.deleteFile(it)
+        }
+    }
+    
+    private suspend fun compressVideoWithLightCompressor(
+        inputPath: String,
+        targetWidth: Int,
+        targetHeight: Int,
+        targetBitrate: Int
+    ): String? = withContext(Dispatchers.IO) {
+        return@withContext suspendCancellableCoroutine { continuation: CancellableContinuation<String?> ->
+            // 원본 파일 확인 (try 블록 밖에서 정의하여 catch 블록에서도 접근 가능)
+            val inputFile = File(inputPath)
+            try {
+                Log.d(TAG, "LightCompressor 비디오 압축 시작: $inputPath")
+                Log.d(TAG, "목표 해상도: ${targetWidth}x${targetHeight}, 비트레이트: $targetBitrate")
+                if (!inputFile.exists()) {
+                    Log.e(TAG, "원본 파일이 존재하지 않습니다: $inputPath")
+                    continuation.resume(null) {}
+                    return@suspendCancellableCoroutine
+                }
+                
+                // 원본 해상도 확인 (압축 필요 여부 판단)
+                val videoExtractor = MediaExtractor()
+                videoExtractor.setDataSource(inputPath)
+                
+                var originalWidth = 0
+                var originalHeight = 0
+                var originalBitrate = 0
+                var videoMimeType: String? = null
+                
+                for (i in 0 until videoExtractor.trackCount) {
+                    val format = videoExtractor.getTrackFormat(i)
+                    val mime = format.getString(MediaFormat.KEY_MIME)
+                    if (mime != null && mime.startsWith("video/")) {
+                        videoMimeType = mime
+                        originalWidth = format.getInteger(MediaFormat.KEY_WIDTH)
+                        originalHeight = format.getInteger(MediaFormat.KEY_HEIGHT)
+                        // 비트레이트가 없는 경우가 있으므로 null 체크
+                        if (format.containsKey(MediaFormat.KEY_BIT_RATE)) {
+                            originalBitrate = format.getInteger(MediaFormat.KEY_BIT_RATE)
+                        } else {
+                            originalBitrate = 0 // 비트레이트 정보가 없으면 0으로 설정
                         }
+                        break
                     }
-                    val parameters = Bundle()
-                    parameters.putString(
-                        "fields",
-                        "id,first_name,last_name,email,gender,birthday"
-                    ) // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-                    request.parameters = parameters
-                    request.executeAsync()
                 }
-
-                override fun onCancel() {
-                    Log.d("SeongKwon", "onCancel")
+                videoExtractor.release()
+                
+                // 지원하지 않는 비디오 포맷 체크
+                if (videoMimeType != null && videoMimeType.contains("dolby-vision", ignoreCase = true)) {
+                    Log.e(TAG, "지원하지 않는 비디오 포맷: $videoMimeType")
+                    runOnUiThread {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Dolby Vision 비디오 포맷은 압축을 지원하지 않습니다.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    continuation.resume(null) {}
+                    return@suspendCancellableCoroutine
                 }
-
-                override fun onError(error: FacebookException) {
-                    Log.d("SeongKwon", "onError : " + error.localizedMessage)
+                
+                Log.d(TAG, "원본 해상도: ${originalWidth}x${originalHeight}, 비트레이트: $originalBitrate, 포맷: $videoMimeType")
+                
+                // 압축 필요 여부 확인
+                val needsCompression = originalWidth != targetWidth || 
+                                      originalHeight != targetHeight || 
+                                      (originalBitrate > 0 && originalBitrate > targetBitrate)
+                
+                val inputUri = Uri.fromFile(inputFile)
+                
+                // LightCompressor는 항상 압축을 수행하므로, 압축이 필요 없어도 원본을 그대로 사용
+                if (!needsCompression) {
+                    Log.d(TAG, "압축이 필요하지 않습니다. 원본을 그대로 사용합니다.")
+                    // 압축이 필요 없으면 원본 파일 경로를 그대로 반환
+                    continuation.resume(inputPath) {}
+                } else {
+                    Log.d(TAG, "압축이 필요합니다. LightCompressor로 압축 수행")
+                    
+                    // 비트레이트를 Mbps로 변환
+                    val bitrateInMbps = (targetBitrate / 1000000.0).toInt()
+                    
+                    // 비디오 파일명 생성
+                    val videoFileName = "compressed_${System.currentTimeMillis()}.mp4"
+                    
+                    // Configuration 생성 - resizer를 사용하는 생성자
+                    val compressionConfiguration = Configuration(
+                        videoNames = listOf(videoFileName),
+                        isMinBitrateCheckEnabled = false,
+                        videoBitrateInMbps = bitrateInMbps,
+                        resizer = VideoResizer.matchSize(targetWidth.toDouble(), targetHeight.toDouble())
+                    )
+                    
+                    // SharedStorageConfiguration 생성
+                    val storageConfiguration = SharedStorageConfiguration(
+                        saveAt = SaveLocation.movies,
+                        subFolderName = null
+                    )
+                    
+                    VideoCompressor.start(
+                        context = this@MainActivity,
+                        uris = listOf(inputUri),
+                        isStreamable = false,
+                        storageConfiguration = storageConfiguration,
+                        configureWith = compressionConfiguration,
+                        listener = object : CompressionListener {
+                            override fun onProgress(index: Int, percent: Float) {
+                                Log.d(TAG, "압축 진행률: $percent%")
+                            }
+                            
+                            override fun onStart(index: Int) {
+                                Log.d(TAG, "압축 시작")
+                            }
+                            
+                            override fun onSuccess(index: Int, size: Long, path: String?) {
+                                Log.d(TAG, "압축 성공: $path, 크기: ${size / 1024 / 1024} MB")
+                                continuation.resume(path ?: inputPath) {}
+                            }
+                            
+                            override fun onFailure(index: Int, failureMessage: String) {
+                                Log.e(TAG, "압축 실패: $failureMessage")
+                                // 압축 실패 시 토스트 메시지만 표시하고 null 반환
+                                runOnUiThread {
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        "비디오 압축에 실패했습니다: $failureMessage",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                continuation.resume(null) {}
+                            }
+                            
+                            override fun onCancelled(index: Int) {
+                                Log.d(TAG, "압축 취소됨")
+                                continuation.resume(null) {}
+                            }
+                        }
+                    )
                 }
-            })
+                
+                continuation.invokeOnCancellation {
+                    Log.d(TAG, "압축 취소 요청됨")
+                }
+                
+            } catch (e: Exception) {
+                Log.e(TAG, "LightCompressor 압축 중 오류 발생: ${e.message}")
+                e.printStackTrace()
+                // 예외 발생 시 토스트 메시지만 표시하고 null 반환
+                runOnUiThread {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "비디오 압축 중 오류가 발생했습니다: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                continuation.resume(null) {}
+            }
+        }
     }
 }

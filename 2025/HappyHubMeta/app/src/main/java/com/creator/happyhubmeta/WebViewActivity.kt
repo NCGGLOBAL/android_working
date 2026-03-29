@@ -27,7 +27,6 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
-import com.creator.happyhubmeta.MainActivity.Companion.requiredMediaPermissionList
 import com.creator.happyhubmeta.R
 import com.creator.happyhubmeta.common.BackPressCloseHandler
 import com.creator.happyhubmeta.common.HNApplication
@@ -36,9 +35,6 @@ import com.creator.happyhubmeta.delegator.HNSharedPreference
 import com.creator.happyhubmeta.helpers.Constants
 import com.creator.happyhubmeta.models.Image
 import com.creator.happyhubmeta.util.*
-import com.facebook.*
-import com.facebook.login.LoginManager
-import com.facebook.login.LoginResult
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.zxing.integration.android.IntentIntegrator
@@ -71,13 +67,22 @@ class WebViewActivity : Activity() {
     private var mHNCommTran: HNCommTran? = null
     private var mProgressDialog // 처리중
             : ProgressDialog? = null
-    var PERMISSIONS = arrayOf(
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_EXTERNAL_STORAGE,  //            Manifest.permission.CAMERA,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION,  //            Manifest.permission.CALL_PHONE
-        Manifest.permission.GET_ACCOUNTS
-    )
+    // READ_EXTERNAL_STORAGE 권한 제거 - Android 13+에서는 Photo Picker 사용으로 불필요
+    var PERMISSIONS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.GET_ACCOUNTS
+        )
+    } else {
+        arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.GET_ACCOUNTS
+        )
+    }
 
     // NICE 연동 가이드
     val ISP_LINK = "market://details?id=kvp.jjy.MispAndroid320" // ISP 설치 링크
@@ -101,15 +106,7 @@ class WebViewActivity : Activity() {
     private var mCameraPhotoPath: String? = null
     private var mCapturedImageURI: Uri? = null
 
-    //    private static OAuthLogin mOAuthLoginModule;
-    private var callbackManager: CallbackManager? = null
     private val permissionNeeds = Arrays.asList("public_profile", "email")
-    private val btnNaverLogin: Button? = null
-    private val btnFacebookLogin: Button? = null
-    private val btnKakaoLogin: Button? = null
-    private val mNaverMessage = ""
-    private var mFacebookMessage = ""
-    private val mKakaoMessage = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Activity가 실행 될 때 항상 화면을 켜짐으로 유지한다.
@@ -177,6 +174,7 @@ class WebViewActivity : Activity() {
         mWebView!!.settings.domStorageEnabled = true
         mWebView!!.settings.javaScriptCanOpenWindowsAutomatically = true
         mWebView!!.settings.setSupportMultipleWindows(true)
+        mWebView!!.settings.mediaPlaybackRequiresUserGesture = false
 //        mWebView!!.settings.setAppCacheEnabled(true)
         mWebView!!.settings.cacheMode = WebSettings.LOAD_DEFAULT
 //        mWebView!!.settings.setAppCachePath(applicationContext.cacheDir.absolutePath)
@@ -235,77 +233,66 @@ class WebViewActivity : Activity() {
         }
 
         private fun imageChooser(acceptType: String?) {
-            TedPermission.create()
-                .setPermissionListener(object : PermissionListener {
-
-                    //권한이 허용됐을 때
-                    override fun onPermissionGranted() {
-                        if (acceptType.isNullOrEmpty()) {
-                            // 파일만, 카메라 비노출
-                            val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                            contentSelectionIntent.type = "*/*"
-                            val intentArray: Array<Intent?>
-                            intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                            startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
-                        } else {
-                            var takePictureIntent: Intent? = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                            if (takePictureIntent!!.resolveActivity(packageManager) != null) {
-                                // Create the File where the photo should go
-                                var photoFile: File? = null
-                                try {
-                                    photoFile = createImageFile()
-                                    takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath)
-                                } catch (ex: IOException) {
-                                    // Error occurred while creating the File
-                                    Log.e(javaClass.name, "Unable to create Image File", ex)
-                                }
-
-                                // Continue only if the File was successfully created
-                                if (photoFile != null) {
-                                    // File 객체의 URI 를 얻는다.
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                        mCapturedImageURI = FileProvider.getUriForFile(
-                                            this@WebViewActivity,
-                                            "$packageName.fileprovider",
-                                            photoFile
-                                        )
-                                    } else {
-                                        mCameraPhotoPath = "file:" + photoFile.absolutePath
-                                        mCapturedImageURI = Uri.fromFile(photoFile)
-                                    }
-                                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI)
-                                } else {
-                                    takePictureIntent = null
-                                }
+            // Android Photo Picker를 사용하여 권한 없이 이미지 선택
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && acceptType?.contains("video") != true && acceptType?.contains("VIDEO") != true) {
+                try {
+                    val pickImages = Intent(MediaStore.ACTION_PICK_IMAGES)
+                    pickImages.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, 1)
+                    startActivityForResult(pickImages, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                } catch (e: Exception) {
+                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                    contentSelectionIntent.type = acceptType ?: "image/*"
+                    startActivityForResult(contentSelectionIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                }
+            } else {
+                if (acceptType.isNullOrEmpty()) {
+                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                    contentSelectionIntent.type = "*/*"
+                    val intentArray: Array<Intent?>
+                    intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                    startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                } else {
+                    var takePictureIntent: Intent? = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    if (takePictureIntent!!.resolveActivity(packageManager) != null) {
+                        var photoFile: File? = null
+                        try {
+                            photoFile = createImageFile()
+                            takePictureIntent.putExtra("PhotoPath", mCameraPhotoPath)
+                        } catch (ex: IOException) {
+                            Log.e(javaClass.name, "Unable to create Image File", ex)
+                        }
+                        if (photoFile != null) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                mCapturedImageURI = FileProvider.getUriForFile(
+                                    this@WebViewActivity, "$packageName.fileprovider", photoFile
+                                )
+                            } else {
+                                mCameraPhotoPath = "file:" + photoFile.absolutePath
+                                mCapturedImageURI = Uri.fromFile(photoFile)
                             }
-                            val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                            contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                            contentSelectionIntent.type = acceptType
-                            val intentArray: Array<Intent?>
-                            intentArray = takePictureIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                            chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                            chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                            startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI)
+                        } else {
+                            takePictureIntent = null
                         }
                     }
-
-                    //권한이 거부됐을 때
-                    override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                        Toast.makeText(this@WebViewActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                })
-                .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
-                .setPermissions(
-                    *requiredMediaPermissionList
-                )// 얻으려는 권한(여러개 가능)
-                .check()
+                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                    contentSelectionIntent.type = acceptType
+                    val intentArray: Array<Intent?>
+                    intentArray = takePictureIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
+                    val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+                    chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
+                    chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
+                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                    startActivityForResult(chooserIntent, Constants.FILECHOOSER_LOLLIPOP_REQ_CODE)
+                }
+            }
         }
 
         override fun onJsAlert(
@@ -707,34 +694,25 @@ class WebViewActivity : Activity() {
                 if ("ACT1001" == actionCode) {
                     LogUtil.d("ACT1001 - 앱 데이터 저장 (키체인 저장 및 파일저장)")
                     if (actionParamObj!!.has("key_type")) {
-                        TedPermission.create()
-                            .setPermissionListener(object : PermissionListener {
-
-                                //권한이 허용됐을 때
-                                override fun onPermissionGranted() {
-                                    LogUtil.d("mCameraType : $mCameraType")
-                                    mCameraType = if (actionParamObj.getInt("key_type") == 0) {      // camera
-                                        3
-                                    } else {                                          // album
-                                        4
-                                    }
-                                    if (mCameraType == 3) {
+                        mCameraType = if (actionParamObj.getInt("key_type") == 0) 3 else 4
+                        if (mCameraType == 3) {
+                            // 카메라 선택 - 카메라 권한만 필요
+                            TedPermission.create()
+                                .setPermissionListener(object : PermissionListener {
+                                    override fun onPermissionGranted() {
                                         dispatchTakePictureIntent()
-                                    } else {
-                                        galleryAddPic()
                                     }
-                                }
-
-                                //권한이 거부됐을 때
-                                override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                                    Toast.makeText(this@WebViewActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
-                                }
-                            })
-                            .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
-                            .setPermissions(
-                                *requiredMediaPermissionList
-                            )// 얻으려는 권한(여러개 가능)
-                            .check()
+                                    override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                                        Toast.makeText(this@WebViewActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                                    }
+                                })
+                                .setDeniedMessage("권한을 허용해주세요.")
+                                .setPermissions(Manifest.permission.CAMERA)
+                                .check()
+                        } else {
+                            // 앨범 선택 - Photo Picker 사용 (권한 불필요)
+                            galleryAddPic()
+                        }
                     }
                 } else if ("ACT1002" == actionCode) {
                     LogUtil.d("ACT1002 - 앱 데이터 가져오기 (키체인 및 파일에 있는 정보 가져오기)")
@@ -815,39 +793,15 @@ class WebViewActivity : Activity() {
                         } else if (actionParamObj.getString("snsType") == "2") {
                         } else if (actionParamObj.getString("snsType") == "3") {
                             // 페이스북 로그인
-                            FacebookSdk.sdkInitialize(context)
-                            initFacebookLogin()
                         }
                     }
                 } else if ("ACT1037" == actionCode) {
                     LogUtil.d("ACT1037 - 파일 열기")
-                    TedPermission.create()
-                        .setPermissionListener(object : PermissionListener {
-
-                            //권한이 허용됐을 때
-                            override fun onPermissionGranted() {
-                                val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
-                                contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
-                                contentSelectionIntent.type = "*/*"
-                                val intentArray: Array<Intent?>
-                                intentArray = contentSelectionIntent?.let { arrayOf(it) } ?: arrayOfNulls(0)
-                                val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-                                chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent)
-                                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
-                                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                                startActivityForResult(chooserIntent, Constants.REQUEST_GET_FILE)
-                            }
-
-                            //권한이 거부됐을 때
-                            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
-                                Toast.makeText(this@WebViewActivity, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
-                            }
-                        })
-                        .setDeniedMessage("권한을 허용해주세요.")// 권한이 없을 때 띄워주는 Dialog Message
-                        .setPermissions(
-                            *requiredMediaPermissionList
-                        )// 얻으려는 권한(여러개 가능)
-                        .check()
+                    // 파일 선택 - 권한 없이 바로 파일 선택기 사용
+                    val contentSelectionIntent = Intent(Intent.ACTION_GET_CONTENT)
+                    contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE)
+                    contentSelectionIntent.type = "*/*"
+                    startActivityForResult(contentSelectionIntent, Constants.REQUEST_GET_FILE)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -865,7 +819,7 @@ class WebViewActivity : Activity() {
                     } catch (e: PackageManager.NameNotFoundException) {
                         e.printStackTrace()
                     }
-                    versionName = pi!!.versionName
+                    versionName = pi?.versionName.toString()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -913,7 +867,6 @@ class WebViewActivity : Activity() {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var data = data
-        callbackManager?.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("SeongKwon", "============================================")
         Log.d("SeongKwon", "requestCode = $requestCode")
@@ -928,8 +881,22 @@ class WebViewActivity : Activity() {
                 val jObj = JSONObject()
                 val jArray = JSONArray()
                 jObj.put("resultcd", "0") // 0:성공. 1:실패
-                val selectedImages =
-                    data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+
+                val selectedImages: ArrayList<Image>?
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && data?.data != null) {
+                    selectedImages = ArrayList()
+                    val uris = ArrayList<Uri>()
+                    if (data.clipData != null) {
+                        for (i in 0 until data.clipData!!.itemCount) { uris.add(data.clipData!!.getItemAt(i).uri) }
+                    } else if (data.data != null) { uris.add(data.data!!) }
+                    for ((index, uri) in uris.withIndex()) {
+                        val path = RealPathUtil.getRealPath(this, uri) ?: uri.toString()
+                        selectedImages.add(Image(index.toLong(), File(path).name, path, true, index))
+                    }
+                } else {
+                    selectedImages = data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+                }
+
                 for (i in selectedImages!!.indices) {
                     val jObjItem = JSONObject()
 
@@ -1166,45 +1133,30 @@ class WebViewActivity : Activity() {
     ) {
         when (requestCode) {
             Constants.PERMISSIONS_MULTIPLE_REQUEST -> if (grantResults.size > 0) {
-                val cameraPermission = grantResults[2] == PackageManager.PERMISSION_GRANTED
-                val writeExternalFile = grantResults[1] == PackageManager.PERMISSION_GRANTED
-                val readExternalFile = grantResults[0] == PackageManager.PERMISSION_GRANTED
-                if (cameraPermission && writeExternalFile && readExternalFile) {
-                    // write your logic here
+                // Android 13+에서는 READ_EXTERNAL_STORAGE/WRITE_EXTERNAL_STORAGE 권한 불필요
+                val allGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+                } else {
+                    val readExternalFile = grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    val writeExternalFile = grantResults[1] == PackageManager.PERMISSION_GRANTED
+                    val locationFine = grantResults[2] == PackageManager.PERMISSION_GRANTED
+                    val locationCoarse = grantResults[3] == PackageManager.PERMISSION_GRANTED
+                    val getAccounts = grantResults[4] == PackageManager.PERMISSION_GRANTED
+                    readExternalFile && writeExternalFile && locationFine && locationCoarse && getAccounts
+                }
+                if (allGranted) {
                     mLlPermission!!.visibility = View.GONE
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(
-                            arrayOf(
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,  //                                            Manifest.permission.CAMERA,
-                                Manifest.permission.CALL_PHONE,
-                                Manifest.permission.GET_ACCOUNTS,
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                            ),
-                            Constants.PERMISSIONS_MULTIPLE_REQUEST
-                        )
+                        requestPermissions(PERMISSIONS, Constants.PERMISSIONS_MULTIPLE_REQUEST)
                     }
                     Snackbar.make(
                         findViewById(android.R.id.content),
                         "Please Grant Permissions to upload profile photo",
                         Snackbar.LENGTH_INDEFINITE
-                    ).setAction(
-                        "ENABLE"
-                    ) {
+                    ).setAction("ENABLE") {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            requestPermissions(
-                                arrayOf(
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,  //                                                            Manifest.permission.CAMERA,
-                                    //                                                            Manifest.permission.CALL_PHONE,
-                                    Manifest.permission.GET_ACCOUNTS,
-                                    Manifest.permission.ACCESS_FINE_LOCATION,
-                                    Manifest.permission.ACCESS_COARSE_LOCATION
-                                ),
-                                Constants.PERMISSIONS_MULTIPLE_REQUEST
-                            )
+                            requestPermissions(PERMISSIONS, Constants.PERMISSIONS_MULTIPLE_REQUEST)
                         }
                     }.show()
                 }
@@ -1251,8 +1203,20 @@ class WebViewActivity : Activity() {
 
     // 사진 앨범선택
     private fun galleryAddPic() {
-        val intent = Intent(this, AlbumSelectActivity::class.java)
-        startActivityForResult(intent, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+        // Android 13 이상에서는 Photo Picker 사용, 이하에서는 기존 AlbumSelectActivity 사용
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            try {
+                val pickImages = Intent(MediaStore.ACTION_PICK_IMAGES)
+                pickImages.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, Constants.limit)
+                startActivityForResult(pickImages, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+            } catch (e: Exception) {
+                val intent = Intent(this, AlbumSelectActivity::class.java)
+                startActivityForResult(intent, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+            }
+        } else {
+            val intent = Intent(this, AlbumSelectActivity::class.java)
+            startActivityForResult(intent, Constants.REQUEST_SELECT_IMAGE_ALBUM)
+        }
     }
 
     // 사진저장
@@ -1568,57 +1532,6 @@ class WebViewActivity : Activity() {
                 else -> {}
             }
         }
-    }
-
-    // 페이스북 로그인
-    private fun initFacebookLogin() {
-        LoginManager.getInstance().logInWithReadPermissions(this@WebViewActivity, permissionNeeds)
-        callbackManager = CallbackManager.Factory.create()
-        LoginManager.getInstance()
-            .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-                override fun onSuccess(loginResult: LoginResult) {
-                    val accessToken = AccessToken.getCurrentAccessToken()
-                    Log.d("SeongKwon", "====================================0")
-                    Log.d("SeongKwon", "onSuccess - getToken : " + accessToken?.token)
-                    Log.d("SeongKwon", "onSuccess - getUserId : " + accessToken?.userId)
-                    Log.d("SeongKwon", "onSuccess - isExpired : " + accessToken?.isExpired)
-                    Log.d("SeongKwon", "onSuccess - getExpires : " + accessToken?.expires)
-                    Log.d("SeongKwon", "onSuccess - getLastRefresh : " + accessToken?.lastRefresh)
-                    Log.d("SeongKwon", "====================================1")
-                    val request = GraphRequest.newMeRequest(
-                        AccessToken.getCurrentAccessToken()
-                    ) { result, response ->
-                        try {
-                            Log.d("SeongKwon", "fb json object: $result")
-                            Log.d("SeongKwon", "fb graph response: $response")
-                            val jsonObject = JSONObject()
-                            jsonObject.put(
-                                "accessToken",
-                                accessToken?.token
-                            ) // getAccessToken
-                            jsonObject.put("userInfo", result) // 사용자정보
-                            executeJavascript("$mCallback($jsonObject)")
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                    val parameters = Bundle()
-                    parameters.putString(
-                        "fields",
-                        "id,first_name,last_name,email,gender,birthday"
-                    ) // id,first_name,last_name,email,gender,birthday,cover,picture.type(large)
-                    request.parameters = parameters
-                    request.executeAsync()
-                }
-
-                override fun onCancel() {
-                    Log.d("SeongKwon", "onCancel")
-                }
-
-                override fun onError(error: FacebookException) {
-                    Log.d("SeongKwon", "onError : " + error.localizedMessage)
-                }
-            })
     }
 
     companion object {

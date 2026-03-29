@@ -3,6 +3,7 @@ package com.creator.happyhubmeta.delegator
 import android.content.*
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.creator.happyhubmeta.delegator.HNGlobalPreference
 
 /**
  * Delegator for javaScript. Global preference. manage values to share with other apps.
