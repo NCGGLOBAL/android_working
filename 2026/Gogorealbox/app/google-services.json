@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "310572271952",
+    "project_id": "gogorealbox",
+    "storage_bucket": "gogorealbox.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:310572271952:android:01ee4b5150c354690fc455",
+        "android_client_info": {
+          "package_name": "com.creator.gogorealbox"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8FcqPpcGA-3oJiDeOoJ6avkUJGR9Vle8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
