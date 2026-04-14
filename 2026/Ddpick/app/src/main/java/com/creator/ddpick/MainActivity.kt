@@ -241,10 +241,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         // Activity가 실행 될 때 항상 화면을 켜짐으로 유지한다.
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        try {
-            setContentView(R.layout.activity_main)
-            mContext = this@MainActivity
+        setContentView(R.layout.activity_main)
+        mContext = this@MainActivity
 
+        // 로딩 뷰를 try 블록 밖에서 초기화하여 예외 발생 시에도 반드시 숨김 처리 가능하도록 함
+        mLoadingView = findViewById(R.id.view_loading)
+        try {
+            Glide.with(this)
+                .asGif()
+                .load(R.drawable.loading)
+                .into(mLoadingView!!)
+        } catch (e: Exception) {
+            Log.e(TAG, "Loading GIF error", e)
+            // GIF 로드 실패 시 검은 배경만 남으므로 즉시 숨김
+            mLoadingView?.visibility = View.GONE
+        }
+
+        try {
             if (HNSharedPreference.getSharedPreference(this, "deviceId") == "") {
                 HNApplication.mDeviceId = EtcUtil.getRandomKey(16)
                 HNSharedPreference.putSharedPreference(
@@ -304,16 +317,14 @@ class MainActivity : AppCompatActivity() {
 
             // WebView 초기화
             initWebView()
-            mLoadingView = findViewById(R.id.view_loading)
-            Glide.with(this)
-                .asGif()
-                .load(R.drawable.loading)
-                .into(mLoadingView!!)
-            Handler().postDelayed(Runnable {
-                mLoadingView?.visibility = View.GONE
-            }, 5000)
         } catch (e: Exception) {
+            Log.e(TAG, "onCreate initialization error", e)
             e.printStackTrace()
+        } finally {
+            // 예외가 발생하더라도 반드시 로딩 뷰를 숨김 처리
+            Handler(Looper.getMainLooper()).postDelayed({
+                mLoadingView?.visibility = View.GONE
+            }, 3000)
         }
     }
 
