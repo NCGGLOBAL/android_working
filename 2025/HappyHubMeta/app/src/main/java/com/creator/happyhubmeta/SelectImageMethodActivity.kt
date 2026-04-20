@@ -214,7 +214,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             }
             imageCount?.text =
                 savedImageSize.toString() + "/" + HNApplication.LIMIT_IMAGE_COUNT
-            loadImages()
+            // loadImages는 onStart에서 호출 (handler가 준비된 후에 호출해야 FETCH_COMPLETED 메시지가 전달됨)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -490,11 +490,22 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
     private val selected: ArrayList<Image>
         private get() {
             var path = ""
-            val selectedImages = ArrayList<Image>(countSelected)
-            selectedImages.clear()
-            for (i in 0 until countSelected) {
-                selectedImages.add(i, images!![0])
+            val selectedList = images!!.filter { it.isSelected }
+            val maxSequence = selectedList.maxOfOrNull { it.sequence }?.coerceAtLeast(1) ?: 1
+            val selectedImagesSize = maxOf(countSelected, maxSequence, 1)
+            val selectedImages = ArrayList<Image>(selectedImagesSize)
+            if (images!!.isNotEmpty()) {
+                for (i in 0 until selectedImagesSize) {
+                    selectedImages.add(images!![0])
+                }
             }
+            val newImgArr = JSONArray()
+            val existingByFileName = mutableMapOf<String, JSONObject>()
+            for (idx in 0 until (mImgArr?.length() ?: 0)) {
+                val item = mImgArr!!.getJSONObject(idx)
+                existingByFileName[item.getString("fileName")] = item
+            }
+            var newSavedImageStr = ""
             for (i in images!!.indices) {
                 if (images!![i].isSelected) {
                     path = """
@@ -507,29 +518,50 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
                         "SeongKwon",
                         (images!![i].sequence - 1).toString() + "//" + selectedImages.size + "//" + countSelected
                     )
-                    selectedImages[images!![i].sequence - 1] = images!![i]
+                    val idx = images!![i].sequence - 1
+                    if (idx in 0 until selectedImages.size) {
+                        selectedImages[idx] = images!![i]
+                    }
 
-                    // Image 저장
-                    if (BitmapUtil.Companion.saveImage(
+                    // Image 저장 (파일이 이미 filesDir에 있으면 복사 생략)
+                    val isAlreadySaved = images!![i].path?.startsWith(filesDir.absolutePath) == true
+                    var saveSuccess = true
+                    if (!isAlreadySaved) {
+                        saveSuccess = BitmapUtil.saveImage(
                             this,
                             images!![i].path,
-                            images!![i].name, images!![i].sequence.toString()
+                            images!![i].name,
+                            images!![i].sequence.toString()
                         )
-                    ) {
+                    }
+
+                    if (saveSuccess) {
+                        newSavedImageStr += "${images!![i].name}&${images!![i].sequence},"
                         try {
-                            // ACT1011 CALLBACK
-                            val jObjItem = JSONObject()
-                            jObjItem.put("imgUrl", "")
-                            jObjItem.put("fileName", images!![i].name)
-                            jObjItem.put("utype", 1) // utype =  0: 기존이미지, 1: 신규, 2: 수정
-                            jObjItem.put("sort", images!![i].sequence) // 마지막에 추가
-                            mImgArr!!.put(jObjItem)
+                            val jObjItem = existingByFileName[images!![i].name]?.let { existing ->
+                                JSONObject().apply {
+                                    put("imgUrl", existing.optString("imgUrl", ""))
+                                    put("fileName", images!![i].name)
+                                    put("utype", existing.optInt("utype", 1))
+                                    put("sort", images!![i].sequence)
+                                }
+                            } ?: JSONObject().apply {
+                                put("imgUrl", "")
+                                put("fileName", images!![i].name)
+                                put("utype", 1)
+                                put("sort", images!![i].sequence)
+                            }
+                            newImgArr.put(jObjItem)
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
                     }
                 }
             }
+            // 전체 선택된 이미지 기준으로 savedImage SharedPreferences 덮어쓰기 (중복 누적 방지)
+            HNSharedPreference.putSharedPreference(this, "savedImage", newSavedImageStr)
+
+            mImgArr = newImgArr
             Log.d("SeongKwon", "countSelected = $countSelected")
             Log.d("SeongKwon", "images.size() = " + images!!.size)
             Log.d("SeongKwon", "selectedImages.size() = " + selectedImages.size)
@@ -793,7 +825,9 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             try {
                 val pickImages = Intent(MediaStore.ACTION_PICK_IMAGES)
-                pickImages.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, Constants.limit)
+                pickImages.type = "image/*"
+                val maxSelect = (HNApplication.LIMIT_IMAGE_COUNT - (images?.size ?: 0)).coerceAtLeast(1)
+                pickImages.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxSelect)
                 startActivityForResult(pickImages, Constants.REQUEST_SELECT_IMAGE_ALBUM)
             } catch (e: Exception) {
                 val intent = Intent(applicationContext, AlbumSelectActivity::class.java)
@@ -847,8 +881,8 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             Log.d("SeongKwon", "////" + images!!.size)
             val addimages: ArrayList<Image>
 
-            // Photo Picker 결과 처리 (Android 13+)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && data.data != null) {
+            // Photo Picker 결과 처리 (clipData 또는 data로 반환)
+            if (data.clipData != null || data.data != null) {
                 addimages = ArrayList()
                 val uris = ArrayList<Uri>()
                 if (data.clipData != null) {
@@ -864,11 +898,20 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             }
 
             Log.d("SeongKwon", "////" + addimages.size)
-            if (addimages.size > 0) {
-                mIsChanged = true
+            val existingFileNames = images!!.map { it.name }.toSet()
+            val toAdd = addimages.filter { it.name !in existingFileNames }
+            if (toAdd.isEmpty()) {
+                if (addimages.isNotEmpty()) {
+                    Toast.makeText(this, "이미 선택된 이미지입니다.", Toast.LENGTH_SHORT).show()
+                }
+                return
             }
-            for (i in addimages.indices) {
-                val image = addimages[i]
+            if (addimages.size > toAdd.size) {
+                Toast.makeText(this, "${addimages.size - toAdd.size}개 이미지는 이미 선택되어 있어 제외되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+            mIsChanged = true
+            for (i in toAdd.indices) {
+                val image = toAdd[i]
                 image.sequence = images!!.size + 1
                 image.isSelected = true
                 images!!.add(image)
@@ -878,7 +921,7 @@ class SelectImageMethodActivity : HelperActivity(), View.OnClickListener {
             Log.e("SeongKwon", "//// countSelected = $countSelected")
 
             // 이미지 저장
-            saveImagesAsyncTask().execute(addimages)
+            saveImagesAsyncTask().execute(ArrayList(toAdd))
         } else if (requestCode == Constants.REQUEST_SELECT_IMAGE_CAMERA) {
             if (resultCode != RESULT_OK) {
                 Toast.makeText(this, "카메라 촬영에 실패했습니다.", Toast.LENGTH_LONG).show()

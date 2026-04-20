@@ -28,6 +28,9 @@
 
         <!--  It should be true otherwise action mode will not overlay toolbar -->
         <item name="windowActionModeOverlay">true</item>
+
+        <!-- 스테이터스바와 툴바 겹침 방지 (edge-to-edge 비활성화) -->
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 
     <style name="CustomActionModeStyle" parent="Base.Widget.AppCompat.ActionMode">
