@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "683644523235",
+    "project_id": "onetv-a67cf",
+    "storage_bucket": "onetv-a67cf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:683644523235:android:6de9982f97353b7389ebd6",
+        "android_client_info": {
+          "package_name": "com.creator.onetv"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaIwj-uajM2c1TsunxOmAVwKactVsMs60"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
