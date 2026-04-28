@@ -2343,4 +2343,5 @@ Ver.%s"</string>
     <string name="zipcode_search_title">우편번호 검색</string>
     <string name="zipcoed_empty_keyword">주소를 입력하세요.</string>
     <string name="zipcoed_search_empty">검색결과가 없습니다.</string>
+    <string name="splash_image_url" translatable="false">https://labang.tv/splash.asp</string>
 </resources>

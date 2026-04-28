@@ -55,6 +55,7 @@ import com.abedelazizshe.lightcompressorlibrary.config.Configuration
 import com.abedelazizshe.lightcompressorlibrary.config.SharedStorageConfiguration
 import com.abedelazizshe.lightcompressorlibrary.config.SaveLocation
 import com.abedelazizshe.lightcompressorlibrary.config.VideoResizer
+import com.bumptech.glide.Glide
 import kotlinx.coroutines.*
 import kotlin.coroutines.cancellation.CancellationException
 import org.json.JSONArray
@@ -303,7 +304,11 @@ class MainActivity : AppCompatActivity() {
 
             // WebView 초기화
             initWebView()
-            mLoadingView = findViewById(R.id.view_loading)
+            val splashImage = findViewById<ImageView>(R.id.splash_image)
+            mLoadingView = splashImage
+            Glide.with(this)
+                .load(getString(R.string.splash_image_url))
+                .into(splashImage)
             Handler().postDelayed(Runnable {
                 mLoadingView?.visibility = View.GONE
             }, 3000)
