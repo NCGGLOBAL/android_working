@@ -32,8 +32,8 @@ object Constants {
     const val INTENT_EXTRA_ALBUM = "album"
     const val INTENT_EXTRA_IMAGES = "images"
     const val INTENT_EXTRA_LIMIT = "limit"
-    const val DEFAULT_LIMIT = 10
+    const val DEFAULT_LIMIT = 30
 
     //Maximum number of images that can be selected at a time
-    var limit = 8
+    var limit = 30
 }
