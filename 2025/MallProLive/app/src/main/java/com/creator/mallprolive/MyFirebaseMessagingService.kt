@@ -219,7 +219,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     notificationBuilder.setStyle(
                         NotificationCompat.BigPictureStyle()
                             .bigPicture(result)
-                            .bigLargeIcon(null)) // Large icon shown in expanded notification
+                            .bigLargeIcon(null as Bitmap?)) // Large icon shown in expanded notification
                 } else {
                     notificationBuilder.setStyle(
                         NotificationCompat.BigTextStyle()

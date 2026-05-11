@@ -6,10 +6,13 @@ import android.content.*
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.telephony.TelephonyManager
+import android.util.Base64
 import android.webkit.CookieManager
 import android.webkit.URLUtil
 import android.webkit.WebView
@@ -91,7 +94,7 @@ object EtcUtil {
         deviceInfo["osVersion"] = Build.VERSION.RELEASE
         var appVersion = ""
         if (packageInfo != null) {
-            appVersion = packageInfo.versionName
+            appVersion = packageInfo.versionName.toString()
         }
         deviceInfo["appVersion"] = appVersion
         val telephony = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
@@ -407,6 +410,25 @@ object EtcUtil {
                      mimeType: String?,
                      context: Context) {
 
+        if (url.isNullOrBlank()) {
+            Toast.makeText(context, "다운로드 주소가 없습니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (url.startsWith("data:", ignoreCase = true)) {
+            if (!saveDataUrlToDownloads(url, mimeType, context)) {
+                Toast.makeText(context, "이미지 저장에 실패했습니다.", Toast.LENGTH_SHORT).show()
+            }
+            return
+        }
+
+        val parsed = Uri.parse(url)
+        val scheme = parsed.scheme?.lowercase(Locale.US)
+        if (scheme != "http" && scheme != "https") {
+            Toast.makeText(context, "지원하지 않는 다운로드 주소입니다.", Toast.LENGTH_LONG).show()
+            return
+        }
+
         Toast.makeText(context, "다운로드를 시작합니다.", Toast.LENGTH_LONG).show()
 
         val request = DownloadManager.Request(Uri.parse(url))
@@ -433,6 +455,85 @@ object EtcUtil {
         )
         val dm = context.getSystemService(Activity.DOWNLOAD_SERVICE) as DownloadManager
         dm.enqueue(request)
+    }
+
+    /**
+     * WebView [onDownloadStart]에서 넘어오는 data: URL(image/png;base64,...)을 다운로드 폴더에 저장한다.
+     * [DownloadManager]는 HTTP/HTTPS만 허용하므로 별도 처리가 필요하다.
+     */
+    private fun saveDataUrlToDownloads(dataUrl: String, fallbackMime: String?, context: Context): Boolean {
+        val parsed = parseDataUrl(dataUrl) ?: return false
+        val (metaMime, bytes) = parsed
+        val mime = metaMime.ifBlank { fallbackMime?.trim().orEmpty() }
+            .ifBlank { "application/octet-stream" }
+        val ext = extensionForMime(mime)
+        val rawName = "mallprolive_${System.currentTimeMillis()}.$ext"
+        val fileName = sanitizeFileName(rawName)
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val values = ContentValues().apply {
+                    put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+                    put(MediaStore.Downloads.MIME_TYPE, mime)
+                }
+                val collection = MediaStore.Downloads.EXTERNAL_CONTENT_URI
+                val itemUri = context.contentResolver.insert(collection, values)
+                    ?: return false
+                context.contentResolver.openOutputStream(itemUri)?.use { it.write(bytes) }
+                    ?: return false
+            } else {
+                val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                if (!dir.exists()) dir.mkdirs()
+                val file = File(dir, fileName)
+                FileOutputStream(file).use { it.write(bytes) }
+                MediaScannerConnection.scanFile(
+                    context,
+                    arrayOf(file.absolutePath),
+                    arrayOf(mime),
+                    null
+                )
+            }
+            Toast.makeText(context, "다운로드 폴더에 저장되었습니다.", Toast.LENGTH_LONG).show()
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun parseDataUrl(dataUrl: String): Pair<String, ByteArray>? {
+        if (!dataUrl.startsWith("data:", ignoreCase = true)) return null
+        val comma = dataUrl.indexOf(',')
+        if (comma <= 5) return null
+        val meta = dataUrl.substring(5, comma)
+        val payload = dataUrl.substring(comma + 1)
+        val mimePart = meta.substringBefore(';', meta).trim()
+        val isBase64 = meta.contains(";base64", ignoreCase = true)
+        return try {
+            val bytes = if (isBase64) {
+                Base64.decode(payload, Base64.DEFAULT)
+            } else {
+                URLDecoder.decode(payload, Charsets.UTF_8.name()).toByteArray(Charsets.UTF_8)
+            }
+            Pair(mimePart, bytes)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun extensionForMime(mime: String): String {
+        return when (mime.lowercase(Locale.US)) {
+            "image/png" -> "png"
+            "image/jpeg", "image/jpg" -> "jpg"
+            "image/webp" -> "webp"
+            "image/gif" -> "gif"
+            "image/svg+xml" -> "svg"
+            else -> "bin"
+        }
+    }
+
+    private fun sanitizeFileName(name: String): String {
+        return name.replace(Regex("""[\\/:*?"<>|]"""), "_")
     }
 
     fun getMarketVersion(packageName: String): String? {
