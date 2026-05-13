@@ -63,7 +63,7 @@ class HNApplication : Application() {
             private set
         var mDeviceId: String? = ""
         var mImgArrForReg = ""
-        const val LIMIT_IMAGE_COUNT = 10
+        const val LIMIT_IMAGE_COUNT = 30
         var mCookieManager: CookieManager? = null
         val cookieManager: CookieManager?
             get() {
