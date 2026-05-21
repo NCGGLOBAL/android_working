@@ -9,6 +9,8 @@ import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.media.MediaCodecInfo
+import android.media.MediaCodecList
 import android.net.http.SslError
 import android.opengl.GLSurfaceView
 import android.os.*
@@ -49,9 +51,7 @@ class CameraActivity : Activity() {
     private var mWebView: WebView? = null
     private var mCallback: String? = null
     private var mCookieManager: CookieManager? = null
-
-    private var LIVE_URL: String = HNApplication.Companion.URL + "/addon/wlive/TV_live_creator.asp"
-    private var currentLiveUrl = LIVE_URL
+    private val LIVE_URL: String = HNApplication.Companion.URL + "/addon/wlive/TV_live_creator.asp"
     private var mUploadMessage: ValueCallback<Uri?>? = null
     private var mFilePathCallback: ValueCallback<Array<Uri>>? = null
     private var mCameraPhotoPath: String? = null
@@ -63,6 +63,7 @@ class CameraActivity : Activity() {
     var mCameraPreview: GLSurfaceView? = null
     var mCameraHintView: CameraHintView? = null
     var mMainHandler: Handler? = null
+    private var currentCameraFacing: Int = CameraCapture.FACING_FRONT
 
     // 요청할 권한 리스트
     private val REQUIRED_PERMISSIONS = arrayOf(
@@ -82,14 +83,6 @@ class CameraActivity : Activity() {
         // Activity가 실행 될 때 항상 화면을 켜짐으로 유지한다.
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_camera)
-
-        val webViewUrl = intent.getStringExtra("liveUrl")
-        if (webViewUrl?.contains("ncglive://make?subject=&screen_type=2") == true) {
-            val uri = Uri.parse(webViewUrl)
-            val landingUrl = uri.getQueryParameter("url")
-            currentLiveUrl = "${landingUrl}/addon/wlive/TV_live_creator.asp"
-        }
-
         initWebView()
         checkPermission()
         initCamera()
@@ -245,6 +238,15 @@ class CameraActivity : Activity() {
         mStreamer = KSYStreamer(this)
         // 设置预览View
         mStreamer!!.setDisplayPreview(mCameraPreview)
+
+        // 초기 기본 해상도 및 프레임레이트 설정 (startCameraPreview가 불리기 전에 설정되어야 적용됨)
+        val (targetWidth, targetHeight) = getScaledResolution(screenWidth, screenHeight)
+        mStreamer!!.setPreviewResolution(targetWidth, targetHeight)
+        mStreamer!!.setTargetResolution(targetWidth, targetHeight)
+        mStreamer!!.previewFps = 30.0f
+        mStreamer!!.targetFps = 30.0f
+
+        currentCameraFacing = mStreamer?.cameraCapture?.cameraFacing ?: CameraCapture.FACING_FRONT
     }
 
     private fun initStreamer(
@@ -254,18 +256,25 @@ class CameraActivity : Activity() {
         videoBitrateList: ArrayList<Int>,
         keyframeInterval: Int = 2
     ) {
-        LogUtil.e("initStreamer widthPixels : " + screenWidth)
-        LogUtil.e("initStreamer heightPixels : " + screenHeight)
+        val (targetWidth, targetHeight) = getScaledResolution(screenWidth, screenHeight)
+        LogUtil.d(TAG, "initStreamer - screen: ${screenWidth}x${screenHeight}, target: ${targetWidth}x${targetHeight}, previewFps: $previewFps, targetFps: $targetFps")
+
+        // 해상도나 FPS 설정 변경 시 카메라 프리뷰 재시작이 필요함
+        LogUtil.d(TAG, "initStreamer - Restarting camera preview to apply target resolution and FPS...")
+        mStreamer!!.stopCameraPreview()
+
 // 设置推流url（需要向相关人员申请，测试地址并不稳定！）
         mStreamer!!.url = streamUrl
         // 设置预览分辨率, 当一边为0时，SDK会根据另一边及实际预览View的尺寸进行计算
-        mStreamer!!.setPreviewResolution(screenWidth, screenHeight)
+        mStreamer!!.setPreviewResolution(targetWidth, targetHeight)
         // 设置推流分辨率，可以不同于预览分辨率（不应大于预览分辨率，否则推流会有画质损失）
-        mStreamer!!.setTargetResolution(screenWidth, screenHeight)
+        mStreamer!!.setTargetResolution(targetWidth, targetHeight)
         // 设置预览帧率
         mStreamer!!.previewFps = previewFps.toFloat()
         // 设置推流帧率，当预览帧率大于推流帧率时，编码模块会自动丢帧以适应设定的推流帧率
         mStreamer!!.targetFps = targetFps.toFloat()
+
+        mStreamer!!.startCameraPreview()
         // 设置视频码率，分别为初始平均码率、最高平均码率、最低平均码率，单位为kbps，另有setVideoBitrate接口，单位为bps
 //        mStreamer.setVideoKBitrate(600, 800, 400);
         mStreamer!!.setVideoKBitrate(videoBitrateList[0], videoBitrateList[1], videoBitrateList[2])
@@ -281,11 +290,27 @@ class CameraActivity : Activity() {
          */
         mStreamer!!.enableRepeatLastFrame = false // disable repeat last frame in background
         mStreamer!!.setEnableAutoRestart(true, 500)
-        mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_SOFTWARE)
+        // HW 인코딩 지원 여부 확인 후 적용, 실패 시 SW로 폴백
+        val isHwEncoderAvailable = isHardwareH264EncoderAvailable()
+        LogUtil.d("$TAG Encoder - H264 HW available: $isHwEncoderAvailable")
+        if (isHwEncoderAvailable) {
+            try {
+                mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_HARDWARE)
+                LogUtil.d("$TAG Encoder set: HARDWARE")
+            } catch (e: Exception) {
+                mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_SOFTWARE)
+                LogUtil.e("$TAG Encoder set failed (HW). Fallback to SOFTWARE: ${e.message}")
+            }
+        } else {
+            mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_SOFTWARE)
+            LogUtil.d("$TAG Encoder set: SOFTWARE (HW not available)")
+        }
         // 设置屏幕的旋转角度，支持 0, 90, 180, 270
         mStreamer!!.rotateDegrees = 0
         // 设置开始预览使用前置还是后置摄像头
-        mStreamer!!.cameraFacing = CameraCapture.FACING_FRONT
+        currentCameraFacing =
+            mStreamer?.cameraCapture?.cameraFacing ?: currentCameraFacing
+        mStreamer!!.cameraFacing = currentCameraFacing
         mStreamer!!.toggleTorch(false)
 
         // 触摸对焦和手势缩放功能
@@ -310,6 +335,52 @@ class CameraActivity : Activity() {
 // 设置美颜滤镜，关于美颜滤镜的具体说明请参见专题说明
 //        mStreamer.getImgTexFilterMgt().setFilter(mStreamer.getGLRender(),
 //                ImgTexFilterMgt.KSY_FILTER_BEAUTY_DISABLE);
+    }
+
+    private fun getScaledResolution(width: Int, height: Int, maxW: Int = 1080, maxH: Int = 1920): Pair<Int, Int> {
+        var w = width
+        var h = height
+
+        val scaleW = maxW.toFloat() / w
+        val scaleH = maxH.toFloat() / h
+        val scale = if (scaleW < scaleH) scaleW else scaleH
+        if (scale < 1.0f) {
+            w = (w * scale).toInt()
+            h = (h * scale).toInt()
+        }
+
+        // Align to multiple of 16 for encoder compatibility
+        w = (w / 16) * 16
+        h = (h / 16) * 16
+
+        // Ensure they are at least 16
+        if (w < 16) w = 16
+        if (h < 16) h = 16
+
+        return Pair(w, h)
+    }
+
+    private fun isHardwareH264EncoderAvailable(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return false
+        }
+        val codecList = MediaCodecList(MediaCodecList.ALL_CODECS)
+        val codecs = codecList.codecInfos
+        for (codecInfo in codecs) {
+            if (!codecInfo.isEncoder) continue
+            val supportedTypes = codecInfo.supportedTypes
+            if (!supportedTypes.any { it.equals("video/avc", ignoreCase = true) }) continue
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (!codecInfo.isSoftwareOnly) return true
+            } else {
+                val name = codecInfo.name.lowercase(Locale.US)
+                val isSoftware = name.startsWith("omx.google.")
+                        || name.startsWith("c2.android.")
+                        || name.startsWith("c2.google.")
+                if (!isSoftware) return true
+            }
+        }
+        return false
     }
 
     private fun initWebView() {
@@ -357,7 +428,7 @@ class CameraActivity : Activity() {
         mWebView!!.addJavascriptInterface(WebAppInterface(this, mWebView!!), "android")
         mWebView!!.isDrawingCacheEnabled = true
         mWebView!!.buildDrawingCache()
-        mWebView!!.loadUrl(currentLiveUrl)
+        mWebView!!.loadUrl(LIVE_URL)
     }
 
     public override fun onResume() {
@@ -372,7 +443,7 @@ class CameraActivity : Activity() {
 
             // 设置Info回调，可以收到相关通知信息
             mStreamer!!.onInfoListener = KSYStreamer.OnInfoListener { what, msg1, msg2 ->
-                // ...
+                LogUtil.d(TAG, "onInfo: what=$what, msg1=$msg1, msg2=$msg2")
             }
             // 设置错误回调，收到该回调后，一般是发生了严重错误，比如网络断开等，
 // SDK内部会停止推流，APP可以在这里根据回调类型及需求添加重试逻辑。
@@ -588,6 +659,8 @@ class CameraActivity : Activity() {
                     var resultcd = 1
                     if (actionParamObj!!.has("key_type")) {
                         mStreamer!!.switchCamera()
+                        currentCameraFacing =
+                            mStreamer?.cameraCapture?.cameraFacing ?: currentCameraFacing
                     } else {
                         resultcd = 0
                     }
@@ -673,6 +746,27 @@ class CameraActivity : Activity() {
                     val jsonObject = JSONObject()
                     jsonObject.put("resultcd", resultcd) //1: 성공, 0: 실패
                     executeJavascript("$mCallback($jsonObject)")
+                } else if ("ACT1034" == actionCode) {
+                    LogUtil.d("ACT1034 - wlive 카메라 좌우 반전 제어")
+                    var resultcd = 1
+                    if (actionParamObj != null && actionParamObj.has("key_type")) {
+                        try {
+                            val keyType = actionParamObj.getInt("key_type")
+                            // 0: 미러 OFF, 1: 미러 ON
+                            if (keyType == 1) {
+                                mStreamer?.setEnableCameraMirror(true)
+                            } else {
+                                mStreamer?.setEnableCameraMirror(false)
+                            }
+                        } catch (e: Exception) {
+                            resultcd = 0
+                        }
+                    } else {
+                        resultcd = 0
+                    }
+                    val jsonObject = JSONObject()
+                    jsonObject.put("resultcd", resultcd) //1: 성공, 0: 실패
+                    executeJavascript("$mCallback($jsonObject)")
                 } else if ("ACT1030" == actionCode) {
                     LogUtil.d("ACT1030 - wlive 스트림키 전달 및 송출")
                     val resultcd = 1
@@ -691,6 +785,16 @@ class CameraActivity : Activity() {
                 } else if ("ACT1031" == actionCode) {
                     // 종료
                     finish()
+                } else if ("ACT1035" == actionCode) {
+                    LogUtil.d("ACT1035 - wlive 카메라 영상 송출 중지")
+                    try {
+                        // 즉시 스트리밍 중지
+                        mStreamer?.stopStream()
+                        LogUtil.d("영상 송출이 즉시 중지되었습니다")
+                    } catch (e: Exception) {
+                        LogUtil.e("ACT1035 - 송출 중지 실패: ${e.message}")
+                        e.printStackTrace()
+                    }
                 } else if ("ACT1015" == actionCode) {
                     LogUtil.d("ACT1015 - 웹뷰 새창")
                     if (actionParamObj!!.has("url")) {
