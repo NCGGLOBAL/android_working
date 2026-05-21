@@ -101,8 +101,38 @@ class CameraActivity : Activity() {
                 val jObj = JSONObject()
                 val jArray = JSONArray()
                 jObj.put("resultcd", "0") // 0:성공. 1:실패
-                val selectedImages =
-                    data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+                val selectedImages: ArrayList<Image>?
+                // Photo Picker 결과 처리 (Android 13+)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && data?.data != null) {
+                    selectedImages = ArrayList()
+                    val uris = ArrayList<Uri>()
+
+                    // ClipData에서 여러 이미지 가져오기 (다중 선택 시)
+                    if (data.clipData != null) {
+                        for (i in 0 until data.clipData!!.itemCount) {
+                            uris.add(data.clipData!!.getItemAt(i).uri)
+                        }
+                    } else if (data.data != null) {
+                        uris.add(data.data!!)
+                    }
+
+                    // Uri를 Image 객체로 변환
+                    for ((index, uri) in uris.withIndex()) {
+                        val path = RealPathUtil.getRealPath(this, uri) ?: uri.toString()
+                        val fileName = File(path).name
+                        selectedImages.add(Image(
+                            index.toLong(),
+                            fileName,
+                            path,
+                            true,
+                            index
+                        ))
+                    }
+                } else {
+                    // AlbumSelectActivity 결과 처리 (Android 12 이하)
+                    selectedImages = data!!.extras!![Constants.INTENT_EXTRA_IMAGES] as ArrayList<Image>?
+                }
+
                 for (i in selectedImages!!.indices) {
                     val jObjItem = JSONObject()
 
@@ -290,21 +320,7 @@ class CameraActivity : Activity() {
          */
         mStreamer!!.enableRepeatLastFrame = false // disable repeat last frame in background
         mStreamer!!.setEnableAutoRestart(true, 500)
-        // HW 인코딩 지원 여부 확인 후 적용, 실패 시 SW로 폴백
-        val isHwEncoderAvailable = isHardwareH264EncoderAvailable()
-        LogUtil.d("$TAG Encoder - H264 HW available: $isHwEncoderAvailable")
-        if (isHwEncoderAvailable) {
-            try {
-                mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_HARDWARE)
-                LogUtil.d("$TAG Encoder set: HARDWARE")
-            } catch (e: Exception) {
-                mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_SOFTWARE)
-                LogUtil.e("$TAG Encoder set failed (HW). Fallback to SOFTWARE: ${e.message}")
-            }
-        } else {
-            mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_SOFTWARE)
-            LogUtil.d("$TAG Encoder set: SOFTWARE (HW not available)")
-        }
+        mStreamer!!.setEncodeMethod(StreamerConstants.ENCODE_METHOD_SOFTWARE)
         // 设置屏幕的旋转角度，支持 0, 90, 180, 270
         mStreamer!!.rotateDegrees = 0
         // 设置开始预览使用前置还是后置摄像头
