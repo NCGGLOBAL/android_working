@@ -238,6 +238,14 @@ class CameraActivity : Activity() {
         mStreamer = KSYStreamer(this)
         // 设置预览View
         mStreamer!!.setDisplayPreview(mCameraPreview)
+
+        // 초기 기본 해상도 및 프레임레이트 설정 (startCameraPreview가 불리기 전에 설정되어야 적용됨)
+        val (targetWidth, targetHeight) = getScaledResolution(screenWidth, screenHeight)
+        mStreamer!!.setPreviewResolution(targetWidth, targetHeight)
+        mStreamer!!.setTargetResolution(targetWidth, targetHeight)
+        mStreamer!!.previewFps = 30.0f
+        mStreamer!!.targetFps = 30.0f
+
         currentCameraFacing = mStreamer?.cameraCapture?.cameraFacing ?: CameraCapture.FACING_FRONT
     }
 
@@ -248,18 +256,25 @@ class CameraActivity : Activity() {
         videoBitrateList: ArrayList<Int>,
         keyframeInterval: Int = 2
     ) {
-        LogUtil.e("initStreamer widthPixels : " + screenWidth)
-        LogUtil.e("initStreamer heightPixels : " + screenHeight)
+        val (targetWidth, targetHeight) = getScaledResolution(screenWidth, screenHeight)
+        LogUtil.d(TAG, "initStreamer - screen: ${screenWidth}x${screenHeight}, target: ${targetWidth}x${targetHeight}, previewFps: $previewFps, targetFps: $targetFps")
+
+        // 해상도나 FPS 설정 변경 시 카메라 프리뷰 재시작이 필요함
+        LogUtil.d(TAG, "initStreamer - Restarting camera preview to apply target resolution and FPS...")
+        mStreamer!!.stopCameraPreview()
+
 // 设置推流url（需要向相关人员申请，测试地址并不稳定！）
         mStreamer!!.url = streamUrl
         // 设置预览分辨率, 当一边为0时，SDK会根据另一边及实际预览View的尺寸进行计算
-        mStreamer!!.setPreviewResolution(screenWidth, screenHeight)
+        mStreamer!!.setPreviewResolution(targetWidth, targetHeight)
         // 设置推流分辨率，可以不同于预览分辨率（不应大于预览分辨率，否则推流会有画质损失）
-        mStreamer!!.setTargetResolution(screenWidth, screenHeight)
+        mStreamer!!.setTargetResolution(targetWidth, targetHeight)
         // 设置预览帧率
         mStreamer!!.previewFps = previewFps.toFloat()
         // 设置推流帧率，当预览帧率大于推流帧率时，编码模块会自动丢帧以适应设定的推流帧率
         mStreamer!!.targetFps = targetFps.toFloat()
+
+        mStreamer!!.startCameraPreview()
         // 设置视频码率，分别为初始平均码率、最高平均码率、最低平均码率，单位为kbps，另有setVideoBitrate接口，单位为bps
 //        mStreamer.setVideoKBitrate(600, 800, 400);
         mStreamer!!.setVideoKBitrate(videoBitrateList[0], videoBitrateList[1], videoBitrateList[2])
@@ -297,7 +312,7 @@ class CameraActivity : Activity() {
             mStreamer?.cameraCapture?.cameraFacing ?: currentCameraFacing
         mStreamer!!.cameraFacing = currentCameraFacing
         mStreamer!!.toggleTorch(false)
-
+ 
         // 触摸对焦和手势缩放功能
 //        if (config.mZoomFocus) {
         val cameraTouchHelper = CameraTouchHelper()
@@ -311,17 +326,40 @@ class CameraActivity : Activity() {
         if (mMainHandler != null) {
             mMainHandler!!.postDelayed({ mStreamer!!.startStream() }, 100)
         }
-
-
+ 
+ 
         // 切换前后摄像头
 //        mStreamer.switchCamera();
 // 开关闪光灯
-
+ 
 // 设置美颜滤镜，关于美颜滤镜的具体说明请参见专题说明
 //        mStreamer.getImgTexFilterMgt().setFilter(mStreamer.getGLRender(),
 //                ImgTexFilterMgt.KSY_FILTER_BEAUTY_DISABLE);
     }
 
+    private fun getScaledResolution(width: Int, height: Int, maxW: Int = 1080, maxH: Int = 1920): Pair<Int, Int> {
+        var w = width
+        var h = height
+
+        val scaleW = maxW.toFloat() / w
+        val scaleH = maxH.toFloat() / h
+        val scale = if (scaleW < scaleH) scaleW else scaleH
+        if (scale < 1.0f) {
+            w = (w * scale).toInt()
+            h = (h * scale).toInt()
+        }
+
+        // Align to multiple of 16 for encoder compatibility
+        w = (w / 16) * 16
+        h = (h / 16) * 16
+
+        // Ensure they are at least 16
+        if (w < 16) w = 16
+        if (h < 16) h = 16
+
+        return Pair(w, h)
+    }
+ 
     private fun isHardwareH264EncoderAvailable(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             return false
@@ -405,7 +443,7 @@ class CameraActivity : Activity() {
 
             // 设置Info回调，可以收到相关通知信息
             mStreamer!!.onInfoListener = KSYStreamer.OnInfoListener { what, msg1, msg2 ->
-                // ...
+                LogUtil.d(TAG, "onInfo: what=$what, msg1=$msg1, msg2=$msg2")
             }
             // 设置错误回调，收到该回调后，一般是发生了严重错误，比如网络断开等，
 // SDK内部会停止推流，APP可以在这里根据回调类型及需求添加重试逻辑。
