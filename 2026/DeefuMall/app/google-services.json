@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "325112577117",
+    "project_id": "deefumall",
+    "storage_bucket": "deefumall.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325112577117:android:ad02a2e2a011a4975e61b4",
+        "android_client_info": {
+          "package_name": "com.creator.deefumall"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8B99tH8PjCvUDBEtHKzW_SOM51iFFFPA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
