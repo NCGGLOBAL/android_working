@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1464916282",
+    "project_id": "deefu-75bbb",
+    "storage_bucket": "deefu-75bbb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1464916282:android:bb8f54039ec320fdb71803",
+        "android_client_info": {
+          "package_name": "com.creator.deefu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSZ_zmfuUR4okF0V_SxR2axnBIw3M2hGc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
