@@ -9,8 +9,8 @@ android {
         applicationId "com.creator.deefu"
         minSdkVersion 21
         targetSdkVersion 35
-        versionCode 1
-        versionName "1.0.1"
+        versionCode 2
+        versionName "1.0.2"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
@@ -19,7 +19,7 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file('../keystore/deefu.jks')
+            storeFile file('keystore/deefu.jks')
             storePassword 'deefu2026!@'
             keyAlias 'deefu'
             keyPassword 'deefu2026!@'
