@@ -32,6 +32,8 @@ import com.creator.pandayaand.models.Image
 import com.creator.pandayaand.util.*
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.normal.TedPermission
+import com.creator.pandayaand.live.filter.FaceFilterManager
+import com.creator.pandayaand.live.filter.FilterTuningPanel  // [TUNING-PANEL] 테스트용 — 제거 시 이 줄 삭제
 import com.ksyun.media.streamer.capture.CameraCapture
 import com.ksyun.media.streamer.capture.camera.CameraTouchHelper
 import com.ksyun.media.streamer.filter.imgtex.ImgTexFilterMgt
@@ -46,6 +48,40 @@ import java.net.URISyntaxException
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * ════════════════════════════════════════════════════════════════════════════════════════
+ *  얼굴 영역 전용 필터 (MediaPipe + KSYLive) — 미세조정 가이드
+ * ════════════════════════════════════════════════════════════════════════════════════════
+ *
+ *  [동작 개요]
+ *    카메라 OES
+ *      → OriginalCaptureFilter   원본을 독립 텍스처에 복사 (뷰티 적용 전)
+ *      → KSYLive 내장 뷰티필터    전체 프레임에 기존 효과 그대로 적용
+ *      → FaceMaskBlendFilter      mix(원본, 필터결과, 얼굴마스크) → 얼굴만 필터, 배경 원본
+ *      → preview / encoder
+ *    서버가 ACT1029 로 보내는 key_type 으로 필터를 전환한다.
+ *      0 = 필터 OFF(원본),  1~12 = 해당 KSYLive 내장 필터를 "얼굴 영역에만" 적용
+ *    관련 코드: live/filter/ 패키지, 이 액티비티의 ACT1029 핸들러 + initCamera()/onDestroy().
+ *
+ *  [미세조정 — 실무자용 화면 내 패널]  ⭐ 권장
+ *    화면 우상단 "⚙ 필터조정" 버튼 → 슬라이더로 실시간 조절(즉시 반영, 전환해도 값 유지).
+ *      · 마스크 크기   = 마스크를 얼굴보다 얼마나 키울지 (테두리 그림자↔배경 묻음)
+ *      · 경계 부드러움 = 페더링 (경계 티남↔흐림)
+ *      · 효과 강도     = 얼굴 영역 효과 세기 (0=원본, 100%=뷰티 전체)
+ *      · 회전 / 미러   = 마스크가 얼굴과 어긋날 때 정렬
+ *    구현: live/filter/FilterTuningPanel.kt (FaceFilterManager 의 setter 호출).
+ *
+ *  [미세조정 — 코드 기본값]  패널 없이 기본값을 바꾸려면:
+ *    live/filter/FaceMaskRenderer.kt    : maskExpand(현재 1.18), blurRadius(현재 2.6),
+ *                                         MASK_DOWNSCALE(현재 4, 마스크 렌더 해상도 1/4)
+ *    live/filter/FaceLandmarkDetector.kt: rotationMode(0/90/180/270), mirrorX(true/false)
+ *                                         (전면 카메라 세로 기본: 270, true)
+ *    live/filter/FaceMaskBlendFilter.kt : setIntensity(0.0~1.0)
+ *
+ *  [디버그 로그]  adb logcat -s FACE_FILTER
+ *    필터 등록 / 원본 캡처 / 얼굴 검출 / 프레임 카운트 확인 가능.
+ * ════════════════════════════════════════════════════════════════════════════════════════
+ */
 class CameraActivity : Activity() {
     private val TAG = "CameraActivity"
     private var mWebView: WebView? = null
@@ -64,6 +100,8 @@ class CameraActivity : Activity() {
     var mCameraHintView: CameraHintView? = null
     var mMainHandler: Handler? = null
     private var currentCameraFacing: Int = CameraCapture.FACING_FRONT
+    private val faceFilterManager: FaceFilterManager by lazy { FaceFilterManager(this) }
+    private var filterTuningPanel: FilterTuningPanel? = null  // [TUNING-PANEL] 테스트용 — 제거 시 이 줄 삭제
 
     // 요청할 권한 리스트
     private val REQUIRED_PERMISSIONS = arrayOf(
@@ -277,6 +315,35 @@ class CameraActivity : Activity() {
         mStreamer!!.targetFps = 30.0f
 
         currentCameraFacing = mStreamer?.cameraCapture?.cameraFacing ?: CameraCapture.FACING_FRONT
+
+        // FaceFilterManager 에 streamer 연결 (MediaPipe 초기화 포함)
+        faceFilterManager.attachStreamer(mStreamer!!)
+
+        attachFilterTuningPanel()  // [TUNING-PANEL] 테스트용 — 제거 시 이 줄 삭제
+    }
+
+    // ╔══════════════════════════════════════════════════════════════════════════════════════
+    // ║ [TUNING-PANEL] 실무자용 미세조정 패널 (테스트용)
+    // ║
+    // ║  완전 제거 방법 (grep "[TUNING-PANEL]" 으로 전부 찾을 수 있음):
+    // ║    ① 이 메서드 블록(╔~╚) 전체 삭제
+    // ║    ② 위 initCamera() 의 attachFilterTuningPanel() 호출 1줄 삭제
+    // ║    ③ filterTuningPanel 필드 1줄 + FilterTuningPanel import 1줄 삭제
+    // ║    ④ live/filter/FilterTuningPanel.kt 파일 삭제
+    // ║  임시 비활성화만 원하면: FilterTuningPanel.ENABLED = false (코드는 그대로 둠)
+    // ╚══════════════════════════════════════════════════════════════════════════════════════
+    private fun attachFilterTuningPanel() {
+        if (!FilterTuningPanel.ENABLED) return
+        if (filterTuningPanel != null) return
+        filterTuningPanel = FilterTuningPanel(this, faceFilterManager).also {
+            addContentView(
+                it,
+                ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+            )
+        }
     }
 
     private fun initStreamer(
@@ -485,6 +552,7 @@ class CameraActivity : Activity() {
             mMainHandler!!.removeCallbacksAndMessages(null)
             mMainHandler = null
         }
+        faceFilterManager.release()
         if (mStreamer != null) {
             mStreamer!!.stopRecord()
             // 清理相关资源
@@ -702,60 +770,11 @@ class CameraActivity : Activity() {
                     LogUtil.d("ACT1029 - wlive 이미지필터 제어")
                     var resultcd = 1
                     if (actionParamObj!!.has("key_type")) {
-                        when (actionParamObj.getInt("key_type")) {
-                            0 -> mStreamer!!.imgTexFilterMgt.setFilter(
-                                mStreamer!!.glRender,
-                                ImgTexFilterMgt.KSY_FILTER_BEAUTY_DISABLE
-                            )
-                            1 -> mStreamer!!.imgTexFilterMgt.setFilter(
-                                mStreamer!!.glRender,
-                                ImgTexFilterMgt.KSY_FILTER_BEAUTY_SOFT
-                            )
-                            2 -> mStreamer!!.imgTexFilterMgt.setFilter(
-                                mStreamer!!.glRender,
-                                ImgTexFilterMgt.KSY_FILTER_BEAUTY_SKINWHITEN
-                            )
-                            3 -> mStreamer!!.imgTexFilterMgt.setFilter(
-                                mStreamer!!.glRender,
-                                ImgTexFilterMgt.KSY_FILTER_BEAUTY_ILLUSION
-                            )
-                            4 -> mStreamer!!.imgTexFilterMgt.setFilter(
-                                mStreamer!!.glRender,
-                                ImgTexFilterMgt.KSY_FILTER_BEAUTY_DENOISE
-                            )
-                            5 -> mStreamer!!.imgTexFilterMgt.setFilter(
-                                mStreamer!!.glRender,
-                                ImgTexFilterMgt.KSY_FILTER_BEAUTY_SMOOTH
-                            )
-                            6 -> mStreamer!!.imgTexFilterMgt.setFilter(
-                                mStreamer!!.glRender,
-                                ImgTexFilterMgt.KSY_FILTER_BEAUTY_SOFT_EXT
-                            )
-                            7 -> mStreamer!!.imgTexFilterMgt.setFilter(
-                                mStreamer!!.glRender,
-                                ImgTexFilterMgt.KSY_FILTER_BEAUTY_SOFT_SHARPEN
-                            )
-                            8 -> mStreamer!!.imgTexFilterMgt.setFilter(
-                                mStreamer!!.glRender,
-                                ImgTexFilterMgt.KSY_FILTER_BEAUTY_PRO
-                            )
-                            9 -> mStreamer!!.imgTexFilterMgt.setFilter(
-                                mStreamer!!.glRender,
-                                ImgTexFilterMgt.KSY_FILTER_BEAUTY_PRO1
-                            )
-                            10 -> mStreamer!!.imgTexFilterMgt.setFilter(
-                                mStreamer!!.glRender,
-                                ImgTexFilterMgt.KSY_FILTER_BEAUTY_PRO2
-                            )
-                            11 -> mStreamer!!.imgTexFilterMgt.setFilter(
-                                mStreamer!!.glRender,
-                                ImgTexFilterMgt.KSY_FILTER_BEAUTY_PRO3
-                            )
-                            12 -> mStreamer!!.imgTexFilterMgt.setFilter(
-                                mStreamer!!.glRender,
-                                ImgTexFilterMgt.KSY_FILTER_BEAUTY_PRO4
-                            )
-                        }
+                        // key_type 매핑은 FaceFilterManager.setFilterMode() 에 위임:
+                        //   0      → 필터 OFF (원본)
+                        //   1~12   → 해당 KSYLive 내장 필터를 "얼굴 영역에만" 적용
+                        val keyType = actionParamObj.getInt("key_type")
+                        runOnUiThread { faceFilterManager.setFilterMode(keyType) }
                     } else {
                         resultcd = 0
                     }
