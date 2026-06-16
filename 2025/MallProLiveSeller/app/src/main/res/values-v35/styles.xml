@@ -28,6 +28,7 @@
 
         <!--  It should be true otherwise action mode will not overlay toolbar -->
         <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 
     <style name="CustomActionModeStyle" parent="Base.Widget.AppCompat.ActionMode">
