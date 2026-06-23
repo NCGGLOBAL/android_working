@@ -1,4 +1,4 @@
-package com.creator.badalive;
+package com.creator.badaliveapp;
 
 import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;
