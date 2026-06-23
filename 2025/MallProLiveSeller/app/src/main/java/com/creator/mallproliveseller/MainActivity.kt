@@ -940,7 +940,8 @@ class MainActivity : AppCompatActivity() {
                 } else if ("ACT1012" == actionCode) {
                     LogUtil.d("ACT1012 - 사진 임시저장 통신")
                     mToken = actionParamObj!!.getString("token") // 사진 임시저장시 토큰값
-                    uploadImagesAsyncTask().execute(mToken)
+                    val uploadDomain = if (actionParamObj.has("domain")) actionParamObj.getString("domain") else HNApplication.UPLOAD_URL
+                    uploadImagesAsyncTask(uploadDomain).execute(mToken)
                 } else if ("ACT1013" == actionCode) {
                     LogUtil.d("ACT1013 - 휴대폰정보 가져오기")
                     val jsonObject = JSONObject()
@@ -1592,7 +1593,7 @@ class MainActivity : AppCompatActivity() {
         return Base64.encodeToString(imageBytes, Base64.NO_WRAP)
     }
 
-    inner class uploadImagesAsyncTask : AsyncTask<String?, Void?, String?>() {
+    inner class uploadImagesAsyncTask(private val uploadUrl: String = HNApplication.UPLOAD_URL) : AsyncTask<String?, Void?, String?>() {
         var result: String? = null
         override fun onPreExecute() {
             super.onPreExecute()
@@ -1608,9 +1609,9 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPostExecute(s: String?) {
             super.onPostExecute(s)
-            mProgressDialog!!.dismiss()
-            Log.e("SeongKwon", s!!)
+            mProgressDialog?.dismiss()
             if (s == null) {
+                Log.e("SeongKwon", "upload result is null")
                 val builder = AlertDialog.Builder(
                     mContext!!
                 )
@@ -1623,6 +1624,7 @@ class MainActivity : AppCompatActivity() {
                 executeJavascript("$mCallback($s)")
                 return
             }
+            Log.e("SeongKwon", s)
             if (s == "-1") {
                 val builder = AlertDialog.Builder(
                     mContext!!
@@ -1644,7 +1646,7 @@ class MainActivity : AppCompatActivity() {
             val file = File("$filesDir/")
             val flist = file.listFiles()
             Log.d("SeongKwon", "*************************************************")
-            if (flist.size > 0) {
+            if (flist != null && flist.isNotEmpty()) {
                 mSelectedImages = ArrayList()
                 for (i in flist.indices) {
                     val fname = flist[i].name
@@ -1675,7 +1677,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     result = UploadUtil.upload(
                         mContext,
-                        HNApplication.UPLOAD_URL,
+                        uploadUrl,
                         mSelectedImages!!,
                         param
                     )
