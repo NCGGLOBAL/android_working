@@ -774,7 +774,10 @@ class CameraActivity : Activity() {
                         //   0      → 필터 OFF (원본)
                         //   1~12   → 해당 KSYLive 내장 필터를 "얼굴 영역에만" 적용
                         val keyType = actionParamObj.getInt("key_type")
-                        runOnUiThread { faceFilterManager.setFilterMode(keyType) }
+                        runOnUiThread {
+                            faceFilterManager.setFilterMode(keyType)
+                            filterTuningPanel?.refresh()
+                        }
                     } else {
                         resultcd = 0
                     }

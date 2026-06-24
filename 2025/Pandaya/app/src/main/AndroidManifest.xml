@@ -19,6 +19,11 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme">
 
+        <!-- KSYLive 3.0.4 .so 파일이 4KB 정렬 빌드여서 Android 15(API 35) 16KB 정책 호환 모드 활성 -->
+        <meta-data
+            android:name="android.native.pageSizeCompat"
+            android:value="true" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id"/>

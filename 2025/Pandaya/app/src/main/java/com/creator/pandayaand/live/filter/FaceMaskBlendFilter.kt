@@ -27,7 +27,8 @@ import com.ksyun.media.streamer.util.gles.GLRender
 class FaceMaskBlendFilter(
     glRender: GLRender,
     private val landmarkDetector: FaceLandmarkDetector,
-    private val holder: OriginalFrameHolder
+    private val holder: OriginalFrameHolder,
+    private val maskHolder: MaskTextureHolder? = null
 ) : ImgTexFilter(glRender) {
 
     companion object {
@@ -92,6 +93,7 @@ void main() {
         // 부모가 GL state 를 잡기 전에 마스크 선렌더 (renderMask 가 진입 상태 저장·복원)
         val faceList = landmarkDetector.latestOvalPoints.get()
         cachedMaskTexId = maskRenderer.renderMask(faceList)
+        maskHolder?.textureId = cachedMaskTexId   // 차등 톤매핑용 마스크 공유
         val n = ++drawCount
         if (n == 1L || n % 300 == 0L) {
             Log.d(TAG, "[Blend] onDraw#$n mask=$cachedMaskTexId orig=${holder.textureId} faces=${faceList?.size ?: "null"}")

@@ -9,8 +9,8 @@ android {
         applicationId "com.creator.pandayaand"
         minSdkVersion 24
         targetSdkVersion 35
-        versionCode 14
-        versionName "1.1.4"
+        versionCode 15
+        versionName "1.1.5"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22"
@@ -96,9 +96,10 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
 //    # required, enough for most devices.
-    implementation 'com.ksyun.media:libksylive-java:3.0.4'
-    implementation 'com.ksyun.media:libksylive-armv7a:3.0.4'
-    implementation 'com.ksyun.media:libksylive-arm64:3.0.4'
+    // KSYLive 3.0.4 — jcenter 종료로 로컬 AAR 사용 (app/libs/)
+    // implementation 'com.ksyun.media:libksylive-java:3.0.4'
+    // implementation 'com.ksyun.media:libksylive-armv7a:3.0.4'
+    // implementation 'com.ksyun.media:libksylive-arm64:3.0.4'
 
     implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
 
@@ -106,5 +107,6 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.16.1'
 
     // MediaPipe Tasks Vision — face landmark detection (478 points)
-    implementation 'com.google.mediapipe:tasks-vision:0.10.14'
+    // 0.10.14 → 0.10.22: 16KB 페이지 정렬 지원 버전으로 업그레이드
+    implementation 'com.google.mediapipe:tasks-vision:0.10.35'
 }
