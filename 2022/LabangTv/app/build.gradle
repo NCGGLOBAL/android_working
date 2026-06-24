@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22"
@@ -101,10 +101,10 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
-//    # required, enough for most devices.
-    implementation 'com.ksyun.media:libksylive-java:3.0.4'
-    implementation 'com.ksyun.media:libksylive-armv7a:3.0.4'
-    implementation 'com.ksyun.media:libksylive-arm64:3.0.4'
+    // KSYLive 3.0.4 — jcenter 종료로 로컬 AAR 사용 (app/libs/)
+    // implementation 'com.ksyun.media:libksylive-java:3.0.4'
+    // implementation 'com.ksyun.media:libksylive-armv7a:3.0.4'
+    // implementation 'com.ksyun.media:libksylive-arm64:3.0.4'
 
     implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
 
