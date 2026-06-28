@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "139247890276",
-    "project_id": "labangtv",
-    "storage_bucket": "labangtv.appspot.com"
+    "project_number": "597933454369",
+    "project_id": "imgp-35338",
+    "storage_bucket": "imgp-35338.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:139247890276:android:4c10d614d8b150ef289471",
+        "mobilesdk_app_id": "1:597933454369:android:82f1cedbf02ecb2b411f60",
         "android_client_info": {
           "package_name": "com.creator.imgp"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "139247890276-9ketp20ol9lc0ka2crlq501ridseo3f5.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCOv6dfzRWw8TsT_RppbNbpu0NPqtF1LxY"
+          "current_key": "AIzaSyCMfkmDF7JkfQuavAd41UzwYp88g-hNmY8"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "139247890276-9ketp20ol9lc0ka2crlq501ridseo3f5.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
