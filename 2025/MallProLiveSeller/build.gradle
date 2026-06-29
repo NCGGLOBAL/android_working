@@ -33,6 +33,8 @@ allprojects {
         maven {
             url "https://maven.google.com"
         }
+        // ksyun 원격 저장소 폐쇄 → 로컬 벤더링 aar
+        flatDir { dirs "$rootDir/app/libs/ksyun" }
     }
 }
 

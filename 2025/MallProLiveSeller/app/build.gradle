@@ -9,8 +9,8 @@ android {
         applicationId "com.creator.mallproliveseller"
         minSdkVersion 21
         targetSdkVersion 35
-        versionCode 8
-        versionName "1.0.8"
+        versionCode 9
+        versionName "1.0.9"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
         multiDexEnabled true
@@ -47,6 +47,14 @@ android {
     buildFeatures {
         viewBinding false
     }
+
+    // 16KB 메모리 페이지 지원: .so를 압축 해제·16KB 정렬로 패키징 (extractNativeLibs=false)
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+
     namespace 'com.creator.mallproliveseller'
     lint {
         abortOnError false
@@ -103,9 +111,10 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
 //    # required, enough for most devices.
-    implementation 'com.ksyun.media:libksylive-java:3.0.4'
-    implementation 'com.ksyun.media:libksylive-armv7a:3.0.4'
-    implementation 'com.ksyun.media:libksylive-arm64:3.0.4'
+//    ksyun 원격 저장소 폐쇄 → 로컬 벤더링(app/libs/ksyun) aar 사용
+    implementation(name: 'libksylive-java-3.0.4', ext: 'aar')
+    implementation(name: 'libksylive-armv7a-3.0.4', ext: 'aar')
+    implementation(name: 'libksylive-arm64-3.0.4', ext: 'aar')
 
     implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
 
