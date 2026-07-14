@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "881523731302",
+    "project_id": "teeonlive-86078",
+    "storage_bucket": "teeonlive-86078.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881523731302:android:6b5d9b7515eaa43b24f6a7",
+        "android_client_info": {
+          "package_name": "com.creator.teeonlive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATp-soR4LfdeBFfNZM42A-sj94d4aemZc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
